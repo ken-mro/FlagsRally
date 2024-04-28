@@ -1,4 +1,4 @@
-﻿using FlagsRally.Repository;
+﻿using CommunityToolkit.Maui.Maps;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +14,11 @@ namespace FlagsRally
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+#if ANDROID || IOS
+                .UseMauiMaps()
+#elif WINDOWS
+                .UseMauiCommunityToolkitMaps("PASTE-YOUR-API-KEY-HERE")
+#endif
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
