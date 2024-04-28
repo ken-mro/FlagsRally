@@ -20,17 +20,6 @@ namespace FlagsRally
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            var baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile(Path.Combine(baseDirectory, @"Resources\countries.json")) // Injecting the countries.json file
-                .Build();
-
-            builder.Configuration.AddConfiguration(configuration);
-
-            builder.Services.AddSingleton<CountryRepository>();
-
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
 

@@ -14,7 +14,7 @@
             VerticalOptions="Center" />-->
         <Picker
             Title="Country of Residence"
-            ItemDisplayBinding="{Binding Name}"
+            ItemDisplayBinding="{Binding CountryName}"
             ItemsSource="{Binding CountryList}"
             SelectedItem="{Binding SelectedCountry}" />
         <Image Source="{Binding ImageSourceString}" />
