@@ -1,0 +1,193 @@
+{
+  "Subdivisions": [
+    {
+      "Code": "JP-23",
+      "Name": "Aichi"
+    },
+    {
+      "Code": "JP-05",
+      "Name": "Akita"
+    },
+    {
+      "Code": "JP-02",
+      "Name": "Aomori"
+    },
+    {
+      "Code": "JP-38",
+      "Name": "Ehime"
+    },
+    {
+      "Code": "JP-21",
+      "Name": "Gifu"
+    },
+    {
+      "Code": "JP-10",
+      "Name": "Gunma"
+    },
+    {
+      "Code": "JP-34",
+      "Name": "Hiroshima"
+    },
+    {
+      "Code": "JP-01",
+      "Name": "Hokkaido"
+    },
+    {
+      "Code": "JP-18",
+      "Name": "Fukui"
+    },
+    {
+      "Code": "JP-40",
+      "Name": "Fukuoka"
+    },
+    {
+      "Code": "JP-07",
+      "Name": "Fukushima"
+    },
+    {
+      "Code": "JP-28",
+      "Name": "Hyogo"
+    },
+    {
+      "Code": "JP-08",
+      "Name": "Ibaraki"
+    },
+    {
+      "Code": "JP-17",
+      "Name": "Ishikawa"
+    },
+    {
+      "Code": "JP-03",
+      "Name": "Iwate"
+    },
+    {
+      "Code": "JP-37",
+      "Name": "Kagawa"
+    },
+    {
+      "Code": "JP-46",
+      "Name": "Kagoshima"
+    },
+    {
+      "Code": "JP-14",
+      "Name": "Kanagawa"
+    },
+    {
+      "Code": "JP-39",
+      "Name": "Kochi"
+    },
+    {
+      "Code": "JP-43",
+      "Name": "Kumamoto"
+    },
+    {
+      "Code": "JP-26",
+      "Name": "Kyoto"
+    },
+    {
+      "Code": "JP-24",
+      "Name": "Mie"
+    },
+    {
+      "Code": "JP-04",
+      "Name": "Miyagi"
+    },
+    {
+      "Code": "JP-45",
+      "Name": "Miyazaki"
+    },
+    {
+      "Code": "JP-20",
+      "Name": "Nagano"
+    },
+    {
+      "Code": "JP-42",
+      "Name": "Nagasaki"
+    },
+    {
+      "Code": "JP-29",
+      "Name": "Nara"
+    },
+    {
+      "Code": "JP-15",
+      "Name": "Niigata"
+    },
+    {
+      "Code": "JP-44",
+      "Name": "Oita"
+    },
+    {
+      "Code": "JP-33",
+      "Name": "Okayama"
+    },
+    {
+      "Code": "JP-47",
+      "Name": "Okinawa"
+    },
+    {
+      "Code": "JP-27",
+      "Name": "Osaka"
+    },
+    {
+      "Code": "JP-41",
+      "Name": "Saga"
+    },
+    {
+      "Code": "JP-11",
+      "Name": "Saitama"
+    },
+    {
+      "Code": "JP-25",
+      "Name": "Shiga"
+    },
+    {
+      "Code": "JP-32",
+      "Name": "Shimane"
+    },
+    {
+      "Code": "JP-22",
+      "Name": "Shizuoka"
+    },
+    {
+      "Code": "JP-12",
+      "Name": "Chiba"
+    },
+    {
+      "Code": "JP-36",
+      "Name": "Tokushima"
+    },
+    {
+      "Code": "JP-13",
+      "Name": "Tokyo"
+    },
+    {
+      "Code": "JP-09",
+      "Name": "Tochigi"
+    },
+    {
+      "Code": "JP-31",
+      "Name": "Tottori"
+    },
+    {
+      "Code": "JP-16",
+      "Name": "Toyama"
+    },
+    {
+      "Code": "JP-30",
+      "Name": "Wakayama"
+    },
+    {
+      "Code": "JP-06",
+      "Name": "Yamagata"
+    },
+    {
+      "Code": "JP-35",
+      "Name": "Yamaguchi"
+    },
+    {
+      "Code": "JP-19",
+      "Name": "Yamanashi"
+    }
+  ]
+
+}
