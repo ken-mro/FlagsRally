@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Maps;
+using FlagsRally.Repository;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,10 @@ namespace FlagsRally
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            builder.Services.AddSingleton(Preferences.Default);
+
+            builder.Services.AddSingleton<SettingsPreferences>();
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();

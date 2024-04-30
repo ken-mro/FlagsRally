@@ -57,6 +57,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="FlagsRally_xunit\**" />
+	  <EmbeddedResource Remove="FlagsRally_xunit\**" />
+	  <MauiCss Remove="FlagsRally_xunit\**" />
+	  <MauiXaml Remove="FlagsRally_xunit\**" />
+	  <None Remove="FlagsRally_xunit\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Resources\Images\flag.png" />
 	  <None Remove="Resources\Images\location.png" />
 	  <None Remove="Resources\Images\settings.png" />
@@ -79,6 +87,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.21" />
+		<PackageReference Include="Moq" Version="4.20.70" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
