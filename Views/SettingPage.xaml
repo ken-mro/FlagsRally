@@ -6,8 +6,17 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel">
     <VerticalStackLayout Padding="10">
+        <Label
+            HorizontalOptions="Start"
+            Text="Country of Residence"
+            VerticalOptions="Center" />
+        <Picker
+            Title="Country of Residence"
+            ItemDisplayBinding="{Binding CountryName}"
+            ItemsSource="{Binding CountryList}"
+            SelectedItem="{Binding SelectedCountry}"
+            VerticalOptions="Center" />
         <Image
-            Margin="10,0"
             Aspect="AspectFit"
             HeightRequest="50"
             HorizontalOptions="Start"
@@ -22,7 +31,6 @@
             </Image.IsVisible>
         </Image>
         <Label
-            Margin="10,0"
             FontSize="50"
             HorizontalOptions="Start"
             Text="{Binding SelectedCountry.CountryFlag}">
@@ -35,11 +43,5 @@
                 </OnPlatform>
             </Label.IsVisible>
         </Label>
-        <Picker
-            Title="Country of Residence"
-            ItemDisplayBinding="{Binding CountryName}"
-            ItemsSource="{Binding CountryList}"
-            SelectedItem="{Binding SelectedCountry}"
-            VerticalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>
