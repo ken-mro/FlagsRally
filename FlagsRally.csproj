@@ -79,6 +79,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui.Maps" Version="2.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui.Maps" Version="2.0.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="CountryData.Standard" Version="1.3.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
