@@ -3,35 +3,115 @@
     x:Class="FlagsRally.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
+    <Grid Padding="10" RowSpacing="10">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="30,0" Spacing="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <VerticalStackLayout Grid.Row="0">
             <Image
                 Aspect="AspectFit"
                 HeightRequest="185"
                 SemanticProperties.Description="dot net bot in a race car number eight"
-                Source="dotnet_bot.png" />
-
-            <Label
-                SemanticProperties.HeadingLevel="Level1"
-                Style="{StaticResource Headline}"
-                Text="Hello, World!" />
-
-            <Label
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                SemanticProperties.HeadingLevel="Level2"
-                Style="{StaticResource SubHeadline}"
-                Text="Welcome to &#10;.NET Multi-platform App UI" />
-
-            <Button
-                x:Name="CounterBtn"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Text="Click me" />
+                Source="{Binding PassportImageSourceString}" />
         </VerticalStackLayout>
-    </ScrollView>
+        <CollectionView
+            x:Name="collectionView"
+            Grid.Row="1"
+            Background="AntiqueWhite"
+            ItemsLayout="VerticalGrid, 2"
+            ItemsSource="{Binding ArrivalCountryList}"
+            VerticalOptions="FillAndExpand">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type models:ArrivalCountry}">
+                    <Border
+                        Margin="2"
+                        BackgroundColor="Transparent"
+                        Stroke="Black"
+                        StrokeShape="RoundRectangle 40,0,0,40"
+                        StrokeThickness="4">
+                        <Border
+                            Margin="2"
+                            BackgroundColor="Transparent"
+                            Stroke="Black"
+                            StrokeDashArray="2,2"
+                            StrokeShape="RoundRectangle 40,0,0,40"
+                            StrokeThickness="2">
+                            <StackLayout Orientation="Vertical">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label
+                                        FontSize="45"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding FlagSource}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Padding="2,0"
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="20"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="MiddleTruncation"
+                                        LineHeight="1"
+                                        MaxLines="2"
+                                        Text="{Binding Name}"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="Black"
+                                        StrokeDashArray="2,2"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="200"
+                                        Y1="0"
+                                        Y2="0" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="Medium"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding ArrivalDate}"
+                                        TextColor="Red"
+                                        VerticalOptions="Center" />
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="Black"
+                                        StrokeDashArray="2,2"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="200"
+                                        Y1="0"
+                                        Y2="0" />
 
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontAutoScalingEnabled="True"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="40"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="NoWrap"
+                                        Text="ARRIVAL"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+                                </VerticalStackLayout>
+                            </StackLayout>
+                        </Border>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <ActivityIndicator
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+
+    </Grid>
 </ContentPage>

@@ -65,6 +65,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
 	  <None Remove="Resources\Images\flag.png" />
 	  <None Remove="Resources\Images\location.png" />
 	  <None Remove="Resources\Images\settings.png" />

@@ -1,10 +1,9 @@
 ﻿using CommunityToolkit.Maui.Maps;
 using FlagsRally.Repository;
+using FlagsRally.Services;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
 namespace FlagsRally
 {
@@ -24,8 +23,11 @@ namespace FlagsRally
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("JerseyclubGrungeBold-JRXVK.otf", "JerseyclubGrungeBold");
                 });
 
+            builder.Services.AddSingleton<IArrivalInfoRepository, ArrivalInfoRepository>();
+            builder.Services.AddSingleton<IArrivalInfoService, ArrivalInfoService>();
             builder.Services.AddSingleton(Preferences.Default);
 
             builder.Services.AddSingleton<SettingsPreferences>();
