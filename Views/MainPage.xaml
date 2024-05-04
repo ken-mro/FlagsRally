@@ -7,51 +7,66 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
     <Grid Padding="10" RowSpacing="10">
-
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <VerticalStackLayout Grid.Row="0">
             <Image
                 Aspect="AspectFit"
                 HeightRequest="185"
                 SemanticProperties.Description="dot net bot in a race car number eight"
                 Source="{Binding PassportImageSourceString}" />
+            <Button
+                Margin="5"
+                Command="{Binding ChangeRegionCommand}"
+                Text="{Binding SelectedRegion}" />
+            <Picker
+                Title="Filter by Country"
+                ItemDisplayBinding="{Binding CountryName}"
+                ItemsSource="{Binding CountryList}"
+                SelectedItem="{Binding FilteredCountry}"
+                VerticalOptions="Center" />
         </VerticalStackLayout>
         <RefreshView
-            Grid.Row="2"
+            Grid.Row="1"
             Command="{Binding RefreshCountriesCommand}"
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="collectionView"
                 Background="AntiqueWhite"
                 ItemsLayout="VerticalGrid, 2"
-                ItemsSource="{Binding DisplayArrivalCountryList}"
+                ItemsSource="{Binding DisplayArrivalLocationList}"
                 VerticalOptions="FillAndExpand">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Type models:ArrivalCountry}">
+                    <DataTemplate x:DataType="{x:Type models:ArrivalLocation}">
                         <Border
                             Margin="2"
                             BackgroundColor="Transparent"
                             Stroke="Black"
-                            StrokeShape="RoundRectangle 40,0,0,40"
+                            StrokeShape="RoundRectangle 40,40,40,40"
                             StrokeThickness="4">
                             <Border
                                 Margin="2"
                                 BackgroundColor="Transparent"
                                 Stroke="Black"
                                 StrokeDashArray="2,2"
-                                StrokeShape="RoundRectangle 40,0,0,40"
+                                StrokeShape="RoundRectangle 40,40,40,40"
                                 StrokeThickness="2">
                                 <StackLayout Orientation="Vertical">
                                     <VerticalStackLayout VerticalOptions="Center">
                                         <Label
                                             FontSize="45"
                                             HorizontalOptions="Center"
-                                            Text="{Binding FlagSource}"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
+                                            Text="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center" />
+                                        <Image
+                                            Margin="10"
+                                            HeightRequest="40"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
+                                            Source="{Binding AdminAreaFlagSource}"
                                             VerticalOptions="Center" />
                                         <Label
                                             Padding="2,0"
@@ -59,10 +74,24 @@
                                             FontFamily="JerseyclubGrungeBold"
                                             FontSize="20"
                                             HorizontalOptions="Center"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
                                             MaxLines="2"
-                                            Text="{Binding Name}"
+                                            Text="{Binding CountryName}"
+                                            TextColor="{StaticResource Black}"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Padding="2,0"
+                                            FontAttributes="Bold"
+                                            FontFamily="JerseyclubGrungeBold"
+                                            FontSize="20"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
+                                            LineBreakMode="MiddleTruncation"
+                                            LineHeight="1"
+                                            MaxLines="2"
+                                            Text="{Binding AdminAreaName}"
                                             TextColor="{StaticResource Black}"
                                             VerticalOptions="Center" />
                                         <Line
@@ -91,7 +120,6 @@
                                             X2="200"
                                             Y1="0"
                                             Y2="0" />
-
                                         <Label
                                             FontAttributes="Bold"
                                             FontAutoScalingEnabled="True"
@@ -117,6 +145,5 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Center" />
-
     </Grid>
 </ContentPage>

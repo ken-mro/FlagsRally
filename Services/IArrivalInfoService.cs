@@ -13,6 +13,6 @@ namespace FlagsRally.Services
         Task<List<Placemark>> GetAllPlacemark();
         Task<List<Placemark>> GetAllPlacemarkByCountryCode(string countryCode);
         Task<List<Location>> GetAllLocations();
-        Task<List<ArrivalCountry>> GetAllCountries();
+        Task<List<ArrivalLocation>> GetAllCountries();
     }
 }

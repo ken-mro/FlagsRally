@@ -1,232 +1,230 @@
-{
-  "SubRegions": [
-    {
-      "Code": "US-AL",
-      "Name": "Alabama"
-    },
-    {
-      "Code": "US-AK",
-      "Name": "Alaska"
-    },
-    {
-      "Code": "US-AZ",
-      "Name": "Arizona"
-    },
-    {
-      "Code": "US-AR",
-      "Name": "Arkansas"
-    },
-    {
-      "Code": "US-CA",
-      "Name": "California"
-    },
-    {
-      "Code": "US-CO",
-      "Name": "Colorado"
-    },
-    {
-      "Code": "US-CT",
-      "Name": "Connecticut"
-    },
-    {
-      "Code": "US-DE",
-      "Name": "Delaware"
-    },
-    {
-      "Code": "US-FL",
-      "Name": "Florida"
-    },
-    {
-      "Code": "US-GA",
-      "Name": "Georgia"
-    },
-    {
-      "Code": "US-HI",
-      "Name": "Hawaii"
-    },
-    {
-      "Code": "US-ID",
-      "Name": "Idaho"
-    },
-    {
-      "Code": "US-IL",
-      "Name": "Illinois"
-    },
-    {
-      "Code": "US-IN",
-      "Name": "Indiana"
-    },
-    {
-      "Code": "US-IA",
-      "Name": "Iowa"
-    },
-    {
-      "Code": "US-KS",
-      "Name": "Kansas"
-    },
-    {
-      "Code": "US-KY",
-      "Name": "Kentucky"
-    },
-    {
-      "Code": "US-LA",
-      "Name": "Louisiana"
-    },
-    {
-      "Code": "US-ME",
-      "Name": "Maine"
-    },
-    {
-      "Code": "US-MD",
-      "Name": "Maryland"
-    },
-    {
-      "Code": "US-MA",
-      "Name": "Massachusetts"
-    },
-    {
-      "Code": "US-MI",
-      "Name": "Michigan"
-    },
-    {
-      "Code": "US-MN",
-      "Name": "Minnesota"
-    },
-    {
-      "Code": "US-MS",
-      "Name": "Mississippi"
-    },
-    {
-      "Code": "US-MO",
-      "Name": "Missouri"
-    },
-    {
-      "Code": "US-MT",
-      "Name": "Montana"
-    },
-    {
-      "Code": "US-NE",
-      "Name": "Nebraska"
-    },
-    {
-      "Code": "US-NV",
-      "Name": "Nevada"
-    },
-    {
-      "Code": "US-NH",
-      "Name": "New Hampshire"
-    },
-    {
-      "Code": "US-NJ",
-      "Name": "New Jersey"
-    },
-    {
-      "Code": "US-NM",
-      "Name": "New Mexico"
-    },
-    {
-      "Code": "US-NY",
-      "Name": "New York"
-    },
-    {
-      "Code": "US-NC",
-      "Name": "North Carolina"
-    },
-    {
-      "Code": "US-ND",
-      "Name": "North Dakota"
-    },
-    {
-      "Code": "US-OH",
-      "Name": "Ohio"
-    },
-    {
-      "Code": "US-OK",
-      "Name": "Oklahoma"
-    },
-    {
-      "Code": "US-OR",
-      "Name": "Oregon"
-    },
-    {
-      "Code": "US-PA",
-      "Name": "Pennsylvania"
-    },
-    {
-      "Code": "US-RI",
-      "Name": "Rhode Island"
-    },
-    {
-      "Code": "US-SC",
-      "Name": "South Carolina"
-    },
-    {
-      "Code": "US-SD",
-      "Name": "South Dakota"
-    },
-    {
-      "Code": "US-TN",
-      "Name": "Tennessee"
-    },
-    {
-      "Code": "US-TX",
-      "Name": "Texas"
-    },
-    {
-      "Code": "US-UT",
-      "Name": "Utah"
-    },
-    {
-      "Code": "US-VT",
-      "Name": "Vermont"
-    },
-    {
-      "Code": "US-VA",
-      "Name": "Virginia"
-    },
-    {
-      "Code": "US-WA",
-      "Name": "Washington"
-    },
-    {
-      "Code": "US-WV",
-      "Name": "West Virginia"
-    },
-    {
-      "Code": "US-WI",
-      "Name": "Wisconsin"
-    },
-    {
-      "Code": "US-WY",
-      "Name": "Wyoming"
-    },
-    {
-      "Code": "US-DC",
-      "Name": "District of Columbia"
-    },
-    {
-      "Code": "US-AS",
-      "Name": "American Samoa"
-    },
-    {
-      "Code": "US-GU",
-      "Name": "Guam"
-    },
-    {
-      "Code": "US-MP",
-      "Name": "Northern Mariana Islands"
-    },
-    {
-      "Code": "US-PR",
-      "Name": "Puerto Rico"
-    },
-    {
-      "Code": "US-UM",
-      "Name": "United States Minor Outlying Islands"
-    },
-    {
-      "Code": "US-VI",
-      "Name": "Virgin Islands, U.S."
-    }
-  ]
-}
+[
+  {
+    "Code": "US-AL",
+    "Name": "Alabama"
+  },
+  {
+    "Code": "US-AK",
+    "Name": "Alaska"
+  },
+  {
+    "Code": "US-AZ",
+    "Name": "Arizona"
+  },
+  {
+    "Code": "US-AR",
+    "Name": "Arkansas"
+  },
+  {
+    "Code": "US-CA",
+    "Name": "California"
+  },
+  {
+    "Code": "US-CO",
+    "Name": "Colorado"
+  },
+  {
+    "Code": "US-CT",
+    "Name": "Connecticut"
+  },
+  {
+    "Code": "US-DE",
+    "Name": "Delaware"
+  },
+  {
+    "Code": "US-FL",
+    "Name": "Florida"
+  },
+  {
+    "Code": "US-GA",
+    "Name": "Georgia"
+  },
+  {
+    "Code": "US-HI",
+    "Name": "Hawaii"
+  },
+  {
+    "Code": "US-ID",
+    "Name": "Idaho"
+  },
+  {
+    "Code": "US-IL",
+    "Name": "Illinois"
+  },
+  {
+    "Code": "US-IN",
+    "Name": "Indiana"
+  },
+  {
+    "Code": "US-IA",
+    "Name": "Iowa"
+  },
+  {
+    "Code": "US-KS",
+    "Name": "Kansas"
+  },
+  {
+    "Code": "US-KY",
+    "Name": "Kentucky"
+  },
+  {
+    "Code": "US-LA",
+    "Name": "Louisiana"
+  },
+  {
+    "Code": "US-ME",
+    "Name": "Maine"
+  },
+  {
+    "Code": "US-MD",
+    "Name": "Maryland"
+  },
+  {
+    "Code": "US-MA",
+    "Name": "Massachusetts"
+  },
+  {
+    "Code": "US-MI",
+    "Name": "Michigan"
+  },
+  {
+    "Code": "US-MN",
+    "Name": "Minnesota"
+  },
+  {
+    "Code": "US-MS",
+    "Name": "Mississippi"
+  },
+  {
+    "Code": "US-MO",
+    "Name": "Missouri"
+  },
+  {
+    "Code": "US-MT",
+    "Name": "Montana"
+  },
+  {
+    "Code": "US-NE",
+    "Name": "Nebraska"
+  },
+  {
+    "Code": "US-NV",
+    "Name": "Nevada"
+  },
+  {
+    "Code": "US-NH",
+    "Name": "New Hampshire"
+  },
+  {
+    "Code": "US-NJ",
+    "Name": "New Jersey"
+  },
+  {
+    "Code": "US-NM",
+    "Name": "New Mexico"
+  },
+  {
+    "Code": "US-NY",
+    "Name": "New York"
+  },
+  {
+    "Code": "US-NC",
+    "Name": "North Carolina"
+  },
+  {
+    "Code": "US-ND",
+    "Name": "North Dakota"
+  },
+  {
+    "Code": "US-OH",
+    "Name": "Ohio"
+  },
+  {
+    "Code": "US-OK",
+    "Name": "Oklahoma"
+  },
+  {
+    "Code": "US-OR",
+    "Name": "Oregon"
+  },
+  {
+    "Code": "US-PA",
+    "Name": "Pennsylvania"
+  },
+  {
+    "Code": "US-RI",
+    "Name": "Rhode Island"
+  },
+  {
+    "Code": "US-SC",
+    "Name": "South Carolina"
+  },
+  {
+    "Code": "US-SD",
+    "Name": "South Dakota"
+  },
+  {
+    "Code": "US-TN",
+    "Name": "Tennessee"
+  },
+  {
+    "Code": "US-TX",
+    "Name": "Texas"
+  },
+  {
+    "Code": "US-UT",
+    "Name": "Utah"
+  },
+  {
+    "Code": "US-VT",
+    "Name": "Vermont"
+  },
+  {
+    "Code": "US-VA",
+    "Name": "Virginia"
+  },
+  {
+    "Code": "US-WA",
+    "Name": "Washington"
+  },
+  {
+    "Code": "US-WV",
+    "Name": "West Virginia"
+  },
+  {
+    "Code": "US-WI",
+    "Name": "Wisconsin"
+  },
+  {
+    "Code": "US-WY",
+    "Name": "Wyoming"
+  },
+  {
+    "Code": "US-DC",
+    "Name": "District of Columbia"
+  },
+  {
+    "Code": "US-AS",
+    "Name": "American Samoa"
+  },
+  {
+    "Code": "US-GU",
+    "Name": "Guam"
+  },
+  {
+    "Code": "US-MP",
+    "Name": "Northern Mariana Islands"
+  },
+  {
+    "Code": "US-PR",
+    "Name": "Puerto Rico"
+  },
+  {
+    "Code": "US-UM",
+    "Name": "United States Minor Outlying Islands"
+  },
+  {
+    "Code": "US-VI",
+    "Name": "Virgin Islands, U.S."
+  }
+]

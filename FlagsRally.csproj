@@ -66,9 +66,57 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
+		<None Remove="Resources\Images\aichi_emblem.png" />
+		<None Remove="Resources\Images\akita_emblem.png" />
+		<None Remove="Resources\Images\aomori_emblem.png" />
+		<None Remove="Resources\Images\chiba_emblem.png" />
+		<None Remove="Resources\Images\earth_noised.png" />
+		<None Remove="Resources\Images\ehime_emblem.png" />
 	  <None Remove="Resources\Images\flag.png" />
+		<None Remove="Resources\Images\fukui_emblem.png" />
+		<None Remove="Resources\Images\fukuoka_emblem.png" />
+		<None Remove="Resources\Images\fukushima_emblem.png" />
+		<None Remove="Resources\Images\gifu_emblem.png" />
+		<None Remove="Resources\Images\gunma_emblem.png" />
+		<None Remove="Resources\Images\hiroshima_emblem.png" />
+		<None Remove="Resources\Images\hokkaido_emblem.png" />
+		<None Remove="Resources\Images\hyogo_emblem.png" />
+		<None Remove="Resources\Images\ibaraki_emblem.png" />
+		<None Remove="Resources\Images\ishikawa_emblem.png" />
+		<None Remove="Resources\Images\iwate_emblem.png" />
+		<None Remove="Resources\Images\kagawa_emblem.png" />
+		<None Remove="Resources\Images\kagoshima_emblem.png" />
+		<None Remove="Resources\Images\kanagawa_emblem.png" />
+		<None Remove="Resources\Images\kochi.png_emblem.png" />
+		<None Remove="Resources\Images\kumamoto_emblem.png" />
+		<None Remove="Resources\Images\kyoto_emblem.png" />
 	  <None Remove="Resources\Images\location.png" />
+		<None Remove="Resources\Images\mie_emblem.png" />
+		<None Remove="Resources\Images\miyagi_emblem.png" />
+		<None Remove="Resources\Images\miyazaki_emblem.png" />
+		<None Remove="Resources\Images\nagano_emblem.png" />
+		<None Remove="Resources\Images\nagasaki_emblem.png" />
+		<None Remove="Resources\Images\nara_emblem.png" />
+		<None Remove="Resources\Images\niigata_emblem.png" />
+		<None Remove="Resources\Images\oita_emblem.png" />
+		<None Remove="Resources\Images\okayama_emblem.png" />
+		<None Remove="Resources\Images\okinawa_emblem.png" />
+		<None Remove="Resources\Images\osaka_emblem.png" />
+		<None Remove="Resources\Images\saga_emblem.png" />
+		<None Remove="Resources\Images\saitama_emblem.png" />
 	  <None Remove="Resources\Images\settings.png" />
+		<None Remove="Resources\Images\shiga_emblem.png" />
+		<None Remove="Resources\Images\shimane_emblem.png" />
+		<None Remove="Resources\Images\shizuoka_emblem.png" />
+		<None Remove="Resources\Images\tochigi_emblem.png" />
+		<None Remove="Resources\Images\tokushima_emblem.png" />
+		<None Remove="Resources\Images\tokyo_emblem.png" />
+		<None Remove="Resources\Images\tottori_emblem.png" />
+		<None Remove="Resources\Images\toyama_emblem.png" />
+		<None Remove="Resources\Images\wakayama_emblem.png" />
+		<None Remove="Resources\Images\yamagata_emblem.png" />
+		<None Remove="Resources\Images\yamaguchi_emblem.png" />
+		<None Remove="Resources\Images\yamanashi_emblem.png" />
 	  <None Remove="Resources\RegionCode\jp.json" />
 	  <None Remove="Resources\RegionCode\us.json" />
 	</ItemGroup>
@@ -79,7 +127,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui.Maps" Version="2.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Maps" Version="2.0.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="CountryData.Standard" Version="1.3.0" />
@@ -115,4 +162,100 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+		<MauiImage Include="Resources\Images\PrefectureEmblems\aichi_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\akita_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\aomori_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\chiba_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\ehime_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\fukui_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\fukuoka_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\fukushima_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\gifu_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\gunma_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\hiroshima_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\hokkaido_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\hyogo_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\ibaraki_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\ishikawa_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\iwate_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\kagawa_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\kagoshima_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\kanagawa_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\kochi_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\kumamoto_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\kyoto_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\mie_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\miyagi_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\miyazaki_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\nagano_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\nagasaki_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\nara_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\niigata_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\oita_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\okayama_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\okinawa_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\osaka_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\saga_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\saitama_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\shiga_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\shimane_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\shizuoka_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\tochigi_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\tokushima_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\tokyo_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\tottori_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\toyama_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\wakayama_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\yamagata_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\yamaguchi_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureEmblems\yamanashi_emblem.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\aichi.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\akita.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\aomori.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\chiba.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\ehime.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\fukui.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\fukuoka.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\fukushima.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\gifu.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\gunma.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\hiroshima.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\hokkaido.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\hyogo.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\ibaraki.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\ishikawa.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\iwate.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\kagawa.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\kagoshima.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\kanagawa.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\kochi.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\kumamoto.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\kyoto.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\mie.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\miyagi.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\miyazaki.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\nagano.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\nagasaki.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\nara.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\niigata.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\oita.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\okayama.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\okinawa.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\osaka.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\saga.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\saitama.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\shiga.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\shimane.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\shizuoka.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\tochigi.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\tokushima.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\tokyo.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\tottori.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\toyama.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\wakayama.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\yamagata.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\yamaguchi.png" />
+		<MauiImage Include="Resources\Images\PrefectureFlags\yamanashi.png" />
+	</ItemGroup>
 </Project>
