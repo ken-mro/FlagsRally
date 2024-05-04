@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Services;
@@ -24,16 +25,33 @@ namespace FlagsRally.ViewModels
         public string PassportImageSourceString => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOrRegion().ToLower()}.png";
 
         [ObservableProperty]
-        ObservableCollection<ArrivalCountry> _arrivalCountryList;
+        [NotifyPropertyChangedFor(nameof(DisplayArrivalCountryList))]
+        ObservableCollection<ArrivalCountry> _sourceArrivalCountryList;
 
-        //public async Task FireOnPropertyChanged()
-        //{
-        //    OnPropertyChanged(PassportImageSourceString);
-        //}
+        public ObservableCollection<ArrivalCountry> DisplayArrivalCountryList => GetFilteredList();
+
+        [ObservableProperty]
+        bool _isRefreshing = false;
 
         private async Task Init()
         {
-            ArrivalCountryList = new ObservableCollection<ArrivalCountry>(await _arrivalInfoService.GetAllCountries());
+            SourceArrivalCountryList = new ObservableCollection<ArrivalCountry>(await _arrivalInfoService.GetAllCountries());
+        }
+
+        private ObservableCollection<ArrivalCountry> GetFilteredList()
+        {
+            if (SourceArrivalCountryList is null)
+                return new ObservableCollection<ArrivalCountry>();
+
+            return new ObservableCollection<ArrivalCountry>(SourceArrivalCountryList.Reverse());
+        }
+
+        [RelayCommand]
+        public async Task RefreshCountriesAsync()
+        {
+            IsRefreshing = true;
+            await Init();
+            IsRefreshing = false;
         }
     }
 }
