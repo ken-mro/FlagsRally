@@ -35,9 +35,11 @@
             <CollectionView
                 x:Name="collectionView"
                 Background="AntiqueWhite"
-                ItemsLayout="VerticalGrid, 2"
                 ItemsSource="{Binding DisplayArrivalLocationList}"
                 VerticalOptions="FillAndExpand">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type models:ArrivalLocation}">
                         <Border
