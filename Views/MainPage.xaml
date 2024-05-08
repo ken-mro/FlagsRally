@@ -10,24 +10,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="0">
-            <Image
-                Aspect="AspectFit"
-                HeightRequest="185"
-                SemanticProperties.Description="dot net bot in a race car number eight"
-                Source="{Binding PassportImageSourceString}" />
-            <Button
-                Margin="5"
-                Command="{Binding ChangeRegionCommand}"
-                Text="{Binding SelectedRegion}" />
-            <Picker
-                Title="Filter by Country"
-                ItemDisplayBinding="{Binding CountryName}"
-                ItemsSource="{Binding CountryList}"
-                SelectedItem="{Binding FilteredCountry}"
-                VerticalOptions="Center" />
-        </VerticalStackLayout>
+        <Image
+            Grid.Row="0"
+            Aspect="AspectFit"
+            HeightRequest="185"
+            SemanticProperties.Description="dot net bot in a race car number eight"
+            Source="{Binding PassportImageSourceString}" />
+
         <RefreshView
             Grid.Row="1"
             Command="{Binding RefreshCountriesCommand}"
@@ -46,25 +37,24 @@
                             Margin="2"
                             BackgroundColor="Transparent"
                             Stroke="Black"
-                            StrokeShape="RoundRectangle 40,40,40,40"
+                            StrokeShape="Rectangle"
                             StrokeThickness="4">
                             <Border
                                 Margin="2"
                                 BackgroundColor="Transparent"
                                 Stroke="Black"
                                 StrokeDashArray="2,2"
-                                StrokeShape="RoundRectangle 40,40,40,40"
+                                StrokeShape="Rectangle"
                                 StrokeThickness="2">
-                                <StackLayout Orientation="Vertical">
-                                    <VerticalStackLayout VerticalOptions="Center">
+                                <VerticalStackLayout VerticalOptions="Center">
                                     <OnPlatform x:TypeArguments="View">
                                         <On Platform="MacCatalyst, iOS, Android">
-                                        <Label
-                                            FontSize="45"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
-                                            Text="{Binding CountryFlagSource}"
-                                            VerticalOptions="Center" />
+                                            <Label
+                                                FontSize="45"
+                                                HorizontalOptions="Center"
+                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
+                                                Text="{Binding CountryFlagSource}"
+                                                VerticalOptions="Center" />
                                         </On>
                                         <On Platform="WinUI">
                                             <Image
@@ -76,89 +66,96 @@
                                                 VerticalOptions="Center" />
                                         </On>
                                     </OnPlatform>
-                                        <Image
-                                            Margin="10"
-                                            HeightRequest="40"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
-                                            Source="{Binding AdminAreaFlagSource}"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            Padding="2,0"
-                                            FontAttributes="Bold"
-                                            FontFamily="JerseyclubGrungeBold"
-                                            FontSize="20"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
-                                            LineBreakMode="MiddleTruncation"
-                                            LineHeight="1"
-                                            MaxLines="2"
-                                            Text="{Binding CountryName}"
-                                            TextColor="{StaticResource Black}"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            Padding="2,0"
-                                            FontAttributes="Bold"
-                                            FontFamily="JerseyclubGrungeBold"
-                                            FontSize="20"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
-                                            LineBreakMode="MiddleTruncation"
-                                            LineHeight="1"
-                                            MaxLines="2"
-                                            Text="{Binding AdminAreaName}"
-                                            TextColor="{StaticResource Black}"
-                                            VerticalOptions="Center" />
-                                        <Line
-                                            HorizontalOptions="Center"
-                                            Stroke="Black"
-                                            StrokeDashArray="2,2"
-                                            StrokeThickness="2"
-                                            X1="0"
-                                            X2="200"
-                                            Y1="0"
-                                            Y2="0" />
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontFamily="JerseyclubGrungeBold"
-                                            FontSize="Medium"
-                                            HorizontalOptions="Center"
-                                            Text="{Binding ArrivalDate}"
-                                            TextColor="Red"
-                                            VerticalOptions="Center" />
-                                        <Line
-                                            HorizontalOptions="Center"
-                                            Stroke="Black"
-                                            StrokeDashArray="2,2"
-                                            StrokeThickness="2"
-                                            X1="0"
-                                            X2="200"
-                                            Y1="0"
-                                            Y2="0" />
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontAutoScalingEnabled="True"
-                                            FontFamily="JerseyclubGrungeBold"
-                                            FontSize="40"
-                                            HorizontalOptions="Center"
-                                            LineBreakMode="NoWrap"
-                                            Text="ARRIVAL"
-                                            TextColor="{StaticResource Black}"
-                                            VerticalOptions="Center" />
-                                    </VerticalStackLayout>
-                                </StackLayout>
+                                    <Image
+                                        Margin="10"
+                                        HeightRequest="40"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
+                                        Source="{Binding AdminAreaFlagSource}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Padding="2,0"
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="20"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
+                                        LineBreakMode="MiddleTruncation"
+                                        LineHeight="1"
+                                        MaxLines="2"
+                                        Text="{Binding CountryName}"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Padding="2,0"
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="20"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
+                                        LineBreakMode="MiddleTruncation"
+                                        LineHeight="1"
+                                        MaxLines="2"
+                                        Text="{Binding AdminAreaName}"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="Black"
+                                        StrokeDashArray="2,2"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="200"
+                                        Y1="0"
+                                        Y2="0" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="Medium"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="TailTruncation"
+                                        LineHeight="1"
+                                        Text="{Binding ArrivalDate}"
+                                        TextColor="Red"
+                                        VerticalOptions="Center" />
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="Black"
+                                        StrokeDashArray="2,2"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="200"
+                                        Y1="0"
+                                        Y2="0" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontAutoScalingEnabled="True"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="40"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="NoWrap"
+                                        Text="ARRIVAL"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+                                </VerticalStackLayout>
                             </Border>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <ActivityIndicator
-            Grid.Row="2"
-            Grid.ColumnSpan="2"
-            HorizontalOptions="Center"
-            IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}"
-            VerticalOptions="Center" />
+        <VerticalStackLayout Grid.Row="2">
+            <Picker
+                Title="Filter by Country"
+                HorizontalOptions="FillAndExpand"
+                ItemDisplayBinding="{Binding CountryName}"
+                ItemsSource="{Binding CountryList}"
+                SelectedItem="{Binding FilteredCountry}"
+                VerticalOptions="Center" />
+            <Button
+                Margin="5"
+                Command="{Binding ChangeRegionCommand}"
+                Text="{Binding SelectedRegion}" />
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>
