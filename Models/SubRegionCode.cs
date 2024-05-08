@@ -9,20 +9,42 @@ namespace FlagsRally.Models
 {
     public class SubRegionCode
     {
-        public string Value { get; init; }
-        public SubRegionCode(string value)
+        public string lower5LetterRegionCode { get; init; }
+        public SubRegionCode(string fiveLetterRegionCode)
         {
-            if (value[0..2] != "JP" && value[0..2] != "US") throw new ArgumentException("Unexpected country's SubRegionCode");
+            if (fiveLetterRegionCode[0..2] != "JP" && fiveLetterRegionCode[0..2] != "US") throw new ArgumentException("Unexpected country's SubRegionCode");
 
-            if (value.Length != 5) throw new ArgumentException("SubRegionCode must be 5 characters long");
+            if (fiveLetterRegionCode.Length != 5) throw new ArgumentException("SubRegionCode must be 5 characters long");
 
-            if (value[2] != '-') throw new ArgumentException("SubRegionCode must have a hyphen in the middle");
+            if (fiveLetterRegionCode[2] != '-') throw new ArgumentException("SubRegionCode must have a hyphen in the middle");
 
-            if (value[0..2] == "JP" && !int.TryParse(value[3..5], out _)) throw new ArgumentException("JP's SubRegionCode has 2 digits");
+            if (fiveLetterRegionCode[0..2] == "JP" && !int.TryParse(fiveLetterRegionCode[3..5], out _)) throw new ArgumentException("JP's SubRegionCode has 2 digits");
 
-            if (value[0..2] == "US" && !value[3..5].All(Char.IsLetter)) throw new ArgumentException("US's SubRegionCode only has 2 letters");
+            if (fiveLetterRegionCode[0..2] == "US" && !fiveLetterRegionCode[3..5].All(Char.IsLetter)) throw new ArgumentException("US's SubRegionCode only has 2 letters");
 
-            Value = value;
+            lower5LetterRegionCode = fiveLetterRegionCode.ToLower();
+        }
+
+        public SubRegionCode(string countryCode, string subRegionCode)
+        {
+            var loweredCountryCode = countryCode.ToLower();
+            var loweredSubRegionCode = subRegionCode.ToLower();
+
+            if (loweredCountryCode.Length != 2 || loweredSubRegionCode.Length != 2) throw new ArgumentException("Unexpected length of argument");
+
+            if (loweredCountryCode[0..2] != "jp" && loweredCountryCode[0..2] != "us") throw new ArgumentException("Unexpected Country Code");
+
+
+            if (loweredCountryCode[0..2] == "jp" && !int.TryParse(subRegionCode[0..2], out _)) throw new ArgumentException("JP's SubRegionCode has 2 digits");
+
+            if (loweredCountryCode[0..2] == "us" && !loweredSubRegionCode[0..2].All(Char.IsLetter)) throw new ArgumentException("US's SubRegionCode only has 2 letters");
+
+            lower5LetterRegionCode = loweredCountryCode + "-" + loweredSubRegionCode;
+        }
+
+        public string GetImageResourceString()
+        {
+            return lower5LetterRegionCode.Replace('-', '_');
         }
     }
 }
