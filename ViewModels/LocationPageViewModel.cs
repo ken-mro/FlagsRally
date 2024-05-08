@@ -1,6 +1,7 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Services;
-using Microsoft.Maui.Devices.Sensors;
+using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels;
 
@@ -9,9 +10,20 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly IArrivalInfoService _arrivalInfoService;
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
+
+    [ObservableProperty]
+    ObservableCollection<Placemark> _positions;
+
     public LocationPageViewModel(IArrivalInfoService arrivalInfoService)
 	{
         _arrivalInfoService = arrivalInfoService;
+        _ = init();
+    }
+
+    private async Task init()
+    {
+        var placemarks = await _arrivalInfoService.GetAllPlacemark();
+        Positions = new ObservableCollection<Placemark>(placemarks);
     }
 
     [RelayCommand]

@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+    xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:LocationPageViewModel">
     <Grid Padding="10" RowSpacing="10">
@@ -22,7 +23,14 @@
             Grid.Row="1"
             IsScrollEnabled="True"
             IsShowingUser="True"
-            IsZoomEnabled="True" />
+            IsZoomEnabled="True"
+            ItemsSource="{Binding Positions}">
+            <maps:Map.ItemTemplate>
+                <DataTemplate x:DataType="sensors:Placemark">
+                    <maps:Pin Label="{Binding AdminArea}" Location="{Binding Location}" />
+                </DataTemplate>
+            </maps:Map.ItemTemplate>
+        </maps:Map>
         <Button
             Grid.Row="2"
             Command="{Binding GetCurrentLocationCommand}"
