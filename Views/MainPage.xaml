@@ -57,12 +57,25 @@
                                 StrokeThickness="2">
                                 <StackLayout Orientation="Vertical">
                                     <VerticalStackLayout VerticalOptions="Center">
+                                    <OnPlatform x:TypeArguments="View">
+                                        <On Platform="MacCatalyst, iOS, Android">
                                         <Label
                                             FontSize="45"
                                             HorizontalOptions="Center"
                                             IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
                                             Text="{Binding CountryFlagSource}"
                                             VerticalOptions="Center" />
+                                        </On>
+                                        <On Platform="WinUI">
+                                            <Image
+                                                Margin="10"
+                                                HeightRequest="40"
+                                                HorizontalOptions="Center"
+                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
+                                                Source="{Binding CountryFlagSource}"
+                                                VerticalOptions="Center" />
+                                        </On>
+                                    </OnPlatform>
                                         <Image
                                             Margin="10"
                                             HeightRequest="40"
