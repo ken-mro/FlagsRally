@@ -41,6 +41,9 @@ namespace FlagsRally
             builder.Services.AddSingleton<LocationPage>();
             builder.Services.AddSingleton<LocationPageViewModel>();
 
+            builder.Services.AddSingleton<FlagsBoardPage>();
+            builder.Services.AddSingleton<FlagsBoardPageViewModel>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

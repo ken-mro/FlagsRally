@@ -15,6 +15,12 @@
                 ContentTemplate="{DataTemplate views:MainPage}"
                 Route="MainPage" />
         </Tab>
+        <Tab Title="Board" Icon="board.png">
+            <ShellContent
+                Title="Flags"
+                ContentTemplate="{DataTemplate views:FlagsBoardPage}"
+                Route="FlagsBoard" />
+        </Tab>
         <Tab Title="Location" Icon="location.png">
             <ShellContent
                 Title="Location"

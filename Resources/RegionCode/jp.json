@@ -1,193 +1,190 @@
-{
-  "Subdivisions": [
-    {
-      "Code": "JP-23",
-      "Name": "Aichi"
-    },
-    {
-      "Code": "JP-05",
-      "Name": "Akita"
-    },
-    {
-      "Code": "JP-02",
-      "Name": "Aomori"
-    },
-    {
-      "Code": "JP-38",
-      "Name": "Ehime"
-    },
-    {
-      "Code": "JP-21",
-      "Name": "Gifu"
-    },
-    {
-      "Code": "JP-10",
-      "Name": "Gunma"
-    },
-    {
-      "Code": "JP-34",
-      "Name": "Hiroshima"
-    },
-    {
-      "Code": "JP-01",
-      "Name": "Hokkaido"
-    },
-    {
-      "Code": "JP-18",
-      "Name": "Fukui"
-    },
-    {
-      "Code": "JP-40",
-      "Name": "Fukuoka"
-    },
-    {
-      "Code": "JP-07",
-      "Name": "Fukushima"
-    },
-    {
-      "Code": "JP-28",
-      "Name": "Hyogo"
-    },
-    {
-      "Code": "JP-08",
-      "Name": "Ibaraki"
-    },
-    {
-      "Code": "JP-17",
-      "Name": "Ishikawa"
-    },
-    {
-      "Code": "JP-03",
-      "Name": "Iwate"
-    },
-    {
-      "Code": "JP-37",
-      "Name": "Kagawa"
-    },
-    {
-      "Code": "JP-46",
-      "Name": "Kagoshima"
-    },
-    {
-      "Code": "JP-14",
-      "Name": "Kanagawa"
-    },
-    {
-      "Code": "JP-39",
-      "Name": "Kochi"
-    },
-    {
-      "Code": "JP-43",
-      "Name": "Kumamoto"
-    },
-    {
-      "Code": "JP-26",
-      "Name": "Kyoto"
-    },
-    {
-      "Code": "JP-24",
-      "Name": "Mie"
-    },
-    {
-      "Code": "JP-04",
-      "Name": "Miyagi"
-    },
-    {
-      "Code": "JP-45",
-      "Name": "Miyazaki"
-    },
-    {
-      "Code": "JP-20",
-      "Name": "Nagano"
-    },
-    {
-      "Code": "JP-42",
-      "Name": "Nagasaki"
-    },
-    {
-      "Code": "JP-29",
-      "Name": "Nara"
-    },
-    {
-      "Code": "JP-15",
-      "Name": "Niigata"
-    },
-    {
-      "Code": "JP-44",
-      "Name": "Oita"
-    },
-    {
-      "Code": "JP-33",
-      "Name": "Okayama"
-    },
-    {
-      "Code": "JP-47",
-      "Name": "Okinawa"
-    },
-    {
-      "Code": "JP-27",
-      "Name": "Osaka"
-    },
-    {
-      "Code": "JP-41",
-      "Name": "Saga"
-    },
-    {
-      "Code": "JP-11",
-      "Name": "Saitama"
-    },
-    {
-      "Code": "JP-25",
-      "Name": "Shiga"
-    },
-    {
-      "Code": "JP-32",
-      "Name": "Shimane"
-    },
-    {
-      "Code": "JP-22",
-      "Name": "Shizuoka"
-    },
-    {
-      "Code": "JP-12",
-      "Name": "Chiba"
-    },
-    {
-      "Code": "JP-36",
-      "Name": "Tokushima"
-    },
-    {
-      "Code": "JP-13",
-      "Name": "Tokyo"
-    },
-    {
-      "Code": "JP-09",
-      "Name": "Tochigi"
-    },
-    {
-      "Code": "JP-31",
-      "Name": "Tottori"
-    },
-    {
-      "Code": "JP-16",
-      "Name": "Toyama"
-    },
-    {
-      "Code": "JP-30",
-      "Name": "Wakayama"
-    },
-    {
-      "Code": "JP-06",
-      "Name": "Yamagata"
-    },
-    {
-      "Code": "JP-35",
-      "Name": "Yamaguchi"
-    },
-    {
-      "Code": "JP-19",
-      "Name": "Yamanashi"
-    }
-  ]
-
-}
+[
+  {
+    "Code": "JP-23",
+    "Name": "愛知県"
+  },
+  {
+    "Code": "JP-05",
+    "Name": "秋田県"
+  },
+  {
+    "Code": "JP-02",
+    "Name": "青森県"
+  },
+  {
+    "Code": "JP-38",
+    "Name": "愛媛県"
+  },
+  {
+    "Code": "JP-21",
+    "Name": "岐阜県"
+  },
+  {
+    "Code": "JP-10",
+    "Name": "群馬県"
+  },
+  {
+    "Code": "JP-34",
+    "Name": "広島県"
+  },
+  {
+    "Code": "JP-01",
+    "Name": "北海道"
+  },
+  {
+    "Code": "JP-18",
+    "Name": "福井県"
+  },
+  {
+    "Code": "JP-40",
+    "Name": "福岡県"
+  },
+  {
+    "Code": "JP-07",
+    "Name": "福島県"
+  },
+  {
+    "Code": "JP-28",
+    "Name": "兵庫県"
+  },
+  {
+    "Code": "JP-08",
+    "Name": "茨城県"
+  },
+  {
+    "Code": "JP-17",
+    "Name": "石川県"
+  },
+  {
+    "Code": "JP-03",
+    "Name": "岩手県"
+  },
+  {
+    "Code": "JP-37",
+    "Name": "香川県"
+  },
+  {
+    "Code": "JP-46",
+    "Name": "鹿児島県"
+  },
+  {
+    "Code": "JP-14",
+    "Name": "神奈川県"
+  },
+  {
+    "Code": "JP-39",
+    "Name": "高知県"
+  },
+  {
+    "Code": "JP-43",
+    "Name": "熊本県"
+  },
+  {
+    "Code": "JP-26",
+    "Name": "京都府"
+  },
+  {
+    "Code": "JP-24",
+    "Name": "三重県"
+  },
+  {
+    "Code": "JP-04",
+    "Name": "宮城県"
+  },
+  {
+    "Code": "JP-45",
+    "Name": "宮崎県"
+  },
+  {
+    "Code": "JP-20",
+    "Name": "長野県"
+  },
+  {
+    "Code": "JP-42",
+    "Name": "長崎県"
+  },
+  {
+    "Code": "JP-29",
+    "Name": "奈良県"
+  },
+  {
+    "Code": "JP-15",
+    "Name": "新潟県"
+  },
+  {
+    "Code": "JP-44",
+    "Name": "大分県"
+  },
+  {
+    "Code": "JP-33",
+    "Name": "岡山県"
+  },
+  {
+    "Code": "JP-47",
+    "Name": "沖縄県"
+  },
+  {
+    "Code": "JP-27",
+    "Name": "大阪府"
+  },
+  {
+    "Code": "JP-41",
+    "Name": "佐賀県"
+  },
+  {
+    "Code": "JP-11",
+    "Name": "埼玉県"
+  },
+  {
+    "Code": "JP-25",
+    "Name": "滋賀県"
+  },
+  {
+    "Code": "JP-32",
+    "Name": "島根県"
+  },
+  {
+    "Code": "JP-22",
+    "Name": "静岡県"
+  },
+  {
+    "Code": "JP-12",
+    "Name": "千葉県"
+  },
+  {
+    "Code": "JP-36",
+    "Name": "徳島県"
+  },
+  {
+    "Code": "JP-13",
+    "Name": "東京都"
+  },
+  {
+    "Code": "JP-09",
+    "Name": "栃木県"
+  },
+  {
+    "Code": "JP-31",
+    "Name": "鳥取県"
+  },
+  {
+    "Code": "JP-16",
+    "Name": "富山県"
+  },
+  {
+    "Code": "JP-30",
+    "Name": "和歌山県"
+  },
+  {
+    "Code": "JP-06",
+    "Name": "山形県"
+  },
+  {
+    "Code": "JP-35",
+    "Name": "山口県"
+  },
+  {
+    "Code": "JP-19",
+    "Name": "山梨県"
+  }
+]

@@ -14,5 +14,6 @@ namespace FlagsRally.Services
         Task<List<Placemark>> GetAllPlacemarkByCountryCode(string countryCode);
         Task<List<Location>> GetAllLocations();
         Task<List<ArrivalLocation>> GetAllCountries();
+        Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode);
     }
 }

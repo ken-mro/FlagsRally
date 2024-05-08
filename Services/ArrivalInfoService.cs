@@ -3,6 +3,7 @@ using FlagsRally.Models;
 using FlagsRally.Repository;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -13,13 +14,13 @@ namespace FlagsRally.Services
     public class ArrivalInfoService : IArrivalInfoService
     {
         private readonly IArrivalInfoRepository _arrivalInfoRepository;
-        private List<SubRegion> _subRegionList;
+        private Dictionary<string, Dictionary<string, SubRegionCode>> _subRegionCodeMap = new();
 
         public ArrivalInfoService(IArrivalInfoRepository arrivalInfoRepository)
         {
             _arrivalInfoRepository = arrivalInfoRepository;
+            var countryHelper = new CountryHelper();
 
-            var jsonFilePath = Path.Combine(FileSystem.AppDataDirectory, "Resources/RegionCode/us.json");
 
             var names =
                 System
@@ -29,13 +30,19 @@ namespace FlagsRally.Services
                 .GetManifestResourceNames();
 
             var info = System.Reflection.Assembly.GetExecutingAssembly().GetName();
-            using var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.RegionCode.us.json");
-            using var streamReader = new StreamReader(stream, Encoding.UTF8);
+            using var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.RegionCode.jp.json");
+            using var streamReader = new StreamReader(stream!, Encoding.UTF8);
             string jsonString = streamReader.ReadToEnd();
 
-            // Deserialize the JSON string into a dictionary
-            var subRegionDtolist = JsonSerializer.Deserialize<List<SubRegionDto>>(jsonString);
-            _subRegionList = subRegionDtolist.ConvertAll(x => SubRegion.ConvertFrom(x)); ;
+            var jaJpSubRegionDataList = JsonSerializer.Deserialize<List<SubRegionData>>(jsonString);
+            var enJpSubRegionDataList = countryHelper.GetCountryByCode("JP").Regions.ConvertAll(x => new SubRegionData(x.Name, "JP-" + x.ShortCode));
+            jaJpSubRegionDataList?.AddRange(enJpSubRegionDataList);
+
+            var jpSubRegionDict = jaJpSubRegionDataList?.ToDictionary(x => x.Name, x => new SubRegionCode(x.Code));
+            var usSubRegionDict = countryHelper.GetCountryByCode("US").Regions.ToDictionary(x => x.Name, x => new SubRegionCode("US", x.ShortCode));
+
+            _subRegionCodeMap.Add("JP", jpSubRegionDict!);
+            _subRegionCodeMap.Add("US", usSubRegionDict);
         }
 
         public async Task<List<Placemark>> GetAllPlacemark()
@@ -72,7 +79,7 @@ namespace FlagsRally.Services
         public async Task<List<ArrivalLocation>> GetAllCountries()
         {
             var arrivalInfoList = await _arrivalInfoRepository.GetAll();
-            return arrivalInfoList.Select(x => GetArrivalCountry(x)).ToList();
+            return arrivalInfoList.Select(GetArrivalCountry).ToList();
         }
 
         private ArrivalLocation GetArrivalCountry(ArrivalInfo arrivalInfo)
@@ -81,23 +88,26 @@ namespace FlagsRally.Services
             var countryHelper = new CountryHelper();
 
             string countryFlagSource;
+
 #if WINDOWS
-            countryFlagSource = $"https://flagcdn.com/w320/{placemark.CountryCode}.png";
+            countryFlagSource = $"https://flagcdn.com/160x120/{placemark.CountryCode}.png";
 #else
-            countryFlagSource = countryHelper.GetCountryEmojiFlag(arrivalInfo.CountryCode);
+            countryFlagSource =  countryHelper.GetCountryEmojiFlag(arrivalInfo.CountryCode);
 #endif
 
-            string adminAreaFlagSource = "Images/earth_noised.png";
-            //string adminAreaFlagSource = countryFlagSource;
-
+            string adminAreaFlagSource = "Image/earth.png";
+            _subRegionCodeMap.TryGetValue(placemark!.CountryCode, out var usSubRegionDict);
+            
             if (placemark.CountryCode == "US")
             {
-                var subRegionCode = _subRegionList.Find(x => x.Name == placemark.AdminArea)?.Code.Value.ToLower();
-                adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode}.png";
+                usSubRegionDict!.TryGetValue(placemark.AdminArea, out var subRegionCode);
+                adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lower5LetterRegionCode}.png";
+
             }
             else if (placemark.CountryCode == "JP")
             {
-                adminAreaFlagSource = $"Images/PrefectureFlags/{arrivalInfo.AdminArea.ToLower()}.png";
+                usSubRegionDict!.TryGetValue(placemark.AdminArea, out var subRegionCode);
+                adminAreaFlagSource = $"Images/PrefectureFlags/{subRegionCode?.GetImageResourceString()}.png";
             }
 
             return new ArrivalLocation
@@ -109,6 +119,30 @@ namespace FlagsRally.Services
                 AdminAreaName = placemark.AdminArea,
                 CountryFlagSource = countryFlagSource,
                 AdminAreaFlagSource = adminAreaFlagSource,
+            };
+        }
+
+        public async Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode)
+        {
+            var arrivalInfoList = await _arrivalInfoRepository.GetAllByCountryCode(countryCode);
+             return arrivalInfoList.ConvertAll(GetSubRegion).ToList();
+        }
+
+        private SubRegion GetSubRegion(ArrivalInfo arrivalInfo)
+        {
+            var placemark = JsonSerializer.Deserialize<Placemark>(arrivalInfo.Placemark);
+            var countryHelper = new CountryHelper();
+
+            var result = _subRegionCodeMap.TryGetValue(placemark!.CountryCode, out var usSubRegionDict);
+            if (!result) throw new ArgumentException("Unexpected country's SubRegionCode");
+
+            usSubRegionDict!.TryGetValue(placemark.AdminArea, out SubRegionCode subRegionCode);
+
+            return new SubRegion
+            {
+                ArrivalDate = arrivalInfo.ArrivalDate.ToString(),
+                Name = placemark.AdminArea,
+                Code = subRegionCode!,
             };
         }
     }

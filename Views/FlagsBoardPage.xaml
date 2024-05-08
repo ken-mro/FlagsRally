@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FlagsRally.Views.FlagsBoardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:FlagsRally.Models"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    Title="{Binding Title}"
+    x:DataType="viewmodels:FlagsBoardPageViewModel">
+    <Grid Padding="10" RowSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <VerticalStackLayout Grid.Row="1">
+            <Picker
+                Title="Filter by Country"
+                ItemDisplayBinding="{Binding CountryName}"
+                ItemsSource="{Binding CountryList}"
+                SelectedItem="{Binding FilteredCountry}"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+        <RefreshView
+            Grid.Row="0"
+            Command="{Binding RefreshCountriesCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+                x:Name="collectionView"
+                Background="AntiqueWhite"
+                ItemsSource="{Binding DisplayFullSubRegionList}"
+                VerticalOptions="FillAndExpand">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type models:SubRegion}">
+                        <Border
+                            Margin="2"
+                            BackgroundColor="Transparent"
+                            Stroke="Black"
+                            StrokeShape="Ellipse"
+                            StrokeThickness="4">
+                            <Border
+                                Margin="2"
+                                Padding="15"
+                                BackgroundColor="Transparent"
+                                IsVisible="{Binding HasBeenVisited}"
+                                Stroke="Black"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="2">
+                                <VerticalStackLayout IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
+                                    <Image
+                                        HeightRequest="40"
+                                        HorizontalOptions="Center"
+                                        Source="{Binding FlagSource}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Padding="2,0"
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="20"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="MiddleTruncation"
+                                        LineHeight="1"
+                                        MaxLines="2"
+                                        Text="{Binding Name}"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="Black"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="150"
+                                        Y1="0"
+                                        Y2="0" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="Medium"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="TailTruncation"
+                                        LineHeight="1"
+                                        Text="{Binding ArrivalDate}"
+                                        TextColor="Red"
+                                        VerticalOptions="Center" />
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="Black"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="150"
+                                        Y1="0"
+                                        Y2="0" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontAutoScalingEnabled="True"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="35"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="NoWrap"
+                                        Text="ARRIVAL"
+                                        TextColor="{StaticResource Black}"
+                                        VerticalOptions="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <ActivityIndicator
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+    </Grid>
+</ContentPage>
