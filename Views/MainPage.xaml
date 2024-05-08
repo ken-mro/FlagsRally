@@ -106,7 +106,7 @@
                                         StrokeDashArray="2,2"
                                         StrokeThickness="2"
                                         X1="0"
-                                        X2="200"
+                                        X2="150"
                                         Y1="0"
                                         Y2="0" />
                                     <Label
@@ -125,7 +125,7 @@
                                         StrokeDashArray="2,2"
                                         StrokeThickness="2"
                                         X1="0"
-                                        X2="200"
+                                        X2="150"
                                         Y1="0"
                                         Y2="0" />
                                     <Label

@@ -48,7 +48,10 @@
                                 Stroke="Black"
                                 StrokeShape="Ellipse"
                                 StrokeThickness="2">
-                                <VerticalStackLayout IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
+                                <VerticalStackLayout
+                                    Padding="5"
+                                    IsVisible="{Binding HasBeenVisited}"
+                                    VerticalOptions="Center">
                                     <Image
                                         HeightRequest="40"
                                         HorizontalOptions="Center"
