@@ -29,6 +29,9 @@ namespace FlagsRally.ViewModels
         }
 
         [ObservableProperty]
+        double _passportImageHeight;
+
+        [ObservableProperty]
         int _gridItemSpan = 2;
 
         public string PassportImageSourceString => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOrRegion().ToLower()}.png";

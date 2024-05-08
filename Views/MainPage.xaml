@@ -15,7 +15,7 @@
         <Image
             Grid.Row="0"
             Aspect="AspectFit"
-            HeightRequest="185"
+            HeightRequest="{Binding PassportImageHeight}"
             SemanticProperties.Description="dot net bot in a race car number eight"
             Source="{Binding PassportImageSourceString}" />
 
@@ -27,6 +27,7 @@
                 x:Name="collectionView"
                 Background="AntiqueWhite"
                 ItemsSource="{Binding DisplayArrivalLocationList}"
+                Scrolled="collectionView_Scrolled"
                 VerticalOptions="FillAndExpand">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
