@@ -9,7 +9,7 @@ namespace FlagsRally.Models;
 public record ArrivalLocation
 {
     public int Id { get; init; }
-    public string ArrivalDate { get; init; }
+    public DateTime ArrivalDate { get; init; }
     public string CountryCode { get; init; }
     public string CountryName { get; init; }
     public string CountryFlagSource { get; init; }

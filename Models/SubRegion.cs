@@ -10,12 +10,12 @@ namespace FlagsRally.Models;
 
 public class SubRegion
 {
-    public string ArrivalDate { get; set; }
+    public DateTime ArrivalDate { get; set; }
     public string Name { get; init; }
 
     public SubRegionCode Code { get; init; }
     public string FlagSource => GetFlagSource();
-    public bool HasBeenVisited => !string.IsNullOrEmpty(ArrivalDate);
+    public bool HasBeenVisited => !(ArrivalDate == DateTime.MinValue);
 
     private string GetFlagSource()
     {

@@ -78,13 +78,16 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             var blankInstance = blankAllSubregionList.Find(x => x.Code.lower5LetterRegionCode == SourceArrivalSubRegion.Code.lower5LetterRegionCode);
             if (blankInstance is null) throw new NullReferenceException("Fail to get blank SubRegion list by SubRegion Code");
 
-            if (blankInstance.ArrivalDate is null)
+            if (string.IsNullOrEmpty(blankInstance.ArrivalDate.ToString()))
             {
                 blankInstance.ArrivalDate = SourceArrivalSubRegion.ArrivalDate;
                 continue;
             }
 
-            blankInstance.ArrivalDate = blankInstance.ArrivalDate ?? Math.Max(int.Parse(blankInstance.ArrivalDate), int.Parse(SourceArrivalSubRegion.ArrivalDate)).ToString();
+            if (blankInstance.ArrivalDate < SourceArrivalSubRegion.ArrivalDate)
+            {
+                blankInstance.ArrivalDate = SourceArrivalSubRegion.ArrivalDate;
+            } 
         }
 
         return new ObservableCollection<SubRegion>(blankAllSubregionList.OrderByDescending(x => x.ArrivalDate).ToList());

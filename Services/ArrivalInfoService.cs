@@ -113,7 +113,7 @@ namespace FlagsRally.Services
             return new ArrivalLocation
             {
                 Id = arrivalInfo.Id,
-                ArrivalDate = arrivalInfo.ArrivalDate.ToString(),
+                ArrivalDate = arrivalInfo.ArrivalDate,
                 CountryCode = placemark.CountryCode,
                 CountryName = placemark.CountryName,
                 AdminAreaName = placemark.AdminArea,
@@ -140,7 +140,7 @@ namespace FlagsRally.Services
 
             return new SubRegion
             {
-                ArrivalDate = arrivalInfo.ArrivalDate.ToString(),
+                ArrivalDate = arrivalInfo.ArrivalDate,
                 Name = placemark.AdminArea,
                 Code = subRegionCode!,
             };
