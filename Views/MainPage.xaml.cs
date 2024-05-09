@@ -4,7 +4,7 @@ namespace FlagsRally.Views;
 
 public partial class MainPage : ContentPage
 {
-    private const double DEFAULT_PASSPORT_IMAGE_HEIGHT = 185;
+    private const double DEFAULT_PASSPORT_IMAGE_HEIGHT = 150;
     private readonly MainPageViewModel _mainPageViewModel;
     public MainPage(MainPageViewModel vm)
     {
