@@ -38,73 +38,57 @@
                             Margin="2"
                             BackgroundColor="Transparent"
                             Stroke="Black"
-                            StrokeShape="Ellipse"
+                            StrokeShape="RoundRectangle 20,20,20,20"
                             StrokeThickness="4">
-                            <Border
-                                Margin="2"
-                                Padding="15"
-                                BackgroundColor="Transparent"
-                                IsVisible="{Binding HasBeenVisited}"
-                                Stroke="Black"
-                                StrokeShape="Ellipse"
-                                StrokeThickness="2">
-                                <VerticalStackLayout IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
-                                    <Image
-                                        HeightRequest="40"
-                                        HorizontalOptions="Center"
-                                        Source="{Binding FlagSource}"
-                                        VerticalOptions="Center" />
+                            <VerticalStackLayout IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
+                                <Image
+                                    Margin="5"
+                                    HeightRequest="40"
+                                    HorizontalOptions="Center"
+                                    Source="{Binding FlagSource}"
+                                    VerticalOptions="Center" />
+                                <StackLayout BackgroundColor="Black">
                                     <Label
-                                        Padding="2,0"
-                                        FontAttributes="Bold"
+                                        Padding="2"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="20"
-                                        HorizontalOptions="Center"
+                                        HorizontalOptions="CenterAndExpand"
                                         LineBreakMode="MiddleTruncation"
                                         LineHeight="1"
                                         MaxLines="2"
                                         Text="{Binding Name}"
-                                        TextColor="{StaticResource Black}"
+                                        TextColor="{StaticResource White}"
                                         VerticalOptions="Center" />
-
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="Black"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="150"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="Medium"
-                                        HorizontalOptions="Center"
-                                        LineBreakMode="TailTruncation"
-                                        LineHeight="1"
-                                        Text="{Binding ArrivalDate, StringFormat='{0:dd  MMM  yyyy}'}"
-                                        TextColor="Red"
-                                        VerticalOptions="Center" />
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="Black"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="150"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontAutoScalingEnabled="True"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="35"
-                                        HorizontalOptions="Center"
-                                        LineBreakMode="NoWrap"
-                                        Text="ARRIVAL"
-                                        TextColor="{StaticResource Black}"
-                                        VerticalOptions="Center" />
-                                </VerticalStackLayout>
-                            </Border>
+                                </StackLayout>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontFamily="JerseyclubGrungeBold"
+                                    FontSize="Medium"
+                                    HorizontalOptions="Center"
+                                    LineBreakMode="TailTruncation"
+                                    LineHeight="1"
+                                    Text="{Binding ArrivalDate, StringFormat='{0:dd  MMM  yyyy}'}"
+                                    TextColor="Red"
+                                    VerticalOptions="Center" />
+                                <Line
+                                    HorizontalOptions="Center"
+                                    Stroke="Black"
+                                    StrokeThickness="2"
+                                    X1="0"
+                                    X2="150"
+                                    Y1="0"
+                                    Y2="0" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontAutoScalingEnabled="True"
+                                    FontFamily="JerseyclubGrungeBold"
+                                    FontSize="35"
+                                    HorizontalOptions="Center"
+                                    LineBreakMode="NoWrap"
+                                    Text="ARRIVAL"
+                                    TextColor="{StaticResource Black}"
+                                    VerticalOptions="Center" />
+                            </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
