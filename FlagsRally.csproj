@@ -217,12 +217,10 @@
 		<None Remove="Resources\Images\yamaguchi_emblem.png" />
 		<None Remove="Resources\Images\yamanashi_emblem.png" />
 	  <None Remove="Resources\RegionCode\jp.json" />
-	  <None Remove="Resources\RegionCode\us.json" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\RegionCode\jp.json" />
-	  <EmbeddedResource Include="Resources\RegionCode\us.json" />
 	</ItemGroup>
 
 	<ItemGroup>
