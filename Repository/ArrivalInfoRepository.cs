@@ -25,13 +25,13 @@ namespace FlagsRally.Repository
             await _conn.CreateTableAsync<ArrivalInfo>();
         }
 
-        public async Task Insert(ArrivalInfo arrivalInfo)
+        public async Task<int> Insert(ArrivalInfo arrivalInfo)
         {
 
             try
             {
                 await Init();
-                await _conn.InsertAsync(arrivalInfo);
+                return await _conn.InsertAsync(arrivalInfo);
             }
             catch (Exception ex)
             {

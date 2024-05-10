@@ -9,7 +9,7 @@ namespace FlagsRally.Repository
 {
     public interface IArrivalInfoRepository
     {
-        Task Insert(ArrivalInfo arrivalInfo);
+        Task<int> Insert(ArrivalInfo arrivalInfo);
         Task<List<ArrivalInfo>> GetAll();
         Task<List<ArrivalInfo>> GetAllByCountryCode(string countryCode);
     }

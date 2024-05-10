@@ -63,17 +63,17 @@ namespace FlagsRally.Services
             return arrivalInfoList.Select(x => JsonSerializer.Deserialize<Placemark>(x.Placemark).Location).ToList();
         }
 
-        public async Task Save(Placemark placemark)
+        public async Task<int> Save(Placemark placemark, DateTime currenTime)
         {
             var arrivalInfo = new ArrivalInfo
             {
-                ArrivalDate = DateTime.Now,
+                ArrivalDate = currenTime,
                 CountryCode = placemark.CountryCode,
                 AdminArea = placemark.AdminArea,
                 Placemark = JsonSerializer.Serialize(placemark),
             };
 
-            await _arrivalInfoRepository.Insert(arrivalInfo);
+            return await _arrivalInfoRepository.Insert(arrivalInfo);
         }
 
         public async Task<List<ArrivalLocation>> GetAllCountries()
@@ -143,6 +143,27 @@ namespace FlagsRally.Services
                 ArrivalDate = arrivalInfo.ArrivalDate,
                 Name = placemark.AdminArea,
                 Code = subRegionCode!,
+            };
+        }
+
+        public async Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync()
+        {
+            var arrivalInfoList = await _arrivalInfoRepository.GetAll();
+            return arrivalInfoList.Select(GetArrivalLocationPin).ToList();
+        }
+
+        private ArrivalLocationPin GetArrivalLocationPin(ArrivalInfo arrivalInfo)
+        {
+            var placemark = JsonSerializer.Deserialize<Placemark>(arrivalInfo.Placemark);
+            return new ArrivalLocationPin
+            {
+                Id = arrivalInfo.Id,
+                ArrivalDate = arrivalInfo.ArrivalDate,
+                PinLocation = new Location
+                {
+                    Latitude = placemark.Location.Latitude,
+                    Longitude = placemark.Location.Longitude,
+                }
             };
         }
     }
