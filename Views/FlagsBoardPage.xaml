@@ -52,7 +52,7 @@
                                     LineHeight="1"
                                     MaxLines="2"
                                     Text="{Binding Name}"
-                                    TextColor="LightGray"
+                                    TextColor="Gray"
                                     VerticalOptions="Center" />
                                 <VerticalStackLayout IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
                                     <Image
