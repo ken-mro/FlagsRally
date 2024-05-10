@@ -2,6 +2,7 @@
 using Microsoft.Maui.Devices.Sensors;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ namespace FlagsRally.Models;
 public class SubRegion
 {
     public DateTime ArrivalDate { get; set; }
+
+    public string ArrivalDateString => ArrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US"));
     public string Name { get; init; }
 
     public SubRegionCode Code { get; init; }

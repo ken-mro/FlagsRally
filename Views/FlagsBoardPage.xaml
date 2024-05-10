@@ -67,7 +67,7 @@
                                     HorizontalOptions="Center"
                                     LineBreakMode="TailTruncation"
                                     LineHeight="1"
-                                    Text="{Binding ArrivalDate, StringFormat='{0:dd  MMM  yyyy}'}"
+                                    Text="{Binding ArrivalDateString}"
                                     TextColor="Red"
                                     VerticalOptions="Center" />
                                 <Line
