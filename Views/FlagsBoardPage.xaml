@@ -57,7 +57,7 @@
                                         LineHeight="1"
                                         MaxLines="2"
                                         Text="{Binding Name}"
-                                        TextColor="{StaticResource White}"
+                                        TextColor="AntiqueWhite"
                                         VerticalOptions="Center" />
                                 </StackLayout>
                                 <Label
