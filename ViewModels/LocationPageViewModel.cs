@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Models;
 using FlagsRally.Services;
 using System.Collections.ObjectModel;
 
@@ -12,7 +13,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private bool _isCheckingLocation;
 
     [ObservableProperty]
-    ObservableCollection<Placemark> _positions;
+    ObservableCollection<ArrivalLocationPin> _positions;
 
     public LocationPageViewModel(IArrivalInfoService arrivalInfoService)
 	{
@@ -22,8 +23,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task init()
     {
-        var placemarks = await _arrivalInfoService.GetAllPlacemark();
-        Positions = new ObservableCollection<Placemark>(placemarks);
+        var arrivalLocationPins = await _arrivalInfoService.GetArrivalLocationPinsAsync();
+        Positions = new ObservableCollection<ArrivalLocationPin>(arrivalLocationPins);
     }
 
     [RelayCommand]
@@ -56,7 +57,18 @@ public partial class LocationPageViewModel : BaseViewModel
             var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\nSub admin area: {placemark?.SubAdminArea},\nAdmin area: {placemark?.AdminArea},\nCountry: {placemark?.CountryName}", "Yes", "No");
             if (result)
             {
-                await _arrivalInfoService.Save(placemark);
+                var currentTime = DateTime.Now;
+                var id = await _arrivalInfoService.Save(placemark, currentTime);
+                ArrivalLocationPin arrivalLocationPins = new () 
+                {
+                    Id = id,
+                    ArrivalDate = currentTime,
+                    PinLocation = new Location
+                    {
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude
+                    }
+                };
             }
         }
         // Catch one of the following exceptions:
