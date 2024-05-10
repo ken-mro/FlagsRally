@@ -69,6 +69,7 @@ public partial class LocationPageViewModel : BaseViewModel
                         Longitude = location.Longitude
                     }
                 };
+                Positions.Add(arrivalLocationPins);
             }
         }
         // Catch one of the following exceptions:
