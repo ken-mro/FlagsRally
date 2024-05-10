@@ -19,6 +19,7 @@ public class SubRegion
     public SubRegionCode Code { get; init; }
     public string FlagSource => GetFlagSource();
     public bool HasBeenVisited => !(ArrivalDate == DateTime.MinValue);
+    public bool HasNotBeenVisited => !HasBeenVisited;
 
     private string GetFlagSource()
     {
