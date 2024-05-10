@@ -21,25 +21,18 @@ namespace FlagsRally.Services
             _arrivalInfoRepository = arrivalInfoRepository;
             var countryHelper = new CountryHelper();
 
-
-            var names =
-                System
-                .Reflection
-                .Assembly
-                .GetExecutingAssembly()
-                .GetManifestResourceNames();
-
             var info = System.Reflection.Assembly.GetExecutingAssembly().GetName();
             using var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.RegionCode.jp.json");
             using var streamReader = new StreamReader(stream!, Encoding.UTF8);
             string jsonString = streamReader.ReadToEnd();
-
             var jaJpSubRegionDataList = JsonSerializer.Deserialize<List<SubRegionData>>(jsonString);
             var enJpSubRegionDataList = countryHelper.GetCountryByCode("JP").Regions.ConvertAll(x => new SubRegionData(x.Name, "JP-" + x.ShortCode));
             jaJpSubRegionDataList?.AddRange(enJpSubRegionDataList);
 
             var jpSubRegionDict = jaJpSubRegionDataList?.ToDictionary(x => x.Name, x => new SubRegionCode(x.Code));
-            var usSubRegionDict = countryHelper.GetCountryByCode("US").Regions.ToDictionary(x => x.Name, x => new SubRegionCode("US", x.ShortCode));
+            var usSubRegionDict = countryHelper.GetCountryByCode("US").Regions
+                .Where(x => !new[] { "AA", "AE", "AP", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode)).ToList()
+                .ToDictionary(x => x.Name, x => new SubRegionCode("US", x.ShortCode));
 
             _subRegionCodeMap.Add("JP", jpSubRegionDict!);
             _subRegionCodeMap.Add("US", usSubRegionDict);
@@ -125,7 +118,7 @@ namespace FlagsRally.Services
         public async Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode)
         {
             var arrivalInfoList = await _arrivalInfoRepository.GetAllByCountryCode(countryCode);
-             return arrivalInfoList.ConvertAll(GetSubRegion).ToList();
+             return arrivalInfoList.ConvertAll(GetSubRegion).Where(x => x.Code is not null).ToList();
         }
 
         private SubRegion GetSubRegion(ArrivalInfo arrivalInfo)
