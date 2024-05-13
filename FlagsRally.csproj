@@ -70,6 +70,8 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
+	  <None Remove="Resources\Geojson\countries.geojson" />
+	  <None Remove="Resources\Geojson\prefectures.geojson" />
 		<None Remove="Resources\Images\aichi_emblem.png" />
 		<None Remove="Resources\Images\akita_emblem.png" />
 		<None Remove="Resources\Images\aomori_emblem.png" />
@@ -220,6 +222,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Geojson\countries.geojson" />
+	  <EmbeddedResource Include="Resources\Geojson\prefectures.geojson" />
 	  <EmbeddedResource Include="Resources\RegionCode\jp.json" />
 	</ItemGroup>
 
