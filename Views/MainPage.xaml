@@ -151,13 +151,13 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-            <Picker
-                Title="Filter by Country"
-                HorizontalOptions="FillAndExpand"
-                ItemDisplayBinding="{Binding CountryName}"
-                ItemsSource="{Binding CountryList}"
-                SelectedItem="{Binding FilteredCountry}"
-                VerticalOptions="Center" />
+                <Picker
+                    Title="Filter by Country"
+                    HorizontalOptions="FillAndExpand"
+                    ItemDisplayBinding="{Binding CountryName}"
+                    ItemsSource="{Binding CountryList}"
+                    SelectedItem="{Binding FilteredCountry}"
+                    VerticalOptions="Center" />
                 <Image
                     Grid.Column="1"
                     Margin="5,0"
@@ -170,6 +170,21 @@
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
+            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
+                <Grid>
+                    <Label
+                        FontSize="16"
+                        HorizontalOptions="StartAndExpand"
+                        Text="No duplicate countries"
+                        VerticalOptions="Center" />
+                    <Switch
+                        Grid.Column="1"
+                        HeightRequest="10"
+                        HorizontalOptions="End"
+                        IsToggled="{Binding IsUnique}"
+                        ThumbColor="Gray" />
+                </Grid>
+            </VerticalStackLayout>
             <Button
                 Margin="5"
                 Command="{Binding ChangeRegionCommand}"

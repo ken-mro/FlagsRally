@@ -32,6 +32,10 @@ namespace FlagsRally.ViewModels
         bool _isSettingsVisible;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
+        bool _isUnique;
+
+        [ObservableProperty]
         double _passportImageHeight;
 
         [ObservableProperty]
@@ -90,8 +94,22 @@ namespace FlagsRally.ViewModels
             if (SourceArrivalLocationList is null)
                 return new ObservableCollection<ArrivalLocation>();
 
+            IEnumerable<ArrivalLocation> arrivalLocationList;
+            if (IsUnique && FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
+            {
+                var reversedList = SourceArrivalLocationList.Reverse();
+                arrivalLocationList = reversedList.GroupBy(x => x.CountryCode).Select(x => x.First());
+            }
+            else
+            {
+                arrivalLocationList = SourceArrivalLocationList.Reverse();
+            }
+
             if (string.IsNullOrEmpty(FilteredCountry?.CountryShortCode) || FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
-                return new ObservableCollection<ArrivalLocation>(SourceArrivalLocationList.Reverse());
+                return new ObservableCollection<ArrivalLocation>(arrivalLocationList.ToList());
+
+            return new ObservableCollection<ArrivalLocation>(arrivalLocationList.Where(x => x.CountryCode == FilteredCountry.CountryShortCode).ToList());
+        }
 
         [RelayCommand]
         void ChangeSettingsVisibility()
