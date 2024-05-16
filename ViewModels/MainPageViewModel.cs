@@ -29,6 +29,9 @@ namespace FlagsRally.ViewModels
         }
 
         [ObservableProperty]
+        bool _isSettingsVisible;
+
+        [ObservableProperty]
         double _passportImageHeight;
 
         [ObservableProperty]
@@ -90,7 +93,10 @@ namespace FlagsRally.ViewModels
             if (string.IsNullOrEmpty(FilteredCountry?.CountryShortCode) || FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
                 return new ObservableCollection<ArrivalLocation>(SourceArrivalLocationList.Reverse());
 
-            return new ObservableCollection<ArrivalLocation>(SourceArrivalLocationList.Where(x => x.CountryCode == FilteredCountry.CountryShortCode).Reverse());
+        [RelayCommand]
+        void ChangeSettingsVisibility()
+        {
+            IsSettingsVisible = !IsSettingsVisible;
         }
 
         [RelayCommand]

@@ -146,6 +146,11 @@
             </CollectionView>
         </RefreshView>
         <VerticalStackLayout Grid.Row="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
             <Picker
                 Title="Filter by Country"
                 HorizontalOptions="FillAndExpand"
@@ -153,6 +158,18 @@
                 ItemsSource="{Binding CountryList}"
                 SelectedItem="{Binding FilteredCountry}"
                 VerticalOptions="Center" />
+                <Image
+                    Grid.Column="1"
+                    Margin="5,0"
+                    HeightRequest="25"
+                    HorizontalOptions="EndAndExpand"
+                    Source="filter.png"
+                    VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </Grid>
             <Button
                 Margin="5"
                 Command="{Binding ChangeRegionCommand}"
