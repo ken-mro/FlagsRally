@@ -44,17 +44,13 @@ public partial class LocationPageViewModel : BaseViewModel
             IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(location);
             Placemark placemark = placemarks?.FirstOrDefault();
 
-#if DEBUG
-            if (placemark != null)
-            {
-                System.Diagnostics.Debug.WriteLine($"CountryCode:{placemark.CountryCode},\nCountryName:{placemark.CountryName}\nAdminArea:{placemark.AdminArea},\nSubAdminArea:{placemark.SubAdminArea},\nthoroughfare:{placemark.Thoroughfare},\nLocality:{placemark.Locality}");
-            }
-#endif
-
             if (placemark == null)
                 throw new Exception("Unable to get location");
 
-            var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\nSub admin area: {placemark?.SubAdminArea},\nAdmin area: {placemark?.AdminArea},\nCountry: {placemark?.CountryName}", "Yes", "No");
+            var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\n\n" +
+                                                            $"Country: {placemark?.CountryName}\n" +
+                                                            $"Admin area: {placemark?.AdminArea}\n" +
+                                                            $"Locality: {placemark?.Locality}", "Yes", "No");
             if (result)
             {
                 var currentTime = DateTime.Now;
@@ -93,5 +89,4 @@ public partial class LocationPageViewModel : BaseViewModel
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
     }
-
 }
