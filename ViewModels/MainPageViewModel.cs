@@ -32,6 +32,12 @@ namespace FlagsRally.ViewModels
         bool _isSettingsVisible;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(DateIsVisible))]
+        bool _dateIsNotVisible;
+ 
+        public bool DateIsVisible => !DateIsNotVisible;
+
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
         bool _isUnique;
 
@@ -44,7 +50,6 @@ namespace FlagsRally.ViewModels
         public string PassportImageSourceString => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOrRegion().ToLower()}.png";
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
         ObservableCollection<ArrivalLocation> _sourceArrivalLocationList;
 
         [ObservableProperty]
@@ -93,25 +98,25 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-            if (SourceArrivalLocationList is null)
-                return new ObservableCollection<ArrivalLocation>();
+                if (SourceArrivalLocationList is null)
+                    return new ObservableCollection<ArrivalLocation>();
 
-            IEnumerable<ArrivalLocation> arrivalLocationList;
-            if (IsUnique && FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
-            {
-                var reversedList = SourceArrivalLocationList.Reverse();
-                arrivalLocationList = reversedList.GroupBy(x => x.CountryCode).Select(x => x.First());
+                IEnumerable<ArrivalLocation> arrivalLocationList;
+                if (IsUnique && FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
+                {
+                    var reversedList = SourceArrivalLocationList.Reverse();
+                    arrivalLocationList = reversedList.GroupBy(x => x.CountryCode).Select(x => x.First());
+                }
+                else
+                {
+                    arrivalLocationList = SourceArrivalLocationList.Reverse();
+                }
+
+                if (string.IsNullOrEmpty(FilteredCountry?.CountryShortCode) || FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
+                    return new ObservableCollection<ArrivalLocation>(arrivalLocationList.ToList());
+
+                return new ObservableCollection<ArrivalLocation>(arrivalLocationList.Where(x => x.CountryCode == FilteredCountry.CountryShortCode).ToList());
             }
-            else
-            {
-                arrivalLocationList = SourceArrivalLocationList.Reverse();
-            }
-
-            if (string.IsNullOrEmpty(FilteredCountry?.CountryShortCode) || FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE)
-                return new ObservableCollection<ArrivalLocation>(arrivalLocationList.ToList());
-
-            return new ObservableCollection<ArrivalLocation>(arrivalLocationList.Where(x => x.CountryCode == FilteredCountry.CountryShortCode).ToList());
-        }
             catch (Exception ex)
             {
                 //To handle when FilteredCountry is null.

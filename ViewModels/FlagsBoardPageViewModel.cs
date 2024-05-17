@@ -39,9 +39,25 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     [ObservableProperty]
     ObservableCollection<Country> _countryList;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(SourceArrivalSubRegionList))]
     Country _filteredCountry;
+    public Country FilteredCountry
+    {
+        get => _filteredCountry;
+        set
+        {
+            SetProperty(ref _filteredCountry, value);
+            _ = Init();
+        }
+    }
+
+    [ObservableProperty]
+    bool _isSettingsVisible;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DateIsVisible))]
+    bool _dateIsNotVisible;
+
+    public bool DateIsVisible => !DateIsNotVisible;
 
     public ObservableCollection<SubRegion> DisplayFullSubRegionList => GetFilteredList();
 
@@ -102,5 +118,11 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         IsRefreshing = true;
         await Init();
         IsRefreshing = false;
-    } 
+    }
+
+    [RelayCommand]
+    void ChangeSettingsVisibility()
+    {
+        IsSettingsVisible = !IsSettingsVisible;
+    }
 }
