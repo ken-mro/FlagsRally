@@ -26,20 +26,6 @@
             IsShowingUser="True"
             IsZoomEnabled="True"
             ItemsSource="{Binding Positions}">
-            <x:Arguments>
-                <maps:MapSpan>
-                    <x:Arguments>
-                        <sensors:Location>
-                            <x:Arguments>
-                                <x:Double>46.22667333333333</x:Double>
-                                <x:Double>6.140291666666666</x:Double>
-                            </x:Arguments>
-                        </sensors:Location>
-                        <x:Double>0.01</x:Double>
-                        <x:Double>0.01</x:Double>
-                    </x:Arguments>
-                </maps:MapSpan>
-            </x:Arguments>
             <maps:Map.ItemTemplate>
                 <DataTemplate x:DataType="models:ArrivalLocationPin">
                     <maps:Pin Label="{Binding ArrivalDateString}" Location="{Binding PinLocation}" />

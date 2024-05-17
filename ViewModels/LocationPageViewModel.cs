@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
 using FlagsRally.Services;
+using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels;
@@ -11,6 +12,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly IArrivalInfoService _arrivalInfoService;
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
+    public Microsoft.Maui.Controls.Maps.Map ArrivalMap;
 
     [ObservableProperty]
     ObservableCollection<ArrivalLocationPin> _positions;
@@ -25,6 +27,28 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         var arrivalLocationPins = await _arrivalInfoService.GetArrivalLocationPinsAsync();
         Positions = new ObservableCollection<ArrivalLocationPin>(arrivalLocationPins);
+        try
+        {
+            IsBusy = true;
+            _isCheckingLocation = true;
+
+            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
+            MapSpan mapSpan = new MapSpan(location, 0.01, 0.01);
+            ArrivalMap.MoveToRegion(mapSpan);
+        }
+        catch (Exception ex)
+        {
+            // Unable to get location
+            Location location = new Location(46.22667333333333, 6.140291666666666);
+            MapSpan mapSpan = new MapSpan(location, 0.01, 0.01);
+            ArrivalMap.MoveToRegion(mapSpan);
+
+        }
+        finally
+        {
+            IsBusy = false;
+            _isCheckingLocation = false;
+        }
     }
 
     [RelayCommand]
