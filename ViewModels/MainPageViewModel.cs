@@ -69,6 +69,7 @@ namespace FlagsRally.ViewModels
         private async Task Init()
         {
             var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalInfoService.GetAllCountries());
+            SourceArrivalLocationList = sourceArrivalLocationList;
 
             var countryCodeList = sourceArrivalLocationList.Select(x => x.CountryCode).Distinct().ToList();
 
@@ -83,14 +84,15 @@ namespace FlagsRally.ViewModels
             };
 
             countryList.AddRange(countryCodeList.ConvertAll(_countryHelper.GetCountryByCode).OrderBy(x => x.CountryName));
+
             CountryList = new ObservableCollection<Country>(countryList);
             FilteredCountry = CountryList.First(x => x.CountryShortCode == filteredCountryCode);
-
-            SourceArrivalLocationList = sourceArrivalLocationList;
         }
 
         private ObservableCollection<ArrivalLocation> GetFilteredList()
         {
+            try
+            {
             if (SourceArrivalLocationList is null)
                 return new ObservableCollection<ArrivalLocation>();
 
@@ -109,6 +111,13 @@ namespace FlagsRally.ViewModels
                 return new ObservableCollection<ArrivalLocation>(arrivalLocationList.ToList());
 
             return new ObservableCollection<ArrivalLocation>(arrivalLocationList.Where(x => x.CountryCode == FilteredCountry.CountryShortCode).ToList());
+        }
+            catch (Exception ex)
+            {
+                //To handle when FilteredCountry is null.
+            }
+
+            return new ObservableCollection<ArrivalLocation>();
         }
 
         [RelayCommand]
