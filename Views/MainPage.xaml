@@ -203,7 +203,7 @@
                         Padding="5"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
-                        Text="Hide month and date"
+                        Text="Hide date and month"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
