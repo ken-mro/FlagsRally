@@ -182,7 +182,10 @@
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
-            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
+            <VerticalStackLayout
+                Grid.ColumnSpan="2"
+                IsVisible="{Binding IsSettingsVisible}"
+                Spacing="10">
                 <Grid>
                     <Label
                         Padding="5"
@@ -192,7 +195,7 @@
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
-                        Margin="10,0"
+                        Margin="20,0"
                         HeightRequest="10"
                         HorizontalOptions="End"
                         IsToggled="{Binding IsUnique}"
@@ -207,7 +210,7 @@
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
-                        Margin="10,0"
+                        Margin="20,0"
                         HeightRequest="10"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
