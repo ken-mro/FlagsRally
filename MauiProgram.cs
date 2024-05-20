@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Maui;
 ﻿using CommunityToolkit.Maui.Maps;
 using FlagsRally.Repository;
 using FlagsRally.Services;
@@ -14,6 +15,7 @@ namespace FlagsRally
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
 #if ANDROID || IOS
                 .UseMauiMaps()
 #elif WINDOWS
