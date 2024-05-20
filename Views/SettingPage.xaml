@@ -5,8 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel">
-    <VerticalStackLayout Padding="10">
+    <VerticalStackLayout Padding="15" Spacing="10">
         <Label
+            Padding="5,0"
+            FontAttributes="Bold"
+            FontSize="Body"
             HorizontalOptions="Start"
             Text="Country of Residence"
             VerticalOptions="Center" />
@@ -16,10 +19,10 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Image
-            Aspect="AspectFit"
-            HeightRequest="50"
-            HorizontalOptions="Start"
-            Source="{Binding ImageSourceString}">
+                Aspect="AspectFit"
+                HeightRequest="50"
+                HorizontalOptions="Start"
+                Source="{Binding ImageSourceString}">
                 <Image.IsVisible>
                     <OnPlatform x:TypeArguments="x:Boolean">
                         <On Platform="iOS">True</On>
@@ -30,9 +33,9 @@
                 </Image.IsVisible>
             </Image>
             <Label
-            FontSize="50"
-            HorizontalOptions="Start"
-            Text="{Binding SelectedCountry.CountryFlag}">
+                FontSize="50"
+                HorizontalOptions="Start"
+                Text="{Binding SelectedCountry.CountryFlag}">
                 <Label.IsVisible>
                     <OnPlatform x:TypeArguments="x:Boolean">
                         <On Platform="iOS">True</On>
@@ -43,12 +46,66 @@
                 </Label.IsVisible>
             </Label>
             <Picker
-                Grid.Column="1"
                 Title="Country of Residence"
+                Grid.Column="1"
+                FontAttributes="Bold"
+                FontSize="Medium"
                 ItemDisplayBinding="{Binding CountryName}"
                 ItemsSource="{Binding CountryList}"
                 SelectedItem="{Binding SelectedCountry}"
                 VerticalOptions="Center" />
         </Grid>
+        <Line
+            Margin="5,0"
+            HorizontalOptions="FillAndExpand"
+            Stroke="Gray"
+            VerticalOptions="EndAndExpand"
+            X1="0"
+            X2="350"
+            Y1="0"
+            Y2="0" />
+        <Label
+            Padding="5,0"
+            FontAttributes="Bold"
+            FontSize="Body"
+            HorizontalOptions="Start"
+            Text="Backup"
+            VerticalOptions="Center" />
+        <Button
+            Margin="10,0"
+            Command="{Binding CreateBackUpCommand}"
+            HorizontalOptions="End"
+            Text="Create backup"
+            VerticalOptions="Center" />
+        <Line
+            Margin="5,0"
+            HorizontalOptions="FillAndExpand"
+            Stroke="Gray"
+            VerticalOptions="EndAndExpand"
+            X1="0"
+            X2="350"
+            Y1="0"
+            Y2="0" />
+        <Label
+            Padding="5,0"
+            FontAttributes="Bold"
+            FontSize="Body"
+            HorizontalOptions="Start"
+            Text="Restore"
+            VerticalOptions="Center" />
+        <Label
+            Padding="10,0"
+            FontAttributes="Bold"
+            FontSize="Small"
+            HorizontalOptions="Start"
+            Text="If you have used this app on a previous device, please make sure to restore the backup before using it again."
+            TextColor="Red"
+            VerticalOptions="Center" />
+        <Button
+            Margin="10,0"
+            Command="{Binding RestoreBackUpCommand}"
+            HorizontalOptions="End"
+            Text="Restore backup"
+            VerticalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>
