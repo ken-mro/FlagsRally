@@ -188,7 +188,7 @@
                 Spacing="10">
                 <Grid>
                     <Label
-                        Padding="5"
+                        Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
                         Text="No duplicate countries"
@@ -200,10 +200,20 @@
                         HorizontalOptions="End"
                         IsToggled="{Binding IsUnique}"
                         ThumbColor="Gray" />
+
                 </Grid>
+                    <Line
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="EndAndExpand"
+                    Margin="5,0"
+                    Stroke="Gray"
+                    X1="0"
+                    X2="350"
+                    Y1="0"
+                    Y2="0" />
                 <Grid>
                     <Label
-                        Padding="5"
+                        Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
                         Text="Hide date and month"
