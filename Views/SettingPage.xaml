@@ -55,15 +55,12 @@
                 SelectedItem="{Binding SelectedCountry}"
                 VerticalOptions="Center" />
         </Grid>
-        <Line
-            Margin="5,0"
+        <BoxView
+            Margin="5"
+            HeightRequest="1"
             HorizontalOptions="FillAndExpand"
-            Stroke="Gray"
-            VerticalOptions="EndAndExpand"
-            X1="0"
-            X2="350"
-            Y1="0"
-            Y2="0" />
+            VerticalOptions="CenterAndExpand"
+            Color="Gray" />
         <Label
             Padding="5,0"
             FontAttributes="Bold"
@@ -77,15 +74,12 @@
             HorizontalOptions="End"
             Text="Create backup"
             VerticalOptions="Center" />
-        <Line
-            Margin="5,0"
+        <BoxView
+            Margin="5"
+            HeightRequest="1"
             HorizontalOptions="FillAndExpand"
-            Stroke="Gray"
-            VerticalOptions="EndAndExpand"
-            X1="0"
-            X2="350"
-            Y1="0"
-            Y2="0" />
+            VerticalOptions="CenterAndExpand"
+            Color="Gray" />
         <Label
             Padding="5,0"
             FontAttributes="Bold"

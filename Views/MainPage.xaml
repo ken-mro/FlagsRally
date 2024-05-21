@@ -202,15 +202,12 @@
                         ThumbColor="Gray" />
 
                 </Grid>
-                    <Line
+                <BoxView
+                    Margin="5"
+                    HeightRequest="1"
                     HorizontalOptions="FillAndExpand"
-                    VerticalOptions="EndAndExpand"
-                    Margin="5,0"
-                    Stroke="Gray"
-                    X1="0"
-                    X2="350"
-                    Y1="0"
-                    Y2="0" />
+                    VerticalOptions="CenterAndExpand"
+                    Color="Gray" />
                 <Grid>
                     <Label
                         Padding="5,0"
