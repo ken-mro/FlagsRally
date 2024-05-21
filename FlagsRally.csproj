@@ -77,6 +77,7 @@
 		<None Remove="Resources\Images\chiba_emblem.png" />
 		<None Remove="Resources\Images\earth_noised.png" />
 		<None Remove="Resources\Images\ehime_emblem.png" />
+		<None Remove="Resources\Images\eraser.png" />
 		<None Remove="Resources\Images\filter.png" />
 	  <None Remove="Resources\Images\flag.png" />
 		<None Remove="Resources\Images\fukui_emblem.png" />
