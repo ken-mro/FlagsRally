@@ -12,20 +12,24 @@ namespace FlagsRally.ViewModels
     {
         private readonly SettingsPreferences _settingsPreferences;
         private readonly IArrivalInfoService _arrivalInfoService;
+        private readonly IArrivalInfoRepository _arrivalInfoRepository;
         private readonly CountryHelper _countryHelper;
         private const string ALL_COUNTRY_CODE = "All";
         private const string ALL_COUNTRY_NAME = "All Countries";
 
-        public MainPageViewModel(SettingsPreferences settingPreferences, IArrivalInfoService arrivalInfoService)
+        public MainPageViewModel(SettingsPreferences settingPreferences, IArrivalInfoService arrivalInfoService, IArrivalInfoRepository arrivalInfoRepository)
         {
+            IsBusy = true;
             Title = "Main Page";
 
             _settingsPreferences = settingPreferences;
             _settingsPreferences.PropertyChanged += (s, e) => OnPropertyChanged(nameof(PassportImageSourceString));
             _arrivalInfoService = arrivalInfoService;
+            _arrivalInfoRepository = arrivalInfoRepository;
             _countryHelper = new CountryHelper();
 
             _ = Init();
+            IsBusy = false;
         }
 
         [ObservableProperty]
@@ -73,25 +77,32 @@ namespace FlagsRally.ViewModels
 
         private async Task Init()
         {
-            var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalInfoService.GetAllCountries());
-            SourceArrivalLocationList = sourceArrivalLocationList;
-
-            var countryCodeList = sourceArrivalLocationList.Select(x => x.CountryCode).Distinct().ToList();
-
-            var filteredCountryCode = FilteredCountry?.CountryShortCode ?? ALL_COUNTRY_CODE;
-            var countryList = new List<Country>()
+            try
             {
-                new Country()
+                var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalInfoService.GetAllCountries());
+                SourceArrivalLocationList = sourceArrivalLocationList;
+
+                var countryCodeList = sourceArrivalLocationList.Select(x => x.CountryCode).Distinct().ToList();
+
+                var filteredCountryCode = FilteredCountry?.CountryShortCode ?? ALL_COUNTRY_CODE;
+                var countryList = new List<Country>()
                 {
-                    CountryName = ALL_COUNTRY_NAME,
-                    CountryShortCode = ALL_COUNTRY_CODE
-                }
-            };
+                    new Country()
+                    {
+                        CountryName = ALL_COUNTRY_NAME,
+                        CountryShortCode = ALL_COUNTRY_CODE
+                    }
+                };
 
-            countryList.AddRange(countryCodeList.ConvertAll(_countryHelper.GetCountryByCode).OrderBy(x => x.CountryName));
+                countryList.AddRange(countryCodeList.ConvertAll(_countryHelper.GetCountryByCode).OrderBy(x => x.CountryName));
 
-            CountryList = new ObservableCollection<Country>(countryList);
-            FilteredCountry = CountryList.First(x => x.CountryShortCode == filteredCountryCode);
+                CountryList = new ObservableCollection<Country>(countryList);
+                FilteredCountry = CountryList.First(x => x.CountryShortCode == filteredCountryCode);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
         private ObservableCollection<ArrivalLocation> GetFilteredList()
@@ -149,6 +160,25 @@ namespace FlagsRally.ViewModels
             else
             {
                 SelectedRegion = "Country";
+            }
+        }
+
+        [RelayCommand]
+        async Task DeleteArrivalLocationAsync(ArrivalLocation arrivalLocation)
+        {
+            try
+            {
+                IsBusy = true;
+                await _arrivalInfoRepository.DeleteAsync(arrivalLocation.Id);
+                await Init();
+            }
+            catch(Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
     }
