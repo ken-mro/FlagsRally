@@ -12,5 +12,6 @@ namespace FlagsRally.Repository
         Task<int> Insert(ArrivalInfo arrivalInfo);
         Task<List<ArrivalInfo>> GetAll();
         Task<List<ArrivalInfo>> GetAllByCountryCode(string countryCode);
+        Task<int> DeleteAsync(int Id);
     }
 }

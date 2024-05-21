@@ -60,5 +60,10 @@ namespace FlagsRally.Repository
             throw new ArgumentException("Country Code only has 2 letters");
             return await _conn.Table<ArrivalInfo>().Where(ai => ai.CountryCode == countryCode).ToListAsync();
         }
+
+        public async Task<int> DeleteAsync(int Id)
+        {
+            return await _conn.Table<ArrivalInfo>().Where(ai => ai.Id == Id).DeleteAsync();
+        }
     }
 }
