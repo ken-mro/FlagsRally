@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Maui;
-﻿using CommunityToolkit.Maui.Maps;
+using CommunityToolkit.Maui.Maps;
 using FlagsRally.Repository;
 using FlagsRally.Services;
 using FlagsRally.ViewModels;
@@ -26,6 +26,10 @@ namespace FlagsRally
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("JerseyclubGrungeBold-JRXVK.otf", "JerseyclubGrungeBold");
+                })
+                .ConfigureEssentials(essentials =>
+                {
+                    essentials.UseMapServiceToken("PASTE-YOUR-API-KEY-HERE");
                 });
 
             builder.Services.AddSingleton<IArrivalInfoRepository, ArrivalInfoRepository>();
