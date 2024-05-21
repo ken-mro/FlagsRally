@@ -218,7 +218,7 @@
 
                 </Grid>
                 <BoxView
-                    Margin="5"
+                    Margin="5,0"
                     HeightRequest="1"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="CenterAndExpand"
