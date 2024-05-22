@@ -13,7 +13,7 @@ namespace FlagsRally.Converters
 
             if (!string.IsNullOrEmpty(text) && text.ContainsJapaneseCharacters())
             {
-                fontFamily = "KouzanMouhituFontOTF";
+                fontFamily = "aoyagireisyosimo";
             }
 
             return fontFamily;
@@ -21,18 +21,7 @@ namespace FlagsRally.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public static class StringExtensions
-    {
-        public static bool ContainsJapaneseCharacters(this string text)
-        {
-            // Check if the text contains any Japanese characters
-            // You can implement your own logic here
-            // This is just a placeholder implementation
-            return Regex.IsMatch(text, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]+");
+            return "JerseyclubGrungeBold";
         }
     }
 }
