@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FlagsRally.Models
 {
-    public class SubRegionCode
+    public record SubRegionCode
     {
         public string lower5LetterRegionCode { get; init; }
         public SubRegionCode(string fiveLetterRegionCode)
