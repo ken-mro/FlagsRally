@@ -3,12 +3,13 @@
     x:Class="FlagsRally.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-    x:DataType="viewmodels:MainPageViewModel"
-    xmlns:converters="clr-namespace:FlagsRally.Converters">
+    x:DataType="viewmodels:MainPageViewModel">
     <ContentPage.Resources>
         <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+        <converters:FontSizeConverter x:Key="FontSizeConverter" />
     </ContentPage.Resources>
     <Grid Padding="5" RowSpacing="10">
         <Grid.RowDefinitions>
@@ -90,7 +91,7 @@
                                             Padding="2,0"
                                             FontAttributes="Bold"
                                             FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
-                                            FontSize="20"
+                                            FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
                                             HorizontalOptions="Center"
                                             IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
                                             LineBreakMode="MiddleTruncation"
@@ -103,7 +104,7 @@
                                             Padding="2,0"
                                             FontAttributes="Bold"
                                             FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
-                                            FontSize="20"
+                                            FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
                                             HorizontalOptions="Center"
                                             IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
                                             LineBreakMode="MiddleTruncation"
