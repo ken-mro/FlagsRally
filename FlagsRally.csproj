@@ -363,8 +363,4 @@
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_46.png" />
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_47.png" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Converter\" />
-	</ItemGroup>
 </Project>
