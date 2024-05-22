@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Models;
+using FlagsRally.Repository;
 using FlagsRally.Services;
 using System.Collections.ObjectModel;
 
@@ -10,13 +11,16 @@ namespace FlagsRally.ViewModels;
 public partial class FlagsBoardPageViewModel : BaseViewModel
 {
     private readonly IArrivalInfoService _arrivalInfoService;
+    private readonly SettingsPreferences _settingsPreferences;
 
 
-    public FlagsBoardPageViewModel(IArrivalInfoService arrivalInfoService)
+    public FlagsBoardPageViewModel(IArrivalInfoService arrivalInfoService, SettingsPreferences settingsPreferences)
     {
         Title = "Flags Board";
 
         _arrivalInfoService = arrivalInfoService;
+        _settingsPreferences = settingsPreferences;
+
         var countryHelper = new CountryHelper();
         CountryList = new ObservableCollection<Country>()
         {
@@ -89,13 +93,41 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     private ObservableCollection<SubRegion> GetFilteredList()
     {
         var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry.CountryShortCode);
-        var blankAllSubregionList = countryInfo.Regions
-            .Where(x => !new[] { "AA", "AE", "AP", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode))
-            .OrderBy(x => x.ShortCode).Select(x => new SubRegion
+
+        List<SubRegion> blankAllSubregionList;
+        if (countryInfo.CountryShortCode == "US")
         {
-            Name = x.Name,
-            Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
-        }).ToList();
+            blankAllSubregionList = countryInfo.Regions
+                .Where(x => !new[] { "AA", "AE", "AP", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode))
+                .OrderBy(x => x.ShortCode).Select(x => new SubRegion
+                {
+                Name = x.Name,
+                Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
+            }).ToList();
+        }
+        else if (countryInfo.CountryShortCode == "JP")
+        {
+            var regionName = _settingsPreferences.GetCountryOrRegion();
+            blankAllSubregionList = countryInfo.Regions
+            .OrderBy(x => x.ShortCode).Select(x => 
+            {
+                var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
+                return new SubRegion
+                {
+                    Name = regionName == "JP" ? _arrivalInfoService.GetJaSubregionName(code) : x.Name,
+                    Code = code
+                };
+            }).ToList();
+        }
+        else
+        {
+            blankAllSubregionList = countryInfo.Regions
+            .OrderBy(x => x.ShortCode).Select(x => new SubRegion
+            {
+                Name = x.Name,
+                Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
+            }).ToList();
+        }
 
         foreach (var SourceArrivalSubRegion in SourceArrivalSubRegionList)
         {
