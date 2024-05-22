@@ -80,14 +80,12 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-            throw;
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
         }
         finally
         {
             IsBusy = false;
         }
-
     }
 
     private ObservableCollection<SubRegion> GetFilteredList()
