@@ -159,5 +159,11 @@ namespace FlagsRally.Services
                 }
             };
         }
+
+        public string GetJaSubregionName(SubRegionCode subRegionCode)
+        {
+            var key = _subRegionCodeMap["JP"].FirstOrDefault(x => x.Value == subRegionCode).Key;
+            return key;
+        }
     }
 }

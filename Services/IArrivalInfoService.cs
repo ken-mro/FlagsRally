@@ -16,5 +16,6 @@ namespace FlagsRally.Services
         Task<List<ArrivalLocation>> GetAllCountries();
         Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode);
         Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync();
+        string GetJaSubregionName(SubRegionCode subRegionCode);
     }
 }
