@@ -26,6 +26,8 @@ namespace FlagsRally
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("JerseyclubGrungeBold-JRXVK.otf", "JerseyclubGrungeBold");
+                    fonts.AddFont("KouzanMouhituFontOTF.otf", "KouzanMouhituFontOTF");
+                    fonts.AddFont("aoyagireisyosimo_otf_2_01.otf", "aoyagireisyosimo");
                 })
                 .ConfigureEssentials(essentials =>
                 {

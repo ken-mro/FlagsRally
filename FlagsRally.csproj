@@ -69,7 +69,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\aoyagireisyosimo_otf_2_01.otf" />
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
+	  <None Remove="Resources\Fonts\KouzanMouhituFontOTF.otf" />
 		<None Remove="Resources\Images\aichi_emblem.png" />
 		<None Remove="Resources\Images\akita_emblem.png" />
 		<None Remove="Resources\Images\aomori_emblem.png" />
@@ -360,5 +362,9 @@
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_45.png" />
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_46.png" />
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_47.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Converter\" />
 	</ItemGroup>
 </Project>
