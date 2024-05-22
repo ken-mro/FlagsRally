@@ -83,12 +83,12 @@ namespace FlagsRally.Services
             string countryFlagSource;
 
 #if WINDOWS
-            countryFlagSource = $"https://flagcdn.com/160x120/{placemark.CountryCode}.png";
+            countryFlagSource = $"https://flagcdn.com/160x120/{placemark.CountryCode.ToLower()}.png";
 #else
             countryFlagSource =  countryHelper.GetCountryEmojiFlag(arrivalInfo.CountryCode);
 #endif
 
-            string adminAreaFlagSource = "Image/earth.png";
+            string adminAreaFlagSource = "earth.png";
             _subRegionCodeMap.TryGetValue(placemark!.CountryCode, out var usSubRegionDict);
             
             if (placemark.CountryCode == "US")
@@ -100,7 +100,7 @@ namespace FlagsRally.Services
             else if (placemark.CountryCode == "JP")
             {
                 usSubRegionDict!.TryGetValue(placemark.AdminArea, out var subRegionCode);
-                adminAreaFlagSource = $"Images/PrefectureFlags/{subRegionCode?.GetImageResourceString()}.png";
+                adminAreaFlagSource = $"{subRegionCode?.GetImageResourceString()}.png";
             }
 
             return new ArrivalLocation

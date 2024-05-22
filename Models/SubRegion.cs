@@ -29,7 +29,7 @@ public class SubRegion
         }
         else if (Code.lower5LetterRegionCode[0..2] == "jp")
         {
-            return $"Images/PrefectureEmblems/{Code.GetImageResourceString()}_emblem.png";
+            return $"{Code.GetImageResourceString()}_emblem.png";
         }
         else
         {
