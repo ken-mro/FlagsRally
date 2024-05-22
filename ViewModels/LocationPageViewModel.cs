@@ -1,9 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Services;
 using Microsoft.Maui.Maps;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace FlagsRally.ViewModels;
 
@@ -65,8 +68,50 @@ public partial class LocationPageViewModel : BaseViewModel
             var cancelTokenSource = new CancellationTokenSource();
             Location location = await Geolocation.Default.GetLocationAsync(request, cancelTokenSource.Token);
 
+            Placemark? placemark = null;
+
+#if WINDOWS
+            string bingMapsKey = "PASTE-YOUR-API-KEY-HERE"; // Replace with your Bing Maps Key
+            string requestUrl = $"http://dev.virtualearth.net/REST/v1/Locations/{location.Latitude},{location.Longitude}?o=json&key={bingMapsKey}";
+            using (WebClient webClient = new WebClient())
+            {
+                string response = webClient.DownloadString(requestUrl);
+                dynamic jsonResponse = JsonConvert.DeserializeObject(response);
+                if (jsonResponse != null && jsonResponse.resourceSets != null && jsonResponse.resourceSets.Count > 0)
+                {
+                    var resources = jsonResponse.resourceSets[0].resources;
+                    
+                    if (resources != null && resources.Count > 0)
+                    {
+                        var acquiredlocation = resources[0];
+                        var countryName = acquiredlocation.address.countryRegion;
+
+                        var countryHelper = new CountryHelper();
+                        var countryList = countryHelper.GetCountryData();
+                        var countryCode = countryList.Where(x => x.CountryName == countryName.ToString()).FirstOrDefault().CountryShortCode;
+
+                        placemark = new Placemark
+                        {
+                            CountryCode = countryCode,
+                            CountryName = acquiredlocation.address.countryRegion,
+                            AdminArea = acquiredlocation.address.adminDistrict,
+                            Locality = acquiredlocation.address.locality,
+                            PostalCode = acquiredlocation.address.postalCode,
+                            Thoroughfare = acquiredlocation.address.addressLine,
+                            FeatureName = acquiredlocation.name,
+                            Location = location
+                        };
+                    }
+                }
+                else
+                {
+                    throw new Exception("Unable to get location");
+                }
+            }
+#else
             IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(location);
-            Placemark placemark = placemarks?.FirstOrDefault();
+            placemark = placemarks?.FirstOrDefault();
+#endif
 
             if (placemark == null)
                 throw new Exception("Unable to get location");
