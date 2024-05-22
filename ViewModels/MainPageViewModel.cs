@@ -19,7 +19,6 @@ namespace FlagsRally.ViewModels
 
         public MainPageViewModel(SettingsPreferences settingPreferences, IArrivalInfoService arrivalInfoService, IArrivalInfoRepository arrivalInfoRepository)
         {
-            IsBusy = true;
             Title = "Main Page";
 
             _settingsPreferences = settingPreferences;
@@ -29,7 +28,6 @@ namespace FlagsRally.ViewModels
             _countryHelper = new CountryHelper();
 
             _ = Init();
-            IsBusy = false;
         }
 
         [ObservableProperty]
@@ -79,6 +77,7 @@ namespace FlagsRally.ViewModels
         {
             try
             {
+                IsBusy = true;
                 var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalInfoService.GetAllCountries());
                 SourceArrivalLocationList = sourceArrivalLocationList;
 
@@ -102,6 +101,10 @@ namespace FlagsRally.ViewModels
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

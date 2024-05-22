@@ -68,6 +68,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     {
         try
         {
+            IsBusy = true;
             if (FilteredCountry == null) return;
 
             var subRegionList = await _arrivalInfoService.GetSubRegionsByCountryCode(_filteredCountry.CountryShortCode);
@@ -77,6 +78,10 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         {
             System.Diagnostics.Debug.WriteLine(ex.Message);
             throw;
+        }
+        finally
+        {
+            IsBusy = false;
         }
 
     }

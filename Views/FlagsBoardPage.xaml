@@ -160,11 +160,10 @@
             </CollectionView>
         </RefreshView>
         <ActivityIndicator
-            Grid.Row="2"
-            Grid.ColumnSpan="2"
-            HorizontalOptions="Center"
+            Grid.Row="0"
+            HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            VerticalOptions="Center" />
+            Color="Gray" />
     </Grid>
 </ContentPage>
