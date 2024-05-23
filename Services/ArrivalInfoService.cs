@@ -165,5 +165,11 @@ namespace FlagsRally.Services
             var key = _subRegionCodeMap["JP"].FirstOrDefault(x => x.Value == subRegionCode).Key;
             return key;
         }
+
+        public string GetUsSubregionName(SubRegionCode subRegionCode)
+        {
+            var key = _subRegionCodeMap["US"].FirstOrDefault(x => x.Value == subRegionCode).Key;
+            return key;
+        }
     }
 }

@@ -115,7 +115,23 @@ public partial class LocationPageViewModel : BaseViewModel
 
             if (placemark == null)
                 throw new Exception("Unable to get location");
-
+            
+#if IOS || MACCATALYST
+            // placemark.AdminArea returns region code in US instead of admin area name.
+            if (placemark.CountryCode == "US")
+            {
+                try
+                {
+                    var subRegionCode = new SubRegionCode(placemark.CountryCode, placemark.AdminArea);
+                    var adminAreaName = _arrivalInfoService.GetUsSubregionName(subRegionCode);
+                    placemark.AdminArea = adminAreaName;
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing
+                }
+            }
+#endif
             var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\n\n" +
                                                             $"Country: {placemark?.CountryName}\n" +
                                                             $"Admin area: {placemark?.AdminArea}\n" +
