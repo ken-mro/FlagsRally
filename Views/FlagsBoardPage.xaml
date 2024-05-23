@@ -9,7 +9,7 @@
     Title="{Binding Title}"
     x:DataType="viewmodels:FlagsBoardPageViewModel">
     <ContentPage.Resources>
-        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+        <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
     </ContentPage.Resources>
     <Grid Padding="10" RowSpacing="10">
         <Grid.RowDefinitions>
@@ -81,8 +81,8 @@
                             <StackLayout>
                                 <Label
                                     Padding="2"
-                                    FontFamily="{Binding Name, Converter={StaticResource FontFamilyConverter}}"
-                                    FontSize="20"
+                                    FontFamily="KiwiMaru-Medium"
+                                    FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
                                     HeightRequest="134.48"
                                     HorizontalOptions="CenterAndExpand"
                                     IsVisible="{Binding HasNotBeenVisited}"
@@ -102,8 +102,8 @@
                                     <StackLayout BackgroundColor="Black">
                                         <Label
                                             Padding="2"
-                                            FontFamily="{Binding Name, Converter={StaticResource FontFamilyConverter}}"
-                                            FontSize="20"
+                                            FontFamily="KiwiMaru-Medium"
+                                            FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
                                             HorizontalOptions="CenterAndExpand"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"

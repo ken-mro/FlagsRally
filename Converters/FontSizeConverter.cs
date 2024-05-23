@@ -11,11 +11,11 @@ namespace FlagsRally.Converters
             int ratio;
             if (text.ContainsJapaneseCharacters())
             {
-                return Math.Min(20, 20 * (8 / text.Length));
+                return Math.Min(20, 20 * 8 / text.Length);
             }
             else
             {
-                return Math.Min(20, 20 * (23 / text.Length));
+                return Math.Min(20, 20 * 23 / text.Length);
             } 
         }
 

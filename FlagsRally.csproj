@@ -70,9 +70,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Fonts\aoyagireisyosimo_otf_2_01.otf" />
+	  <None Remove="Resources\Fonts\craftmincho.otf" />
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
-	  <None Remove="Resources\Fonts\KouzanMouhituFontOTF.otf" />
+	  <None Remove="Resources\Fonts\KiwiMaru-Medium.ttf" />
 		<None Remove="Resources\Images\aichi_emblem.png" />
 		<None Remove="Resources\Images\akita_emblem.png" />
 		<None Remove="Resources\Images\aomori_emblem.png" />
