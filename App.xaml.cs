@@ -12,11 +12,11 @@
         {
             var window = base.CreateWindow(activationState);
 
-            const int newWidth = 500;
-            const int newHeight = 900;
+            const int newWidth = 400;
+            const int newHeight = 800;
 
-            window.MinimumHeight = window.MaximumHeight = newHeight;
-            window.MinimumWidth = window.MaximumWidth = newWidth;
+            window.MinimumHeight = window.Height = newHeight;
+            window.MinimumWidth = window.Width = newWidth;
 
             return window;
         }
