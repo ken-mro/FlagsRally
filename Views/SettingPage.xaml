@@ -25,8 +25,8 @@
                 Source="{Binding ImageSourceString}">
                 <Image.IsVisible>
                     <OnPlatform x:TypeArguments="x:Boolean">
-                        <On Platform="iOS">True</On>
-                        <On Platform="MacCatalyst">True</On>
+                        <On Platform="iOS">False</On>
+                        <On Platform="MacCatalyst">False</On>
                         <On Platform="WinUI">True</On>
                         <On Platform="Android">False</On>
                     </OnPlatform>
