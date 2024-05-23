@@ -53,6 +53,10 @@
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<MauiImage Update="Resources\Images\location.png" BaseSize="32, 32"/>
+		<MauiImage Update="Resources\Images\settings.png" BaseSize="32, 32"/>
+		<MauiImage Update="Resources\Images\flag.png" BaseSize="32, 32"/>
+		<MauiImage Update="Resources\Images\board.png" BaseSize="32, 32"/>
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -73,27 +77,9 @@
 	  <None Remove="Resources\Fonts\craftmincho.otf" />
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
 	  <None Remove="Resources\Fonts\KiwiMaru-Medium.ttf" />
-		<None Remove="Resources\Images\aichi_emblem.png" />
-		<None Remove="Resources\Images\akita_emblem.png" />
-		<None Remove="Resources\Images\aomori_emblem.png" />
-		<None Remove="Resources\Images\board.png" />
-		<None Remove="Resources\Images\chiba_emblem.png" />
 		<None Remove="Resources\Images\earth_noised.png" />
-		<None Remove="Resources\Images\ehime_emblem.png" />
 		<None Remove="Resources\Images\eraser.png" />
 		<None Remove="Resources\Images\filter.png" />
-	  <None Remove="Resources\Images\flag.png" />
-		<None Remove="Resources\Images\fukui_emblem.png" />
-		<None Remove="Resources\Images\fukuoka_emblem.png" />
-		<None Remove="Resources\Images\fukushima_emblem.png" />
-		<None Remove="Resources\Images\gifu_emblem.png" />
-		<None Remove="Resources\Images\gunma_emblem.png" />
-		<None Remove="Resources\Images\hiroshima_emblem.png" />
-		<None Remove="Resources\Images\hokkaido_emblem.png" />
-		<None Remove="Resources\Images\hyogo_emblem.png" />
-		<None Remove="Resources\Images\ibaraki_emblem.png" />
-		<None Remove="Resources\Images\ishikawa_emblem.png" />
-		<None Remove="Resources\Images\iwate_emblem.png" />
 		<None Remove="Resources\Images\jp_01.png" />
 		<None Remove="Resources\Images\jp_01_emblem.png" />
 		<None Remove="Resources\Images\jp_02.png" />
@@ -188,39 +174,6 @@
 		<None Remove="Resources\Images\jp_46_emblem.png" />
 		<None Remove="Resources\Images\jp_47.png" />
 		<None Remove="Resources\Images\jp_47_emblem.png" />
-		<None Remove="Resources\Images\kagawa_emblem.png" />
-		<None Remove="Resources\Images\kagoshima_emblem.png" />
-		<None Remove="Resources\Images\kanagawa_emblem.png" />
-		<None Remove="Resources\Images\kochi.png_emblem.png" />
-		<None Remove="Resources\Images\kumamoto_emblem.png" />
-		<None Remove="Resources\Images\kyoto_emblem.png" />
-	  <None Remove="Resources\Images\location.png" />
-		<None Remove="Resources\Images\mie_emblem.png" />
-		<None Remove="Resources\Images\miyagi_emblem.png" />
-		<None Remove="Resources\Images\miyazaki_emblem.png" />
-		<None Remove="Resources\Images\nagano_emblem.png" />
-		<None Remove="Resources\Images\nagasaki_emblem.png" />
-		<None Remove="Resources\Images\nara_emblem.png" />
-		<None Remove="Resources\Images\niigata_emblem.png" />
-		<None Remove="Resources\Images\oita_emblem.png" />
-		<None Remove="Resources\Images\okayama_emblem.png" />
-		<None Remove="Resources\Images\okinawa_emblem.png" />
-		<None Remove="Resources\Images\osaka_emblem.png" />
-		<None Remove="Resources\Images\saga_emblem.png" />
-		<None Remove="Resources\Images\saitama_emblem.png" />
-	  <None Remove="Resources\Images\settings.png" />
-		<None Remove="Resources\Images\shiga_emblem.png" />
-		<None Remove="Resources\Images\shimane_emblem.png" />
-		<None Remove="Resources\Images\shizuoka_emblem.png" />
-		<None Remove="Resources\Images\tochigi_emblem.png" />
-		<None Remove="Resources\Images\tokushima_emblem.png" />
-		<None Remove="Resources\Images\tokyo_emblem.png" />
-		<None Remove="Resources\Images\tottori_emblem.png" />
-		<None Remove="Resources\Images\toyama_emblem.png" />
-		<None Remove="Resources\Images\wakayama_emblem.png" />
-		<None Remove="Resources\Images\yamagata_emblem.png" />
-		<None Remove="Resources\Images\yamaguchi_emblem.png" />
-		<None Remove="Resources\Images\yamanashi_emblem.png" />
 	  <None Remove="Resources\RegionCode\jp.json" />
 	</ItemGroup>
 
