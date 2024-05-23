@@ -8,15 +8,11 @@ namespace FlagsRally.Converters
         {
             string text = value as string;
             if (string.IsNullOrEmpty(text)) return 20;
-            int ratio;
-            if (text.ContainsJapaneseCharacters())
-            {
-                return Math.Min(20, 20 * 8 / text.Length);
-            }
-            else
-            {
-                return Math.Min(20, 20 * 23 / text.Length);
-            } 
+
+            var minValue = text.ContainsJapaneseCharacters() ? 
+                Math.Min(20, 20 * 7 / text.Length) : Math.Min(20, 20 * 18 / text.Length);
+
+            return Math.Max(15, minValue);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
