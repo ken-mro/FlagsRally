@@ -61,6 +61,16 @@
                                     StrokeShape="Rectangle"
                                     StrokeThickness="2">
                                     <VerticalStackLayout VerticalOptions="Center">
+                                            <FlyoutBase.ContextFlyout>
+                                                <MenuFlyout>
+                                                    <MenuFlyoutItem
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=DeleteArrivalLocationCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IconImageSource="eraser.png"
+                                                        IsDestructive="True"
+                                                        Text="Delete" />
+                                                </MenuFlyout>
+                                            </FlyoutBase.ContextFlyout>
                                         <OnPlatform x:TypeArguments="View">
                                             <On Platform="MacCatalyst, iOS, Android">
                                                 <Label
