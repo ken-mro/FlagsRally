@@ -82,7 +82,8 @@ namespace FlagsRally.ViewModels
                     return;
                 }
                 File.Copy(pickedFile.FullPath, Constants.DataBasePath, true);
-                await Shell.Current.DisplayAlert("Completed", "Backup restored successfully!", "OK");
+                await Shell.Current.DisplayAlert("Completed", $"Backup restored successfully!\n" +
+                $"Please relaunch the app to enable the data.", "OK");
             }
             catch (Exception ex)
             {
