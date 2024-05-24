@@ -184,5 +184,14 @@ namespace FlagsRally.ViewModels
                 IsBusy = false;
             }
         }
+
+        [RelayCommand]
+        async Task ShowLocationInfo(ArrivalLocation arrivalLocation)
+        {
+            await Shell.Current.DisplayAlert("Arrival Loation Info.", $"\nDate: {arrivalLocation.ArrivalDate}\n" +
+                                                                    $"Country: {arrivalLocation.CountryName}\n" +
+                                                                    $"Admin area: {arrivalLocation.AdminAreaName}\n" +
+                                                                    $"Locality: {arrivalLocation.LocalityName}","OK");
+        }
     }
 }

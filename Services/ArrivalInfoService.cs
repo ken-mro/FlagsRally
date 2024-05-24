@@ -112,6 +112,7 @@ namespace FlagsRally.Services
                 AdminAreaName = placemark.AdminArea,
                 CountryFlagSource = countryFlagSource,
                 AdminAreaFlagSource = adminAreaFlagSource,
+                LocalityName = placemark.Locality,
             };
         }
 

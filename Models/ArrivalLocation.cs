@@ -18,4 +18,5 @@ public record ArrivalLocation
     public string CountryFlagSource { get; init; }
     public string AdminAreaName { get; init; }
     public string AdminAreaFlagSource { get; init; }
+    public string LocalityName { get; init; }
 }
