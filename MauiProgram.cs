@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Maps;
+using CountryData.Standard;
 using FlagsRally.Repository;
 using FlagsRally.Services;
 using FlagsRally.ViewModels;
@@ -17,7 +18,7 @@ namespace FlagsRally
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
 #if ANDROID || IOS
-                .UseMauiMaps()
+                    .UseMauiMaps()
 #elif WINDOWS
                 .UseMauiCommunityToolkitMaps("PASTE-YOUR-API-KEY-HERE")
 #endif
@@ -37,6 +38,7 @@ namespace FlagsRally
             builder.Services.AddSingleton<IArrivalInfoRepository, ArrivalInfoRepository>();
             builder.Services.AddSingleton<IArrivalInfoService, ArrivalInfoService>();
             builder.Services.AddSingleton(Preferences.Default);
+            builder.Services.AddSingleton(new CountryHelper());
 
             builder.Services.AddSingleton<SettingsPreferences>();
 

@@ -14,28 +14,29 @@ namespace FlagsRally.Services
     public class ArrivalInfoService : IArrivalInfoService
     {
         private readonly IArrivalInfoRepository _arrivalInfoRepository;
+        private readonly CountryHelper _countryHelper;
         private Dictionary<string, Dictionary<string, SubRegionCode>> _subRegionCodeMap = new();
 
-        public ArrivalInfoService(IArrivalInfoRepository arrivalInfoRepository)
+        public ArrivalInfoService(IArrivalInfoRepository arrivalInfoRepository, CountryHelper countryHelper)
         {
             _arrivalInfoRepository = arrivalInfoRepository;
-            var countryHelper = new CountryHelper();
 
             var info = System.Reflection.Assembly.GetExecutingAssembly().GetName();
             using var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.RegionCode.jp.json");
             using var streamReader = new StreamReader(stream!, Encoding.UTF8);
             string jsonString = streamReader.ReadToEnd();
             var jaJpSubRegionDataList = JsonSerializer.Deserialize<List<SubRegionData>>(jsonString);
-            var enJpSubRegionDataList = countryHelper.GetCountryByCode("JP").Regions.ConvertAll(x => new SubRegionData(x.Name, "JP-" + x.ShortCode));
+            var enJpSubRegionDataList = _countryHelper?.GetCountryByCode("JP").Regions.ConvertAll(x => new SubRegionData(x.Name, "JP-" + x.ShortCode));
             jaJpSubRegionDataList?.AddRange(enJpSubRegionDataList);
 
             var jpSubRegionDict = jaJpSubRegionDataList?.ToDictionary(x => x.Name, x => new SubRegionCode(x.Code));
-            var usSubRegionDict = countryHelper.GetCountryByCode("US").Regions
+            var usSubRegionDict = _countryHelper?.GetCountryByCode("US").Regions
                 .Where(x => !new[] { "AA", "AE", "AP", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode)).ToList()
                 .ToDictionary(x => x.Name, x => new SubRegionCode("US", x.ShortCode));
 
             _subRegionCodeMap.Add("JP", jpSubRegionDict!);
             _subRegionCodeMap.Add("US", usSubRegionDict);
+            _countryHelper = countryHelper;
         }
 
         public async Task<List<Placemark>> GetAllPlacemark()
@@ -78,14 +79,13 @@ namespace FlagsRally.Services
         private ArrivalLocation GetArrivalCountry(ArrivalInfo arrivalInfo)
         {
             var placemark = JsonSerializer.Deserialize<Placemark>(arrivalInfo.Placemark);
-            var countryHelper = new CountryHelper();
 
             string countryFlagSource;
 
 #if WINDOWS
             countryFlagSource = $"https://flagcdn.com/160x120/{placemark.CountryCode.ToLower()}.png";
 #else
-            countryFlagSource =  countryHelper.GetCountryEmojiFlag(arrivalInfo.CountryCode);
+            countryFlagSource =  _countryHelper.GetCountryEmojiFlag(arrivalInfo.CountryCode);
 #endif
 
             string adminAreaFlagSource = "earth.png";
@@ -125,7 +125,6 @@ namespace FlagsRally.Services
         private SubRegion GetSubRegion(ArrivalInfo arrivalInfo)
         {
             var placemark = JsonSerializer.Deserialize<Placemark>(arrivalInfo.Placemark);
-            var countryHelper = new CountryHelper();
 
             var result = _subRegionCodeMap.TryGetValue(placemark!.CountryCode, out var usSubRegionDict);
             if (!result) throw new ArgumentException("Unexpected country's SubRegionCode");
