@@ -1,12 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Services;
+using FlagsRally.Utilities;
 using Microsoft.Maui.Maps;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.Net;
+using System.Globalization;
 
 namespace FlagsRally.ViewModels;
 
@@ -21,7 +20,7 @@ public partial class LocationPageViewModel : BaseViewModel
     ObservableCollection<ArrivalLocationPin> _positions;
 
     public LocationPageViewModel(IArrivalInfoService arrivalInfoService)
-	{
+    {
         _arrivalInfoService = arrivalInfoService;
         _ = init();
     }
@@ -68,70 +67,12 @@ public partial class LocationPageViewModel : BaseViewModel
             var cancelTokenSource = new CancellationTokenSource();
             Location location = await Geolocation.Default.GetLocationAsync(request, cancelTokenSource.Token);
 
-            Placemark? placemark = null;
-
-#if WINDOWS
-            string bingMapsKey = "PASTE-YOUR-API-KEY-HERE"; // Replace with your Bing Maps Key
-            string requestUrl = $"http://dev.virtualearth.net/REST/v1/Locations/{location.Latitude},{location.Longitude}?o=json&key={bingMapsKey}";
-            using (WebClient webClient = new WebClient())
-            {
-                string response = webClient.DownloadString(requestUrl);
-                dynamic jsonResponse = JsonConvert.DeserializeObject(response);
-                if (jsonResponse != null && jsonResponse.resourceSets != null && jsonResponse.resourceSets.Count > 0)
-                {
-                    var resources = jsonResponse.resourceSets[0].resources;
-                    
-                    if (resources != null && resources.Count > 0)
-                    {
-                        var acquiredlocation = resources[0];
-                        var countryName = acquiredlocation.address.countryRegion;
-
-                        var countryHelper = new CountryHelper();
-                        var countryList = countryHelper.GetCountryData();
-                        var countryCode = countryList.Where(x => x.CountryName == countryName.ToString()).FirstOrDefault().CountryShortCode;
-
-                        placemark = new Placemark
-                        {
-                            CountryCode = countryCode,
-                            CountryName = acquiredlocation.address.countryRegion,
-                            AdminArea = acquiredlocation.address.adminDistrict,
-                            Locality = acquiredlocation.address.locality,
-                            PostalCode = acquiredlocation.address.postalCode,
-                            Thoroughfare = acquiredlocation.address.addressLine,
-                            FeatureName = acquiredlocation.name,
-                            Location = location
-                        };
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unable to get location");
-                }
-            }
-#else
-            IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(location);
-            placemark = placemarks?.FirstOrDefault();
-#endif
+            string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            Placemark placemark = await CustomGeolocation.GetPlacemarkAsync(location, languageCode);
 
             if (placemark == null)
                 throw new Exception("Unable to get location");
-            
-#if IOS || MACCATALYST
-            // placemark.AdminArea returns region code in US instead of admin area name.
-            if (placemark.CountryCode == "US")
-            {
-                try
-                {
-                    var subRegionCode = new SubRegionCode(placemark.CountryCode, placemark.AdminArea);
-                    var adminAreaName = _arrivalInfoService.GetUsSubregionName(subRegionCode);
-                    placemark.AdminArea = adminAreaName;
-                }
-                catch (Exception ex)
-                {
-                    // Do nothing
-                }
-            }
-#endif
+
             var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\n\n" +
                                                             $"Country: {placemark?.CountryName}\n" +
                                                             $"Admin area: {placemark?.AdminArea}\n" +
