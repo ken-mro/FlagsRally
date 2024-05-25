@@ -16,7 +16,12 @@ public record ArrivalLocation
     public string CountryCode { get; init; }
     public string CountryName { get; init; }
     public string CountryFlagSource { get; init; }
+
     public string AdminAreaName { get; init; }
+    public string AdminAreaCode { get; init; }
     public string AdminAreaFlagSource { get; init; }
+
     public string LocalityName { get; init; }
+    
+    public Location Location { get; init; }
 }
