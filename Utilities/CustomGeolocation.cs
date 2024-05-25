@@ -1,13 +1,116 @@
-﻿using Newtonsoft.Json;
+﻿using CountryData.Standard;
+using FlagsRally.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace FlagsRally.Utilities;
 
-public static class CustomGeolocation
+public class CustomGeolocation
 {
     private const string API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+    private readonly CountryHelper _countryHelper;
+
+    public CustomGeolocation(CountryHelper countryHelper)
+    {
+        _countryHelper = countryHelper;
+    }
+
+    public async Task<ArrivalLocationData> GetArrivalLocationAsync(DateTime datetime, Location location, string languageCode)
+    {
+        var jsonObject = await GetRequestForLocationInfo(location, languageCode);
+        var result = jsonObject["results"]?.Value<JArray>()?.FirstOrDefault();
+        var addressComponent = result?["address_components"];
+        var country = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("country")).FirstOrDefault();
+        JObject? enJsonObject;
+        if (country is null)
+        {
+            jsonObject = await GetAllRequestsForLocationInfo(location, languageCode);
+            enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en");
+        }
+        else
+        {
+            enJsonObject = languageCode == "en" ? jsonObject : await GetRequestForLocationInfo(location, "en");
+        }
+        
+        return GenerateFrom(datetime, jsonObject, enJsonObject, location);
+    }
+
+    private ArrivalLocationData GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location)
+    {
+        var result = jsonObject["results"]?.Value<JArray>()?.FirstOrDefault();
+        var addressComponent = result?["address_components"];
+        var country = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("country")).FirstOrDefault();
+        var adminArea = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("administrative_area_level_1")).FirstOrDefault();
+        var locality = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("locality")).FirstOrDefault();
+
+        var enResult = enJsonObject["results"]?.Value<JArray>()?.FirstOrDefault();
+        var enAddressComponent = enResult?["address_components"];
+        var enCountry = enAddressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("country")).FirstOrDefault();
+        var enAdminArea = enAddressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("administrative_area_level_1")).FirstOrDefault();
+        var enLocality = enAddressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("locality")).FirstOrDefault();
+
+        var countryName = country?["long_name"]?.Value<string>();
+        var adminAreaName = adminArea?["long_name"]?.Value<string>();
+        var localityName = locality?["long_name"]?.Value<string>();
+        var enCountryName = enCountry?["long_name"]?.Value<string>();
+        var enAdminAreaName = enAdminArea?["long_name"]?.Value<string>();
+        var enLocalityName = enLocality?["long_name"]?.Value<string>();
+        var countryCode = country?["short_name"]?.Value<string>();
+
+        var adminAreaCode = _countryHelper.GetCountryByCode(countryCode)?.Regions.Where(x => x.Name == enAdminAreaName)?.FirstOrDefault()?.ShortCode;
+
+        var arrivalLocation = new ArrivalLocationData
+        (
+            arrivalDate: datetime,
+            countryName: countryName ?? string.Empty,
+            adminAreaName: adminAreaName ?? string.Empty,
+            localityName: localityName ?? string.Empty,
+            enCountryName: enCountryName ?? string.Empty,
+            enAdminAreaName: enAdminAreaName ?? string.Empty,
+            enLocalityName: enLocalityName ?? string.Empty,
+            countryCode: countryCode ?? string.Empty,
+            adminAreaCode: adminAreaCode ?? string.Empty,
+            location: location
+        );
+
+        return arrivalLocation;
+    }
 
     public static async Task<Placemark> GetPlacemarkAsync(Location location, string languageCode)
+    {
+        var jsonObject = await GetRequestForLocationInfo(location, languageCode);
+        var result = jsonObject["results"]?.Value<JArray>()?.FirstOrDefault();
+        var addressComponent = result?["address_components"];
+
+        var country = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("country")).FirstOrDefault();
+
+        var adminArea = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("administrative_area_level_1")).FirstOrDefault();
+
+        var locality = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains("locality")).FirstOrDefault();
+
+        var placemark = new Placemark
+        {
+            CountryName = country?["long_name"]?.Value<string>(),
+            CountryCode = country?["short_name"]?.Value<string>(),
+            AdminArea = adminArea?["long_name"]?.Value<string>(),
+            Locality = locality?["long_name"]?.Value<string>(),
+            Location = new Location(location)
+        };
+
+        return placemark;
+    }
+
+    private static async Task<JObject> GetRequestForLocationInfo(Location location, string languageCode)
     {
         if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
         if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
@@ -23,29 +126,34 @@ public static class CustomGeolocation
             dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
             if (jsonResponse is null) throw new Exception("Unable to get location");
 
-            var jsonObject = JObject.Parse(responseContent);
-            var result = jsonObject["results"]?.Value<JArray>()?.FirstOrDefault();
-            var addressComponent = result?["address_components"];
+            return JObject.Parse(responseContent);
+        }
+    }
 
-            var country = addressComponent?.Where(ac => ac["types"].Values<string>()
-                                        .Contains("country")).FirstOrDefault();
+    private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode)
+    {
+        try
+        {
+            if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
+            if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
 
-            var adminArea = addressComponent?.Where(ac => ac["types"].Values<string>()
-                                        .Contains("administrative_area_level_1")).FirstOrDefault();
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={API_KEY}";
 
-            var locality = addressComponent?.Where(ac => ac["types"].Values<string>()
-                                        .Contains("locality")).FirstOrDefault();
-
-            var placemark = new Placemark
+            using (HttpClient httpClient = new HttpClient())
             {
-                CountryName = country?["long_name"]?.Value<string>(),
-                CountryCode = country?["short_name"]?.Value<string>(),
-                AdminArea = adminArea?["long_name"]?.Value<string>(),
-                Locality = locality?["long_name"]?.Value<string>(),
-                Location = new Location(location)
-            };
+                HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
+                if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");
 
-            return placemark;
+                string responseContent = await response.Content.ReadAsStringAsync();
+                dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                if (jsonResponse is null) throw new Exception("Unable to get location");
+
+                return JObject.Parse(responseContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Unable to get location", ex);
         }
     }
 }

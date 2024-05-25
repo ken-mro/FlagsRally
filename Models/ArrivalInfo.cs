@@ -3,6 +3,7 @@ using SQLite;
 
 namespace FlagsRally.Models
 {
+    [Obsolete("This class is obsolete, use ArrivalLocationData instead")]
     [Table("ArrivalInfo")]
     public class ArrivalInfo
     {

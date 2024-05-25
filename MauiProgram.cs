@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Maps;
 using CountryData.Standard;
 using FlagsRally.Repository;
 using FlagsRally.Services;
+using FlagsRally.Utilities;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,7 @@ namespace FlagsRally
             builder.Services.AddSingleton(new CountryHelper());
 
             builder.Services.AddSingleton<SettingsPreferences>();
+            builder.Services.AddSingleton<CustomGeolocation>();
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
