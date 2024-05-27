@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
+using FlagsRally.Repository;
 using FlagsRally.Services;
 using FlagsRally.Utilities;
 using Microsoft.Maui.Maps;
@@ -11,7 +12,8 @@ namespace FlagsRally.ViewModels;
 
 public partial class LocationPageViewModel : BaseViewModel
 {
-    private readonly IArrivalInfoService _arrivalInfoService;
+    private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
+    private readonly CustomGeolocation _customGeolocation;
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
     public Microsoft.Maui.Controls.Maps.Map ArrivalMap;
@@ -19,15 +21,16 @@ public partial class LocationPageViewModel : BaseViewModel
     [ObservableProperty]
     ObservableCollection<ArrivalLocationPin> _positions;
 
-    public LocationPageViewModel(IArrivalInfoService arrivalInfoService)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation)
     {
-        _arrivalInfoService = arrivalInfoService;
+        _arrivalLocationRepository = arrivalLocationRepository;
+        _customGeolocation = customGeolocation;
         _ = init();
     }
 
     private async Task init()
     {
-        var arrivalLocationPins = await _arrivalInfoService.GetArrivalLocationPinsAsync();
+        var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
         Positions = new ObservableCollection<ArrivalLocationPin>(arrivalLocationPins);
         try
         {
@@ -66,30 +69,24 @@ public partial class LocationPageViewModel : BaseViewModel
             GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
             var cancelTokenSource = new CancellationTokenSource();
             Location location = await Geolocation.Default.GetLocationAsync(request, cancelTokenSource.Token);
+            var datetime = DateTime.Now;
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            Placemark placemark = await CustomGeolocation.GetPlacemarkAsync(location, languageCode);
+            var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(datetime, location, languageCode);
 
-            if (placemark == null)
+            if (arrivalLocationData == null)
                 throw new Exception("Unable to get location");
 
             var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\n\n" +
-                                                            $"Country: {placemark?.CountryName}\n" +
-                                                            $"Admin area: {placemark?.AdminArea}\n" +
-                                                            $"Locality: {placemark?.Locality}", "Yes", "No");
+                                                            $"{arrivalLocationData}", "Yes", "No");
             if (result)
             {
-                var currentTime = DateTime.Now;
-                var id = await _arrivalInfoService.Save(placemark, currentTime);
-                ArrivalLocationPin arrivalLocationPins = new () 
+                var id = await _arrivalLocationRepository.Save(arrivalLocationData);
+                ArrivalLocationPin arrivalLocationPins = new()
                 {
                     Id = id,
-                    ArrivalDate = currentTime,
-                    PinLocation = new Location
-                    {
-                        Latitude = location.Latitude,
-                        Longitude = location.Longitude
-                    }
+                    ArrivalDate = arrivalLocationData.ArrivalDate,
+                    PinLocation = location
                 };
                 Positions.Add(arrivalLocationPins);
             }
@@ -101,7 +98,8 @@ public partial class LocationPageViewModel : BaseViewModel
         catch (Exception ex)
         {
             // Unable to get location
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            // Todo:add logger
+            await Shell.Current.DisplayAlert("Error", "Unable to get location./nPlease try again.", "OK");
         }
         finally
         {

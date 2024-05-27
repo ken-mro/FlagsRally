@@ -36,7 +36,7 @@ namespace FlagsRally
                     essentials.UseMapServiceToken("PASTE-YOUR-API-KEY-HERE");
                 });
 
-            builder.Services.AddSingleton<IArrivalInfoRepository, ArrivalInfoRepository>();
+            builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationRepository>();
             builder.Services.AddSingleton<IArrivalInfoService, ArrivalInfoService>();
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton(new CountryHelper());

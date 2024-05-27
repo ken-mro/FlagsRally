@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Repository;
-using FlagsRally.Services;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
@@ -11,21 +10,19 @@ namespace FlagsRally.ViewModels
     public partial class MainPageViewModel : BaseViewModel
     {
         private readonly SettingsPreferences _settingsPreferences;
-        private readonly IArrivalInfoService _arrivalInfoService;
-        private readonly IArrivalInfoRepository _arrivalInfoRepository;
+        private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
         private readonly CountryHelper _countryHelper;
         private const string ALL_COUNTRY_CODE = "All";
         private const string ALL_COUNTRY_NAME = "All Countries";
 
-        public MainPageViewModel(SettingsPreferences settingPreferences, IArrivalInfoService arrivalInfoService, IArrivalInfoRepository arrivalInfoRepository)
+        public MainPageViewModel(CountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository)
         {
             Title = "Main Page";
 
             _settingsPreferences = settingPreferences;
             _settingsPreferences.PropertyChanged += (s, e) => OnPropertyChanged(nameof(PassportImageSourceString));
-            _arrivalInfoService = arrivalInfoService;
-            _arrivalInfoRepository = arrivalInfoRepository;
-            _countryHelper = new CountryHelper();
+            _arrivalLocationRepository = arrivalLocationRepository;
+            _countryHelper = countryHelper;
 
             _ = Init();
         }
@@ -78,7 +75,7 @@ namespace FlagsRally.ViewModels
             try
             {
                 IsBusy = true;
-                var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalInfoService.GetAllCountries());
+                var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalLocationRepository.GetAllArivalLocations());
                 SourceArrivalLocationList = sourceArrivalLocationList;
 
                 var countryCodeList = sourceArrivalLocationList.Select(x => x.CountryCode).Distinct().ToList();
@@ -172,7 +169,7 @@ namespace FlagsRally.ViewModels
             try
             {
                 IsBusy = true;
-                await _arrivalInfoRepository.DeleteAsync(arrivalLocation.Id);
+                await _arrivalLocationRepository.DeleteAsync(arrivalLocation.Id);
                 await Init();
             }
             catch(Exception ex)

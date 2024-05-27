@@ -11,13 +11,15 @@ namespace FlagsRally.ViewModels;
 public partial class FlagsBoardPageViewModel : BaseViewModel
 {
     private readonly IArrivalInfoService _arrivalInfoService;
+    private readonly IArrivalLocationDataRepository _arrivalLocationDataRepository;
     private readonly SettingsPreferences _settingsPreferences;
 
 
-    public FlagsBoardPageViewModel(IArrivalInfoService arrivalInfoService, SettingsPreferences settingsPreferences)
+    public FlagsBoardPageViewModel(IArrivalLocationDataRepository arrivalLocationDataRepository, IArrivalInfoService arrivalInfoService, SettingsPreferences settingsPreferences)
     {
         Title = "Flags Board";
 
+        _arrivalLocationDataRepository = arrivalLocationDataRepository;
         _arrivalInfoService = arrivalInfoService;
         _settingsPreferences = settingsPreferences;
 
@@ -75,7 +77,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             IsBusy = true;
             if (FilteredCountry == null) return;
 
-            var subRegionList = await _arrivalInfoService.GetSubRegionsByCountryCode(_filteredCountry.CountryShortCode);
+            var subRegionList = await _arrivalLocationDataRepository.GetSubRegionsByCountryCode(_filteredCountry.CountryShortCode);
             SourceArrivalSubRegionList = new ObservableCollection<SubRegion>(subRegionList);
         }
         catch (Exception ex)
