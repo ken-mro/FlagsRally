@@ -3,24 +3,24 @@ using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Repository;
-using FlagsRally.Services;
+using FlagsRally.Helpers;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels;
 
 public partial class FlagsBoardPageViewModel : BaseViewModel
 {
-    private readonly IArrivalInfoService _arrivalInfoService;
+    private readonly SubRegionHelper _subRegionHelper;
     private readonly IArrivalLocationDataRepository _arrivalLocationDataRepository;
     private readonly SettingsPreferences _settingsPreferences;
 
 
-    public FlagsBoardPageViewModel(IArrivalLocationDataRepository arrivalLocationDataRepository, IArrivalInfoService arrivalInfoService, SettingsPreferences settingsPreferences)
+    public FlagsBoardPageViewModel(IArrivalLocationDataRepository arrivalLocationDataRepository, SubRegionHelper arrivalInfoService, SettingsPreferences settingsPreferences)
     {
         Title = "Flags Board";
 
         _arrivalLocationDataRepository = arrivalLocationDataRepository;
-        _arrivalInfoService = arrivalInfoService;
+        _subRegionHelper = arrivalInfoService;
         _settingsPreferences = settingsPreferences;
 
         var countryHelper = new CountryHelper();
@@ -114,7 +114,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
                 var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
                 return new SubRegion
                 {
-                    Name = regionName == "JP" ? _arrivalInfoService.GetJaSubregionName(code) : x.Name,
+                    Name = regionName == "JP" ? _subRegionHelper.GetJaSubregionName(code) : x.Name,
                     Code = code
                 };
             }).ToList();

@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
 using FlagsRally.Repository;
-using FlagsRally.Services;
+using FlagsRally.Helpers;
 using FlagsRally.Utilities;
 using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;

@@ -3,14 +3,14 @@ using FlagsRally.Models;
 using System.Text;
 using System.Text.Json;
 
-namespace FlagsRally.Services;
+namespace FlagsRally.Helpers;
 
-public class ArrivalInfoService : IArrivalInfoService
+public class SubRegionHelper
 {
     private readonly CountryHelper _countryHelper;
     private Dictionary<string, Dictionary<string, SubRegionCode>> _subRegionCodeMap = new();
 
-    public ArrivalInfoService(CountryHelper countryHelper)
+    public SubRegionHelper(CountryHelper countryHelper)
     {
         _countryHelper = countryHelper;
 

@@ -2,7 +2,7 @@
 using CommunityToolkit.Maui.Maps;
 using CountryData.Standard;
 using FlagsRally.Repository;
-using FlagsRally.Services;
+using FlagsRally.Helpers;
 using FlagsRally.Utilities;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
@@ -37,7 +37,7 @@ namespace FlagsRally
                 });
 
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationRepository>();
-            builder.Services.AddSingleton<IArrivalInfoService, ArrivalInfoService>();
+            builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton(new CountryHelper());
 
