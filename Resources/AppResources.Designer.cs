@@ -232,7 +232,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FlagsBoard.
+        ///   Looks up a localized string similar to Flags Board.
         /// </summary>
         internal static string FlagsBoard {
             get {
