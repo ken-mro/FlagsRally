@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Repository;
+using FlagsRally.Resources;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
@@ -59,11 +60,11 @@ namespace FlagsRally.ViewModels
                 }
 
                 File.Copy(dbPath, downloadPath, true);
-                await Shell.Current.DisplayAlert("Completed", "Backup saved successfully!", "OK");
+                await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
             }
             catch(Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
         }
 
@@ -72,22 +73,23 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                await Shell.Current.DisplayAlert("Are you sure you want to restore the backup file?", $"This operation over write the existing file.\n" +
-                    $"This action cannot be undone.", "Yes", "No");
+                var result = await Shell.Current.DisplayAlert($"{AppResources.AreYouSureRestoreBackup}", $"{AppResources.OverwriteExistingFile}\n" +
+                    $"{AppResources.ActionCannotUndone}", $"{AppResources.Yes}", $"{AppResources.No}");
 
+                if (!result) return;
                 var pickedFile = await FilePicker.PickAsync();
                 if (pickedFile?.FileName != Constants.DatabaseName)
                 {
-                    await Shell.Current.DisplayAlert("Error", "Invalid file selected", "OK");
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
                     return;
                 }
                 File.Copy(pickedFile.FullPath, Constants.DataBasePath, true);
-                await Shell.Current.DisplayAlert("Completed", $"Backup restored successfully!\n" +
-                $"Please relaunch the app to enable the data.", "OK");
+                await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
+                $"{AppResources.RelaunchToEnable}", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
         }
     }

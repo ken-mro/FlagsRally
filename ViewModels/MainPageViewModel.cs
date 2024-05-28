@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Repository;
+using FlagsRally.Resources;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
@@ -13,7 +14,7 @@ namespace FlagsRally.ViewModels
         private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
         private readonly CountryHelper _countryHelper;
         private const string ALL_COUNTRY_CODE = "All";
-        private const string ALL_COUNTRY_NAME = "All Countries";
+        private readonly string ALL_COUNTRY_NAME = AppResources.AllCountries;
 
         public MainPageViewModel(CountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository)
         {
@@ -53,7 +54,7 @@ namespace FlagsRally.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsCountry), nameof(IsAdminArea))]
-        string _selectedRegion = "Country";
+        string _selectedRegion = AppResources.Country;
 
         [ObservableProperty]
         ObservableCollection<Country> _countryList;
@@ -62,8 +63,8 @@ namespace FlagsRally.ViewModels
         [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
         Country _filteredCountry;
 
-        public bool IsCountry => SelectedRegion == "Country";
-        public bool IsAdminArea => SelectedRegion == "AdminArea";
+        public bool IsCountry => SelectedRegion == AppResources.Country;
+        public bool IsAdminArea => SelectedRegion == AppResources.AdminArea;
 
         public ObservableCollection<ArrivalLocation> DisplayArrivalLocationList => GetFilteredList();
 
@@ -97,7 +98,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
             finally
             {
@@ -153,13 +154,13 @@ namespace FlagsRally.ViewModels
         [RelayCommand]
         public async Task ChangeRegionAsync()
         {
-            if (SelectedRegion == "Country")
+            if (SelectedRegion == AppResources.Country)
             {
-                SelectedRegion = "AdminArea";
+                SelectedRegion = AppResources.AdminArea;
             }
             else
             {
-                SelectedRegion = "Country";
+                SelectedRegion = AppResources.Country;
             }
         }
 
@@ -174,7 +175,7 @@ namespace FlagsRally.ViewModels
             }
             catch(Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
             finally
             {
@@ -185,10 +186,10 @@ namespace FlagsRally.ViewModels
         [RelayCommand]
         async Task ShowLocationInfo(ArrivalLocation arrivalLocation)
         {
-            await Shell.Current.DisplayAlert("Arrival Loation Info.", $"\nDate: {arrivalLocation.ArrivalDate}\n" +
-                                                                    $"Country: {arrivalLocation.CountryName}\n" +
-                                                                    $"Admin area: {arrivalLocation.AdminAreaName}\n" +
-                                                                    $"Locality: {arrivalLocation.LocalityName}","OK");
+            await Shell.Current.DisplayAlert($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
+                                                                    $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
+                                                                    $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
+                                                                    $"{AppResources.Locality}: {arrivalLocation.LocalityName}","OK");
         }
     }
 }

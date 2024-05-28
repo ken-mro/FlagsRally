@@ -37,6 +37,7 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<DefaultLanguage>en-us</DefaultLanguage>
+		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -53,10 +54,10 @@
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
-		<MauiImage Update="Resources\Images\location.png" BaseSize="32, 32"/>
-		<MauiImage Update="Resources\Images\settings.png" BaseSize="32, 32"/>
-		<MauiImage Update="Resources\Images\flag.png" BaseSize="32, 32"/>
-		<MauiImage Update="Resources\Images\board.png" BaseSize="32, 32"/>
+		<MauiImage Update="Resources\Images\location.png" BaseSize="32, 32" />
+		<MauiImage Update="Resources\Images\settings.png" BaseSize="32, 32" />
+		<MauiImage Update="Resources\Images\flag.png" BaseSize="32, 32" />
+		<MauiImage Update="Resources\Images\board.png" BaseSize="32, 32" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -202,6 +203,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Resources\AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AppResources.resx</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\LocationPage.xaml.cs">
 	  </Compile>
 	  <Compile Update="Views\SettingPage.xaml.cs">
@@ -316,5 +322,12 @@
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_45.png" />
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_46.png" />
 	  <MauiImage Include="Resources\Images\PrefectureFlags\jp_47.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\AppResources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 </Project>

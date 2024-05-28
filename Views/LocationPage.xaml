@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -17,7 +18,7 @@
         <Label
             Grid.Row="0"
             HorizontalOptions="Center"
-            Text="Confirm the current location and tap 'Get Location' below."
+            Text="{x:Static strings:AppResources.ConfirmLocationTapButton}"
             VerticalOptions="Center" />
         <maps:Map
             x:Name="map"
@@ -35,7 +36,7 @@
         <Button
             Grid.Row="2"
             Command="{Binding GetCurrentLocationCommand}"
-            Text="Get Location" />
+            Text="{x:Static strings:AppResources.GetLocation}" />
         <ActivityIndicator
             Grid.Row="2"
             IsRunning="{Binding IsBusy}"

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:models="clr-namespace:FlagsRally.Models"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
     <ContentPage.Resources>
@@ -45,7 +46,7 @@
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=DeleteArrivalLocationCommand}"
                                     CommandParameter="{Binding .}"
                                     IconImageSource="eraser.png"
-                                    Text="Delete" />
+                                    Text="{x:Static strings:AppResources.Delete}" />
                             </SwipeView.LeftItems>
                             <Frame
                                 Padding="2"
@@ -74,7 +75,7 @@
                                                         CommandParameter="{Binding .}"
                                                         IconImageSource="eraser.png"
                                                         IsDestructive="True"
-                                                        Text="Delete" />
+                                                        Text="{x:Static strings:AppResources.Delete}" />
                                                 </MenuFlyout>
                                             </FlyoutBase.ContextFlyout>
                                             <OnPlatform x:TypeArguments="View">
@@ -203,7 +204,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
-                    Title="Filter by Country"
+                    Title="{x:Static strings:AppResources.FilterByCountry}"
                     HorizontalOptions="FillAndExpand"
                     ItemDisplayBinding="{Binding CountryName}"
                     ItemsSource="{Binding CountryList}"
@@ -230,7 +231,7 @@
                         Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
-                        Text="No duplicate countries"
+                        Text="{x:Static strings:AppResources.NoDuplicateCountries}"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
@@ -252,7 +253,7 @@
                         Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
-                        Text="Hide date and month"
+                        Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"

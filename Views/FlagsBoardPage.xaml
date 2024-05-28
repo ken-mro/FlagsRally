@@ -5,8 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:models="clr-namespace:FlagsRally.Models"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-    Title="{Binding Title}"
     x:DataType="viewmodels:FlagsBoardPageViewModel">
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
@@ -23,7 +23,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
-                    Title="Filter by Country"
+                    Title="{x:Static strings:AppResources.FilterByCountry}"
                     ItemDisplayBinding="{Binding CountryName}"
                     ItemsSource="{Binding CountryList}"
                     SelectedItem="{Binding FilteredCountry}"
@@ -46,7 +46,7 @@
                         Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
-                        Text="Hide date and month"
+                        Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"

@@ -5,6 +5,7 @@ using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Helpers;
 using System.Collections.ObjectModel;
+using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
@@ -82,7 +83,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
         }
         finally
         {

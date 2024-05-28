@@ -3,6 +3,7 @@
     x:Class="FlagsRally.Views.SettingPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel">
     <VerticalStackLayout Padding="15" Spacing="10">
@@ -11,7 +12,7 @@
             FontAttributes="Bold"
             FontSize="Body"
             HorizontalOptions="Start"
-            Text="Country of Residence"
+            Text="{x:Static strings:AppResources.CountryOfResidence}"
             VerticalOptions="Center" />
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
@@ -46,7 +47,7 @@
                 </Label.IsVisible>
             </Label>
             <Picker
-                Title="Country of Residence"
+                Title="{x:Static strings:AppResources.CountryOfResidence}"
                 Grid.Column="1"
                 FontAttributes="Bold"
                 FontSize="Medium"
@@ -66,13 +67,13 @@
             FontAttributes="Bold"
             FontSize="Body"
             HorizontalOptions="Start"
-            Text="Backup"
+            Text="{x:Static strings:AppResources.Backup}"
             VerticalOptions="Center" />
         <Button
             Margin="10,0"
             Command="{Binding CreateBackUpCommand}"
             HorizontalOptions="End"
-            Text="Create backup"
+            Text="{x:Static strings:AppResources.CreateBackup}"
             VerticalOptions="Center" />
         <BoxView
             Margin="5"
@@ -85,21 +86,21 @@
             FontAttributes="Bold"
             FontSize="Body"
             HorizontalOptions="Start"
-            Text="Restore"
+            Text="{x:Static strings:AppResources.Restore}"
             VerticalOptions="Center" />
         <Label
             Padding="10,0"
             FontAttributes="Bold"
             FontSize="Small"
             HorizontalOptions="Start"
-            Text="If you have used this app on a previous device, please make sure to restore the backup before using it again."
+            Text="{x:Static strings:AppResources.RestoreBeforeUse}"
             TextColor="Red"
             VerticalOptions="Center" />
         <Button
             Margin="10,0"
             Command="{Binding RestoreBackUpCommand}"
             HorizontalOptions="End"
-            Text="Restore backup"
+            Text="{x:Static strings:AppResources.RestoreBackup}"
             VerticalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

@@ -7,6 +7,7 @@ using FlagsRally.Utilities;
 using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
@@ -75,10 +76,10 @@ public partial class LocationPageViewModel : BaseViewModel
             var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(datetime, location, languageCode);
 
             if (arrivalLocationData == null)
-                throw new Exception("Unable to get location");
+                throw new Exception($"{AppResources.UnableToGetLocation}");
 
-            var result = await Shell.Current.DisplayAlert("Confirmation", $"Is the following your current location?\n\n" +
-                                                            $"{arrivalLocationData}", "Yes", "No");
+            var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
+                                                            $"{arrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
             if (result)
             {
                 var id = await _arrivalLocationRepository.Save(arrivalLocationData);
@@ -99,7 +100,7 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             // Unable to get location
             // Todo:add logger
-            await Shell.Current.DisplayAlert("Error", "Unable to get location./nPlease try again.", "OK");
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.UnableToGetLocation}/n{AppResources.PleaseTryAgain}", "OK");
         }
         finally
         {

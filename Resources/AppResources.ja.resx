@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionCannotUndone" xml:space="preserve">
+    <value>この操作は元に戻せません。</value>
+  </data>
+  <data name="AdminArea" xml:space="preserve">
+    <value>管理区域名</value>
+  </data>
+  <data name="AllCountries" xml:space="preserve">
+    <value>全ての国</value>
+  </data>
+  <data name="AreYouSureRestoreBackup" xml:space="preserve">
+    <value>本当にバックアップを復元しますか？</value>
+  </data>
+  <data name="ArrivalLocationInfo" xml:space="preserve">
+    <value>到着地点情報</value>
+  </data>
+  <data name="Backup" xml:space="preserve">
+    <value>バックアップ</value>
+  </data>
+  <data name="BackupSucceeded" xml:space="preserve">
+    <value>バックアップが正常に保存されました。</value>
+  </data>
+  <data name="Board" xml:space="preserve">
+    <value>ボード</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="ConfirmLocationTapButton" xml:space="preserve">
+    <value>現在地を確認し、「位置情報を取得」を押して下さい。</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>国名</value>
+  </data>
+  <data name="CountryOfResidence" xml:space="preserve">
+    <value>居住国</value>
+  </data>
+  <data name="CreateBackup" xml:space="preserve">
+    <value>バックアップを作成</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>日時</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="FilterByCountry" xml:space="preserve">
+    <value>国ごとに表示</value>
+  </data>
+  <data name="Flags" xml:space="preserve">
+    <value>フラッグ</value>
+  </data>
+  <data name="FlagsBoard" xml:space="preserve">
+    <value>フラッグ ボード</value>
+  </data>
+  <data name="GetLocation" xml:space="preserve">
+    <value>位置情報を取得</value>
+  </data>
+  <data name="HideDateAndMonth" xml:space="preserve">
+    <value>日付を表示しない</value>
+  </data>
+  <data name="InvalidFileSelected" xml:space="preserve">
+    <value>無効なファイルが選択されました。</value>
+  </data>
+  <data name="IsTheFollowingYourLocatoin" xml:space="preserve">
+    <value>現在地は以下の通りですか？</value>
+  </data>
+  <data name="Locality" xml:space="preserve">
+    <value>地域名</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>位置情報</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>いいえ</value>
+  </data>
+  <data name="NoDuplicateCountries" xml:space="preserve">
+    <value>重複して国を表示しない</value>
+  </data>
+  <data name="OverwriteExistingFile" xml:space="preserve">
+    <value>この操作は既存のファイルを上書きします。</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>再度一度取得してください。</value>
+  </data>
+  <data name="RelaunchToEnable" xml:space="preserve">
+    <value>アプリを再起動してください。</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>バックアップから復元</value>
+  </data>
+  <data name="RestoreBackup" xml:space="preserve">
+    <value>バックアップを復元</value>
+  </data>
+  <data name="RestoreBeforeUse" xml:space="preserve">
+    <value>以前のデバイスでこのアプリを使用したことがある場合は、再度使用する前にバックアップを復元してください。</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="UnableToGetLocation" xml:space="preserve">
+    <value>位置情報を取得できませんでした。</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+</root>
