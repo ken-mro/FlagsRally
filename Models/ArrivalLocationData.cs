@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Devices.Sensors;
+﻿using FlagsRally.Resources;
+using Microsoft.Maui.Devices.Sensors;
 using SQLite;
 
 namespace FlagsRally.Models;
@@ -58,8 +59,8 @@ public class ArrivalLocationData
 
     public override string ToString()
     {
-        return $"Country: {CountryName}\n" + 
-                $"Admin area: {AdminAreaName}\n" +
-                $"Locality: {LocalityName}";
+        return $"{AppResources.Country}: {CountryName}\n" + 
+                $"{AppResources.AdminArea}: {AdminAreaName}\n" +
+                $"{AppResources.Locality}: {LocalityName}";
     }
 }
