@@ -52,7 +52,6 @@
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
-                        Grid.Column="1"
                         Margin="20,5"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"

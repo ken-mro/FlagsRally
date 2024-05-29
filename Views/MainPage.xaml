@@ -251,7 +251,6 @@
                         Text="{x:Static strings:AppResources.NoDuplicateCountries}"
                         VerticalOptions="Center" />
                     <Switch
-                        Grid.Column="1"
                         Margin="20,5"
                         VerticalOptions="Center"
                         HorizontalOptions="End"
@@ -272,7 +271,6 @@
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
-                        Grid.Column="1"
                         Margin="20,5"
                         VerticalOptions="Center"
                         HorizontalOptions="End"
