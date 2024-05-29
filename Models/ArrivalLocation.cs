@@ -11,7 +11,7 @@ public record ArrivalLocation
 {
     public int Id { get; init; }
     public DateTime ArrivalDate { get; init; }
-    public string ArrivalDateString => ArrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+    public string ArrivalDateString => ArrivalDate.ToString("dd MMM yyyy");
 
     public string CountryCode { get; init; }
     public string CountryName { get; init; }

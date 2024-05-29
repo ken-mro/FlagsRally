@@ -160,8 +160,8 @@
                                                 Y2="0" />
                                             <Label
                                                 FontAttributes="Bold"
-                                                FontFamily="JerseyclubGrungeBold"
-                                                FontSize="Medium"
+                                                FontFamily="craftmincho"
+                                                FontSize="Body"
                                                 HorizontalOptions="Center"
                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=DateIsVisible}"
                                                 LineBreakMode="TailTruncation"
@@ -171,13 +171,13 @@
                                                 VerticalOptions="Center" />
                                             <Label
                                                 FontAttributes="Bold"
-                                                FontFamily="JerseyclubGrungeBold"
-                                                FontSize="Medium"
+                                                FontFamily="craftmincho"
+                                                FontSize="Body"
                                                 HorizontalOptions="Center"
                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=DateIsNotVisible}"
                                                 LineBreakMode="TailTruncation"
                                                 LineHeight="1"
-                                                Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
+                                                Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
                                                 TextColor="Red"
                                                 VerticalOptions="Center" />
                                             <Line
