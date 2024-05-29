@@ -84,7 +84,16 @@
                                                         HorizontalOptions="Center"
                                                         IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
                                                         Text="{Binding CountryFlagSource}"
-                                                        VerticalOptions="Center" />
+                                                        VerticalOptions="Center">
+                                                        <Label.Triggers>
+                                                            <DataTrigger
+                                                                Binding="{Binding AdminAreaFlagSource}"
+                                                                TargetType="Label"
+                                                                Value="">
+                                                                <Setter Property="IsVisible" Value="True" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
                                                 </On>
                                                 <On Platform="WinUI">
                                                     <Image
@@ -102,7 +111,16 @@
                                                 HorizontalOptions="Center"
                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsAdminArea}"
                                                 Source="{Binding AdminAreaFlagSource}"
-                                                VerticalOptions="Center" />
+                                                VerticalOptions="Center">
+                                                <Image.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding AdminAreaFlagSource}"
+                                                        TargetType="Image"
+                                                        Value="">
+                                                        <Setter Property="IsVisible" Value="False" />
+                                                    </DataTrigger>
+                                                </Image.Triggers>
+                                            </Image>
                                             <Label
                                                 Padding="2,0"
                                                 FontAttributes="Bold"

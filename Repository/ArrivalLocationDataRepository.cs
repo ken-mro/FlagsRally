@@ -85,7 +85,7 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
         countryFlagSource = _countryHelper.GetCountryEmojiFlag(ArrivalLocationData.CountryCode);
 #endif
 
-        string adminAreaFlagSource = "earth.png";       
+        string adminAreaFlagSource = string.Empty;       
 
         if (ArrivalLocationData.CountryCode == "US")
         {
