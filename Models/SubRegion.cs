@@ -18,6 +18,8 @@ public class SubRegion
     {
         if (Code.lower5LetterRegionCode[0..2] == "us")
         {
+            if (Code.lower5LetterRegionCode == "us-dc") return "us_dc.png";
+
             return $"https://flagcdn.com/160x120/{Code.lower5LetterRegionCode}.png";
         }
         else if (Code.lower5LetterRegionCode[0..2] == "jp")
