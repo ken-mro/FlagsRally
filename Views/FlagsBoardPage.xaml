@@ -24,6 +24,7 @@
                 </Grid.ColumnDefinitions>
                 <Picker
                     Title="{x:Static strings:AppResources.FilterByCountry}"
+                    HorizontalOptions="FillAndExpand"
                     ItemDisplayBinding="{Binding CountryName}"
                     ItemsSource="{Binding CountryList}"
                     SelectedItem="{Binding FilteredCountry}"
@@ -40,21 +41,25 @@
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
-            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
+            <VerticalStackLayout
+                Grid.ColumnSpan="2"
+                Margin="5"
+                IsVisible="{Binding IsSettingsVisible}"
+                Spacing="10">
                 <Grid>
                     <Label
-                        Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
-                        Margin="20,0"
+                        Margin="20,5"
                         HeightRequest="10"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="Gray" />
+                        ThumbColor="Gray"
+                        VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
         </VerticalStackLayout>

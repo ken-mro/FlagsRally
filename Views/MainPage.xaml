@@ -241,44 +241,44 @@
             </Grid>
             <VerticalStackLayout
                 Grid.ColumnSpan="2"
+                Margin="5"
                 IsVisible="{Binding IsSettingsVisible}"
                 Spacing="10">
                 <Grid>
                     <Label
-                        Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
                         Text="{x:Static strings:AppResources.NoDuplicateCountries}"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
-                        Margin="20,0"
+                        Margin="20,5"
                         HeightRequest="10"
                         HorizontalOptions="End"
                         IsToggled="{Binding IsUnique}"
-                        ThumbColor="Gray" />
+                        ThumbColor="Gray"
+                        VerticalOptions="Center" />
 
                 </Grid>
                 <BoxView
-                    Margin="5,0"
                     HeightRequest="1"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="CenterAndExpand"
                     Color="Gray" />
                 <Grid>
                     <Label
-                        Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
                         Grid.Column="1"
-                        Margin="20,0"
+                        Margin="20,5"
                         HeightRequest="10"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="Gray" />
+                        ThumbColor="Gray"
+                        VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
             <Button
