@@ -79,7 +79,12 @@ namespace FlagsRally.ViewModels
                 var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalLocationRepository.GetAllArivalLocations());
                 SourceArrivalLocationList = sourceArrivalLocationList;
 
-                var countryCodeList = sourceArrivalLocationList.Select(x => x.CountryCode).Distinct().ToList();
+                var distinctArrivalLocationList = sourceArrivalLocationList.GroupBy(x => x.CountryCode).Select(x => x.FirstOrDefault()).ToList();
+                var arrivalCountryList = distinctArrivalLocationList.ConvertAll(x => new Country()
+                {
+                    CountryName = x.CountryName,
+                    CountryShortCode = x.CountryCode,
+                });
 
                 var filteredCountryCode = FilteredCountry?.CountryShortCode ?? ALL_COUNTRY_CODE;
                 var countryList = new List<Country>()
@@ -91,7 +96,7 @@ namespace FlagsRally.ViewModels
                     }
                 };
 
-                countryList.AddRange(countryCodeList.ConvertAll(_countryHelper.GetCountryByCode).OrderBy(x => x.CountryName));
+                countryList.AddRange(arrivalCountryList.OrderBy(x => x.CountryName).ToList());
 
                 CountryList = new ObservableCollection<Country>(countryList);
                 FilteredCountry = CountryList.First(x => x.CountryShortCode == filteredCountryCode);
