@@ -91,6 +91,8 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
         {
             var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
             adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lower5LetterRegionCode}.png";
+            if (ArrivalLocationData?.AdminAreaCode == "DC")
+                adminAreaFlagSource = "us_dc.png";
 
         }
         else if (ArrivalLocationData.CountryCode == "JP")

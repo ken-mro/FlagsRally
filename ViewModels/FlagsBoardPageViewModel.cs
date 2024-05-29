@@ -99,18 +99,18 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         if (countryInfo.CountryShortCode == "US")
         {
             blankAllSubregionList = countryInfo.Regions
-                .Where(x => !new[] { "AA", "AE", "AP", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode))
+                .Where(x => !new[] { "AA", "AE", "AP", "AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode))
                 .OrderBy(x => x.ShortCode).Select(x => new SubRegion
                 {
-                Name = x.Name,
-                Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
-            }).ToList();
+                    Name = x.Name,
+                    Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
+                }).ToList();
         }
         else if (countryInfo.CountryShortCode == "JP")
         {
             var regionName = _settingsPreferences.GetCountryOrRegion();
             blankAllSubregionList = countryInfo.Regions
-            .OrderBy(x => x.ShortCode).Select(x => 
+            .OrderBy(x => x.ShortCode).Select(x =>
             {
                 var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
                 return new SubRegion
@@ -144,7 +144,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             if (blankInstance.ArrivalDate < SourceArrivalSubRegion.ArrivalDate)
             {
                 blankInstance.ArrivalDate = SourceArrivalSubRegion.ArrivalDate;
-            } 
+            }
         }
 
         return new ObservableCollection<SubRegion>(blankAllSubregionList.OrderByDescending(x => x.ArrivalDate).ToList());
