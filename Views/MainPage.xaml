@@ -22,7 +22,6 @@
             Grid.Row="0"
             Aspect="AspectFit"
             HeightRequest="{Binding PassportImageHeight}"
-            SemanticProperties.Description="dot net bot in a race car number eight"
             Source="{Binding PassportImageSourceString}" />
         <RefreshView
             Grid.Row="1"
