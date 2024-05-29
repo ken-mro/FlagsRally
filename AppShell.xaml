@@ -10,9 +10,9 @@
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-        <Tab Title="{x:Static strings:AppResources.Flags}" Icon="flag.png">
+        <Tab Title="{x:Static strings:AppResources.Banner}" Icon="flag.png">
             <ShellContent
-                Title="{x:Static strings:AppResources.Flags}"
+                Title="{x:Static strings:AppResources.BannerVisas}"
                 ContentTemplate="{DataTemplate views:MainPage}"
                 Route="MainPage" />
         </Tab>

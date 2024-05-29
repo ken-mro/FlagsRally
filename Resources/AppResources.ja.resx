@@ -138,6 +138,12 @@
   <data name="BackupSucceeded" xml:space="preserve">
     <value>バックアップが正常に保存されました。</value>
   </data>
+  <data name="Banner" xml:space="preserve">
+    <value>旗章</value>
+  </data>
+  <data name="BannerVisas" xml:space="preserve">
+    <value>旗章査証</value>
+  </data>
   <data name="Boards" xml:space="preserve">
     <value>ボード</value>
   </data>
@@ -170,9 +176,6 @@
   </data>
   <data name="FilterByCountry" xml:space="preserve">
     <value>国ごとに表示</value>
-  </data>
-  <data name="Flags" xml:space="preserve">
-    <value>旗章査証</value>
   </data>
   <data name="GetLocation" xml:space="preserve">
     <value>位置情報を取得</value>

@@ -70,7 +70,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admin area.
+        ///   Looks up a localized string similar to Admin Area.
         /// </summary>
         internal static string AdminArea {
             get {
@@ -120,6 +120,24 @@ namespace FlagsRally.Resources {
         internal static string BackupSucceeded {
             get {
                 return ResourceManager.GetString("BackupSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banner.
+        /// </summary>
+        internal static string Banner {
+            get {
+                return ResourceManager.GetString("Banner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banner Visas.
+        /// </summary>
+        internal static string BannerVisas {
+            get {
+                return ResourceManager.GetString("BannerVisas", resourceCulture);
             }
         }
         
@@ -219,15 +237,6 @@ namespace FlagsRally.Resources {
         internal static string FilterByCountry {
             get {
                 return ResourceManager.GetString("FilterByCountry", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Banner Visas.
-        /// </summary>
-        internal static string Flags {
-            get {
-                return ResourceManager.GetString("Flags", resourceCulture);
             }
         }
         

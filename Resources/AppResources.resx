@@ -121,7 +121,7 @@
     <value>This action cannot be undone.</value>
   </data>
   <data name="AdminArea" xml:space="preserve">
-    <value>Admin area</value>
+    <value>Admin Area</value>
   </data>
   <data name="AllCountries" xml:space="preserve">
     <value>All Countries</value>
@@ -137,6 +137,12 @@
   </data>
   <data name="BackupSucceeded" xml:space="preserve">
     <value>Backup saved successfully!</value>
+  </data>
+  <data name="Banner" xml:space="preserve">
+    <value>Banner</value>
+  </data>
+  <data name="BannerVisas" xml:space="preserve">
+    <value>Banner Visas</value>
   </data>
   <data name="Boards" xml:space="preserve">
     <value>Boards</value>
@@ -170,9 +176,6 @@
   </data>
   <data name="FilterByCountry" xml:space="preserve">
     <value>Filter by Country</value>
-  </data>
-  <data name="Flags" xml:space="preserve">
-    <value>Banner Visas</value>
   </data>
   <data name="GetLocation" xml:space="preserve">
     <value>Get Location</value>
