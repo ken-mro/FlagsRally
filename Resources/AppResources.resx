@@ -138,8 +138,8 @@
   <data name="BackupSucceeded" xml:space="preserve">
     <value>Backup saved successfully!</value>
   </data>
-  <data name="Board" xml:space="preserve">
-    <value>Board</value>
+  <data name="Boards" xml:space="preserve">
+    <value>Boards</value>
   </data>
   <data name="Completed" xml:space="preserve">
     <value>Completed</value>
@@ -172,10 +172,7 @@
     <value>Filter by Country</value>
   </data>
   <data name="Flags" xml:space="preserve">
-    <value>Flags</value>
-  </data>
-  <data name="FlagsBoard" xml:space="preserve">
-    <value>Flags Board</value>
+    <value>Banner Visas</value>
   </data>
   <data name="GetLocation" xml:space="preserve">
     <value>Get Location</value>

@@ -124,11 +124,11 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Board.
+        ///   Looks up a localized string similar to Boards.
         /// </summary>
-        internal static string Board {
+        internal static string Boards {
             get {
-                return ResourceManager.GetString("Board", resourceCulture);
+                return ResourceManager.GetString("Boards", resourceCulture);
             }
         }
         
@@ -223,20 +223,11 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flags.
+        ///   Looks up a localized string similar to Banner Visas.
         /// </summary>
         internal static string Flags {
             get {
                 return ResourceManager.GetString("Flags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Flags Board.
-        /// </summary>
-        internal static string FlagsBoard {
-            get {
-                return ResourceManager.GetString("FlagsBoard", resourceCulture);
             }
         }
         

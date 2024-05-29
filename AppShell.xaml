@@ -16,9 +16,9 @@
                 ContentTemplate="{DataTemplate views:MainPage}"
                 Route="MainPage" />
         </Tab>
-        <Tab Title="{x:Static strings:AppResources.Board}" Icon="board.png">
+        <Tab Title="{x:Static strings:AppResources.Boards}" Icon="board.png">
             <ShellContent
-                Title="{x:Static strings:AppResources.FlagsBoard}"
+                Title="{x:Static strings:AppResources.Boards}"
                 ContentTemplate="{DataTemplate views:FlagsBoardPage}"
                 Route="FlagsBoard" />
         </Tab>
