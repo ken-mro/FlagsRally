@@ -43,7 +43,6 @@
             </Grid>
             <VerticalStackLayout
                 Grid.ColumnSpan="2"
-                Margin="5"
                 IsVisible="{Binding IsSettingsVisible}"
                 Spacing="10">
                 <Grid>
@@ -55,7 +54,6 @@
                     <Switch
                         Grid.Column="1"
                         Margin="20,5"
-                        HeightRequest="10"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
                         ThumbColor="Gray"
