@@ -1,11 +1,9 @@
-﻿using CommunityToolkit.Maui.ApplicationModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
@@ -14,12 +12,11 @@ namespace FlagsRally.ViewModels
     {
         private readonly SettingsPreferences _settingsPreferences;
         private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
-        private readonly IBadge _badge;
         private readonly CountryHelper _countryHelper;
         private const string ALL_COUNTRY_CODE = "All";
         private readonly string ALL_COUNTRY_NAME = AppResources.AllCountries;
 
-        public MainPageViewModel(CountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository, IBadge badge)
+        public MainPageViewModel(CountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository)
         {
             Title = "Main Page";
 
@@ -27,7 +24,6 @@ namespace FlagsRally.ViewModels
             _settingsPreferences.PropertyChanged += (s, e) => OnPropertyChanged(nameof(PassportImageSourceString));
             _arrivalLocationRepository = arrivalLocationRepository;
             _countryHelper = countryHelper;
-            _badge = badge;
 
             _ = Init();
         }
@@ -104,7 +100,6 @@ namespace FlagsRally.ViewModels
 
                 CountryList = new ObservableCollection<Country>(countryList);
                 FilteredCountry = CountryList.First(x => x.CountryShortCode == filteredCountryCode);
-                _badge.SetCount(0);
             }
             catch (Exception ex)
             {
