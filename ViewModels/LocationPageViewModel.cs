@@ -8,6 +8,7 @@ using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using FlagsRally.Resources;
+using CommunityToolkit.Maui.ApplicationModel;
 
 namespace FlagsRally.ViewModels;
 
@@ -17,15 +18,17 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly CustomGeolocation _customGeolocation;
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
+    private IBadge _badge;
     public Microsoft.Maui.Controls.Maps.Map ArrivalMap;
 
     [ObservableProperty]
     ObservableCollection<ArrivalLocationPin> _positions;
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IBadge badge)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customGeolocation = customGeolocation;
+        _badge = badge;
         _ = init();
     }
 
@@ -90,6 +93,7 @@ public partial class LocationPageViewModel : BaseViewModel
                     PinLocation = location
                 };
                 Positions.Add(arrivalLocationPins);
+                _badge.SetCount(1);
             }
         }
         // Catch one of the following exceptions:

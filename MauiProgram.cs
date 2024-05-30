@@ -7,6 +7,7 @@ using FlagsRally.Utilities;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui.ApplicationModel;
 
 namespace FlagsRally
 {
@@ -55,6 +56,8 @@ namespace FlagsRally
 
             builder.Services.AddSingleton<FlagsBoardPage>();
             builder.Services.AddSingleton<FlagsBoardPageViewModel>();
+
+            builder.Services.AddSingleton<IBadge>(Badge.Default);
 
 #if DEBUG
             builder.Logging.AddDebug();
