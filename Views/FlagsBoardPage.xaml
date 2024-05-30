@@ -41,9 +41,7 @@
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
-            <VerticalStackLayout
-                Grid.ColumnSpan="2"
-                IsVisible="{Binding IsSettingsVisible}">
+            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
                 <Grid>
                     <Label
                         FontSize="16"
@@ -92,7 +90,10 @@
                                     Text="{Binding Name}"
                                     TextColor="Gray"
                                     VerticalOptions="Center" />
-                                <VerticalStackLayout Spacing="2" IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
+                                <VerticalStackLayout
+                                    IsVisible="{Binding HasBeenVisited}"
+                                    Spacing="2"
+                                    VerticalOptions="Center">
                                     <Image
                                         Margin="5"
                                         HeightRequest="40"
@@ -103,6 +104,7 @@
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
+                                            HeightRequest="25"
                                             HorizontalOptions="CenterAndExpand"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
