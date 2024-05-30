@@ -43,8 +43,7 @@
             </Grid>
             <VerticalStackLayout
                 Grid.ColumnSpan="2"
-                IsVisible="{Binding IsSettingsVisible}"
-                Spacing="10">
+                IsVisible="{Binding IsSettingsVisible}">
                 <Grid>
                     <Label
                         FontSize="16"
