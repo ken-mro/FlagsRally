@@ -92,7 +92,9 @@
                                     VerticalOptions="Center" />
                                 <VerticalStackLayout
                                     IsVisible="{Binding HasBeenVisited}"
-                                    Spacing="2"
+                                    Spacing="{OnPlatform MacCatalyst=2,
+                                                         iOS=2,
+                                                         Default=0}"
                                     VerticalOptions="Center">
                                     <Image
                                         Margin="5"
