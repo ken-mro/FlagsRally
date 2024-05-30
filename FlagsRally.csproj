@@ -43,10 +43,10 @@
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="0.95" />
-		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="1.2" />
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="1.0" />
 
 		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="0.60" />
-		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="0.60" />
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="1.0" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="Black" BaseSize="128,128" />
