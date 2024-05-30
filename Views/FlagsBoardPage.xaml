@@ -93,7 +93,7 @@
                                     Text="{Binding Name}"
                                     TextColor="Gray"
                                     VerticalOptions="Center" />
-                                <VerticalStackLayout IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
+                                <VerticalStackLayout Spacing="2" IsVisible="{Binding HasBeenVisited}" VerticalOptions="Center">
                                     <Image
                                         Margin="5"
                                         HeightRequest="40"
@@ -102,7 +102,6 @@
                                         VerticalOptions="Center" />
                                     <StackLayout BackgroundColor="Black">
                                         <Label
-                                            Padding="2"
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
                                             HorizontalOptions="CenterAndExpand"
@@ -114,7 +113,6 @@
                                             VerticalOptions="Center" />
                                     </StackLayout>
                                     <Label
-                                        Margin="0,5,0,2"
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
@@ -126,7 +124,6 @@
                                         TextColor="Red"
                                         VerticalOptions="Center" />
                                     <Label
-                                        Margin="0,5,0,2"
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
@@ -146,7 +143,6 @@
                                         Y1="0"
                                         Y2="0" />
                                     <Label
-                                        Margin="0,5,0,2"
                                         FontAttributes="Bold"
                                         FontAutoScalingEnabled="True"
                                         FontFamily="JerseyclubGrungeBold"
