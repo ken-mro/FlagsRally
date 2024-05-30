@@ -75,7 +75,6 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type models:SubRegion}">
                         <Border
-                            Margin="2"
                             BackgroundColor="Transparent"
                             Stroke="Black"
                             StrokeShape="RoundRectangle 20,20,20,20"
@@ -115,6 +114,7 @@
                                             VerticalOptions="Center" />
                                     </StackLayout>
                                     <Label
+                                        Margin="0,5,0,2"
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
@@ -126,6 +126,7 @@
                                         TextColor="Red"
                                         VerticalOptions="Center" />
                                     <Label
+                                        Margin="0,5,0,2"
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
@@ -145,6 +146,7 @@
                                         Y1="0"
                                         Y2="0" />
                                     <Label
+                                        Margin="0,5,0,2"
                                         FontAttributes="Bold"
                                         FontAutoScalingEnabled="True"
                                         FontFamily="JerseyclubGrungeBold"
