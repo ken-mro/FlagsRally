@@ -259,6 +259,51 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to How to use this app.
+        /// </summary>
+        internal static string HowTo {
+            get {
+                return ResourceManager.GetString("HowTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Got to ”Settings” and set your Country of Residence..
+        /// </summary>
+        internal static string Instruciton1 {
+            get {
+                return ResourceManager.GetString("Instruciton1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Go to &quot;Location&quot; and Get Locatoin.
+        /// </summary>
+        internal static string Instruciton2 {
+            get {
+                return ResourceManager.GetString("Instruciton2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Go to &quot;Banner&quot; and pull to refresh..
+        /// </summary>
+        internal static string Instruciton3 {
+            get {
+                return ResourceManager.GetString("Instruciton3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bon Voyage!.
+        /// </summary>
+        internal static string Instruciton4 {
+            get {
+                return ResourceManager.GetString("Instruciton4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid file selected.
         /// </summary>
         internal static string InvalidFileSelected {

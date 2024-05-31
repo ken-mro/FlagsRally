@@ -183,6 +183,21 @@
   <data name="HideDateAndMonth" xml:space="preserve">
     <value>日付を表示しない</value>
   </data>
+  <data name="HowTo" xml:space="preserve">
+    <value>このアプリの使い方</value>
+  </data>
+  <data name="Instruciton1" xml:space="preserve">
+    <value>1. 「設定」で居住国を設定する。</value>
+  </data>
+  <data name="Instruciton2" xml:space="preserve">
+    <value>2. 「位置情報」で位置情報を取得する。</value>
+  </data>
+  <data name="Instruciton3" xml:space="preserve">
+    <value>3. 「旗章」で画面を引っ張って更新する。</value>
+  </data>
+  <data name="Instruciton4" xml:space="preserve">
+    <value>Bon Voyage! - 良い旅を - </value>
+  </data>
   <data name="InvalidFileSelected" xml:space="preserve">
     <value>無効なファイルが選択されました。</value>
   </data>

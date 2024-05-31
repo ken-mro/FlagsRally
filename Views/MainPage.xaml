@@ -33,6 +33,45 @@
                 ItemsSource="{Binding DisplayArrivalLocationList}"
                 Scrolled="collectionView_Scrolled"
                 VerticalOptions="FillAndExpand">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="10" Padding="5">
+                        <Label
+                            FontSize="Large"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            FontFamily="craftmincho"
+                            Text="{x:Static strings:AppResources.HowTo}"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontFamily="craftmincho"
+                            FontSize="Medium"
+                            HorizontalOptions="Start"
+                            LineBreakMode="WordWrap"
+                            Text="{x:Static strings:AppResources.Instruciton1}"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontFamily="craftmincho"
+                            FontSize="Medium"
+                            HorizontalOptions="Start"
+                            LineBreakMode="WordWrap"
+                            Text="{x:Static strings:AppResources.Instruciton2}"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontFamily="craftmincho"
+                            FontSize="Medium"
+                            HorizontalOptions="Start"
+                            LineBreakMode="WordWrap"
+                            Text="{x:Static strings:AppResources.Instruciton3}"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontFamily="craftmincho"
+                            FontSize="Medium"
+                            HorizontalOptions="Center"
+                            LineBreakMode="WordWrap"
+                            Text="{x:Static strings:AppResources.Instruciton4}"
+                            VerticalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>

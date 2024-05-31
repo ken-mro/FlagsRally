@@ -183,6 +183,21 @@
   <data name="HideDateAndMonth" xml:space="preserve">
     <value>Hide date and month</value>
   </data>
+  <data name="HowTo" xml:space="preserve">
+    <value>How to use this app</value>
+  </data>
+  <data name="Instruciton1" xml:space="preserve">
+    <value>1. Got to ”Settings” and set your Country of Residence.</value>
+  </data>
+  <data name="Instruciton2" xml:space="preserve">
+    <value>2. Go to "Location" and Get Locatoin</value>
+  </data>
+  <data name="Instruciton3" xml:space="preserve">
+    <value>3. Go to "Banner" and pull to refresh.</value>
+  </data>
+  <data name="Instruciton4" xml:space="preserve">
+    <value>Bon Voyage!</value>
+  </data>
   <data name="InvalidFileSelected" xml:space="preserve">
     <value>Invalid file selected</value>
   </data>
