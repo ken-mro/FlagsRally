@@ -41,6 +41,7 @@
                             HorizontalOptions="Center"
                             FontFamily="craftmincho"
                             Text="{x:Static strings:AppResources.HowTo}"
+                            TextColor="Black"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -48,6 +49,7 @@
                             HorizontalOptions="Start"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton1}"
+                            TextColor="Black"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -55,6 +57,7 @@
                             HorizontalOptions="Start"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton2}"
+                            TextColor="Black"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -62,6 +65,7 @@
                             HorizontalOptions="Start"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton3}"
+                            TextColor="Black"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -69,6 +73,7 @@
                             HorizontalOptions="Center"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton4}"
+                            TextColor="Black"
                             VerticalOptions="Center" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
@@ -118,6 +123,24 @@
                                             </FlyoutBase.ContextFlyout>
                                             <OnPlatform x:TypeArguments="View">
                                                 <On Platform="MacCatalyst, iOS, Android">
+                                                    <Label
+                                                        Margin="-2"
+                                                        FontSize="47"
+                                                        HorizontalOptions="Center"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=IsCountry}"
+                                                        Text="{Binding CountryFlagSource}"
+                                                        VerticalOptions="Center">
+                                                        <Label.Triggers>
+                                                            <DataTrigger
+                                                                Binding="{Binding AdminAreaFlagSource}"
+                                                                TargetType="Label"
+                                                                Value="">
+                                                                <Setter Property="IsVisible" Value="True" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                </On>
+                                                <On Platform="Android">
                                                     <Label
                                                         FontSize="45"
                                                         HorizontalOptions="Center"
