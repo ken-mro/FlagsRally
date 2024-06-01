@@ -100,7 +100,7 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             // Unable to get location
             // Todo:add logger
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.UnableToGetLocation}/n{AppResources.PleaseTryAgain}", "OK");
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.UnableToGetLocation}\n{AppResources.PleaseTryAgain}", "OK");
         }
         finally
         {
