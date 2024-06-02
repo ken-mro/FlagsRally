@@ -24,7 +24,7 @@ public class SubRegionHelper
 
         var jpSubRegionDict = jaJpSubRegionDataList?.ToDictionary(x => x.Name, x => new SubRegionCode(x.Code));
         var usSubRegionDict = _countryHelper?.GetCountryByCode("US").Regions
-            .Where(x => !new[] { "AA", "AE", "AP", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode)).ToList()
+            .Where(x => !new[] { "AA", "AE", "AP", "AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode)).ToList()
             .ToDictionary(x => x.Name, x => new SubRegionCode("US", x.ShortCode));
 
         _subRegionCodeMap.Add("JP", jpSubRegionDict!);
