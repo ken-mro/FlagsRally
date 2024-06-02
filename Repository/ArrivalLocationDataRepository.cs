@@ -48,13 +48,6 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
         return arrivalLocationDataList.Select(GetArrivalLocation).ToList();
     }
 
-    public async Task<List<ArrivalLocation>> GetAllByCountryCode(string countryCode)
-    {
-        await Init();
-        var arrivalLocationDataList = await _conn.Table<ArrivalLocationData>().Where(i => i.CountryCode == countryCode).ToListAsync();
-        return arrivalLocationDataList.Select(GetArrivalLocation).ToList();
-    }
-
     private ArrivalLocation GetArrivalLocation(ArrivalLocationData ArrivalLocationData)
     {
         if (string.IsNullOrEmpty(ArrivalLocationData.CountryCode))
@@ -148,23 +141,6 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
         };
     }
 
-    public async Task<List<Location>> GetAllLocations()
-    {
-        await Init(); // Ensure the database connection is initialized
-        var arrivalLocationDataList = await _conn.Table<ArrivalLocationData>().ToListAsync();
-        return [.. arrivalLocationDataList.Select(GetLocatoin)];
-
-    }
-
-    private Location GetLocatoin(ArrivalLocationData ArrivalLocationData)
-    {
-        return new Location
-        {
-            Latitude = ArrivalLocationData.Latitude,
-            Longitude = ArrivalLocationData.Longitude
-        };
-    }
-
     public async Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode)
     {
         await Init();
@@ -184,44 +160,5 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
                 subRegionCode: ArrivalLocationData.AdminAreaCode
             )
         };
-    }
-
-    [Obsolete]
-    public async Task<bool> UpdateDatabase()
-    {
-        var databaseInfo = await _conn.GetTableInfoAsync(nameof(ArrivalInfo));
-        List<int> deletedIdList = new();
-
-        if (databaseInfo.Any())
-        {
-            // Get all the data from the ArrivalInfo table
-            var arrivalInfoList = await _conn.Table<ArrivalInfo>().ToListAsync();
-
-            // Insert the data into the ArrivalLocation table
-            foreach (var arrivalInfo in arrivalInfoList)
-            {
-                var id = arrivalInfo.Id;
-                var placemark = JsonSerializer.Deserialize<Placemark>(arrivalInfo.Placemark);
-                var location = placemark.Location;
-                string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-                var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(arrivalInfo.ArrivalDate, location, languageCode);
-
-                if (!string.IsNullOrEmpty(arrivalLocationData.CountryCode))
-                {
-                    var insertedId = await _conn.InsertAsync(arrivalLocationData);
-                    if (id > 0) deletedIdList.Add(id);
-                }
-            }
-
-            foreach(var deletedId in deletedIdList)
-            {
-                await _conn.Table<ArrivalInfo>().Where(x => x.Id == deletedId).DeleteAsync();
-            }
-
-            // Drop the ArrivalInfo table
-            await _conn.DropTableAsync<ArrivalInfo>();
-        }
-
-        return true;
     }
 }

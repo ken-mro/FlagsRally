@@ -7,7 +7,6 @@ public partial class App : Application
     public App(IArrivalLocationDataRepository arrivalLocationRepository)
     {
         InitializeComponent();
-        _ = arrivalLocationRepository.UpdateDatabase();
         MainPage = new AppShell();
     }
     protected override Window CreateWindow(IActivationState? activationState)
