@@ -200,7 +200,7 @@ namespace FlagsRally.ViewModels
                                                                     $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
                                                                     $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
                                                                     $"{AppResources.Locality}: {arrivalLocation.LocalityName}\n" +
-                                                                    $"{AppResources.Location}: {roundedLongitude}, {roundedLatitude}","OK");
+                                                                    $"{AppResources.Location}: {roundedLatitude}, {roundedLongitude}","OK");
         }
     }
 }

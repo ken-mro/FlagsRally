@@ -64,6 +64,6 @@ public class ArrivalLocationData
         return $"{AppResources.Country}: {CountryName}\n" + 
                 $"{AppResources.AdminArea}: {AdminAreaName}\n" +
                 $"{AppResources.Locality}: {LocalityName}\n" +
-                $"{AppResources.Location}: {roundedLongitude}, {roundedLatitude}";
+                $"{AppResources.Location}: {roundedLatitude}, {roundedLongitude}";
     }
 }
