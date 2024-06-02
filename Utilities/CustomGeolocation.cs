@@ -83,33 +83,6 @@ public class CustomGeolocation
         return arrivalLocation;
     }
 
-    public static async Task<Placemark> GetPlacemarkAsync(Location location, string languageCode)
-    {
-        var jsonObject = await GetRequestForLocationInfo(location, languageCode);
-        var result = jsonObject["results"]?.Value<JArray>()?.FirstOrDefault();
-        var addressComponent = result?["address_components"];
-
-        var country = addressComponent?.Where(ac => ac["types"].Values<string>()
-                                    .Contains("country")).FirstOrDefault();
-
-        var adminArea = addressComponent?.Where(ac => ac["types"].Values<string>()
-                                    .Contains("administrative_area_level_1")).FirstOrDefault();
-
-        var locality = addressComponent?.Where(ac => ac["types"].Values<string>()
-                                    .Contains("locality")).FirstOrDefault();
-
-        var placemark = new Placemark
-        {
-            CountryName = country?["long_name"]?.Value<string>(),
-            CountryCode = country?["short_name"]?.Value<string>(),
-            AdminArea = adminArea?["long_name"]?.Value<string>(),
-            Locality = locality?["long_name"]?.Value<string>(),
-            Location = new Location(location)
-        };
-
-        return placemark;
-    }
-
     private static async Task<JObject> GetRequestForLocationInfo(Location location, string languageCode)
     {
         if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
