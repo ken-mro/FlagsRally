@@ -59,8 +59,11 @@ public class ArrivalLocationData
 
     public override string ToString()
     {
+        var roundedLongitude = Math.Round(Longitude, 3);
+        var roundedLatitude = Math.Round(Latitude, 3);
         return $"{AppResources.Country}: {CountryName}\n" + 
                 $"{AppResources.AdminArea}: {AdminAreaName}\n" +
-                $"{AppResources.Locality}: {LocalityName}";
+                $"{AppResources.Locality}: {LocalityName}\n" +
+                $"{AppResources.Location}: {roundedLongitude}, {roundedLatitude}";
     }
 }

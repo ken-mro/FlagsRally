@@ -191,10 +191,16 @@ namespace FlagsRally.ViewModels
         [RelayCommand]
         async Task ShowLocationInfo(ArrivalLocation arrivalLocation)
         {
+            var longitude = arrivalLocation.Location.Longitude;
+            var roundedLongitude = Math.Round(longitude, 3);
+            var latitude = arrivalLocation.Location.Latitude;
+            var roundedLatitude = Math.Round(latitude, 3);
+
             await Shell.Current.DisplayAlert($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
                                                                     $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
                                                                     $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
-                                                                    $"{AppResources.Locality}: {arrivalLocation.LocalityName}","OK");
+                                                                    $"{AppResources.Locality}: {arrivalLocation.LocalityName}\n" +
+                                                                    $"{AppResources.Location}: {roundedLongitude}, {roundedLatitude}","OK");
         }
     }
 }
