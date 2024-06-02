@@ -240,6 +240,9 @@
   <data name="UnableToGetLocation" xml:space="preserve">
     <value>位置情報を取得できませんでした。</value>
   </data>
+  <data name="UnexploredLocation" xml:space="preserve">
+    <value>未踏の地</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>はい</value>
   </data>

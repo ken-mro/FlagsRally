@@ -1,5 +1,6 @@
 ﻿using CountryData.Standard;
 using FlagsRally.Models;
+using FlagsRally.Resources;
 using FlagsRally.Utilities;
 using SQLite;
 using System.Globalization;
@@ -58,22 +59,23 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
     {
         if (string.IsNullOrEmpty(ArrivalLocationData.CountryCode))
         {
-            Task.Run(async () => 
+            return new ArrivalLocation() 
             {
-                var id = ArrivalLocationData.Id;
-                var datetime = ArrivalLocationData.ArrivalDate;
-                var location = new Location
+                Id = ArrivalLocationData.Id,
+                ArrivalDate = ArrivalLocationData.ArrivalDate,
+                CountryCode = ArrivalLocationData.CountryCode,
+                CountryName = AppResources.UnexploredLocation,
+                CountryFlagSource = "🏝️",
+                AdminAreaName = AppResources.UnexploredLocation,
+                AdminAreaCode = ArrivalLocationData.AdminAreaCode,
+                AdminAreaFlagSource = "unknown_arrival.png",
+                LocalityName = AppResources.UnexploredLocation,
+                Location = new Location
                 {
                     Latitude = ArrivalLocationData.Latitude,
                     Longitude = ArrivalLocationData.Longitude
-                };
-
-                string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-                ArrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(datetime, location, languageCode);
-                ArrivalLocationData.Id = ArrivalLocationData.Id;
-                _conn.UpdateAsync(ArrivalLocationData);
-            });
-            return new ArrivalLocation();
+                },
+            };
         }
 
 

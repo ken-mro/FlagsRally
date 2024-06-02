@@ -430,6 +430,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexplored Location.
+        /// </summary>
+        internal static string UnexploredLocation {
+            get {
+                return ResourceManager.GetString("UnexploredLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
         internal static string Yes {

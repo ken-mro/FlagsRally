@@ -240,6 +240,9 @@
   <data name="UnableToGetLocation" xml:space="preserve">
     <value>Unable to get location</value>
   </data>
+  <data name="UnexploredLocation" xml:space="preserve">
+    <value>Unexplored Location</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
