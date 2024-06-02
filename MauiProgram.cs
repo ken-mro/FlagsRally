@@ -21,7 +21,7 @@ namespace FlagsRally
 #if ANDROID || IOS
                     .UseMauiMaps()
 #elif WINDOWS
-                .UseMauiCommunityToolkitMaps("PASTE-YOUR-API-KEY-HERE")
+                    .UseMauiCommunityToolkitMaps(Constants.BingMapApiKey)
 #endif
                 .ConfigureFonts(fonts =>
                 {
@@ -33,7 +33,7 @@ namespace FlagsRally
                 })
                 .ConfigureEssentials(essentials =>
                 {
-                    essentials.UseMapServiceToken("PASTE-YOUR-API-KEY-HERE");
+                    essentials.UseMapServiceToken(Constants.BingMapApiKey);
                 });
 
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationRepository>();

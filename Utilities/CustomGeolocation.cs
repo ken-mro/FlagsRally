@@ -1,5 +1,6 @@
 ﻿using CountryData.Standard;
 using FlagsRally.Models;
+using FlagsRally.Repository;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -7,7 +8,6 @@ namespace FlagsRally.Utilities;
 
 public class CustomGeolocation
 {
-    private const string API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
     private readonly CountryHelper _countryHelper;
 
     public CustomGeolocation(CountryHelper countryHelper)
@@ -115,7 +115,7 @@ public class CustomGeolocation
         if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
         if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
 
-        string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&result_type=locality&language={languageCode}&key={API_KEY}";
+        string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&result_type=locality&language={languageCode}&key={Constants.GoogleMapApiKey}";
 
         using (HttpClient httpClient = new HttpClient())
         {
@@ -137,7 +137,7 @@ public class CustomGeolocation
             if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
             if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
 
-            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={API_KEY}";
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={Constants.GoogleMapApiKey}";
 
             using (HttpClient httpClient = new HttpClient())
             {
