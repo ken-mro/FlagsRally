@@ -76,7 +76,7 @@ namespace FlagsRally.ViewModels
             try
             {
                 IsBusy = true;
-                var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalLocationRepository.GetAllArivalLocations());
+                var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(await _arrivalLocationRepository.GetAllArrivalLocations());
                 SourceArrivalLocationList = sourceArrivalLocationList;
 
                 var distinctArrivalLocationList = sourceArrivalLocationList.GroupBy(x => x.CountryCode).Select(x => x.FirstOrDefault()).ToList();

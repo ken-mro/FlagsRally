@@ -41,7 +41,7 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
         return await _conn.Table<ArrivalLocationData>().Where(i => i.Id == Id).DeleteAsync();
     }
 
-    public async Task<List<ArrivalLocation>> GetAllArivalLocations()
+    public async Task<List<ArrivalLocation>> GetAllArrivalLocations()
     {
         await Init();
         var arrivalLocationDataList = await _conn.Table<ArrivalLocationData>().ToListAsync();
