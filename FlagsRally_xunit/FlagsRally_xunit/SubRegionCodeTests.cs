@@ -9,6 +9,7 @@ namespace FlagsRally.Tests.Models
         [Theory]
         [InlineData("US-AL")]
         [InlineData("JP-01")]
+        [InlineData("DE-BW")]
         public void SubRegionCode_WithValidValue_ShouldSetPropertyValue(string value)
         {
             SubRegionCode subRegionCode = new SubRegionCode(value);
@@ -29,6 +30,10 @@ namespace FlagsRally.Tests.Models
         [InlineData("US-A1")]
         [InlineData("US-1A")]
         [InlineData("US-01")]
+
+        [InlineData("DE-A1")]
+        [InlineData("DE-1A")]
+        [InlineData("DE-01")]
         public void SubRegionCode_WithInvalidValue_ShouldThrowArgumentException(string value)
         {
             // Act & Assert
@@ -59,6 +64,9 @@ namespace FlagsRally.Tests.Models
         [InlineData("US","A1")]
         [InlineData("US","1A")]
         [InlineData("US","01")]
+        [InlineData("DE", "A1")]
+        [InlineData("DE", "1A")]
+        [InlineData("DE", "01")]
         public void SubRegionCode_WithInvalidCountryCode_ShouldThrowArgumentException(string countryCode, string subRegionCode)
         {
             // Act & Assert

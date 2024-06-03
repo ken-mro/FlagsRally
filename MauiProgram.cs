@@ -36,10 +36,10 @@ namespace FlagsRally
                     essentials.UseMapServiceToken(Constants.BingMapApiKey);
                 });
 
-            builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationRepository>();
+            builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationDataRepository>();
             builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton(Preferences.Default);
-            builder.Services.AddSingleton(new CountryHelper());
+            builder.Services.AddSingleton<CountryHelper, CustomCountryHelper>();
 
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();

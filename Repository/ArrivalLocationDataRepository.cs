@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace FlagsRally.Repository;
 
-public class ArrivalLocationRepository : IArrivalLocationDataRepository
+public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 {
     string _dbPath = Constants.DataBasePath;
     readonly CountryHelper _countryHelper;
@@ -19,7 +19,7 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
 
     private SQLiteAsyncConnection _conn;
 
-    public ArrivalLocationRepository(CountryHelper countryHelper, CustomGeolocation customGeolocation)
+    public ArrivalLocationDataRepository(CountryHelper countryHelper, CustomGeolocation customGeolocation)
     {
         _countryHelper = countryHelper;
         _customGeolocation = customGeolocation;
@@ -90,7 +90,7 @@ public class ArrivalLocationRepository : IArrivalLocationDataRepository
                 adminAreaFlagSource = "us_dc.png";
 
         }
-        else if (ArrivalLocationData.CountryCode == "JP")
+        else if (ArrivalLocationData.CountryCode == "JP" || ArrivalLocationData.CountryCode == "DE")
         {
             var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
             adminAreaFlagSource = $"{subRegionCode?.GetImageResourceString()}.png";

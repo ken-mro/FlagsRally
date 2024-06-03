@@ -22,7 +22,7 @@ public class SubRegion
 
             return $"https://flagcdn.com/160x120/{Code.lower5LetterRegionCode}.png";
         }
-        else if (Code.lower5LetterRegionCode[0..2] == "jp")
+        else if (Code.lower5LetterRegionCode[0..2] == "jp" || Code.lower5LetterRegionCode[0..2] == "de")
         {
             return $"{Code.GetImageResourceString()}_emblem.png";
         }

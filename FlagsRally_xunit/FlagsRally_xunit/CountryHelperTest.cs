@@ -13,7 +13,7 @@ public class CountryHelperTest
         //Act
         var regionList = countryHelper?.GetCountryByCode("JP").Regions.ToList();
 
-        //Assrt
+        //Assert
         Assert.True(regionList?.Count == 47);
     }
 
@@ -28,7 +28,7 @@ public class CountryHelperTest
                         .Where(x => !new[] { "AA", "AE", "AP", "AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }
                         .Contains(x.ShortCode)).ToList();
 
-        //Assrt
+        //Assert
         Assert.True(regionList?.Count == 51);
     }
 
@@ -41,7 +41,7 @@ public class CountryHelperTest
         //Act
         var regionList = countryHelper?.GetCountryByCode("DE").Regions.ToList();
 
-        //Assrt
+        //Assert
         Assert.True(regionList?.Count == 16);
     }
 
@@ -54,7 +54,7 @@ public class CountryHelperTest
         //Act
         var regionList = countryHelper?.GetCountryByCode("FR").Regions.ToList();
 
-        //Assrt
+        //Assert
         Assert.True(regionList?.Count == 26);
     }
 
@@ -67,7 +67,7 @@ public class CountryHelperTest
         //Act
         var regionList = countryHelper?.GetCountryByCode("IT").Regions.ToList();
 
-        //Assrt
+        //Assert
         Assert.True(regionList?.Count == 20);
     }
 }
