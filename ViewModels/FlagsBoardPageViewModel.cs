@@ -32,6 +32,14 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             countryHelper.GetCountryByCode("US"),
         };
 
+        var regionName = _settingsPreferences.GetCountryOrRegion();
+        var matchingCountry = CountryList.FirstOrDefault(c => c.CountryShortCode == regionName);
+        if (matchingCountry != null)
+        {
+            CountryList.Remove(matchingCountry);
+            CountryList.Insert(0, matchingCountry);
+        }
+
         FilteredCountry = CountryList.First();
 
         _ = Init();
