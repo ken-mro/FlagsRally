@@ -64,7 +64,8 @@ public class CustomGeolocation
         var enLocalityName = enLocality?["long_name"]?.Value<string>();
         var countryCode = country?["short_name"]?.Value<string>();
 
-        var adminAreaCode = _countryHelper.GetCountryByCode(countryCode)?.Regions.Where(x => x.Name == enAdminAreaName)?.FirstOrDefault()?.ShortCode;
+        var countryRegions = _countryHelper.GetCountryByCode(countryCode)?.Regions;
+        var adminAreaCode = countryRegions?.Where(x => x.Name == enAdminAreaName)?.FirstOrDefault()?.ShortCode;
 
         var arrivalLocation = new ArrivalLocationData
         (
