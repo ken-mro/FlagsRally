@@ -12,28 +12,36 @@ public class CustomCountryHelper : CountryHelper
         UpdateIt();
     }
 
+    public List<Regions> GetDistinctCountryRegionsBy(string countryCode)
+    {
+        return GetRegionByCountryCode(countryCode).GroupBy(x => x.ShortCode).Select(x => x.First()).ToList();
+    }
+
     private void UpdateDe()
     {
+        var CountryRegion = GetRegionByCountryCode("DE");
         var region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Bayern");
-        region!.Name = "Bavaria";
+        CountryRegion.Add(new Regions(){ Name = "Bavaria", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Niedersachsen");
-        region!.Name = "Lower Saxony";
+        CountryRegion.Add(new Regions(){ Name = "Lower Saxony", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Nordrhein-Westfalen");
-        region!.Name = "North Rhine-Westphalia";
+        CountryRegion.Add(new Regions(){ Name = "North Rhine-Westphalia", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Rheinland-Pfalz");
-        region!.Name = "Rhineland-Palatinate";
+        CountryRegion.Add(new Regions(){ Name = "Rhineland-Palatinate", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Sachsen");
-        region!.Name = "Saxony";
+        CountryRegion.Add(new Regions() { Name = "Saxony", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Sachsen-Anhalt");
-        region!.Name = "Saxony-Anhalt";
+        CountryRegion.Add(new Regions() { Name = "Saxony-Anhalt", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Thüringen");
-        region!.Name = "Thuringia";
+        CountryRegion.Add(new Regions() { Name = "Thuringia", ShortCode = region?.ShortCode });
+
+        GetCountryByCode("DE").Regions = CountryRegion.ToList();
     }
 
     private void UpdateUs()
@@ -45,34 +53,32 @@ public class CustomCountryHelper : CountryHelper
 
     private void UpdateIt()
     {
-        var italyRegions = GetCountryByCode("IT").Regions.ToList();
-        foreach (var italyRegion in italyRegions)
-        {
-            Debug.WriteLine(italyRegion.Name, italyRegion.ShortCode);
-        }
+        var CountryRegion = GetRegionByCountryCode("IT");
 
         var region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Valle d'Aosta");
-        region!.Name = "Aosta Valley";
+        CountryRegion.Add(new Regions() { Name = "Aosta Valley", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Piemonte");
-        region!.Name = "Piedmont";
+        CountryRegion.Add(new Regions() { Name = "Piedmont", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Lombardia");
-        region!.Name = "Lombardy";
+        CountryRegion.Add(new Regions() { Name = "Lombardy", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Trentino-Alto Adige");
-        region!.Name = "Trentino-South Tyrol";
+        CountryRegion.Add(new Regions() { Name = "Trentino-South Tyrol", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Toscana");
-        region!.Name = "Tuscany";
-
+        CountryRegion.Add(new Regions() { Name = "Tuscany", ShortCode = region?.ShortCode });
+          
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Puglia");
-        region!.Name = "Apulia";
+        CountryRegion.Add(new Regions() { Name = "Apulia", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Sicilia");
-        region!.Name = "Sicily";
+        CountryRegion.Add(new Regions() { Name = "Sicily", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Sardegna");
-        region!.Name = "Sardinia";
+        CountryRegion.Add(new Regions() { Name = "Sardinia", ShortCode = region?.ShortCode });
+
+        GetCountryByCode("IT").Regions = CountryRegion.ToList();
     }
 }

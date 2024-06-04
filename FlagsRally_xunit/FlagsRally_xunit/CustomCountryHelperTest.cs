@@ -16,7 +16,7 @@ public class CustomCountryHelperTest
         var countryHelper = new CustomCountryHelper();
 
         //Act
-        var regionList = countryHelper?.GetCountryByCode(CountryCode).Regions.ToList();
+        var regionList = countryHelper?.GetDistinctCountryRegionsBy(CountryCode).ToList();
 
         //Assert
         Assert.True(regionList?.Count == regionCount);
