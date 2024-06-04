@@ -2,6 +2,7 @@
 using FlagsRally.Models;
 using FlagsRally.Resources;
 using FlagsRally.Utilities;
+using FlagsRally.Repository;
 using SQLite;
 using System.Globalization;
 using System.Text.Json;
@@ -52,7 +53,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     {
         if (string.IsNullOrEmpty(ArrivalLocationData.CountryCode))
         {
-            return new ArrivalLocation() 
+            return new ArrivalLocation()
             {
                 Id = ArrivalLocationData.Id,
                 ArrivalDate = ArrivalLocationData.ArrivalDate,
@@ -80,7 +81,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
         countryFlagSource = _countryHelper.GetCountryEmojiFlag(ArrivalLocationData.CountryCode);
 #endif
 
-        string adminAreaFlagSource = string.Empty;       
+        string adminAreaFlagSource = string.Empty;
 
         if (ArrivalLocationData.CountryCode == "US")
         {
@@ -88,12 +89,14 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
             adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lower5LetterRegionCode}.png";
             if (ArrivalLocationData?.AdminAreaCode == "DC")
                 adminAreaFlagSource = "us_dc.png";
-
         }
-        else if (ArrivalLocationData.CountryCode == "JP" || ArrivalLocationData.CountryCode == "DE")
+        else if (Constants.SupportedSubRegionCountryCodeList.Contains(ArrivalLocationData.CountryCode.ToLower()))
         {
-            var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
-            adminAreaFlagSource = $"{subRegionCode?.GetImageResourceString()}.png";
+            if (!string.IsNullOrEmpty(ArrivalLocationData.AdminAreaCode))
+            {
+                var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
+                adminAreaFlagSource = $"{subRegionCode?.GetImageResourceString()}.png";
+            }
         }
 
         return new ArrivalLocation
