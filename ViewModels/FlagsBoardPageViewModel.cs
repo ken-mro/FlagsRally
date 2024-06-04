@@ -27,6 +27,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         var countryHelper = new CountryHelper();
         CountryList = new ObservableCollection<Country>()
         {
+            countryHelper.GetCountryByCode("IT"),
             countryHelper.GetCountryByCode("DE"),
             countryHelper.GetCountryByCode("JP"),
             countryHelper.GetCountryByCode("US"),

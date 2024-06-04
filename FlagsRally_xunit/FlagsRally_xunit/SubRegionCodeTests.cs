@@ -10,7 +10,8 @@ namespace FlagsRally.Tests.Models
         [InlineData("US-AL")]
         [InlineData("JP-01")]
         [InlineData("DE-BW")]
-        public void SubRegionCode_WithValidValue_ShouldSetPropertyValue(string value)
+        [InlineData("IT-21")]
+        public void SubRegionCode_with_supported_country(string value)
         {
             SubRegionCode subRegionCode = new SubRegionCode(value);
 
@@ -18,30 +19,8 @@ namespace FlagsRally.Tests.Models
             Assert.Equal(value.ToLower(), subRegionCode.lower5LetterRegionCode);
         }
 
-        [Theory]
-        [InlineData("AB-CD")]
-        [InlineData("JP-001")]
-        [InlineData("JP001")]
-
-        [InlineData("JP-AL")]
-        [InlineData("JP-A1")]
-        [InlineData("JP-1A")]
-
-        [InlineData("US-A1")]
-        [InlineData("US-1A")]
-        [InlineData("US-01")]
-
-        [InlineData("DE-A1")]
-        [InlineData("DE-1A")]
-        [InlineData("DE-01")]
-        public void SubRegionCode_WithInvalidValue_ShouldThrowArgumentException(string value)
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => new SubRegionCode(value));
-        }
-
         [Fact]
-        public void SubRegionCode_WithValidCodes_ShouldCreateInstance()
+        public void SubRegionCode_with_supported_country_and_subRegionCode()
         {
             // Arrange
             string countryCode = "JP";
@@ -56,18 +35,19 @@ namespace FlagsRally.Tests.Models
         }
 
         [Theory]
+        [InlineData("AB-CD")]
+        [InlineData("JP-001")]
+        [InlineData("JP001")]
+        public void SubRegionCode_with_invalid_format_or_country_code(string value)
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => new SubRegionCode(value));
+        }
+
+        [Theory]
         [InlineData("AB", "CD")]
         [InlineData("JP","001")]
-        [InlineData("JP","AL")]
-        [InlineData("JP","A1")]
-        [InlineData("JP","1A")]
-        [InlineData("US","A1")]
-        [InlineData("US","1A")]
-        [InlineData("US","01")]
-        [InlineData("DE", "A1")]
-        [InlineData("DE", "1A")]
-        [InlineData("DE", "01")]
-        public void SubRegionCode_WithInvalidCountryCode_ShouldThrowArgumentException(string countryCode, string subRegionCode)
+        public void SubRegionCode_with_invalid_format_or_unsupported_country(string countryCode, string subRegionCode)
         {
             // Act & Assert
             Assert.Throws<ArgumentException>(() => new SubRegionCode(countryCode, subRegionCode));

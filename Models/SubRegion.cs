@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using FlagsRally.Repository;
 
 namespace FlagsRally.Models;
 
@@ -22,7 +23,7 @@ public class SubRegion
 
             return $"https://flagcdn.com/160x120/{Code.lower5LetterRegionCode}.png";
         }
-        else if (Code.lower5LetterRegionCode[0..2] == "jp" || Code.lower5LetterRegionCode[0..2] == "de")
+        else if (Constants.SupportedSubRegionCountryCodeList.Contains(Code.lower5LetterRegionCode[0..2]))
         {
             return $"{Code.GetImageResourceString()}_emblem.png";
         }
