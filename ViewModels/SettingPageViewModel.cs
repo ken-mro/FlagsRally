@@ -23,11 +23,11 @@ namespace FlagsRally.ViewModels
 
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
 
-        public SettingPageViewModel(SettingsPreferences settingPreferences)
+        public SettingPageViewModel(SettingsPreferences settingPreferences, CountryHelper countryHelper)
         {
             _settingPreferences = settingPreferences;
 
-            _countryHelper = new CountryHelper();
+            _countryHelper = countryHelper;
             CountryList = new ObservableCollection<Country>(_countryHelper.GetCountryData());
 
             _selectedCountry = _countryHelper.GetCountryByCode(_settingPreferences.GetCountryOrRegion());
