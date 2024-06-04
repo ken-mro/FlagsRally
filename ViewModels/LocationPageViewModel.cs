@@ -2,12 +2,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
 using FlagsRally.Repository;
-using FlagsRally.Helpers;
+using FlagsRally.Resources;
 using FlagsRally.Utilities;
 using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
