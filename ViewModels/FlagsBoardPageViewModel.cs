@@ -116,27 +116,23 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
                     Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
                 }).ToList();
         }
-        else if (countryInfo.CountryShortCode == "JP")
+        else
         {
             var regionName = _settingsPreferences.GetCountryOrRegion();
+            var isCountryOfResidence = countryInfo.CountryShortCode.Equals(regionName);
+            var isSupported = _subRegionHelper.isSupported(regionName.ToUpper());
+
             blankAllSubregionList = countryInfo.Regions
             .OrderBy(x => x.ShortCode).Select(x =>
             {
                 var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
+                var name = _subRegionHelper.GetLocalSubregionName(code);
                 return new SubRegion
                 {
-                    Name = regionName == "JP" ? _subRegionHelper.GetJaSubregionName(code) : x.Name,
+                    Name = isCountryOfResidence && isSupported ? 
+                           _subRegionHelper.GetLocalSubregionName(code) : x.Name,
                     Code = code
                 };
-            }).ToList();
-        }
-        else
-        {
-            blankAllSubregionList = countryInfo.Regions
-            .OrderBy(x => x.ShortCode).Select(x => new SubRegion
-            {
-                Name = x.Name,
-                Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
             }).ToList();
         }
 

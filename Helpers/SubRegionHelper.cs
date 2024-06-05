@@ -19,21 +19,20 @@ public class SubRegionHelper
         using var streamReader = new StreamReader(stream!, Encoding.UTF8);
         string jsonString = streamReader.ReadToEnd();
         var jaJpSubRegionDataList = JsonSerializer.Deserialize<List<SubRegionData>>(jsonString);
-        var enJpSubRegionDataList = _countryHelper?.GetCountryByCode("JP").Regions.ConvertAll(x => new SubRegionData(x.Name, "JP-" + x.ShortCode));
-        jaJpSubRegionDataList?.AddRange(enJpSubRegionDataList!);
-
         var jpSubRegionDict = jaJpSubRegionDataList?.ToDictionary(x => x.Name, x => new SubRegionCode(x.Code));
-        var usSubRegionDict = _countryHelper?.GetCountryByCode("US").Regions
-            .Where(x => !new[] { "AA", "AE", "AP", "AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode)).ToList()
-            .ToDictionary(x => x.Name, x => new SubRegionCode("US", x.ShortCode));
 
         _subRegionCodeMap.Add("JP", jpSubRegionDict!);
-        _subRegionCodeMap.Add("US", usSubRegionDict!);
     }
 
-    public string GetJaSubregionName(SubRegionCode subRegionCode)
+    public bool isSupported(string countryCode)
     {
-        var key = _subRegionCodeMap["JP"].FirstOrDefault(x => x.Value == subRegionCode).Key;
+        return _subRegionCodeMap.ContainsKey(countryCode.ToUpper());
+    }
+
+    public string GetLocalSubregionName(SubRegionCode subRegionCode)
+    {
+        if (!isSupported(subRegionCode.CountryCode.ToUpper())) return string.Empty;
+        var key = _subRegionCodeMap[subRegionCode.CountryCode].FirstOrDefault(x => x.Value == subRegionCode).Key;
         return key;
     }
 }

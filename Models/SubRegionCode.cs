@@ -5,10 +5,11 @@ namespace FlagsRally.Models;
 public record SubRegionCode
 {
     public string lower5LetterRegionCode { get; init; }
+    public string CountryCode { get; init; }
     public SubRegionCode(string fiveLetterRegionCode)
     {
-        var countryCode = fiveLetterRegionCode[0..2];
-        if (!Constants.SupportedSubRegionCountryCodeList.Contains(countryCode.ToLower())) throw new ArgumentException("Unsupported SubRegion's CountryCode");
+        CountryCode = fiveLetterRegionCode[0..2].ToUpper();
+        if (!Constants.SupportedSubRegionCountryCodeList.Contains(CountryCode.ToLower())) throw new ArgumentException("Unsupported SubRegion's CountryCode");
         if (fiveLetterRegionCode.Length != 5) throw new ArgumentException("SubRegionCode must be 5 characters long");
         if (fiveLetterRegionCode[2] != '-') throw new ArgumentException("SubRegionCode must have a hyphen in the middle");
 
@@ -17,6 +18,7 @@ public record SubRegionCode
 
     public SubRegionCode(string countryCode, string subRegionCode)
     {
+        CountryCode = countryCode;
         var loweredCountryCode = countryCode.ToLower();
         var loweredSubRegionCode = subRegionCode.ToLower();
         if (loweredCountryCode.Length != 2 || loweredSubRegionCode.Length != 2) throw new ArgumentException("Unexpected length of argument");
