@@ -9,9 +9,9 @@ namespace FlagsRally.Utilities;
 
 public class CustomGeolocation
 {
-    private readonly CountryHelper _countryHelper;
+    private readonly CustomCountryHelper _countryHelper;
 
-    public CustomGeolocation(CountryHelper countryHelper)
+    public CustomGeolocation(CustomCountryHelper countryHelper)
     {
         _countryHelper = countryHelper;
     }

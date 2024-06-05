@@ -4,13 +4,14 @@ using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Utilities;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
 {
     public partial class SettingPageViewModel : BaseViewModel
     {
-        private CountryHelper _countryHelper;
+        private CustomCountryHelper _countryHelper;
         private SettingsPreferences _settingPreferences;
         private CancellationTokenSource cancellationSource = new CancellationTokenSource();
 
@@ -23,7 +24,7 @@ namespace FlagsRally.ViewModels
 
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
 
-        public SettingPageViewModel(SettingsPreferences settingPreferences, CountryHelper countryHelper)
+        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper)
         {
             _settingPreferences = settingPreferences;
 

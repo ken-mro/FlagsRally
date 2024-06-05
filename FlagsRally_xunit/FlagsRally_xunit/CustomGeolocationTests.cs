@@ -10,7 +10,7 @@ public class CustomGeolocationTests
         // Arrange
         Location location = new Location(37.7749, -122.4194);
         string languageCode = "en";
-        var customGeolocation = new CustomGeolocation(new CountryData.Standard.CountryHelper());
+        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
         var datetime = DateTime.Now;
 
         // Act
@@ -39,7 +39,7 @@ public class CustomGeolocationTests
         // Arrange
         Location location = new Location(37.7749, -122.4194);
         string languageCode = "ja";
-        var customGeolocation = new CustomGeolocation(new CountryData.Standard.CountryHelper());
+        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
         var datetime = DateTime.Now;
 
         // Act
@@ -68,7 +68,7 @@ public class CustomGeolocationTests
         // Arrange
         Location location = new Location(12.984305, -61.287228);
         string languageCode = "ja";
-        var customGeolocation = new CustomGeolocation(new CountryData.Standard.CountryHelper());
+        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
         var datetime = DateTime.Now;
 
         // Act

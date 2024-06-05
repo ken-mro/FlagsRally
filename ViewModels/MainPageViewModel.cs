@@ -4,6 +4,7 @@ using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Utilities;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
@@ -12,11 +13,11 @@ namespace FlagsRally.ViewModels
     {
         private readonly SettingsPreferences _settingsPreferences;
         private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
-        private readonly CountryHelper _countryHelper;
+        private readonly CustomCountryHelper _countryHelper;
         private const string ALL_COUNTRY_CODE = "All";
         private readonly string ALL_COUNTRY_NAME = AppResources.AllCountries;
 
-        public MainPageViewModel(CountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository)
+        public MainPageViewModel(CustomCountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository)
         {
             Title = "Main Page";
 

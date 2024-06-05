@@ -1,5 +1,5 @@
-﻿using CountryData.Standard;
-using FlagsRally.Models;
+﻿using FlagsRally.Models;
+using FlagsRally.Utilities;
 using System.Text;
 using System.Text.Json;
 
@@ -7,10 +7,10 @@ namespace FlagsRally.Helpers;
 
 public class SubRegionHelper
 {
-    private readonly CountryHelper _countryHelper;
+    private readonly CustomCountryHelper _countryHelper;
     private Dictionary<string, Dictionary<string, SubRegionCode>> _subRegionCodeMap = new();
 
-    public SubRegionHelper(CountryHelper countryHelper)
+    public SubRegionHelper(CustomCountryHelper countryHelper)
     {
         _countryHelper = countryHelper;
 

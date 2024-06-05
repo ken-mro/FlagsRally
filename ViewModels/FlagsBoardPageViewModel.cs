@@ -6,6 +6,7 @@ using FlagsRally.Repository;
 using FlagsRally.Helpers;
 using System.Collections.ObjectModel;
 using FlagsRally.Resources;
+using FlagsRally.Utilities;
 
 namespace FlagsRally.ViewModels;
 
@@ -14,23 +15,24 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     private readonly SubRegionHelper _subRegionHelper;
     private readonly IArrivalLocationDataRepository _arrivalLocationDataRepository;
     private readonly SettingsPreferences _settingsPreferences;
+    private readonly CustomCountryHelper _customCountryHelper;
 
 
-    public FlagsBoardPageViewModel(IArrivalLocationDataRepository arrivalLocationDataRepository, SubRegionHelper arrivalInfoService, SettingsPreferences settingsPreferences)
+    public FlagsBoardPageViewModel(IArrivalLocationDataRepository arrivalLocationDataRepository, SubRegionHelper arrivalInfoService, SettingsPreferences settingsPreferences, CustomCountryHelper customCountryHelper)
     {
         Title = "Flags Board";
 
         _arrivalLocationDataRepository = arrivalLocationDataRepository;
         _subRegionHelper = arrivalInfoService;
         _settingsPreferences = settingsPreferences;
+        _customCountryHelper = customCountryHelper;
 
-        var countryHelper = new CountryHelper();
         CountryList = new ObservableCollection<Country>()
         {
-            countryHelper.GetCountryByCode("IT"),
-            countryHelper.GetCountryByCode("DE"),
-            countryHelper.GetCountryByCode("JP"),
-            countryHelper.GetCountryByCode("US"),
+            customCountryHelper.GetCountryByCode("IT"),
+            customCountryHelper.GetCountryByCode("DE"),
+            customCountryHelper.GetCountryByCode("JP"),
+            customCountryHelper.GetCountryByCode("US"),
         };
 
         var regionName = _settingsPreferences.GetCountryOrRegion();

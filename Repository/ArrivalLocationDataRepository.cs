@@ -12,7 +12,7 @@ namespace FlagsRally.Repository;
 public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 {
     string _dbPath = Constants.DataBasePath;
-    readonly CountryHelper _countryHelper;
+    readonly CustomCountryHelper _countryHelper;
 
     readonly CustomGeolocation _customGeolocation;
 
@@ -20,7 +20,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 
     private SQLiteAsyncConnection _conn;
 
-    public ArrivalLocationDataRepository(CountryHelper countryHelper, CustomGeolocation customGeolocation)
+    public ArrivalLocationDataRepository(CustomCountryHelper countryHelper, CustomGeolocation customGeolocation)
     {
         _countryHelper = countryHelper;
         _customGeolocation = customGeolocation;
