@@ -3,6 +3,7 @@ using FlagsRally.Models;
 using FlagsRally.Repository;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace FlagsRally.Utilities;
 
@@ -64,7 +65,7 @@ public class CustomGeolocation
         var enLocalityName = enLocality?["long_name"]?.Value<string>();
         var countryCode = country?["short_name"]?.Value<string>();
 
-        var countryRegions = _countryHelper.GetCountryByCode(countryCode)?.Regions;
+        var countryRegions = string.IsNullOrEmpty(countryCode) ? [] : _countryHelper.GetCountryByCode(countryCode).Regions;
         var adminAreaCode = countryRegions?.Where(x => x.Name == enAdminAreaName)?.FirstOrDefault()?.ShortCode;
 
         var arrivalLocation = new ArrivalLocationData
