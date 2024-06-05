@@ -11,12 +11,13 @@ namespace FlagsRally.Tests.Models
         [InlineData("JP-01")]
         [InlineData("DE-BW")]
         [InlineData("IT-21")]
+        [InlineData("FR-IDF")]
         public void SubRegionCode_with_supported_country(string value)
         {
             SubRegionCode subRegionCode = new SubRegionCode(value);
 
             // Assert
-            Assert.Equal(value.ToLower(), subRegionCode.lower5LetterRegionCode);
+            Assert.Equal(value.ToLower(), subRegionCode.lowerCountryCodeHyphenSubRegionCode);
         }
 
         [Fact]
@@ -31,12 +32,11 @@ namespace FlagsRally.Tests.Models
 
             // Assert
             Assert.NotNull(subRegion);
-            Assert.Equal("JP-01".ToLower(), subRegion.lower5LetterRegionCode);
+            Assert.Equal("JP-01".ToLower(), subRegion.lowerCountryCodeHyphenSubRegionCode);
         }
 
         [Theory]
         [InlineData("AB-CD")]
-        [InlineData("JP-001")]
         [InlineData("JP001")]
         public void SubRegionCode_with_invalid_format_or_country_code(string value)
         {
@@ -46,7 +46,6 @@ namespace FlagsRally.Tests.Models
 
         [Theory]
         [InlineData("AB", "CD")]
-        [InlineData("JP","001")]
         public void SubRegionCode_with_invalid_format_or_unsupported_country(string countryCode, string subRegionCode)
         {
             // Act & Assert

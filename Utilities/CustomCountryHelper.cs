@@ -10,6 +10,7 @@ public class CustomCountryHelper : CountryHelper
         UpdateUs();
         UpdateDe();
         UpdateIt();
+        UpdateFr();
     }
 
     public List<Regions> GetDistinctCountryRegionsBy(string countryCode)
@@ -80,5 +81,24 @@ public class CustomCountryHelper : CountryHelper
         CountryRegion.Add(new Regions() { Name = "Sardinia", ShortCode = region?.ShortCode });
 
         GetCountryByCode("IT").Regions = CountryRegion.ToList();
+    }
+
+    private void UpdateFr()
+    {
+        var CountryRegion = GetCountryByCode("FR").Regions.Where(x => x.ShortCode.Length == 3).ToList();
+
+        var region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Provence-Alpes-Cote d'Azur");
+        CountryRegion.Add(new Regions() { Name = "Provence-Alpes-Côte d'Azur", ShortCode = region?.ShortCode });
+
+        region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Normandie");
+        CountryRegion.Add(new Regions() { Name = "Normandy", ShortCode = region?.ShortCode });
+
+        region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Corse");
+        CountryRegion.Add(new Regions() { Name = "Corsica", ShortCode = region?.ShortCode });
+
+        region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Bretagne");
+        CountryRegion.Add(new Regions() { Name = "Brittany", ShortCode = region?.ShortCode });
+
+        GetCountryByCode("FR").Regions = CountryRegion;
     }
 }

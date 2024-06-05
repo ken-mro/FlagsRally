@@ -29,8 +29,9 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
         CountryList = new ObservableCollection<Country>()
         {
-            customCountryHelper.GetCountryByCode("IT"),
             customCountryHelper.GetCountryByCode("DE"),
+            customCountryHelper.GetCountryByCode("FR"),
+            customCountryHelper.GetCountryByCode("IT"),
             customCountryHelper.GetCountryByCode("JP"),
             customCountryHelper.GetCountryByCode("US"),
         };
@@ -108,39 +109,27 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry.CountryShortCode);
 
         List<SubRegion> blankAllSubregionList;
-        if (countryInfo.CountryShortCode == "US")
-        {
-            blankAllSubregionList = countryInfo.Regions
-                .Where(x => !new[] { "AA", "AE", "AP", "AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI" }.Contains(x.ShortCode))
-                .OrderBy(x => x.ShortCode).Select(x => new SubRegion
-                {
-                    Name = x.Name,
-                    Code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode)
-                }).ToList();
-        }
-        else
-        {
-            var regionName = _settingsPreferences.GetCountryOrRegion();
-            var isCountryOfResidence = countryInfo.CountryShortCode.Equals(regionName);
-            var isSupported = _subRegionHelper.isSupported(regionName.ToUpper());
 
-            blankAllSubregionList = countryInfo.Regions
-            .OrderBy(x => x.ShortCode).Select(x =>
+        var regionName = _settingsPreferences.GetCountryOrRegion();
+        var isCountryOfResidence = countryInfo.CountryShortCode.Equals(regionName);
+        var isSupported = _subRegionHelper.isSupported(regionName.ToUpper());
+
+        blankAllSubregionList = _customCountryHelper.GetDistinctCountryRegionsBy(countryInfo.CountryShortCode)
+        .OrderBy(x => x.ShortCode).Select(x =>
+        {
+            var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
+            var name = _subRegionHelper.GetLocalSubregionName(code);
+            return new SubRegion
             {
-                var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
-                var name = _subRegionHelper.GetLocalSubregionName(code);
-                return new SubRegion
-                {
-                    Name = isCountryOfResidence && isSupported ? 
-                           _subRegionHelper.GetLocalSubregionName(code) : x.Name,
-                    Code = code
-                };
-            }).ToList();
-        }
+                Name = isCountryOfResidence && isSupported ?
+                       _subRegionHelper.GetLocalSubregionName(code) : x.Name,
+                Code = code
+            };
+        }).ToList();
 
         foreach (var SourceArrivalSubRegion in SourceArrivalSubRegionList)
         {
-            var blankInstance = blankAllSubregionList.Find(x => x.Code.lower5LetterRegionCode == SourceArrivalSubRegion.Code.lower5LetterRegionCode);
+            var blankInstance = blankAllSubregionList.Find(x => x.Code.lowerCountryCodeHyphenSubRegionCode == SourceArrivalSubRegion.Code.lowerCountryCodeHyphenSubRegionCode);
             if (blankInstance is null) throw new NullReferenceException("Fail to get blank SubRegion list by SubRegion Code");
 
             if (string.IsNullOrEmpty(blankInstance.ArrivalDate.ToString()))

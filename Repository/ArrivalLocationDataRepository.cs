@@ -1,11 +1,7 @@
-﻿using CountryData.Standard;
-using FlagsRally.Models;
+﻿using FlagsRally.Models;
 using FlagsRally.Resources;
 using FlagsRally.Utilities;
-using FlagsRally.Repository;
 using SQLite;
-using System.Globalization;
-using System.Text.Json;
 
 namespace FlagsRally.Repository;
 
@@ -86,7 +82,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
         if (ArrivalLocationData.CountryCode == "US")
         {
             var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
-            adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lower5LetterRegionCode}.png";
+            adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lowerCountryCodeHyphenSubRegionCode}.png";
             if (ArrivalLocationData?.AdminAreaCode == "DC")
                 adminAreaFlagSource = "us_dc.png";
         }
