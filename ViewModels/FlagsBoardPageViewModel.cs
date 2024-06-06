@@ -29,11 +29,11 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
         CountryList = new ObservableCollection<Country>()
         {
-            customCountryHelper.GetCountryByCode("DE"),
-            customCountryHelper.GetCountryByCode("FR"),
-            customCountryHelper.GetCountryByCode("IT"),
-            customCountryHelper.GetCountryByCode("JP"),
-            customCountryHelper.GetCountryByCode("US"),
+            customCountryHelper.GetCountryByCode("FR"),//France
+            customCountryHelper.GetCountryByCode("DE"),//Germany
+            customCountryHelper.GetCountryByCode("IT"),//Italy
+            customCountryHelper.GetCountryByCode("JP"),//Japan
+            customCountryHelper.GetCountryByCode("US"),//United States
         };
 
         var regionName = _settingsPreferences.GetCountryOrRegion();
