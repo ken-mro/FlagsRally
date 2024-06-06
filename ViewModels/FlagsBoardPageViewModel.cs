@@ -27,14 +27,13 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         _settingsPreferences = settingsPreferences;
         _customCountryHelper = customCountryHelper;
 
-        CountryList = new ObservableCollection<Country>()
+        var countryList = new List<Country>();
+        foreach (var country in Constants.SupportedSubRegionCountryCodeList)
         {
-            customCountryHelper.GetCountryByCode("FR"),//France
-            customCountryHelper.GetCountryByCode("DE"),//Germany
-            customCountryHelper.GetCountryByCode("IT"),//Italy
-            customCountryHelper.GetCountryByCode("JP"),//Japan
-            customCountryHelper.GetCountryByCode("US"),//United States
-        };
+            countryList.Add(customCountryHelper.GetCountryByCode(country.ToUpper()));
+        }
+
+        CountryList = new ObservableCollection<Country>(countryList.OrderBy(x => x.CountryName).ToList());
 
         var regionName = _settingsPreferences.GetCountryOrRegion();
         var matchingCountry = CountryList.FirstOrDefault(c => c.CountryShortCode == regionName);
