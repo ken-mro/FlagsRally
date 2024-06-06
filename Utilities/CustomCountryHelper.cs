@@ -101,4 +101,16 @@ public class CustomCountryHelper : CountryHelper
 
         GetCountryByCode("FR").Regions = CountryRegion;
     }
+
+    public string GetAdminAreaCode(string countryCode, string adminAreaName, string adminAreaShortName)
+    {
+        if (string.IsNullOrEmpty(countryCode)) return string.Empty;
+
+        if (!adminAreaName.Equals(adminAreaShortName) && !string.IsNullOrEmpty(adminAreaShortName)) return adminAreaShortName;
+
+        var countryRegions = GetCountryByCode(countryCode).Regions;
+        var codeContains = countryRegions.Any(x => x.ShortCode.Equals(adminAreaShortName));
+        
+        return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
+    }
 }

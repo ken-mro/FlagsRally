@@ -61,12 +61,12 @@ public class CustomGeolocation
         var adminAreaName = adminArea?["long_name"]?.Value<string>();
         var localityName = locality?["long_name"]?.Value<string>();
         var enCountryName = enCountry?["long_name"]?.Value<string>();
-        var enAdminAreaName = enAdminArea?["long_name"]?.Value<string>();
+        var enAdminAreaName = enAdminArea?["long_name"]?.Value<string>() ?? string.Empty;
+        var enAdminAreaShortName = enAdminArea?["short_name"]?.Value<string>() ?? string.Empty;
         var enLocalityName = enLocality?["long_name"]?.Value<string>();
-        var countryCode = country?["short_name"]?.Value<string>();
+        var countryCode = country?["short_name"]?.Value<string>() ?? string.Empty;
 
-        var countryRegions = string.IsNullOrEmpty(countryCode) ? [] : _countryHelper.GetCountryByCode(countryCode).Regions;
-        var adminAreaCode = countryRegions?.Where(x => x.Name == enAdminAreaName)?.FirstOrDefault()?.ShortCode;
+        var adminAreaCode = _countryHelper.GetAdminAreaCode(countryCode, enAdminAreaName, enAdminAreaShortName);
 
         var arrivalLocation = new ArrivalLocationData
         (
