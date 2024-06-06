@@ -19,31 +19,46 @@ public class CustomGeolocation
         var jsonObject = await GetAllRequestsForLocationInfo(location, languageCode);
         var enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en");
 
-        return GenerateFrom(datetime, jsonObject, enJsonObject, location);
+        return GenerateFrom(datetime, jsonObject, enJsonObject, location, languageCode);
     }
 
-    private ArrivalLocationData GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location)
+    private ArrivalLocationData GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location, string languageCode)
     {
-        var results = jsonObject["results"]?.Value<JArray>();
-        var country = GetComponent(results, "country");
-        var adminArea = GetComponent(results, "administrative_area_level_1");
-        var locality = GetComponent(results, "locality");
-
         var enResults = enJsonObject["results"]?.Value<JArray>();
         var enCountry = GetComponent(enResults, "country");
         var enAdminArea = GetComponent(enResults, "administrative_area_level_1");
         var enLocality = GetComponent(enResults, "locality");
 
-        var countryName = country?["long_name"]?.Value<string>();
-        var adminAreaName = adminArea?["long_name"]?.Value<string>();
-        var localityName = locality?["long_name"]?.Value<string>();
         var enCountryName = enCountry?["long_name"]?.Value<string>();
         var enAdminAreaName = enAdminArea?["long_name"]?.Value<string>() ?? string.Empty;
         var enAdminAreaShortName = enAdminArea?["short_name"]?.Value<string>() ?? string.Empty;
         var enLocalityName = enLocality?["long_name"]?.Value<string>();
-        var countryCode = country?["short_name"]?.Value<string>() ?? string.Empty;
 
+        var countryCode = enCountry?["short_name"]?.Value<string>() ?? string.Empty;
         var adminAreaCode = _countryHelper.GetAdminAreaCode(countryCode, enAdminAreaName, enAdminAreaShortName);
+
+
+        string countryName;
+        string adminAreaName;
+        string localityName;
+
+        if (languageCode == "en")
+        {
+            countryName = enCountryName;
+            adminAreaName = enAdminAreaName;
+            localityName = enLocalityName;
+        }
+        else
+        {
+            var results = jsonObject["results"]?.Value<JArray>();
+            var country = GetComponent(results, "country", enCountryName, languageCode);
+            var adminArea = GetComponent(results, "administrative_area_level_1", enAdminAreaName, languageCode);
+            var locality = GetComponent(results, "locality", enLocalityName, languageCode);
+
+            countryName = country?["long_name"]?.Value<string>() ?? enCountryName;
+            adminAreaName = adminArea?["long_name"]?.Value<string>() ?? enAdminAreaName;
+            localityName = locality?["long_name"]?.Value<string>() ?? enLocalityName;
+        }
 
         var arrivalLocation = new ArrivalLocationData
         (
@@ -69,7 +84,24 @@ public class CustomGeolocation
             var addressComponent = result?["address_components"];
             var targetComponent = addressComponent?.Where(ac => ac["types"].Values<string>()
                                     .Contains(type)).FirstOrDefault();
-            if (targetComponent != null) return targetComponent;
+            if (targetComponent is not null) return targetComponent;
+        }
+
+        return null;
+    }
+
+    private JToken? GetComponent(JToken results, string type, string enName, string languageCode)
+    {
+        if (languageCode == "en") throw new ArgumentException("Language code must not be 'en'");
+
+        foreach (var result in results)
+        {
+            var addressComponent = result?["address_components"];
+            var targetComponent = addressComponent?.Where(ac => ac["types"].Values<string>()
+                                    .Contains(type)).FirstOrDefault();
+            if (targetComponent is null) continue;
+
+            if (targetComponent["long_name"]?.Value<string>() != enName) return targetComponent;
         }
 
         return null;
