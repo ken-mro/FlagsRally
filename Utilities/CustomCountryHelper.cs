@@ -11,6 +11,7 @@ public class CustomCountryHelper : CountryHelper
         UpdateDe();
         UpdateIt();
         UpdateFr();
+        UpdateEs();
     }
 
     public List<Regions> GetDistinctCountryRegionsBy(string countryCode)
@@ -100,6 +101,33 @@ public class CustomCountryHelper : CountryHelper
         CountryRegion.Add(new Regions() { Name = "Brittany", ShortCode = region?.ShortCode });
 
         GetCountryByCode("FR").Regions = CountryRegion;
+    }
+
+    private void UpdateEs()
+    {
+        List<Regions> CountryRegion = [];
+
+        CountryRegion.Add(new Regions() { Name = "Andalusia", ShortCode = "AN" });
+        CountryRegion.Add(new Regions() { Name = "Aragon", ShortCode = "AR" });
+        CountryRegion.Add(new Regions() { Name = "Principality of Asturias", ShortCode = "AS" });
+        CountryRegion.Add(new Regions() { Name = "Canary Islands", ShortCode = "CN" });
+        CountryRegion.Add(new Regions() { Name = "Cantabria", ShortCode = "CB" });
+        CountryRegion.Add(new Regions() { Name = "Castile and León", ShortCode = "CL" });
+        CountryRegion.Add(new Regions() { Name = "Castile-La Mancha", ShortCode = "CM" });
+        CountryRegion.Add(new Regions() { Name = "Catalonia", ShortCode = "CT" });
+        CountryRegion.Add(new Regions() { Name = "Ceuta", ShortCode = "CE" });
+        CountryRegion.Add(new Regions() { Name = "Extremadura", ShortCode = "EX" });
+        CountryRegion.Add(new Regions() { Name = "Galicia", ShortCode = "GA" });
+        CountryRegion.Add(new Regions() { Name = "Balearic Islands", ShortCode = "IB" });
+        CountryRegion.Add(new Regions() { Name = "La Rioja", ShortCode = "RI" });
+        CountryRegion.Add(new Regions() { Name = "Community of Madrid", ShortCode = "MD" });
+        CountryRegion.Add(new Regions() { Name = "Melilla", ShortCode = "ML" });
+        CountryRegion.Add(new Regions() { Name = "Region of Murcia", ShortCode = "MC" });
+        CountryRegion.Add(new Regions() { Name = "Chartered Community of Navarre", ShortCode = "NC" });
+        CountryRegion.Add(new Regions() { Name = "Basque Country", ShortCode = "PV" });
+        CountryRegion.Add(new Regions() { Name = "Valencian Community", ShortCode = "VC" });
+
+        GetCountryByCode("ES").Regions = CountryRegion;
     }
 
     public string GetAdminAreaCode(string countryCode, string adminAreaName, string adminAreaShortName)
