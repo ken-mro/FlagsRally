@@ -43,7 +43,7 @@ public class CustomCountryHelper : CountryHelper
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Thüringen");
         CountryRegion.Add(new Regions() { Name = "Thuringia", ShortCode = region?.ShortCode });
 
-        GetCountryByCode("DE").Regions = CountryRegion.ToList();
+        GetCountryByCode("DE").Regions = [.. CountryRegion];
     }
 
     private void UpdateUs()
@@ -81,7 +81,7 @@ public class CustomCountryHelper : CountryHelper
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Sardegna");
         CountryRegion.Add(new Regions() { Name = "Sardinia", ShortCode = region?.ShortCode });
 
-        GetCountryByCode("IT").Regions = CountryRegion.ToList();
+        GetCountryByCode("IT").Regions = [.. CountryRegion];
     }
 
     private void UpdateFr()
