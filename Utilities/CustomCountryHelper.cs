@@ -137,7 +137,8 @@ public class CustomCountryHelper : CountryHelper
         if (!adminAreaName.Equals(adminAreaShortName) && !string.IsNullOrEmpty(adminAreaShortName)) return adminAreaShortName;
 
         var countryRegions = GetCountryByCode(countryCode).Regions;
-        var codeContains = countryRegions.Any(x => x.ShortCode.Equals(adminAreaShortName));
+        var codeContains = countryRegions.Any(x => !string.IsNullOrEmpty(x.ShortCode) 
+                                                && x.ShortCode.Equals(adminAreaShortName));
         
         return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
     }
