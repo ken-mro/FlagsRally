@@ -1,5 +1,4 @@
 ﻿using CountryData.Standard;
-using System.Diagnostics;
 
 namespace FlagsRally.Utilities;
 
@@ -12,6 +11,30 @@ public class CustomCountryHelper : CountryHelper
         UpdateIt();
         UpdateFr();
         UpdateEs();
+        UpdateMy();
+    }
+
+    private void UpdateMy()
+    {
+        var CountryRegion = GetRegionByCountryCode("MY").ConvertAll(x => 
+        {
+            x.Name = x.Name.Replace("(", "").Replace(")", "");
+            return x; 
+        });
+        CountryRegion.Add(new Regions() { Name = "Penang", ShortCode = "07" });
+
+        CountryRegion.Add(new Regions() { Name = "Federal Territory of Kuala Lumpur", ShortCode = "14" });
+        CountryRegion.Add(new Regions() { Name = "Kuala Lumpur Federal Territory", ShortCode = "14" }); // Not encountered yet.
+        CountryRegion.Add(new Regions() { Name = "Kuala Lumpur", ShortCode = "14" }); // Not encountered yet.
+
+        CountryRegion.Add(new Regions() { Name = "Federal Territory of Labuan", ShortCode = "15" });
+        CountryRegion.Add(new Regions() { Name = "Labuan Federal Territory", ShortCode = "15" }); // Not encountered yet.
+        CountryRegion.Add(new Regions() { Name = "Labuan", ShortCode = "15" }); // Not encountered yet.
+
+        CountryRegion.Add(new Regions() { Name = "Federal Territory of Putrajaya", ShortCode = "16" });
+        CountryRegion.Add(new Regions() { Name = "Putrajaya Federal Territory", ShortCode = "16" }); // Not encountered yet.
+        CountryRegion.Add(new Regions() { Name = "Putrajaya", ShortCode = "16" });
+        GetCountryByCode("MY").Regions = [.. CountryRegion];
     }
 
     public List<Regions> GetDistinctCountryRegionsBy(string countryCode)

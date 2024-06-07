@@ -12,6 +12,8 @@ namespace FlagsRally.Tests.Models
         [InlineData("DE-BW")]
         [InlineData("IT-21")]
         [InlineData("FR-IDF")]
+        [InlineData("MY-01")]
+        [InlineData("NL-NH")]
         public void SubRegionCode_with_supported_country(string value)
         {
             SubRegionCode subRegionCode = new SubRegionCode(value);

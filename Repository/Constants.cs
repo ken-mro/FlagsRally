@@ -14,5 +14,5 @@ public static class Constants
     public static string DataBasePath => Path.Combine(FileSystem.AppDataDirectory, DATABSE_NAME);
     public static string GoogleMapApiKey => GOOGLE_MAP_API_KEY;
     public static string BingMapApiKey => BING_MAP_API_KEY;
-    public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "us", "jp", "de", "it", "fr", "es"};
+    public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "fr", "de", "it", "jp", "my", "nl", "es" ,"us"};
 }

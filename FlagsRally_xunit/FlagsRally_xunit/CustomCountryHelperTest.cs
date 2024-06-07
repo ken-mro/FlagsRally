@@ -10,6 +10,8 @@ public class CustomCountryHelperTest
     [InlineData("DE", 16)]
     [InlineData("FR", 13)]
     [InlineData("IT", 20)]
+    [InlineData("NL", 12)]
+    [InlineData("MY", 16)]
     public void SubregionCode(string CountryCode, int regionCount)
     {
         //Arrange
