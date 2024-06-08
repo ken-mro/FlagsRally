@@ -17,7 +17,7 @@ namespace FlagsRally_xunit
             var customCountryHelper = new CustomCountryHelper();
             var subRegionHelper = new SubRegionHelper(customCountryHelper);
 
-            Assert.True(subRegionHelper.isSupported(countryCode) == isSupported);
+            Assert.True(subRegionHelper.GetLocalSubRegionNameIsSupported(countryCode) == isSupported);
         }
 
         [Theory]

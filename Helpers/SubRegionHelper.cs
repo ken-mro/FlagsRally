@@ -24,14 +24,14 @@ public class SubRegionHelper
         _subRegionCodeMap.Add("JP", jpSubRegionDict!);
     }
 
-    public bool isSupported(string countryCode)
+    public bool GetLocalSubRegionNameIsSupported(string countryCode)
     {
         return _subRegionCodeMap.ContainsKey(countryCode.ToUpper());
     }
 
     public string GetLocalSubregionName(SubRegionCode subRegionCode)
     {
-        if (!isSupported(subRegionCode.CountryCode.ToUpper())) return string.Empty;
+        if (!GetLocalSubRegionNameIsSupported(subRegionCode.CountryCode.ToUpper())) return string.Empty;
         var key = _subRegionCodeMap[subRegionCode.CountryCode].FirstOrDefault(x => x.Value == subRegionCode).Key;
         return key;
     }
