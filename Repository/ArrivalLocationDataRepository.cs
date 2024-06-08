@@ -82,7 +82,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
         if (ArrivalLocationData.CountryCode == "US")
         {
             var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
-            adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lowerCountryCodeHyphenSubRegionCode}.png";
+            adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lowerCountryCodeHyphenRegionCode}.png";
             if (ArrivalLocationData?.AdminAreaCode == "DC")
                 adminAreaFlagSource = "us_dc.png";
         }
@@ -91,7 +91,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
             if (!string.IsNullOrEmpty(ArrivalLocationData.AdminAreaCode))
             {
                 var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
-                adminAreaFlagSource = $"{subRegionCode?.GetImageResourceString()}.png";
+                adminAreaFlagSource = $"{subRegionCode?.ImageResourceString}.png";
             }
         }
 

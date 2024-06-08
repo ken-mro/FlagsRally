@@ -14,27 +14,39 @@ namespace FlagsRally.Tests.Models
         [InlineData("FR-IDF")]
         [InlineData("MY-01")]
         [InlineData("NL-NH")]
-        public void SubRegionCode_with_supported_country(string value)
+        public void SubRegionCode_with_supported_country(string countrySubRegionCode)
         {
-            SubRegionCode subRegionCode = new SubRegionCode(value);
+            SubRegionCode subRegionCode = new SubRegionCode(countrySubRegionCode);
+            var test = countrySubRegionCode[..2];
+            var test2 = countrySubRegionCode.Substring(3);
 
             // Assert
-            Assert.Equal(value.ToLower(), subRegionCode.lowerCountryCodeHyphenSubRegionCode);
+            Assert.NotNull(subRegionCode);
+            Assert.Equal(countrySubRegionCode[..2], subRegionCode.CountryCode);
+            Assert.Equal(countrySubRegionCode.Substring(3), subRegionCode.RegionCode);
+            Assert.Equal(countrySubRegionCode.ToLower(), subRegionCode.lowerCountryCodeHyphenRegionCode);
+            Assert.Equal(countrySubRegionCode.Replace("-", "_").ToLower(), subRegionCode.ImageResourceString);
         }
 
-        [Fact]
-        public void SubRegionCode_with_supported_country_and_subRegionCode()
+        [Theory]
+        [InlineData("US","AL")]
+        [InlineData("JP","01")]
+        [InlineData("DE","BW")]
+        [InlineData("IT","21")]
+        [InlineData("FR","IDF")]
+        [InlineData("MY","01")]
+        [InlineData("NL","NH")]
+        public void SubRegionCode_with_supported_country_and_subRegionCode(string countryCode, string regionCode)
         {
-            // Arrange
-            string countryCode = "JP";
-            string subRegionCode = "01";
-
             // Act
-            SubRegionCode subRegion = new SubRegionCode(countryCode, subRegionCode);
+            SubRegionCode subRegionCode = new SubRegionCode(countryCode, regionCode);
 
             // Assert
-            Assert.NotNull(subRegion);
-            Assert.Equal("JP-01".ToLower(), subRegion.lowerCountryCodeHyphenSubRegionCode);
+            Assert.NotNull(subRegionCode);
+            Assert.Equal(countryCode, subRegionCode.CountryCode);
+            Assert.Equal(regionCode, subRegionCode.RegionCode);
+            Assert.Equal($"{countryCode.ToLower()}-{regionCode.ToLower()}", subRegionCode.lowerCountryCodeHyphenRegionCode);
+            Assert.Equal($"{countryCode.ToLower()}_{regionCode.ToLower()}", subRegionCode.ImageResourceString);
         }
 
         [Theory]
@@ -47,6 +59,7 @@ namespace FlagsRally.Tests.Models
         }
 
         [Theory]
+        [InlineData("GB", "ENG")]
         [InlineData("AB", "CD")]
         public void SubRegionCode_with_invalid_format_or_unsupported_country(string countryCode, string subRegionCode)
         {

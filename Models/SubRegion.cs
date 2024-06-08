@@ -17,15 +17,15 @@ public class SubRegion
 
     private string GetFlagSource()
     {
-        if (Code.lowerCountryCodeHyphenSubRegionCode[0..2] == "us")
+        if (Code.lowerCountryCodeHyphenRegionCode[0..2] == "us")
         {
-            if (Code.lowerCountryCodeHyphenSubRegionCode == "us-dc") return "us_dc.png";
+            if (Code.lowerCountryCodeHyphenRegionCode == "us-dc") return "us_dc.png";
 
-            return $"https://flagcdn.com/160x120/{Code.lowerCountryCodeHyphenSubRegionCode}.png";
+            return $"https://flagcdn.com/160x120/{Code.lowerCountryCodeHyphenRegionCode}.png";
         }
-        else if (Constants.SupportedSubRegionCountryCodeList.Contains(Code.lowerCountryCodeHyphenSubRegionCode[0..2]))
+        else if (Constants.SupportedSubRegionCountryCodeList.Contains(Code.lowerCountryCodeHyphenRegionCode[0..2]))
         {
-            return $"{Code.GetImageResourceString()}_emblem.png";
+            return $"{Code.ImageResourceString}_emblem.png";
         }
         else
         {
