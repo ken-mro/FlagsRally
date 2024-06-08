@@ -7,6 +7,8 @@ using FlagsRally.Helpers;
 using System.Collections.ObjectModel;
 using FlagsRally.Resources;
 using FlagsRally.Utilities;
+using System.Diagnostics;
+using System.Linq;
 
 namespace FlagsRally.ViewModels;
 
@@ -106,36 +108,26 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     private ObservableCollection<SubRegion> GetFilteredList()
     {
         var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry.CountryShortCode);
+        var twoLetterRegionName = _settingsPreferences.GetCountryOrRegion();
+        List<SubRegion> blankAllSubregionList = _subRegionHelper.GetBlankAllRegionList(countryInfo, twoLetterRegionName);
 
-        List<SubRegion> blankAllSubregionList;
-
-        var regionName = _settingsPreferences.GetCountryOrRegion();
-        var isCountryOfResidence = countryInfo.CountryShortCode.Equals(regionName);
-        var isSupported = _subRegionHelper.isSupported(regionName.ToUpper());
-
-        blankAllSubregionList = _customCountryHelper.GetDistinctCountryRegionsBy(countryInfo.CountryShortCode)
-        .OrderBy(x => x.ShortCode).Select(x =>
-        {
-            var code = new SubRegionCode(FilteredCountry.CountryShortCode, x.ShortCode);
-            var name = _subRegionHelper.GetLocalSubregionName(code);
-            return new SubRegion
-            {
-                Name = isCountryOfResidence && isSupported ?
-                       _subRegionHelper.GetLocalSubregionName(code) : x.Name,
-                Code = code
-            };
-        }).ToList();
-
+        //Assign the arrival data to the blankAllSubregionList.
         foreach (var SourceArrivalSubRegion in SourceArrivalSubRegionList)
         {
-            var blankInstance = blankAllSubregionList.Find(x => x.Code.lowerCountryCodeHyphenSubRegionCode == SourceArrivalSubRegion.Code.lowerCountryCodeHyphenSubRegionCode);
-            if (blankInstance is null) throw new NullReferenceException("Fail to get blank SubRegion list by SubRegion Code");
+            var subRegionCode = SourceArrivalSubRegion?.Code;
 
-            if (string.IsNullOrEmpty(blankInstance.ArrivalDate.ToString()))
+            if (string.IsNullOrEmpty(subRegionCode?.RegionCode))
             {
-                blankInstance.ArrivalDate = SourceArrivalSubRegion.ArrivalDate;
-                continue;
+                //Try to get code and save it if acquired.
+                var acquiredSubRegionCodeString = _customCountryHelper.GetAdminAreaCode(countryInfo.CountryShortCode, SourceArrivalSubRegion?.EnAdminAreaName ?? string.Empty);
+                if (string.IsNullOrEmpty(acquiredSubRegionCodeString)) continue;
+
+                _arrivalLocationDataRepository.UpdateAdminAreaCode(SourceArrivalSubRegion?.Id ?? 0, acquiredSubRegionCodeString);
+                subRegionCode = new SubRegionCode(countryInfo.CountryShortCode, acquiredSubRegionCodeString);
             }
+
+            var blankInstance = blankAllSubregionList.Find(x => x.Code.lowerCountryCodeHyphenRegionCode == subRegionCode?.lowerCountryCodeHyphenRegionCode);
+            if (blankInstance is null) continue;
 
             if (blankInstance.ArrivalDate < SourceArrivalSubRegion.ArrivalDate)
             {

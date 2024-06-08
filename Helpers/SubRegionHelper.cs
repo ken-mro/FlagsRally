@@ -1,4 +1,5 @@
-﻿using FlagsRally.Models;
+﻿using CountryData.Standard;
+using FlagsRally.Models;
 using FlagsRally.Utilities;
 using System.Text;
 using System.Text.Json;
@@ -29,10 +30,31 @@ public class SubRegionHelper
         return _subRegionCodeMap.ContainsKey(countryCode.ToUpper());
     }
 
-    public string GetLocalSubregionName(SubRegionCode subRegionCode)
+    private string GetLocalSubregionName(SubRegionCode subRegionCode)
     {
         if (!GetLocalSubRegionNameIsSupported(subRegionCode.CountryCode.ToUpper())) return string.Empty;
         var key = _subRegionCodeMap[subRegionCode.CountryCode].FirstOrDefault(x => x.Value == subRegionCode).Key;
         return key;
+    }
+
+    public List<SubRegion> GetBlankAllRegionList(Country countryInfo, string twoLetterCountryOrRegionName)
+    {
+        var upperdTwoLetterNmae = twoLetterCountryOrRegionName.ToUpper();
+        var isCountryOfResidence = countryInfo.CountryShortCode.Equals(upperdTwoLetterNmae);
+        var localNameIsSupported = GetLocalSubRegionNameIsSupported(upperdTwoLetterNmae);
+
+        var blankAllSubregionList = _countryHelper.GetDistinctCountryRegionsBy(countryInfo.CountryShortCode)
+            .OrderBy(x => x.ShortCode).Select(x =>
+            {
+                var code = new SubRegionCode(countryInfo.CountryShortCode, x.ShortCode);
+                var name = GetLocalSubregionName(code);
+                return new SubRegion
+                {
+                    Name = isCountryOfResidence && localNameIsSupported ?
+                       GetLocalSubregionName(code) : x.Name,
+                    Code = code
+                };
+            }).ToList();
+        return blankAllSubregionList;
     }
 }
