@@ -157,12 +157,10 @@ public class CustomCountryHelper : CountryHelper
     {
         if (string.IsNullOrEmpty(countryCode)) return string.Empty;
 
-        if (!adminAreaName.Equals(adminAreaShortName) && !string.IsNullOrEmpty(adminAreaShortName)) return adminAreaShortName;
+        if (!adminAreaName.Equals(adminAreaShortName) 
+            && !string.IsNullOrEmpty(adminAreaShortName)) return adminAreaShortName;
 
-        var countryRegions = GetCountryByCode(countryCode).Regions;
-        var codeContains = countryRegions.Any(x => !string.IsNullOrEmpty(x.ShortCode) 
-                                                && x.ShortCode.Equals(adminAreaShortName));
-        
+        var countryRegions = GetCountryByCode(countryCode).Regions;        
         return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
     }
 }
