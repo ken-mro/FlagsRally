@@ -5,11 +5,12 @@ namespace FlagsRally.Models;
 
 public class SubRegion
 {
+    public int Id { get; init;}
     public DateTime ArrivalDate { get; set; }
 
     public string ArrivalDateString => ArrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US"));
     public string Name { get; init; }
-
+    public string EnAdminAreaName { get; init; }
     public SubRegionCode Code { get; init; }
     public string FlagSource => GetFlagSource();
     public bool HasBeenVisited => !(ArrivalDate == DateTime.MinValue);

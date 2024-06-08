@@ -163,4 +163,12 @@ public class CustomCountryHelper : CountryHelper
         var countryRegions = GetCountryByCode(countryCode).Regions;        
         return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
     }
+
+    public string GetAdminAreaCode(string countryCode, string adminAreaName)
+    {
+        if (string.IsNullOrEmpty(countryCode)) return string.Empty;
+
+        var countryRegions = GetCountryByCode(countryCode).Regions;
+        return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
+    }
 }

@@ -151,8 +151,10 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     {
         return new SubRegion
         {
+            Id = ArrivalLocationData.Id,
             ArrivalDate = ArrivalLocationData.ArrivalDate,
             Name = ArrivalLocationData.AdminAreaName,
+            EnAdminAreaName = ArrivalLocationData.EnAdminAreaName,
             Code = new SubRegionCode
             (
                 countryCode: ArrivalLocationData.CountryCode,
