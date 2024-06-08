@@ -160,4 +160,12 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
             )
         };
     }
+
+    public async Task<int> UpdateAdminAreaCode(int Id, string adminAreaCode)
+    {
+        if (Id == 0) return 0;
+        await Init();
+        var result = await _conn.ExecuteAsync("UPDATE ArrivalLocation SET AdminAreaCode = ? WHERE Id = ?", adminAreaCode, Id);
+        return result;
+    }
 }

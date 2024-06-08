@@ -9,4 +9,5 @@ public interface IArrivalLocationDataRepository
     Task<int> DeleteAsync(int Id);
     Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync();
     Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode);
+    Task<int> UpdateAdminAreaCode(int Id, string adminAreaCode);
 }
