@@ -14,6 +14,7 @@ namespace FlagsRally.Tests.Models
         [InlineData("FR-IDF")]
         [InlineData("MY-01")]
         [InlineData("NL-NH")]
+        [InlineData("CA-AB")]
         public void SubRegionCode_with_supported_country(string countrySubRegionCode)
         {
             SubRegionCode subRegionCode = new SubRegionCode(countrySubRegionCode);
@@ -36,6 +37,7 @@ namespace FlagsRally.Tests.Models
         [InlineData("FR","IDF")]
         [InlineData("MY","01")]
         [InlineData("NL","NH")]
+        [InlineData("CA","AB")]
         public void SubRegionCode_with_supported_country_and_subRegionCode(string countryCode, string regionCode)
         {
             // Act
