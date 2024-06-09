@@ -29,6 +29,7 @@ namespace FlagsRally_xunit
         [InlineData("NL", 12, "NL-NH", "Noord-Holland")]
         [InlineData("MY", 16, "MY-01", "Johor")]
         [InlineData("CA", 13, "CA-AB", "Alberta")]
+        [InlineData("NO", 15, "NO-50", "Trøndelag")]
         public void Get_blank_all_reagion_list_with_local_name_if_supported(string regionCode, int subRegionCount, string countryHyphenRegionCode, string localName)
         {
             // Arrange

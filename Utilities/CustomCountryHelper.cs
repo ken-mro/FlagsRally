@@ -12,14 +12,39 @@ public class CustomCountryHelper : CountryHelper
         UpdateFr();
         UpdateEs();
         UpdateMy();
+        UpdateNo();
+    }
+
+    private void UpdateNo()
+    {
+        List<string> existingPrefecturesList = new List<string>() { "03", "11", "15", "18", "31", "32", "33", "34", "39", "40", "42", "46", "50", "55", "56" };
+
+        var countryRegion = GetRegionByCountryCode("NO").Where(x => existingPrefecturesList.Contains(x.ShortCode)).ToList();
+        countryRegion.AddRange(
+            new List<Regions>() {
+                new Regions() { Name = "Østfold", ShortCode = "31" },
+                new Regions() { Name = "Akershus", ShortCode = "32" },
+                new Regions() { Name = "Buskerud", ShortCode = "33" },
+                new Regions() { Name = "Innlandet", ShortCode = "34" },
+                new Regions() { Name = "Vestfold", ShortCode = "39" },
+                new Regions() { Name = "Telemark", ShortCode = "40" },
+                new Regions() { Name = "Agder", ShortCode = "42" },
+                new Regions() { Name = "Vestland", ShortCode = "46" },
+                new Regions() { Name = "Trøndelag", ShortCode = "50" },
+                new Regions() { Name = "Troms", ShortCode = "55" },
+                new Regions() { Name = "Finnmark", ShortCode = "56" }
+            }
+        );
+
+        GetCountryByCode("NO").Regions = countryRegion;
     }
 
     private void UpdateMy()
     {
-        var CountryRegion = GetRegionByCountryCode("MY").ConvertAll(x => 
+        var CountryRegion = GetRegionByCountryCode("MY").ConvertAll(x =>
         {
             x.Name = x.Name.Replace("(", "").Replace(")", "");
-            return x; 
+            return x;
         });
         CountryRegion.Add(new Regions() { Name = "Penang", ShortCode = "07" });
 
@@ -34,7 +59,7 @@ public class CustomCountryHelper : CountryHelper
         CountryRegion.Add(new Regions() { Name = "Federal Territory of Putrajaya", ShortCode = "16" });
         CountryRegion.Add(new Regions() { Name = "Putrajaya Federal Territory", ShortCode = "16" }); // Not encountered yet.
         CountryRegion.Add(new Regions() { Name = "Putrajaya", ShortCode = "16" });
-        GetCountryByCode("MY").Regions = [.. CountryRegion];
+        GetCountryByCode("MY").Regions = CountryRegion;
     }
 
     public List<Regions> GetDistinctCountryRegionsBy(string countryCode)
@@ -44,18 +69,18 @@ public class CustomCountryHelper : CountryHelper
 
     private void UpdateDe()
     {
-        var CountryRegion = GetRegionByCountryCode("DE");
+        var CountryRegion = GetRegionByCountryCode("DE").ToList();
         var region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Bayern");
-        CountryRegion.Add(new Regions(){ Name = "Bavaria", ShortCode = region?.ShortCode });
+        CountryRegion.Add(new Regions() { Name = "Bavaria", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Niedersachsen");
-        CountryRegion.Add(new Regions(){ Name = "Lower Saxony", ShortCode = region?.ShortCode });
+        CountryRegion.Add(new Regions() { Name = "Lower Saxony", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Nordrhein-Westfalen");
-        CountryRegion.Add(new Regions(){ Name = "North Rhine-Westphalia", ShortCode = region?.ShortCode });
+        CountryRegion.Add(new Regions() { Name = "North Rhine-Westphalia", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Rheinland-Pfalz");
-        CountryRegion.Add(new Regions(){ Name = "Rhineland-Palatinate", ShortCode = region?.ShortCode });
+        CountryRegion.Add(new Regions() { Name = "Rhineland-Palatinate", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Sachsen");
         CountryRegion.Add(new Regions() { Name = "Saxony", ShortCode = region?.ShortCode });
@@ -66,7 +91,7 @@ public class CustomCountryHelper : CountryHelper
         region = GetRegionByCountryCode("DE").FirstOrDefault(x => x.Name == "Thüringen");
         CountryRegion.Add(new Regions() { Name = "Thuringia", ShortCode = region?.ShortCode });
 
-        GetCountryByCode("DE").Regions = [.. CountryRegion];
+        GetCountryByCode("DE").Regions = CountryRegion;
     }
 
     private void UpdateUs()
@@ -78,7 +103,7 @@ public class CustomCountryHelper : CountryHelper
 
     private void UpdateIt()
     {
-        var CountryRegion = GetRegionByCountryCode("IT");
+        var CountryRegion = GetRegionByCountryCode("IT").ToList();
 
         var region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Valle d'Aosta");
         CountryRegion.Add(new Regions() { Name = "Aosta Valley", ShortCode = region?.ShortCode });
@@ -94,7 +119,7 @@ public class CustomCountryHelper : CountryHelper
 
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Toscana");
         CountryRegion.Add(new Regions() { Name = "Tuscany", ShortCode = region?.ShortCode });
-          
+
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Puglia");
         CountryRegion.Add(new Regions() { Name = "Apulia", ShortCode = region?.ShortCode });
 
@@ -104,7 +129,7 @@ public class CustomCountryHelper : CountryHelper
         region = GetRegionByCountryCode("IT").FirstOrDefault(x => x.Name == "Sardegna");
         CountryRegion.Add(new Regions() { Name = "Sardinia", ShortCode = region?.ShortCode });
 
-        GetCountryByCode("IT").Regions = [.. CountryRegion];
+        GetCountryByCode("IT").Regions = CountryRegion;
     }
 
     private void UpdateFr()
@@ -128,7 +153,7 @@ public class CustomCountryHelper : CountryHelper
 
     private void UpdateEs()
     {
-        List<Regions> CountryRegion = [];
+        List<Regions> CountryRegion = new List<Regions>();
 
         CountryRegion.Add(new Regions() { Name = "Andalusia", ShortCode = "AN" });
         CountryRegion.Add(new Regions() { Name = "Aragon", ShortCode = "AR" });
@@ -157,10 +182,10 @@ public class CustomCountryHelper : CountryHelper
     {
         if (string.IsNullOrEmpty(countryCode)) return string.Empty;
 
-        if (!adminAreaName.Equals(adminAreaShortName) 
+        if (!adminAreaName.Equals(adminAreaShortName)
             && !string.IsNullOrEmpty(adminAreaShortName)) return adminAreaShortName;
 
-        var countryRegions = GetCountryByCode(countryCode).Regions;        
+        var countryRegions = GetCountryByCode(countryCode).Regions;
         return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
     }
 
@@ -170,5 +195,13 @@ public class CustomCountryHelper : CountryHelper
 
         var countryRegions = GetCountryByCode(countryCode).Regions;
         return countryRegions?.Where(x => x.Name == adminAreaName)?.FirstOrDefault()?.ShortCode ?? string.Empty;
+    }
+
+    private List<int> GetNumberList()
+    {
+        return new List<int>()
+            {
+                3, 11, 15, 18, 31, 32, 33, 34, 39, 40, 42, 46, 50, 55, 56
+            };
     }
 }
