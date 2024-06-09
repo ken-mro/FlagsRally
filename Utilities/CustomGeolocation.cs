@@ -60,6 +60,18 @@ public class CustomGeolocation
             localityName = locality?["long_name"]?.Value<string>() ?? enLocalityName;
         }
 
+#if DEBUG
+        Console.WriteLine("enCountryName: " + enCountryName);
+        Console.WriteLine("enAdminAreaName: " + enAdminAreaName);
+        Console.WriteLine("enAdminAreaShortName: " + enAdminAreaShortName);
+        Console.WriteLine("enLocalityName: " + enLocalityName);
+        Console.WriteLine("countryCode: " + countryCode);
+        Console.WriteLine("adminAreaCode: " + adminAreaCode);
+        Console.WriteLine("countryName: " + countryName);
+        Console.WriteLine("adminAreaName: " + adminAreaName);
+        Console.WriteLine("localityName: " + localityName);
+#endif
+
         var arrivalLocation = new ArrivalLocationData
         (
             arrivalDate: datetime,
