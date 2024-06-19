@@ -44,6 +44,7 @@
             <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
                 <Grid>
                     <Label
+                        Padding="5,0"
                         FontSize="16"
                         HorizontalOptions="StartAndExpand"
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
