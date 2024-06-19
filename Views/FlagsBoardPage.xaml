@@ -106,7 +106,6 @@
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                            HeightRequest="25"
                                             HorizontalOptions="CenterAndExpand"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
