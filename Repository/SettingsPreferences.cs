@@ -33,5 +33,26 @@ namespace FlagsRally.Repository
             var twoLetterISORegionName = RegionInfo.CurrentRegion.TwoLetterISORegionName;
             return _defaultPreferences.Get(_selectedCountryOrRegionKey, twoLetterISORegionName);
         }
+
+        private string _subExpirationDate = "SubExpirationDate";
+        public DateTime SubExpirationDate
+        {
+            get => _defaultPreferences.Get(_subExpirationDate, DateTime.MinValue);
+            set => _defaultPreferences.Set(_subExpirationDate, value);
+        }
+
+        private string _hasPurchasedSub = "HasPurchasedSub";
+        public bool HasPurchasedSub
+        {
+            get => _defaultPreferences.Get(_hasPurchasedSub, false);
+            set => _defaultPreferences.Set(_hasPurchasedSub, value);
+        }
+
+        private string _checkSubStatus = "CheckSubStatus";
+        public bool CheckSubStatus
+        {
+            get => _defaultPreferences.Get(_checkSubStatus, false);
+            set => _defaultPreferences.Set(_checkSubStatus, value);
+        }
     }
 }

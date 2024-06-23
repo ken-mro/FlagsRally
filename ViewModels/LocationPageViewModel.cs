@@ -4,7 +4,9 @@ using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Utilities;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Maps;
+using Plugin.InAppBilling;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
@@ -12,6 +14,7 @@ namespace FlagsRally.ViewModels;
 
 public partial class LocationPageViewModel : BaseViewModel
 {
+    private readonly SettingsPreferences _settingsPreferences;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly CustomGeolocation _customGeolocation;
     private CancellationTokenSource _cancelTokenSource;
@@ -21,10 +24,11 @@ public partial class LocationPageViewModel : BaseViewModel
     [ObservableProperty]
     ObservableCollection<ArrivalLocationPin> _positions;
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, SettingsPreferences settingsPreferences)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customGeolocation = customGeolocation;
+        _settingsPreferences = settingsPreferences;
         _ = init();
     }
 
@@ -65,6 +69,9 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             IsBusy = true;
             _isCheckingLocation = true;
+
+            //var isSubscribed = await MakePurchase();
+            //if (!isSubscribed) return;
 
             GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
             var cancelTokenSource = new CancellationTokenSource();
@@ -113,4 +120,120 @@ public partial class LocationPageViewModel : BaseViewModel
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
     }
+
+    async Task PurchaseSubscription()
+    {
+        try
+        {
+
+            // check internet first with Essentials
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+                return;
+
+            // connect to the app store api
+            var connected = await CrossInAppBilling.Current.ConnectAsync();
+            if (!connected)
+                return;
+
+
+            var productIdSub = "mysubscriptionid";
+
+            //try to make purchase, this will return a purchase, empty, or throw an exception
+            var purchase = await CrossInAppBilling.Current.PurchaseAsync(productIdSub, ItemType.Subscription);
+
+            if (purchase == null)
+            {
+                //nothing was purchased
+                return;
+            }
+
+            if (purchase.State == PurchaseState.Purchased)
+            {
+                _settingsPreferences.SubExpirationDate = DateTime.UtcNow.AddMonths(1).AddDays(5);
+                _settingsPreferences.HasPurchasedSub = true;
+                _settingsPreferences.CheckSubStatus = true;
+
+                // Update UI if necessary if they have 
+
+                try
+                {
+                    // It is required to acknowledge the purchase, else it will be refunded
+                    if (DeviceInfo.Platform == DevicePlatform.Android)
+                        await CrossInAppBilling.Current.FinalizePurchaseAsync(purchase.PurchaseToken);
+                }
+                catch (Exception ex)
+                {
+                    //Logger.AppendLine("Unable to acknowledge purcahse: " + ex);
+                }
+            }
+            else
+            {
+                throw new InAppBillingPurchaseException(PurchaseError.GeneralError);
+            }
+        }
+        catch (InAppBillingPurchaseException purchaseEx)
+        {
+            // Handle all the different error codes that can occure and do a pop up
+        }
+        catch (Exception ex)
+        {
+            // Handle a generic exception as something really went wrong
+        }
+        finally
+        {
+            await CrossInAppBilling.Current.DisconnectAsync();
+        }
+    }
+
+    //private async Task<bool> MakePurchase()
+    //{
+
+    //    try
+    //    {
+    //        // check internet first with Essentials
+    //        if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+    //            return false;
+
+    //        if (!CrossInAppBilling.IsSupported)
+    //            return false;
+
+    //        var billing = CrossInAppBilling.Current;
+    //        var connected = await billing.ConnectAsync();
+    //        if (!connected)
+    //        {
+    //            //Couldn't connect to billing, could be offline
+    //            return false;
+    //        }
+
+    //        //check purchases
+    //        var purchases = await billing.GetPurchasesAsync(ItemType.InAppPurchase);
+    //        if (purchases?.Any(p => p.ProductId == "remove_ads") == true)
+    //        {
+    //            //Already purchased
+    //            return true;
+    //        }
+
+    //        //check for available in-app purchases
+    //        var items = await billing.GetProductInfoAsync(ItemType.InAppPurchase, "remove_ads");
+    //        if (items?.Any() != true)
+    //        {
+    //            //No Items available for purchase
+    //            return false;
+    //        }
+
+    //        //make purchase
+    //        var purchase = await billing.PurchaseAsync(items[0].ProductId, ItemType.InAppPurchase, "apppayload");
+    //        return purchase != null;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        //Something has gone wrong
+    //        return false;
+    //    }
+    //    finally
+    //    {
+    //        await CrossInAppBilling.Current.DisconnectAsync();
+    //        CrossInAppBilling.Dispose();
+    //    }
+    //}
 }
