@@ -1,12 +1,15 @@
 ﻿using FlagsRally.Repository;
+using Maui.RevenueCat.InAppBilling.Services;
 
 namespace FlagsRally;
 
 public partial class App : Application
 {
-    public App(IArrivalLocationDataRepository arrivalLocationRepository)
+    private readonly IRevenueCatBilling _revenueCat;
+    public App(IRevenueCatBilling revenueCatBilling)
     {
         InitializeComponent();
+        _revenueCat = revenueCatBilling;
         MainPage = new AppShell();
     }
     protected override Window CreateWindow(IActivationState? activationState)
@@ -20,5 +23,20 @@ public partial class App : Application
         window.MinimumWidth = window.Width = newWidth;
 
         return window;
+    }
+
+    protected override void OnStart()
+    {
+        var revenueCatApiKey = string.Empty;
+
+#if __ANDROID__
+        revenueCatApiKey = Constants.RevenueCatApiKeyAndroid;
+#elif __IOS__
+        revenueCatApiKey = Constants.RevenueCatApiKeyIos;
+#endif
+
+        _revenueCat.Initialize(revenueCatApiKey);
+
+        base.OnStart();
     }
 }

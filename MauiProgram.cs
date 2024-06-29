@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Maps;
-using CountryData.Standard;
-using FlagsRally.Repository;
 using FlagsRally.Helpers;
+using FlagsRally.Repository;
 using FlagsRally.Utilities;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
+using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
 
 namespace FlagsRally
@@ -35,6 +35,8 @@ namespace FlagsRally
                 {
                     essentials.UseMapServiceToken(Constants.BingMapApiKey);
                 });
+
+            builder.Services.AddRevenueCatBilling();
 
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationDataRepository>();
             builder.Services.AddSingleton<SubRegionHelper>();
