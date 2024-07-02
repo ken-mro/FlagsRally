@@ -1,9 +1,12 @@
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Utilities;
+using FlagsRally.Views;
+using Maui.RevenueCat.InAppBilling.Services;
 using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -16,15 +19,17 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly CustomGeolocation _customGeolocation;
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
+    private IRevenueCatBilling _revenueCat;
     public Microsoft.Maui.Controls.Maps.Map ArrivalMap;
 
     [ObservableProperty]
     ObservableCollection<ArrivalLocationPin> _positions;
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customGeolocation = customGeolocation;
+        _revenueCat = revenueCat;
         _ = init();
     }
 
