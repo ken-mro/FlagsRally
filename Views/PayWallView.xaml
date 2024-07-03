@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FlagsRally.Views.PayWallView"
-             xmlns:converters="clr-namespace:FlagsRally.Converters"
-             xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:DataType="viewmodels:PayWallViewModel"
-             VerticalOptions="End">
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
+<toolkit:Popup
+    x:Class="FlagsRally.Views.PayWallView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:PayWallViewModel"
+    VerticalOptions="End">
+    <ScrollView Padding="10">
+        <VerticalStackLayout Padding="30,0" Spacing="25">
 
             <Grid Padding="0,20,0,0">
                 <Grid.ColumnDefinitions>
@@ -19,72 +18,52 @@
                 </Grid.ColumnDefinitions>
 
                 <Image
-                    Source="icon.png"
-                    HeightRequest="100"
+                    Grid.Column="0"
                     Aspect="AspectFit"
+                    HeightRequest="100"
                     SemanticProperties.Description="dot net bot in a race car number eight"
-                    Grid.Column="0" />
+                    Source="icon.png" />
 
                 <Label
-                    Text="Hello, from RevenueCat wrapper!"
-                    Style="{StaticResource Headline}"
-                    SemanticProperties.HeadingLevel="Level1"
+                    Grid.Column="1"
                     LineBreakMode="WordWrap"
-                    Grid.Column="1" />
+                    SemanticProperties.HeadingLevel="Level1"
+                    Style="{StaticResource Headline}"
+                    Text="Hello, from RevenueCat wrapper!" />
             </Grid>
 
             <Label
-                Text="⚠️ iOS payments in sandbox are slow. But in production they work correctly"
+                IsVisible="{Binding AreOfferingsLoaded}"
                 Style="{StaticResource SubHeadline2}"
-                IsVisible="{Binding AreOfferingsLoaded}"/>
+                Text="⚠️ iOS payments in sandbox are slow. But in production they work correctly" />
 
             <Button
                 x:Name="BtnPurchase"
-                Text="Load RevenueCat offerings" 
-                SemanticProperties.Hint="Counts the number of times you click"
                 Command="{Binding LoadOfferingsCommand}"
                 HorizontalOptions="Fill"
-                IsVisible="{Binding AreOfferingsLoaded, Converter={toolkit:InvertedBoolConverter}}"/>
+                IsVisible="{Binding AreOfferingsLoaded, Converter={toolkit:InvertedBoolConverter}}"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Text="Load RevenueCat offerings" />
 
             <Label
-                Text="Subscriptions:"
-                Style="{StaticResource SubHeadline}"
+                IsVisible="{Binding AreOfferingsLoaded}"
                 SemanticProperties.HeadingLevel="Level2"
-                IsVisible="{Binding AreOfferingsLoaded}"/>
+                Style="{StaticResource SubHeadline}"
+                Text="Subscriptions:" />
 
             <Button
-                Text="{Binding MonthlyButtonText}" 
-                HorizontalOptions="Fill"
+                Command="{Binding BuyItemCommand}"
                 CommandParameter="{Binding MonthlyButtonText}"
-                Command="{Binding BuyItemCommand}"
-                IsVisible="{Binding AreOfferingsLoaded}"/>
+                HorizontalOptions="Fill"
+                IsVisible="{Binding AreOfferingsLoaded}"
+                Text="{Binding MonthlyButtonText}" />
 
             <Button
-                Text="{Binding YearlyButtonText}" 
-                HorizontalOptions="Fill"
+                Command="{Binding BuyItemCommand}"
                 CommandParameter="{Binding YearlyButtonText}"
-                Command="{Binding BuyItemCommand}"
-                IsVisible="{Binding AreOfferingsLoaded}"/>
-
-            <!--<Label
-                Text="Consumable items:"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                IsVisible="{Binding AreOfferingsLoaded}"/>
-
-            <Button
-                x:Name="BtnConsumable1"
-                Text="{Binding Consumable1ButtonText}" 
                 HorizontalOptions="Fill"
-                Clicked="BuyItem"
-                IsVisible="{Binding AreOfferingsLoaded}"/>
-
-            <Button
-                x:Name="BtnConsumable2"
-                Text="{Binding Consumable2ButtonText}" 
-                HorizontalOptions="Fill"
-                Clicked="BuyItem"
-                IsVisible="{Binding AreOfferingsLoaded}"/>-->
+                IsVisible="{Binding AreOfferingsLoaded}"
+                Text="{Binding YearlyButtonText}" />
         </VerticalStackLayout>
     </ScrollView>
 </toolkit:Popup>

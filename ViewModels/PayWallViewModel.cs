@@ -1,12 +1,8 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Maui.RevenueCat.InAppBilling.Models;
 using Maui.RevenueCat.InAppBilling.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels;
 
@@ -15,22 +11,22 @@ public partial class PayWallViewModel : BaseViewModel
     private readonly IRevenueCatBilling _revenueCatBilling;
 
     //RC data
-    private List<OfferingDto> _loadedOfferings { get; set; } = new();
-    private PackageDto _monthlySubscription = new();
-    private PackageDto _yearlySubscription = new();
-    private PackageDto _consumable1 = new();
-    private PackageDto _consumable2 = new();
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AreOfferingsLoaded))]
+    private ObservableCollection<OfferingDto> _loadedOfferings = [];
 
-    private string _consumableOfferingIdentifier = "TrainingPlan";
-    private string _consumablePackageIdentifierPrefix = "satisfit_trainingplan_";
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MonthlyButtonText))]
+    private PackageDto _monthlySubscription = new();
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(YearlyButtonText))]
+    private PackageDto _yearlySubscription = new();
 
     //UI data
-    public event PropertyChangedEventHandler? PropertyChanged;
-    public bool AreOfferingsLoaded => _loadedOfferings.Any();
-    public string MonthlyButtonText => $"Monthly subscription for {_monthlySubscription.Product.Pricing.PriceLocalized}";
-    public string YearlyButtonText => $"Yearly subscription for {_yearlySubscription.Product.Pricing.PriceLocalized}";
-    //public string Consumable1ButtonText => $"Item1 for {_consumable1.Product.Pricing.PriceLocalized}";
-    //public string Consumable2ButtonText => $"Item2 for {_consumable2.Product.Pricing.PriceLocalized}";
+    public bool AreOfferingsLoaded => LoadedOfferings.Any();
+    public string MonthlyButtonText => $"Monthly subscription for {MonthlySubscription.Product.Pricing.PriceLocalized}";
+    public string YearlyButtonText => $"Yearly subscription for {YearlySubscription.Product.Pricing.PriceLocalized}";
 
     public PayWallViewModel(IRevenueCatBilling revenueCatBilling)
     {
@@ -41,38 +37,19 @@ public partial class PayWallViewModel : BaseViewModel
     [RelayCommand]
     private void LoadOfferings()
     {
-        //this is just to showcase functionality. For running async actions use Commands and for UI updating proper NotifyPropertyChanged flow
         Task.Run(async () =>
         {
-            _loadedOfferings = await _revenueCatBilling.GetOfferings();
+            var loadedOfferings = await _revenueCatBilling.GetOfferings();
+            LoadedOfferings = new ObservableCollection<OfferingDto>(loadedOfferings);
 
-            _monthlySubscription = _loadedOfferings
+            MonthlySubscription = LoadedOfferings
                 .SelectMany(x => x.AvailablePackages)
                 .First(x => x.Identifier == DefaultPackageIdentifier.Monthly);
 
-            _yearlySubscription = _loadedOfferings
+            YearlySubscription = LoadedOfferings
                 .SelectMany(x => x.AvailablePackages)
                 .First(x => x.Identifier == DefaultPackageIdentifier.Annually);
-
-            _consumable1 = _loadedOfferings
-                .First(x => x.Identifier == _consumableOfferingIdentifier)
-                .AvailablePackages.First(x => x.Identifier == $"{_consumablePackageIdentifierPrefix}3");
-
-            _consumable2 = _loadedOfferings
-                .First(x => x.Identifier == _consumableOfferingIdentifier)
-                .AvailablePackages.First(x => x.Identifier == $"{_consumablePackageIdentifierPrefix}5");
-
-            NotifyChanges();
         });
-    }
-
-    private void NotifyChanges()
-    {
-        OnPropertyChanged(nameof(AreOfferingsLoaded));
-        OnPropertyChanged(nameof(MonthlyButtonText));
-        OnPropertyChanged(nameof(YearlyButtonText));
-        //NotifyPropertyChanged(nameof(Consumable1ButtonText));
-        //NotifyPropertyChanged(nameof(Consumable2ButtonText));
     }
 
     [RelayCommand]
