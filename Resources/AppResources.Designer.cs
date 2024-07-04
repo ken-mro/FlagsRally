@@ -115,6 +115,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select a folder in the Download folder..
+        /// </summary>
+        internal static string BackupInstruction {
+            get {
+                return ResourceManager.GetString("BackupInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Backup saved successfully!.
         /// </summary>
         internal static string BackupSucceeded {

@@ -135,6 +135,9 @@
   <data name="Backup" xml:space="preserve">
     <value>バックアップ</value>
   </data>
+  <data name="BackupInstruction" xml:space="preserve">
+    <value>Download フォルダ内のフォルダを選択してください。</value>
+  </data>
   <data name="BackupSucceeded" xml:space="preserve">
     <value>バックアップが正常に保存されました。</value>
   </data>
