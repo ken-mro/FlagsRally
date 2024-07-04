@@ -207,11 +207,17 @@
   <data name="IsTheFollowingYourLocatoin" xml:space="preserve">
     <value>Is the following your current location?</value>
   </data>
+  <data name="LoadOfferings" xml:space="preserve">
+    <value>Load offerings</value>
+  </data>
   <data name="Locality" xml:space="preserve">
     <value>Locality</value>
   </data>
   <data name="Location" xml:space="preserve">
     <value>Location</value>
+  </data>
+  <data name="MonthlySubFor" xml:space="preserve">
+    <value>Monthly subscription for</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
@@ -221,6 +227,12 @@
   </data>
   <data name="OverwriteExistingFile" xml:space="preserve">
     <value>This operation over write the existing file.</value>
+  </data>
+  <data name="PayWallSubTitle" xml:space="preserve">
+    <value>The first 3 months are free for new subscribers.</value>
+  </data>
+  <data name="PayWallTitle" xml:space="preserve">
+    <value>Collect flags worldwide!</value>
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please try again.</value>
@@ -240,11 +252,17 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>Subscriptions:</value>
+  </data>
   <data name="UnableToGetLocation" xml:space="preserve">
     <value>Unable to get location</value>
   </data>
   <data name="UnexploredLocation" xml:space="preserve">
     <value>Unexplored Location</value>
+  </data>
+  <data name="YearlySubFor" xml:space="preserve">
+    <value>Yearly subscription for</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>

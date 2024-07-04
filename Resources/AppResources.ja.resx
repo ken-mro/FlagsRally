@@ -207,11 +207,17 @@
   <data name="IsTheFollowingYourLocatoin" xml:space="preserve">
     <value>現在地は以下の通りですか？</value>
   </data>
+  <data name="LoadOfferings" xml:space="preserve">
+    <value>プランを読み込む</value>
+  </data>
   <data name="Locality" xml:space="preserve">
     <value>地域名</value>
   </data>
   <data name="Location" xml:space="preserve">
     <value>位置情報</value>
+  </data>
+  <data name="MonthlySubFor" xml:space="preserve">
+    <value>毎月</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>いいえ</value>
@@ -221,6 +227,12 @@
   </data>
   <data name="OverwriteExistingFile" xml:space="preserve">
     <value>この操作は既存のファイルを上書きします。</value>
+  </data>
+  <data name="PayWallSubTitle" xml:space="preserve">
+    <value>初回3ヵ月無料</value>
+  </data>
+  <data name="PayWallTitle" xml:space="preserve">
+    <value>世界中の旗を集めよう</value>
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>再度一度取得してください。</value>
@@ -240,11 +252,17 @@
   <data name="Settings" xml:space="preserve">
     <value>設定</value>
   </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>サブスクリプション:</value>
+  </data>
   <data name="UnableToGetLocation" xml:space="preserve">
     <value>位置情報を取得できませんでした。</value>
   </data>
   <data name="UnexploredLocation" xml:space="preserve">
     <value>未踏の地</value>
+  </data>
+  <data name="YearlySubFor" xml:space="preserve">
+    <value>毎年</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>はい</value>

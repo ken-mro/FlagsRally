@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.PayWallView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:PayWallViewModel"
+    VerticalOptions="End">
+    <ScrollView Padding="20">
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+
+            <Grid Padding="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image
+                    Grid.Column="0"
+                    Aspect="AspectFit"
+                    HeightRequest="100"
+                    Source="passport_earth.png" />
+
+                <Label
+                    Grid.Column="1"
+                    LineBreakMode="WordWrap"
+                    SemanticProperties.HeadingLevel="Level1"
+                    Style="{StaticResource Headline}"
+                    Text="{x:Static strings:AppResources.PayWallTitle}" />
+            </Grid>
+
+            <Label
+                HorizontalOptions="Center"
+                IsVisible="{Binding AreOfferingsLoaded}"
+                Style="{StaticResource SubHeadline2}"
+                Text="{x:Static strings:AppResources.PayWallSubTitle}" />
+
+            <Button
+                Command="{Binding LoadOfferingsCommand}"
+                HorizontalOptions="Fill"
+                IsVisible="{Binding AreOfferingsLoaded, Converter={toolkit:InvertedBoolConverter}}"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Text="{x:Static strings:AppResources.LoadOfferings}" />
+
+            <Label
+                IsVisible="{Binding AreOfferingsLoaded}"
+                SemanticProperties.HeadingLevel="Level2"
+                Style="{StaticResource SubHeadline}"
+                Text="{x:Static strings:AppResources.Subscription}" />
+
+            <Button
+                Command="{Binding BuyItemCommand}"
+                CommandParameter="{Binding MonthlySubscription}"
+                HorizontalOptions="Fill"
+                IsVisible="{Binding AreOfferingsLoaded}"
+                Text="{Binding MonthlyButtonText}" />
+
+            <Button
+                Command="{Binding BuyItemCommand}"
+                CommandParameter="{Binding YearlySubscription}"
+                HorizontalOptions="Fill"
+                IsVisible="{Binding AreOfferingsLoaded}"
+                Text="{Binding YearlyButtonText}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</toolkit:Popup>

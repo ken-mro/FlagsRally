@@ -1,9 +1,12 @@
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Utilities;
+using FlagsRally.Views;
+using Maui.RevenueCat.InAppBilling.Services;
 using Microsoft.Maui.Maps;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -16,15 +19,19 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly CustomGeolocation _customGeolocation;
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
+    private IRevenueCatBilling _revenueCat;
+    private SettingsPreferences _settingsPreferences;
     public Microsoft.Maui.Controls.Maps.Map ArrivalMap;
 
     [ObservableProperty]
     ObservableCollection<ArrivalLocationPin> _positions;
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customGeolocation = customGeolocation;
+        _revenueCat = revenueCat;
+        _settingsPreferences = settingsPreferences;
         _ = init();
     }
 
@@ -65,6 +72,16 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             IsBusy = true;
             _isCheckingLocation = true;
+
+            var customerInfo = await _revenueCat.GetCustomerInfo();
+            var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+            _settingsPreferences.SetIsSubscribed(isSubscribed);
+            if (!_settingsPreferences.GetIsSubscribed())
+            {
+                await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
+            }
+
+            if (!_settingsPreferences.GetIsSubscribed()) return;
 
             GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
             var cancelTokenSource = new CancellationTokenSource();
