@@ -53,6 +53,8 @@ namespace FlagsRally.ViewModels
                 await Permissions.RequestAsync<Permissions.StorageWrite>();
                 var folderPickerResult = await FolderPicker.PickAsync(cancellationSource.Token);
 
+                if (folderPickerResult.Folder is null) return;
+
                 string downloadPath = Path.Combine(folderPickerResult.Folder.Path, Constants.DatabaseName);
 
                 if (!Directory.Exists(Path.GetDirectoryName(downloadPath)))
@@ -78,12 +80,15 @@ namespace FlagsRally.ViewModels
                     $"{AppResources.ActionCannotUndone}", $"{AppResources.Yes}", $"{AppResources.No}");
 
                 if (!result) return;
+
                 var pickedFile = await FilePicker.PickAsync();
-                if (pickedFile?.FileName != Constants.DatabaseName)
+                if (pickedFile is null) return;
+                if (pickedFile.FileName != Constants.DatabaseName)
                 {
                     await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
                     return;
                 }
+
                 File.Copy(pickedFile.FullPath, Constants.DataBasePath, true);
                 await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
                 $"{AppResources.RelaunchToEnable}", "OK");
