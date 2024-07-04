@@ -50,7 +50,6 @@ namespace FlagsRally.ViewModels
             try
             {
                 string dbPath = Constants.DataBasePath;
-                await Permissions.RequestAsync<Permissions.StorageRead>();
                 await Permissions.RequestAsync<Permissions.StorageWrite>();
                 var folderPickerResult = await FolderPicker.PickAsync(cancellationSource.Token);
 
