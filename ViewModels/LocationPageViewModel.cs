@@ -44,7 +44,8 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
-            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
+            Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
+                                ?? new Location(46.22667333333333, 6.140291666666666);
             MapSpan mapSpan = new MapSpan(location, 0.01, 0.01);
             ArrivalMap.MoveToRegion(mapSpan);
         }
@@ -54,7 +55,6 @@ public partial class LocationPageViewModel : BaseViewModel
             Location location = new Location(46.22667333333333, 6.140291666666666);
             MapSpan mapSpan = new MapSpan(location, 0.01, 0.01);
             ArrivalMap.MoveToRegion(mapSpan);
-
         }
         finally
         {
