@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Resources;
 using Maui.RevenueCat.InAppBilling.Models;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
@@ -25,8 +26,8 @@ public partial class PayWallViewModel : BaseViewModel
 
     //UI data
     public bool AreOfferingsLoaded => LoadedOfferings.Any();
-    public string MonthlyButtonText => $"Monthly subscription for {MonthlySubscription.Product.Pricing.PriceLocalized}";
-    public string YearlyButtonText => $"Yearly subscription for {YearlySubscription.Product.Pricing.PriceLocalized}";
+    public string MonthlyButtonText => $"{AppResources.MonthlySubFor} {MonthlySubscription.Product.Pricing.PriceLocalized}";
+    public string YearlyButtonText => $"{AppResources.YearlySubFor} {YearlySubscription.Product.Pricing.PriceLocalized}";
 
     public PayWallViewModel(IRevenueCatBilling revenueCatBilling)
     {
@@ -53,7 +54,7 @@ public partial class PayWallViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void BuyItem(string buttonText)
+    private void BuyItem(PackageDto packageDto)
     {
         if (IsBusy) return;
         IsBusy = true;

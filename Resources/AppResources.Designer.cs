@@ -331,6 +331,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load offerings.
+        /// </summary>
+        internal static string LoadOfferings {
+            get {
+                return ResourceManager.GetString("LoadOfferings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Locality.
         /// </summary>
         internal static string Locality {
@@ -345,6 +354,15 @@ namespace FlagsRally.Resources {
         internal static string Location {
             get {
                 return ResourceManager.GetString("Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monthly subscription for.
+        /// </summary>
+        internal static string MonthlySubFor {
+            get {
+                return ResourceManager.GetString("MonthlySubFor", resourceCulture);
             }
         }
         
@@ -372,6 +390,24 @@ namespace FlagsRally.Resources {
         internal static string OverwriteExistingFile {
             get {
                 return ResourceManager.GetString("OverwriteExistingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The first 3 months are free for new subscribers..
+        /// </summary>
+        internal static string PayWallSubTitle {
+            get {
+                return ResourceManager.GetString("PayWallSubTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collect flags worldwide!.
+        /// </summary>
+        internal static string PayWallTitle {
+            get {
+                return ResourceManager.GetString("PayWallTitle", resourceCulture);
             }
         }
         
@@ -430,6 +466,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Subscriptions:.
+        /// </summary>
+        internal static string Subscription {
+            get {
+                return ResourceManager.GetString("Subscription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to get location.
         /// </summary>
         internal static string UnableToGetLocation {
@@ -444,6 +489,15 @@ namespace FlagsRally.Resources {
         internal static string UnexploredLocation {
             get {
                 return ResourceManager.GetString("UnexploredLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yearly subscription for.
+        /// </summary>
+        internal static string YearlySubFor {
+            get {
+                return ResourceManager.GetString("YearlySubFor", resourceCulture);
             }
         }
         

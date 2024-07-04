@@ -436,6 +436,7 @@
 		<None Remove="Resources\Images\no\no_55_emblem.png" />
 		<None Remove="Resources\Images\no\no_56.png" />
 		<None Remove="Resources\Images\no\no_56_emblem.png" />
+		<None Remove="Resources\Images\passport_earth.png" />
 		<None Remove="Resources\Images\unknown_arrival.png" />
 		<None Remove="Resources\Images\us_dc.png" />
 		<None Remove="Resources\Images\it\it_21.png" />
