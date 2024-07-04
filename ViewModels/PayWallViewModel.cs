@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Repository;
 using FlagsRally.Resources;
 using Maui.RevenueCat.InAppBilling.Models;
 using Maui.RevenueCat.InAppBilling.Services;
@@ -10,6 +11,7 @@ namespace FlagsRally.ViewModels;
 public partial class PayWallViewModel : BaseViewModel
 {
     private readonly IRevenueCatBilling _revenueCatBilling;
+    private readonly SettingsPreferences _settingsPreferences;
 
     //RC data
     [ObservableProperty]
@@ -29,9 +31,10 @@ public partial class PayWallViewModel : BaseViewModel
     public string MonthlyButtonText => $"{AppResources.MonthlySubFor} {MonthlySubscription.Product.Pricing.PriceLocalized}";
     public string YearlyButtonText => $"{AppResources.YearlySubFor} {YearlySubscription.Product.Pricing.PriceLocalized}";
 
-    public PayWallViewModel(IRevenueCatBilling revenueCatBilling)
+    public PayWallViewModel(IRevenueCatBilling revenueCatBilling, SettingsPreferences settingsPreferences)
     {
         _revenueCatBilling = revenueCatBilling;
+        _settingsPreferences = settingsPreferences;
         Title = "Pay Wall";
     }
 
@@ -58,44 +61,12 @@ public partial class PayWallViewModel : BaseViewModel
     {
         if (IsBusy) return;
         IsBusy = true;
-        //var originalText = button.Text;
-        //button.Text = "Purchasing...";
-        //button.IsEnabled = false;
 
         Task.Run(async () =>
         {
-            //await _revenueCatBilling.PurchaseProduct(buttonText);
-            //if (button == BtnMonthly)
-            //{
-            //    await _revenueCatBilling.PurchaseProduct(_monthlySubscription);
-            //}
-            //else if (button == BtnYearly)
-            //{
-            //    await _revenueCatBilling.PurchaseProduct(_yearlySubscription);
-            //}
-            //else if (button == BtnConsumable1)
-            //{
-            //    await _revenueCatBilling.PurchaseProduct(_consumable1);
-            //}
-            //else if (button == BtnConsumable2)
-            //{
-            //    await _revenueCatBilling.PurchaseProduct(_consumable2);
-            //}
-
-            //button.Dispatcher.Dispatch(() =>
-            //{
-            //    button.Text = originalText;
-            //    button.IsEnabled = true;
-            //});
+            var purchaseResult = await _revenueCatBilling.PurchaseProduct(packageDto);
+            _settingsPreferences.SetIsSubscribed(purchaseResult.IsSuccess);
             IsBusy = false;
         });
     }
-
-    //private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-    //{
-    //    if (PropertyChanged != null)
-    //    {
-    //        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    //    }
-    //}
 }
