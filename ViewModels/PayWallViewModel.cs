@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
@@ -12,6 +13,7 @@ public partial class PayWallViewModel : BaseViewModel
 {
     private readonly IRevenueCatBilling _revenueCatBilling;
     private readonly SettingsPreferences _settingsPreferences;
+    public Popup Popup;
 
     //RC data
     [ObservableProperty]
@@ -67,6 +69,10 @@ public partial class PayWallViewModel : BaseViewModel
             var purchaseResult = await _revenueCatBilling.PurchaseProduct(packageDto);
             _settingsPreferences.SetIsSubscribed(purchaseResult.IsSuccess);
             IsBusy = false;
+            if (purchaseResult.IsSuccess)
+            {
+                await Popup.CloseAsync();
+            }
         });
     }
 }
