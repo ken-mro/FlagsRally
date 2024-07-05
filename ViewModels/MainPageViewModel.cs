@@ -48,7 +48,7 @@ namespace FlagsRally.ViewModels
         [ObservableProperty]
         int _gridItemSpan = 2;
 
-        public string PassportImageSourceString => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOrRegion().ToLower()}.png";
+        public string PassportImageSourceString => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOfResidence().ToLower()}.png";
 
         [ObservableProperty]
         ObservableCollection<ArrivalLocation> _sourceArrivalLocationList;
