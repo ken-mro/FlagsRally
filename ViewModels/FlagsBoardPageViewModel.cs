@@ -37,8 +37,10 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
         CountryList = new ObservableCollection<Country>(countryList.OrderBy(x => x.CountryName).ToList());
 
-        var regionName = _settingsPreferences.GetCountryOfResidence();
-        var matchingCountry = CountryList.FirstOrDefault(c => c.CountryShortCode == regionName);
+        var latestCountryCode = _settingsPreferences.GetLatestCountry();
+        var countryCodeOfResidence = _settingsPreferences.GetCountryOfResidence();
+        Country? matchingCountry = CountryList.FirstOrDefault(c => c.CountryShortCode == latestCountryCode)
+                            ?? CountryList.FirstOrDefault(c => c.CountryShortCode == countryCodeOfResidence);
         if (matchingCountry != null)
         {
             CountryList.Remove(matchingCountry);

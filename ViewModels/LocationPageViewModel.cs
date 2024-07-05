@@ -99,6 +99,7 @@ public partial class LocationPageViewModel : BaseViewModel
             if (result)
             {
                 var id = await _arrivalLocationRepository.Save(arrivalLocationData);
+                _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
                 ArrivalLocationPin arrivalLocationPins = new()
                 {
                     Id = id,
