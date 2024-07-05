@@ -8,7 +8,7 @@ namespace FlagsRally.Tests.Repository
     public class SettingsPreferencesTests
     {
         [Fact]
-        public void SetCountryOrRegion_ValidInput_SetsCountryOrRegion()
+        public void Set_2_letter_country_code()
         {
             // Arrange
             var defaultPreferencesMock = new Mock<IPreferences>();
@@ -16,14 +16,14 @@ namespace FlagsRally.Tests.Repository
             string twoLetterISORegionName = "US";
 
             // Act
-            settingsPreferences.SetCountryOrRegion(twoLetterISORegionName);
+            settingsPreferences.SetCountryOfResidence(twoLetterISORegionName);
 
             // Assert
             defaultPreferencesMock.Verify(p => p.Set(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
-        public void SetCountryOrRegion_InvalidInput_ThrowsArgumentExceptionWithMessage()
+        public void Set_country_code_which_is_not_2_letter_is_invalid()
         {
             // Arrange
             var defaultPreferencesMock = new Mock<IPreferences>();
@@ -31,14 +31,14 @@ namespace FlagsRally.Tests.Repository
             string threeLetterISORegionName = "USA";
 
             // Act
-            var exception = Assert.Throws<ArgumentException>(() => settingsPreferences.SetCountryOrRegion(threeLetterISORegionName));
+            var exception = Assert.Throws<ArgumentException>(() => settingsPreferences.SetCountryOfResidence(threeLetterISORegionName));
 
             // Assert
             Assert.Equal("Two-letter ISO region name must be 2 characters long", exception.Message);
         }
 
         [Fact]
-        public void SetCountryOrRegion_InvalidInput_ThrowsArgumentExceptionWithMessage2()
+        public void Set_a_string_which_is_not_countyr_code_is_invalid()
         {
             // Arrange
             var defaultPreferencesMock = new Mock<IPreferences>();
@@ -46,14 +46,14 @@ namespace FlagsRally.Tests.Repository
             string twoLetterISORegionName = "1A";
 
             // Act
-            var exception = Assert.Throws<ArgumentException>(() => settingsPreferences.SetCountryOrRegion(twoLetterISORegionName));
+            var exception = Assert.Throws<ArgumentException>(() => settingsPreferences.SetCountryOfResidence(twoLetterISORegionName));
 
             // Assert
             Assert.Equal("Two-letter ISO region name only has letters", exception.Message);
         }
 
         [Fact]
-        public void GetCountryOrRegion_ReturnsDefaultRegion()
+        public void Get_default_country_code_if_it_has_not_set_before()
         {
             // Arrange
             var defaultPreferencesMock = new Mock<IPreferences>();
@@ -61,7 +61,7 @@ namespace FlagsRally.Tests.Repository
             string defaultRegion = "US";
             defaultPreferencesMock.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(defaultRegion);
             // Act
-            var result = settingsPreferences.GetCountryOrRegion();
+            var result = settingsPreferences.GetCountryOfResidence();
 
             // Assert
             Assert.Equal(defaultRegion, result);

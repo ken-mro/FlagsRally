@@ -37,7 +37,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
         CountryList = new ObservableCollection<Country>(countryList.OrderBy(x => x.CountryName).ToList());
 
-        var regionName = _settingsPreferences.GetCountryOrRegion();
+        var regionName = _settingsPreferences.GetCountryOfResidence();
         var matchingCountry = CountryList.FirstOrDefault(c => c.CountryShortCode == regionName);
         if (matchingCountry != null)
         {
@@ -108,7 +108,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     private ObservableCollection<SubRegion> GetFilteredList()
     {
         var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry.CountryShortCode);
-        var twoLetterRegionName = _settingsPreferences.GetCountryOrRegion();
+        var twoLetterRegionName = _settingsPreferences.GetCountryOfResidence();
         List<SubRegion> blankAllSubregionList = _subRegionHelper.GetBlankAllRegionList(countryInfo, twoLetterRegionName);
 
         //Assign the arrival data to the blankAllSubregionList.

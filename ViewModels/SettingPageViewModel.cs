@@ -31,7 +31,7 @@ namespace FlagsRally.ViewModels
             _countryHelper = countryHelper;
             CountryList = new ObservableCollection<Country>(_countryHelper.GetCountryData());
 
-            _selectedCountry = _countryHelper.GetCountryByCode(_settingPreferences.GetCountryOrRegion());
+            _selectedCountry = _countryHelper.GetCountryByCode(_settingPreferences.GetCountryOfResidence());
 
             PropertyChanged += OnSelectedCountryChanged;
         }
@@ -40,7 +40,7 @@ namespace FlagsRally.ViewModels
         {
             if (e.PropertyName == nameof(SelectedCountry))
             {
-                _settingPreferences.SetCountryOrRegion(SelectedCountry.CountryShortCode);
+                _settingPreferences.SetCountryOfResidence(SelectedCountry.CountryShortCode);
             }
         }
 

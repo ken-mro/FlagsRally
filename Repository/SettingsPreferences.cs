@@ -14,7 +14,7 @@ public partial class SettingsPreferences : ObservableObject
         _defaultPreferences = defaultPreferences;
     }
 
-    public void SetCountryOrRegion(string twoLetterISORegionName)
+    public void SetCountryOfResidence(string twoLetterISORegionName)
     {
         if (twoLetterISORegionName.Length != 2) throw new ArgumentException("Two-letter ISO region name must be 2 characters long");
 
@@ -24,7 +24,7 @@ public partial class SettingsPreferences : ObservableObject
         OnPropertyChanged();
     }
 
-    public string GetCountryOrRegion()
+    public string GetCountryOfResidence()
     {
         var twoLetterISORegionName = RegionInfo.CurrentRegion.TwoLetterISORegionName;
         return _defaultPreferences.Get(_selectedCountryOrRegionKey, twoLetterISORegionName);
