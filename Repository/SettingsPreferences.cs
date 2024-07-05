@@ -8,6 +8,7 @@ public partial class SettingsPreferences : ObservableObject
     private IPreferences _defaultPreferences;
     private string _selectedCountryOrRegionKey = "SelectedCountryOrRegion";
     private string _isSubscribed = "IsSubscribed";
+    private string _latestCountry = "LatestCountry";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -39,5 +40,15 @@ public partial class SettingsPreferences : ObservableObject
     public bool GetIsSubscribed()
     {
         return bool.Parse(_defaultPreferences.Get(_isSubscribed, false.ToString()));
+    }
+
+    public string GetLatestCountry()
+    {
+        return _defaultPreferences.Get(_latestCountry, GetCountryOfResidence());
+    }
+
+    public void SetLatestCountry(string countryCode)
+    {
+        _defaultPreferences.Set(_latestCountry, countryCode);
     }
 }
