@@ -73,15 +73,11 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
-            var customerInfo = await _revenueCat.GetCustomerInfo();
-            var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
-            _settingsPreferences.SetIsSubscribed(isSubscribed);
-            if (!_settingsPreferences.GetIsSubscribed())
+            if (Positions.Count >= 5)
             {
-                await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
+                await TryToOfferSubscription();
+                if (!_settingsPreferences.GetIsSubscribed()) return;
             }
-
-            if (!_settingsPreferences.GetIsSubscribed()) return;
 
             GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
             var cancelTokenSource = new CancellationTokenSource();
@@ -129,5 +125,16 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
+    }
+
+    private async Task TryToOfferSubscription()
+    {
+        var customerInfo = await _revenueCat.GetCustomerInfo();
+        var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+        _settingsPreferences.SetIsSubscribed(isSubscribed);
+        if (!_settingsPreferences.GetIsSubscribed())
+        {
+            await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
+        }
     }
 }
