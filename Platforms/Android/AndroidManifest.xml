@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="010003" android:versionName="1.0.3"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="010008" android:versionName="1.0.8"
 		  xmlns:tools="http://schemas.android.com/tools">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true">
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="PASTE-YOUR-API-KEY-HERE" />
