@@ -79,7 +79,11 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
-            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+#if IOS
+            request.RequestFullAccuracy = true;
+#endif
+
             _cancelTokenSource = new CancellationTokenSource();
             Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
             if (location is null)
