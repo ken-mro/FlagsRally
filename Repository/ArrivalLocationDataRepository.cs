@@ -7,20 +7,15 @@ namespace FlagsRally.Repository;
 
 public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 {
-    string _dbPath = Constants.DataBasePath;
-    readonly CustomCountryHelper _countryHelper;
-
-    readonly CustomGeolocation _customGeolocation;
-
-    public string StatusMessage { get; set; }
-
+    private string _dbPath = Constants.DataBasePath;
+    private readonly CustomCountryHelper _countryHelper;
+    private readonly CustomGeolocation _customGeolocation;
     private SQLiteAsyncConnection _conn;
 
     public ArrivalLocationDataRepository(CustomCountryHelper countryHelper, CustomGeolocation customGeolocation)
     {
         _countryHelper = countryHelper;
         _customGeolocation = customGeolocation;
-        _ = Init();
     }
 
     private async Task Init()
@@ -116,6 +111,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 
     public async Task<int> Save(ArrivalLocationData arrivalLocationData)
     {
+        await Init();
         return await _conn.InsertAsync(arrivalLocationData);
     }
 
