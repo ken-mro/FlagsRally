@@ -35,7 +35,7 @@
             <Label
                 HorizontalOptions="Center"
                 IsVisible="{Binding AreOfferingsLoaded}"
-                Style="{StaticResource SubHeadline2}"
+                Style="{StaticResource SubHeadline}"
                 Text="{x:Static strings:AppResources.PayWallSubTitle}" />
 
             <Button
