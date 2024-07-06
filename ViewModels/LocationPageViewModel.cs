@@ -79,16 +79,23 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
-            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-            var cancelTokenSource = new CancellationTokenSource();
-            Location location = await Geolocation.Default.GetLocationAsync(request, cancelTokenSource.Token);
+            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+#if IOS
+            request.RequestFullAccuracy = true;
+#endif
+
+            _cancelTokenSource = new CancellationTokenSource();
+            Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+            if (location is null)
+                throw new Exception($"{AppResources.UnableToGetLocation}");
+
             var datetime = DateTime.Now;
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(datetime, location, languageCode);
 
-            if (arrivalLocationData == null)
-                throw new Exception($"{AppResources.UnableToGetLocation}");
+            if (arrivalLocationData is null)
+                throw new Exception($"{AppResources.UnableToGetLocationData}");
 
             var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
                                                             $"{arrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
@@ -105,15 +112,26 @@ public partial class LocationPageViewModel : BaseViewModel
                 Positions.Add(arrivalLocationPins);
             }
         }
-        // Catch one of the following exceptions:
-        //   FeatureNotSupportedException
-        //   FeatureNotEnabledException
-        //   PermissionException
+        catch (FeatureNotSupportedException ex)
+        {
+            // Handle not supported on device exception
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nNot supported on device.", "OK");
+        }
+        catch (FeatureNotEnabledException ex)
+        {
+            // Handle not enabled on device exception
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nNot enabled on device.", "OK");
+        }
+        catch (PermissionException ex)
+        {
+            // Handle permission exception
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nSomething wrong with the permission", "OK");
+        }
         catch (Exception ex)
         {
             // Unable to get location
             // Todo:add logger
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.UnableToGetLocation}\n{AppResources.PleaseTryAgain}", "OK");
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
         }
         finally
         {

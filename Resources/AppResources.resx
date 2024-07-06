@@ -256,7 +256,10 @@
     <value>Subscriptions:</value>
   </data>
   <data name="UnableToGetLocation" xml:space="preserve">
-    <value>Unable to get location</value>
+    <value>Unable to get location.</value>
+  </data>
+  <data name="UnableToGetLocationData" xml:space="preserve">
+    <value>Unable to get location data.</value>
   </data>
   <data name="UnexploredLocation" xml:space="preserve">
     <value>Unexplored Location</value>

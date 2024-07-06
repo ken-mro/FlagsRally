@@ -256,6 +256,9 @@
     <value>サブスクリプション:</value>
   </data>
   <data name="UnableToGetLocation" xml:space="preserve">
+    <value>位置を取得できませんでした。</value>
+  </data>
+  <data name="UnableToGetLocationData" xml:space="preserve">
     <value>位置情報を取得できませんでした。</value>
   </data>
   <data name="UnexploredLocation" xml:space="preserve">
