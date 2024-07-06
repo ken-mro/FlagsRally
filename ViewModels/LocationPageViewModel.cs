@@ -80,8 +80,8 @@ public partial class LocationPageViewModel : BaseViewModel
             }
 
             GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-            var cancelTokenSource = new CancellationTokenSource();
-            Location location = await Geolocation.Default.GetLocationAsync(request, cancelTokenSource.Token);
+            _cancelTokenSource = new CancellationTokenSource();
+            Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
             if (location is null)
                 throw new Exception($"{AppResources.UnableToGetLocation}");
 
