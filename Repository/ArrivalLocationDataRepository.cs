@@ -12,8 +12,6 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 
     readonly CustomGeolocation _customGeolocation;
 
-    public string StatusMessage { get; set; }
-
     private SQLiteAsyncConnection _conn;
 
     public ArrivalLocationDataRepository(CustomCountryHelper countryHelper, CustomGeolocation customGeolocation)
