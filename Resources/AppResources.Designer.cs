@@ -475,11 +475,20 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to get location.
+        ///   Looks up a localized string similar to Unable to get location..
         /// </summary>
         internal static string UnableToGetLocation {
             get {
                 return ResourceManager.GetString("UnableToGetLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to get location data..
+        /// </summary>
+        internal static string UnableToGetLocationData {
+            get {
+                return ResourceManager.GetString("UnableToGetLocationData", resourceCulture);
             }
         }
         
