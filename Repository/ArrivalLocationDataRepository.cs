@@ -18,7 +18,6 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     {
         _countryHelper = countryHelper;
         _customGeolocation = customGeolocation;
-        _ = Init();
     }
 
     private async Task Init()
