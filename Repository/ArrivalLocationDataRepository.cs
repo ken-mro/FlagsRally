@@ -113,6 +113,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 
     public async Task<int> Save(ArrivalLocationData arrivalLocationData)
     {
+        await Init();
         return await _conn.InsertAsync(arrivalLocationData);
     }
 
