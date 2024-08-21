@@ -9,6 +9,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _selectedCountryOrRegionKey = "SelectedCountryOrRegion";
     private string _isSubscribed = "IsSubscribed";
     private string _latestCountry = "LatestCountry";
+    private string _apiKey = "ApiKey";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -50,5 +51,20 @@ public partial class SettingsPreferences : ObservableObject
     public void SetLatestCountry(string countryCode)
     {
         _defaultPreferences.Set(_latestCountry, countryCode);
+    }
+
+    public bool IsApiKeySet()
+    {
+        return !string.IsNullOrEmpty(GetApiKey());
+    }
+
+    public string GetApiKey()
+    {
+        return _defaultPreferences.Get(_apiKey, string.Empty);
+    }
+
+    public void SetApiKey(string apiKey)
+    {
+        _defaultPreferences.Set(_apiKey, apiKey);
     }
 }

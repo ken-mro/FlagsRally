@@ -8,16 +8,18 @@ namespace FlagsRally.Utilities;
 public class CustomGeolocation
 {
     private readonly CustomCountryHelper _countryHelper;
+    private readonly SettingsPreferences _settingsPreferences;
 
-    public CustomGeolocation(CustomCountryHelper countryHelper)
+    public CustomGeolocation(CustomCountryHelper countryHelper, SettingsPreferences settingsPreferences)
     {
         _countryHelper = countryHelper;
+        _settingsPreferences = settingsPreferences;
     }
 
     public async Task<ArrivalLocationData> GetArrivalLocationAsync(DateTime datetime, Location location, string languageCode)
     {
-        var jsonObject = await GetAllRequestsForLocationInfo(location, languageCode);
-        var enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en");
+        var jsonObject = await GetAllRequestsForLocationInfo(location, languageCode, _settingsPreferences);
+        var enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en", _settingsPreferences);
 
         return GenerateFrom(datetime, jsonObject, enJsonObject, location, languageCode);
     }
@@ -119,14 +121,15 @@ public class CustomGeolocation
         return null;
     }
 
-    private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode)
+    private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode, SettingsPreferences settings)
     {
         try
         {
             if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
             if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
+            string apiKey = settings.GetApiKey() == string.Empty? Constants.GoogleMapApiKey : settings.GetApiKey();
 
-            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={Constants.GoogleMapApiKey}";
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={apiKey}";
 
             using (HttpClient httpClient = new HttpClient())
             {
