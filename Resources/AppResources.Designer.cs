@@ -160,6 +160,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to API key is cleared successfully!.
+        /// </summary>
+        internal static string ClearAPIKey {
+            get {
+                return ResourceManager.GetString("ClearAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Completed.
         /// </summary>
         internal static string Completed {
@@ -313,6 +322,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid API Key..
+        /// </summary>
+        internal static string InvalidAPIKey {
+            get {
+                return ResourceManager.GetString("InvalidAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid file selected.
         /// </summary>
         internal static string InvalidFileSelected {
@@ -457,11 +475,29 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to API key is set successfully!.
+        /// </summary>
+        internal static string SetAPIKey {
+            get {
+                return ResourceManager.GetString("SetAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         internal static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify your key if you&apos;d like to..
+        /// </summary>
+        internal static string SpecifyAPI {
+            get {
+                return ResourceManager.GetString("SpecifyAPI", resourceCulture);
             }
         }
         

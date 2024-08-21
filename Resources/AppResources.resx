@@ -150,6 +150,9 @@
   <data name="Boards" xml:space="preserve">
     <value>Boards</value>
   </data>
+  <data name="ClearAPIKey" xml:space="preserve">
+    <value>API key is cleared successfully!</value>
+  </data>
   <data name="Completed" xml:space="preserve">
     <value>Completed</value>
   </data>
@@ -201,6 +204,9 @@
   <data name="Instruciton4" xml:space="preserve">
     <value>Bon Voyage!</value>
   </data>
+  <data name="InvalidAPIKey" xml:space="preserve">
+    <value>Invalid API Key.</value>
+  </data>
   <data name="InvalidFileSelected" xml:space="preserve">
     <value>Invalid file selected</value>
   </data>
@@ -249,8 +255,14 @@
   <data name="RestoreBeforeUse" xml:space="preserve">
     <value>If you have used this app on a previous device, please make sure to restore the backup before using it again.</value>
   </data>
+  <data name="SetAPIKey" xml:space="preserve">
+    <value>API key is set successfully!</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SpecifyAPI" xml:space="preserve">
+    <value>Specify your key if you'd like to.</value>
   </data>
   <data name="Subscription" xml:space="preserve">
     <value>Subscriptions:</value>
