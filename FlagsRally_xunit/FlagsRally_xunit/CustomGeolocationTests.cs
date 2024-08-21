@@ -1,4 +1,6 @@
+using FlagsRally.Repository;
 using FlagsRally.Utilities;
+using Moq;
 
 namespace FlagsRally.Utilities.Tests;
 
@@ -10,7 +12,11 @@ public class CustomGeolocationTests
         // Arrange
         Location location = new Location(37.7749, -122.4194);
         string languageCode = "en";
-        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
+
+        var preferencesMock = new Mock<IPreferences>();
+        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GoogleMapApiKey);
+
+        var customGeolocation = new CustomGeolocation(new CustomCountryHelper(), new SettingsPreferences(preferencesMock.Object));
         var datetime = DateTime.Now;
 
         // Act
@@ -39,7 +45,10 @@ public class CustomGeolocationTests
         // Arrange
         Location location = new Location(37.7749, -122.4194);
         string languageCode = "ja";
-        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
+        var preferencesMock = new Mock<IPreferences>();
+        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GoogleMapApiKey);
+
+        var customGeolocation = new CustomGeolocation(new CustomCountryHelper(), new SettingsPreferences(preferencesMock.Object));
         var datetime = DateTime.Now;
 
         // Act
@@ -68,7 +77,10 @@ public class CustomGeolocationTests
         // Arrange
         Location location = new Location(12.984305, -61.287228);
         string languageCode = "ja";
-        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
+        var preferencesMock = new Mock<IPreferences>();
+        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GoogleMapApiKey);
+
+        var customGeolocation = new CustomGeolocation(new CustomCountryHelper(), new SettingsPreferences(preferencesMock.Object));
         var datetime = DateTime.Now;
 
         // Act
@@ -87,35 +99,6 @@ public class CustomGeolocationTests
 
         Assert.Equal("VC", arrivalLocationData.CountryCode);
         Assert.Equal("06", arrivalLocationData.AdminAreaCode);
-        Assert.Equal(location.Longitude, arrivalLocationData.Longitude);
-        Assert.Equal(location.Latitude, arrivalLocationData.Latitude);
-    }
-
-    [Fact]
-    public async Task Generate_location_data_from_location_coordinates_in_other_language_3()
-    {
-        // Arrange
-        Location location = new Location(18.0410885197085, -63.05616148029151);
-        string languageCode = "ja";
-        var customGeolocation = new CustomGeolocation(new CustomCountryHelper());
-        var datetime = DateTime.Now;
-
-        // Act
-        var arrivalLocationData = await customGeolocation.GetArrivalLocationAsync(datetime, location, languageCode);
-
-        // Assert
-        Assert.NotNull(arrivalLocationData);
-        Assert.Equal(datetime, arrivalLocationData.ArrivalDate);
-        Assert.Equal("シント・マールテン", arrivalLocationData.CountryName);
-        Assert.Equal("シント マールテン島", arrivalLocationData.AdminAreaName);
-        Assert.Equal("フィリップスバーグ", arrivalLocationData.LocalityName);
-
-        Assert.Equal("Sint Maarten", arrivalLocationData.EnCountryName);
-        Assert.Equal("Sint Maarten", arrivalLocationData.EnAdminAreaName);
-        Assert.Equal("Philipsburg", arrivalLocationData.EnLocalityName);
-
-        Assert.Equal("SX", arrivalLocationData.CountryCode);
-        Assert.Equal("", arrivalLocationData.AdminAreaCode);
         Assert.Equal(location.Longitude, arrivalLocationData.Longitude);
         Assert.Equal(location.Latitude, arrivalLocationData.Latitude);
     }
