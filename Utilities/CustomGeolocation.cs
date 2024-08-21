@@ -91,7 +91,7 @@ public class CustomGeolocation
         return arrivalLocation;
     }
 
-    private JToken? GetComponent(JToken results, string type)
+    private static JToken? GetComponent(JToken results, string type)
     {
         foreach (var result in results)
         {
@@ -146,6 +146,35 @@ public class CustomGeolocation
         catch (Exception ex)
         {
             throw new Exception("Unable to get location", ex);
+        }
+    }
+
+    public static async Task<bool> ApiKeyIsValid(string apiKey)
+    {
+        try
+        {
+            Location location = new Location(37.7749, -122.4194);
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language=en&key={apiKey}";
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
+                if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");
+
+                string responseContent = await response.Content.ReadAsStringAsync();
+                dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                if (jsonResponse is null) throw new Exception("Unable to get location");
+
+                var jObject = JObject.Parse(responseContent);
+                var results = jObject["results"]?.Value<JArray>();
+                var country = GetComponent(results, "country");
+                var countryCode = country?["short_name"]?.Value<string>() ?? string.Empty;
+                return countryCode == "US";
+            }
+        }
+        catch
+        {
+            return false;
         }
     }
 }
