@@ -22,11 +22,15 @@ namespace FlagsRally.ViewModels
         [NotifyPropertyChangedFor(nameof(ImageSourceString))]
         private Country _selectedCountry;
 
+        [ObservableProperty]
+        private string _apiKey;
+
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
 
         public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper)
         {
             _settingPreferences = settingPreferences;
+            ApiKey = _settingPreferences.GetApiKey();
 
             _countryHelper = countryHelper;
             CountryList = new ObservableCollection<Country>(_countryHelper.GetCountryData());
@@ -68,6 +72,32 @@ namespace FlagsRally.ViewModels
             catch(Exception ex)
             {
                 await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            }
+        }
+
+        [RelayCommand]
+        async Task EnableApiKeyAsync()
+        {
+            if (string.IsNullOrEmpty(ApiKey))
+            {
+                if (!string.IsNullOrEmpty(_settingPreferences.GetApiKey()))
+                {
+                    _settingPreferences.SetApiKey(string.Empty);
+                    await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.ClearAPIKey}", "OK");
+                }
+
+                return;
+            }
+
+            var isApiKeyValid = await CustomGeolocation.ApiKeyIsValid(ApiKey);
+            if (isApiKeyValid)
+            {
+                _settingPreferences.SetApiKey(ApiKey);
+                await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.SetAPIKey}", "OK");
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidAPIKey}", "OK");
             }
         }
 

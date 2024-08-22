@@ -8,16 +8,18 @@ namespace FlagsRally.Utilities;
 public class CustomGeolocation
 {
     private readonly CustomCountryHelper _countryHelper;
+    private readonly SettingsPreferences _settingsPreferences;
 
-    public CustomGeolocation(CustomCountryHelper countryHelper)
+    public CustomGeolocation(CustomCountryHelper countryHelper, SettingsPreferences settingsPreferences)
     {
         _countryHelper = countryHelper;
+        _settingsPreferences = settingsPreferences;
     }
 
     public async Task<ArrivalLocationData> GetArrivalLocationAsync(DateTime datetime, Location location, string languageCode)
     {
-        var jsonObject = await GetAllRequestsForLocationInfo(location, languageCode);
-        var enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en");
+        var jsonObject = await GetAllRequestsForLocationInfo(location, languageCode, _settingsPreferences);
+        var enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en", _settingsPreferences);
 
         return GenerateFrom(datetime, jsonObject, enJsonObject, location, languageCode);
     }
@@ -89,7 +91,7 @@ public class CustomGeolocation
         return arrivalLocation;
     }
 
-    private JToken? GetComponent(JToken results, string type)
+    private static JToken? GetComponent(JToken results, string type)
     {
         foreach (var result in results)
         {
@@ -119,14 +121,15 @@ public class CustomGeolocation
         return null;
     }
 
-    private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode)
+    private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode, SettingsPreferences settings)
     {
         try
         {
             if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
             if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
+            string apiKey = settings.GetApiKey() == string.Empty? Constants.GoogleMapApiKey : settings.GetApiKey();
 
-            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={Constants.GoogleMapApiKey}";
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={apiKey}";
 
             using (HttpClient httpClient = new HttpClient())
             {
@@ -143,6 +146,35 @@ public class CustomGeolocation
         catch (Exception ex)
         {
             throw new Exception("Unable to get location", ex);
+        }
+    }
+
+    public static async Task<bool> ApiKeyIsValid(string apiKey)
+    {
+        try
+        {
+            Location location = new Location(37.7749, -122.4194);
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language=en&key={apiKey}";
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
+                if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");
+
+                string responseContent = await response.Content.ReadAsStringAsync();
+                dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                if (jsonResponse is null) throw new Exception("Unable to get location");
+
+                var jObject = JObject.Parse(responseContent);
+                var results = jObject["results"]?.Value<JArray>();
+                var country = GetComponent(results, "country");
+                var countryCode = country?["short_name"]?.Value<string>() ?? string.Empty;
+                return countryCode == "US";
+            }
+        }
+        catch
+        {
+            return false;
         }
     }
 }

@@ -73,7 +73,7 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
-            if (Positions.Count >= 5)
+            if (Positions.Count >= 5 && !_settingsPreferences.IsApiKeySet())
             {
                 await TryToOfferSubscription();
                 if (!_settingsPreferences.GetIsSubscribed()) return;

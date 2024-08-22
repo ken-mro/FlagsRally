@@ -67,6 +67,43 @@
             FontAttributes="Bold"
             FontSize="Body"
             HorizontalOptions="Start"
+            Text="API Key"
+            VerticalOptions="Center" />
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Entry
+                HorizontalOptions="Fill"
+                IsPassword="True"
+                Placeholder="{x:Static strings:AppResources.SpecifyAPI}"
+                Text="{Binding ApiKey}"
+                VerticalOptions="Center" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10,0"
+                Command="{Binding EnableApiKeyCommand}"
+                HorizontalOptions="End"
+                Text="Enable"
+                VerticalOptions="Center" />
+        </Grid>
+        <BoxView
+            Margin="5"
+            HeightRequest="1"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="CenterAndExpand"
+            Color="Gray" />
+        <Label
+            Padding="5,0"
+            FontAttributes="Bold"
+            FontSize="Body"
+            HorizontalOptions="Start"
             Text="{x:Static strings:AppResources.Backup}"
             VerticalOptions="Center" />
         <Label

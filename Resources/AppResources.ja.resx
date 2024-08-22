@@ -150,6 +150,9 @@
   <data name="Boards" xml:space="preserve">
     <value>ボード</value>
   </data>
+  <data name="ClearAPIKey" xml:space="preserve">
+    <value>APIキーが正常にクリアされました。</value>
+  </data>
   <data name="Completed" xml:space="preserve">
     <value>完了</value>
   </data>
@@ -201,6 +204,9 @@
   <data name="Instruciton4" xml:space="preserve">
     <value>Bon Voyage! - 良い旅を - </value>
   </data>
+  <data name="InvalidAPIKey" xml:space="preserve">
+    <value>無効なAPIキーです。</value>
+  </data>
   <data name="InvalidFileSelected" xml:space="preserve">
     <value>無効なファイルが選択されました。</value>
   </data>
@@ -249,8 +255,14 @@
   <data name="RestoreBeforeUse" xml:space="preserve">
     <value>以前のデバイスでこのアプリを使用したことがある場合は、再度使用する前にバックアップを復元してください。</value>
   </data>
+  <data name="SetAPIKey" xml:space="preserve">
+    <value>APIキーが正常に設定されました。</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>設定</value>
+  </data>
+  <data name="SpecifyAPI" xml:space="preserve">
+    <value>使用する場合は入力してください。</value>
   </data>
   <data name="Subscription" xml:space="preserve">
     <value>サブスクリプション:</value>
