@@ -14,6 +14,20 @@ public class CustomCountryHelper : CountryHelper
         UpdateMy();
         UpdateNo();
         UpdatePt();
+        UpdateAt();
+    }
+
+    private void UpdateAt()
+    {
+        var CountryRegion = GetRegionByCountryCode("AT").ConvertAll(x =>
+        {
+            x.Name = x.Name.Replace("(", "").Replace(")", "");
+            return x;
+        });
+
+        CountryRegion.Add(new Regions() { Name = "Tyrol", ShortCode = "7" });
+
+        GetCountryByCode("AT").Regions = CountryRegion;
     }
 
     private void UpdatePt()
