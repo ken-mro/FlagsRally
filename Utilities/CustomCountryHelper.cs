@@ -13,6 +13,31 @@ public class CustomCountryHelper : CountryHelper
         UpdateEs();
         UpdateMy();
         UpdateNo();
+        UpdatePt();
+    }
+
+    private void UpdatePt()
+    {
+        var CountryRegion = GetRegionByCountryCode("PT").ConvertAll(x =>
+        {
+            x.Name = x.Name.Replace("(", "").Replace(")", "");
+            return x;
+        });
+
+        CountryRegion.Add(new Regions() { Name = "Aveiro District", ShortCode = "01" });
+        CountryRegion.Add(new Regions() { Name = "Beja District", ShortCode = "02" });
+
+        CountryRegion.Add(new Regions() { Name = "Coimbra District", ShortCode = "06" });
+
+        CountryRegion.Add(new Regions() { Name = "Distrito de Évora", ShortCode = "07" });
+        CountryRegion.Add(new Regions() { Name = "Évora District", ShortCode = "07" });
+
+        CountryRegion.Add(new Regions() { Name = "Distrito da Guarda", ShortCode = "09" });
+        CountryRegion.Add(new Regions() { Name = "Guarda District", ShortCode = "09" });
+
+        CountryRegion.Add(new Regions() { Name = "Leiria District", ShortCode = "10" });
+
+        GetCountryByCode("PT").Regions = CountryRegion;
     }
 
     private void UpdateNo()
