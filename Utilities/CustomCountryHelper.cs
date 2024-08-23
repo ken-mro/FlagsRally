@@ -15,6 +15,7 @@ public class CustomCountryHelper : CountryHelper
         UpdateNo();
         UpdatePt();
         UpdateAt();
+        UpdateUa();
     }
 
     private void UpdateAt()
@@ -215,6 +216,49 @@ public class CustomCountryHelper : CountryHelper
         CountryRegion.Add(new Regions() { Name = "Valencian Community", ShortCode = "VC" });
 
         GetCountryByCode("ES").Regions = CountryRegion;
+    }
+
+    private void UpdateUa()
+    {
+        var CountryRegion = GetRegionByCountryCode("UA").ToList();
+        var region = CountryRegion.Where(x => x.Name == "Lviv").FirstOrDefault();
+
+        CountryRegion.Add(new Regions() { Name = "Vinnyts'ka oblast", ShortCode = "05" });
+        CountryRegion.Add(new Regions() { Name = "Volyns'ka oblast", ShortCode = "07" });
+
+        CountryRegion.Add(new Regions() { Name = "Luhans'ka oblast", ShortCode = "09" });
+        CountryRegion.Add(new Regions() { Name = "Luhansk Oblast", ShortCode = "09" });
+
+        CountryRegion.Add(new Regions() { Name = "Dnipropetrovs'ka oblast", ShortCode = "12" });
+        CountryRegion.Add(new Regions() { Name = "Donets'ka oblast", ShortCode = "14" });
+        CountryRegion.Add(new Regions() { Name = "Zhytomyrs'ka oblast", ShortCode = "18" });
+        CountryRegion.Add(new Regions() { Name = "Zakarpats'ka oblast", ShortCode = "21" });
+        CountryRegion.Add(new Regions() { Name = "Zaporiz'ka oblast", ShortCode = "23" });
+        CountryRegion.Add(new Regions() { Name = "Ivano-Frankivs'ka oblast", ShortCode = "26" });
+        CountryRegion.Add(new Regions() { Name = "Kyiv", ShortCode = "30" });
+
+        CountryRegion.Add(new Regions() { Name = "Kyivs'ka oblast", ShortCode = "32" });
+        CountryRegion.Add(new Regions() { Name = "Kyiv Oblast", ShortCode = "32" });
+
+        CountryRegion.Add(new Regions() { Name = "Kirovohrads'ka oblast", ShortCode = "35" });
+
+        CountryRegion.Add(new Regions() { Name = "Sevastopol", ShortCode = "40" });
+        CountryRegion.Add(new Regions() { Name = "Avtonomna Respublika Krym", ShortCode = "43" });
+        CountryRegion.Add(new Regions() { Name = "L'vivs'ka oblast", ShortCode = "46" });
+        CountryRegion.Add(new Regions() { Name = "Mykolaivs'ka oblast", ShortCode = "48" });
+        CountryRegion.Add(new Regions() { Name = "Odes'ka oblast", ShortCode = "51" });
+        CountryRegion.Add(new Regions() { Name = "Poltavs'ka oblast", ShortCode = "53" });
+        CountryRegion.Add(new Regions() { Name = "Rivnens'ka oblast", ShortCode = "56" });
+        CountryRegion.Add(new Regions() { Name = "Sums'ka oblast", ShortCode = "59" });
+        CountryRegion.Add(new Regions() { Name = "Ternopil's'ka oblast", ShortCode = "61" });
+        CountryRegion.Add(new Regions() { Name = "Kharkivs'ka oblast", ShortCode = "63" });
+        CountryRegion.Add(new Regions() { Name = "Khersons'ka oblast", ShortCode = "65" });
+        CountryRegion.Add(new Regions() { Name = "Khmel'nyts'ka oblast", ShortCode = "68" });
+        CountryRegion.Add(new Regions() { Name = "Cherkas'ka oblast", ShortCode = "71" });
+        CountryRegion.Add(new Regions() { Name = "Chernihivs'ka oblast", ShortCode = "74" });
+        CountryRegion.Add(new Regions() { Name = "Chernivets'ka oblast", ShortCode = "77" });
+
+        GetCountryByCode("UA").Regions = CountryRegion;
     }
 
     public string GetAdminAreaCode(string countryCode, string adminAreaName, string adminAreaShortName)
