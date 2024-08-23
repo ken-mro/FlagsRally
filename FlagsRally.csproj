@@ -78,6 +78,24 @@
 	  <None Remove="Resources\Fonts\craftmincho.otf" />
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
 	  <None Remove="Resources\Fonts\KiwiMaru-Medium.ttf" />
+		<None Remove="Resources\Images\at\at_1.png" />
+		<None Remove="Resources\Images\at\at_1_emblem.png" />
+		<None Remove="Resources\Images\at\at_2.png" />
+		<None Remove="Resources\Images\at\at_2_emblem.png" />
+		<None Remove="Resources\Images\at\at_3.png" />
+		<None Remove="Resources\Images\at\at_3_emblem.png" />
+		<None Remove="Resources\Images\at\at_4.png" />
+		<None Remove="Resources\Images\at\at_4_emblem.png" />
+		<None Remove="Resources\Images\at\at_5.png" />
+		<None Remove="Resources\Images\at\at_5_emblem.png" />
+		<None Remove="Resources\Images\at\at_6.png" />
+		<None Remove="Resources\Images\at\at_6_emblem.png" />
+		<None Remove="Resources\Images\at\at_7.png" />
+		<None Remove="Resources\Images\at\at_7_emblem.png" />
+		<None Remove="Resources\Images\at\at_8.png" />
+		<None Remove="Resources\Images\at\at_8_emblem.png" />
+		<None Remove="Resources\Images\at\at_9.png" />
+		<None Remove="Resources\Images\at\at_9_emblem.png" />
 		<None Remove="Resources\Images\ca\ca_ab.png" />
 		<None Remove="Resources\Images\ca\ca_ab_emblem.png" />
 		<None Remove="Resources\Images\ca\ca_bc.png" />
@@ -573,6 +591,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiImage Include="Resources\Images\at\at_1.png" />
+		<MauiImage Include="Resources\Images\at\at_1_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_2.png" />
+		<MauiImage Include="Resources\Images\at\at_2_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_3.png" />
+		<MauiImage Include="Resources\Images\at\at_3_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_4.png" />
+		<MauiImage Include="Resources\Images\at\at_4_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_5.png" />
+		<MauiImage Include="Resources\Images\at\at_5_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_6.png" />
+		<MauiImage Include="Resources\Images\at\at_6_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_7.png" />
+		<MauiImage Include="Resources\Images\at\at_7_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_8.png" />
+		<MauiImage Include="Resources\Images\at\at_8_emblem.png" />
+		<MauiImage Include="Resources\Images\at\at_9.png" />
+		<MauiImage Include="Resources\Images\at\at_9_emblem.png" />
 		<MauiImage Include="Resources\Images\ca\ca_ab.png" />
 		<MauiImage Include="Resources\Images\ca\ca_ab_emblem.png" />
 		<MauiImage Include="Resources\Images\ca\ca_bc.png" />
