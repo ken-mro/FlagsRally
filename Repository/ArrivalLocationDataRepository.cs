@@ -42,7 +42,9 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 
     private ArrivalLocation GetArrivalLocation(ArrivalLocationData ArrivalLocationData)
     {
-        if (string.IsNullOrEmpty(ArrivalLocationData.CountryCode))
+        if (string.IsNullOrEmpty(ArrivalLocationData.CountryName)
+            && string.IsNullOrEmpty(ArrivalLocationData.AdminAreaName)
+            && string.IsNullOrEmpty(ArrivalLocationData.LocalityName))
         {
             return new ArrivalLocation()
             {
@@ -55,6 +57,27 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
                 AdminAreaCode = ArrivalLocationData.AdminAreaCode,
                 AdminAreaFlagSource = "unknown_arrival.png",
                 LocalityName = AppResources.UnexploredLocation,
+                Location = new Location
+                {
+                    Latitude = ArrivalLocationData.Latitude,
+                    Longitude = ArrivalLocationData.Longitude
+                },
+            };
+        }
+
+        if (string.IsNullOrEmpty(ArrivalLocationData.CountryName))
+        {
+            return new ArrivalLocation()
+            {
+                Id = ArrivalLocationData.Id,
+                ArrivalDate = ArrivalLocationData.ArrivalDate,
+                CountryCode = ArrivalLocationData.CountryCode,
+                CountryName = ArrivalLocationData.CountryName,
+                CountryFlagSource = "🏖️",
+                AdminAreaName = ArrivalLocationData.AdminAreaName,
+                AdminAreaCode = ArrivalLocationData.AdminAreaCode,
+                AdminAreaFlagSource = "earth_noised.png",
+                LocalityName = ArrivalLocationData.LocalityName,
                 Location = new Location
                 {
                     Latitude = ArrivalLocationData.Latitude,
