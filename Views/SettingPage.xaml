@@ -91,7 +91,7 @@
                     Margin="10,0"
                     Command="{Binding EnableApiKeyCommand}"
                     HorizontalOptions="End"
-                    Text="Enable"
+                    Text="{x:Static strings:AppResources.Enable}"
                     VerticalOptions="Center" />
             </Grid>
             <BoxView
