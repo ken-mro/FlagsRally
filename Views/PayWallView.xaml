@@ -29,14 +29,16 @@
                     LineBreakMode="WordWrap"
                     SemanticProperties.HeadingLevel="Level1"
                     Style="{StaticResource Headline}"
-                    Text="{x:Static strings:AppResources.PayWallTitle}" />
+                    Text="{x:Static strings:AppResources.PayWallTitle}"
+                    TextColor="Black" />
             </Grid>
 
             <Label
                 HorizontalOptions="Center"
                 IsVisible="{Binding AreOfferingsLoaded}"
                 Style="{StaticResource SubHeadline}"
-                Text="{x:Static strings:AppResources.PayWallSubTitle}" />
+                Text="{x:Static strings:AppResources.PayWallSubTitle}"
+                TextColor="Black" />
 
             <Button
                 Command="{Binding LoadOfferingsCommand}"
@@ -49,7 +51,8 @@
                 IsVisible="{Binding AreOfferingsLoaded}"
                 SemanticProperties.HeadingLevel="Level2"
                 Style="{StaticResource SubHeadline}"
-                Text="{x:Static strings:AppResources.Subscription}" />
+                Text="{x:Static strings:AppResources.Subscription}"
+                TextColor="Black" />
 
             <Button
                 Command="{Binding BuyItemCommand}"
