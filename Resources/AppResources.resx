@@ -177,6 +177,9 @@
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
