@@ -6,146 +6,148 @@
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel">
-    <VerticalStackLayout Padding="15" Spacing="10">
-        <Label
-            Padding="5,0"
-            FontAttributes="Bold"
-            FontSize="Body"
-            HorizontalOptions="Start"
-            Text="{x:Static strings:AppResources.CountryOfResidence}"
-            VerticalOptions="Center" />
-        <Grid ColumnSpacing="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image
-                Aspect="AspectFit"
-                HeightRequest="50"
-                HorizontalOptions="Start"
-                Source="{Binding ImageSourceString}">
-                <Image.IsVisible>
-                    <OnPlatform x:TypeArguments="x:Boolean">
-                        <On Platform="iOS">False</On>
-                        <On Platform="MacCatalyst">False</On>
-                        <On Platform="WinUI">True</On>
-                        <On Platform="Android">False</On>
-                    </OnPlatform>
-                </Image.IsVisible>
-            </Image>
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="10">
             <Label
-                FontSize="50"
-                HorizontalOptions="Start"
-                Text="{Binding SelectedCountry.CountryFlag}">
-                <Label.IsVisible>
-                    <OnPlatform x:TypeArguments="x:Boolean">
-                        <On Platform="iOS">True</On>
-                        <On Platform="MacCatalyst">True</On>
-                        <On Platform="Android">True</On>
-                        <On Platform="WinUI">False</On>
-                    </OnPlatform>
-                </Label.IsVisible>
-            </Label>
-            <Picker
-                Title="{x:Static strings:AppResources.CountryOfResidence}"
-                Grid.Column="1"
+                Padding="5,0"
                 FontAttributes="Bold"
-                FontSize="Medium"
-                ItemDisplayBinding="{Binding CountryName}"
-                ItemsSource="{Binding CountryList}"
-                SelectedItem="{Binding SelectedCountry}"
+                FontSize="Body"
+                HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.CountryOfResidence}"
                 VerticalOptions="Center" />
-        </Grid>
-        <BoxView
-            Margin="5"
-            HeightRequest="1"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="CenterAndExpand"
-            Color="Gray" />
-        <Label
-            Padding="5,0"
-            FontAttributes="Bold"
-            FontSize="Body"
-            HorizontalOptions="Start"
-            Text="API Key"
-            VerticalOptions="Center" />
-        <Grid Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Entry
-                HorizontalOptions="Fill"
-                IsPassword="True"
-                Placeholder="{x:Static strings:AppResources.SpecifyAPI}"
-                Text="{Binding ApiKey}"
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image
+                    Aspect="AspectFit"
+                    HeightRequest="50"
+                    HorizontalOptions="Start"
+                    Source="{Binding ImageSourceString}">
+                    <Image.IsVisible>
+                        <OnPlatform x:TypeArguments="x:Boolean">
+                            <On Platform="iOS">False</On>
+                            <On Platform="MacCatalyst">False</On>
+                            <On Platform="WinUI">True</On>
+                            <On Platform="Android">False</On>
+                        </OnPlatform>
+                    </Image.IsVisible>
+                </Image>
+                <Label
+                    FontSize="50"
+                    HorizontalOptions="Start"
+                    Text="{Binding SelectedCountry.CountryFlag}">
+                    <Label.IsVisible>
+                        <OnPlatform x:TypeArguments="x:Boolean">
+                            <On Platform="iOS">True</On>
+                            <On Platform="MacCatalyst">True</On>
+                            <On Platform="Android">True</On>
+                            <On Platform="WinUI">False</On>
+                        </OnPlatform>
+                    </Label.IsVisible>
+                </Label>
+                <Picker
+                    Title="{x:Static strings:AppResources.CountryOfResidence}"
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    ItemDisplayBinding="{Binding CountryName}"
+                    ItemsSource="{Binding CountryList}"
+                    SelectedItem="{Binding SelectedCountry}"
+                    VerticalOptions="Center" />
+            </Grid>
+            <BoxView
+                Margin="5"
+                HeightRequest="1"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="CenterAndExpand"
+                Color="Gray" />
+            <Label
+                Padding="5,0"
+                FontAttributes="Bold"
+                FontSize="Body"
+                HorizontalOptions="Start"
+                Text="API Key"
+                VerticalOptions="Center" />
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Entry
+                    HorizontalOptions="Fill"
+                    IsPassword="True"
+                    Placeholder="{x:Static strings:AppResources.SpecifyAPI}"
+                    Text="{Binding ApiKey}"
+                    VerticalOptions="Center" />
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="10,0"
+                    Command="{Binding EnableApiKeyCommand}"
+                    HorizontalOptions="End"
+                    Text="Enable"
+                    VerticalOptions="Center" />
+            </Grid>
+            <BoxView
+                Margin="5"
+                HeightRequest="1"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="CenterAndExpand"
+                Color="Gray" />
+            <Label
+                Padding="5,0"
+                FontAttributes="Bold"
+                FontSize="Body"
+                HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.Backup}"
+                VerticalOptions="Center" />
+            <Label
+                Padding="10,0"
+                FontAttributes="Bold"
+                FontSize="Small"
+                HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.BackupInstruction}"
+                TextColor="Red"
                 VerticalOptions="Center" />
             <Button
-                Grid.Row="1"
-                Grid.Column="1"
                 Margin="10,0"
-                Command="{Binding EnableApiKeyCommand}"
+                Command="{Binding CreateBackUpCommand}"
                 HorizontalOptions="End"
-                Text="Enable"
+                Text="{x:Static strings:AppResources.CreateBackup}"
                 VerticalOptions="Center" />
-        </Grid>
-        <BoxView
-            Margin="5"
-            HeightRequest="1"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="CenterAndExpand"
-            Color="Gray" />
-        <Label
-            Padding="5,0"
-            FontAttributes="Bold"
-            FontSize="Body"
-            HorizontalOptions="Start"
-            Text="{x:Static strings:AppResources.Backup}"
-            VerticalOptions="Center" />
-        <Label
-            Padding="10,0"
-            FontAttributes="Bold"
-            FontSize="Small"
-            HorizontalOptions="Start"
-            Text="{x:Static strings:AppResources.BackupInstruction}"
-            TextColor="Red"
-            VerticalOptions="Center" />
-        <Button
-            Margin="10,0"
-            Command="{Binding CreateBackUpCommand}"
-            HorizontalOptions="End"
-            Text="{x:Static strings:AppResources.CreateBackup}"
-            VerticalOptions="Center" />
-        <BoxView
-            Margin="5"
-            HeightRequest="1"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="CenterAndExpand"
-            Color="Gray" />
-        <Label
-            Padding="5,0"
-            FontAttributes="Bold"
-            FontSize="Body"
-            HorizontalOptions="Start"
-            Text="{x:Static strings:AppResources.Restore}"
-            VerticalOptions="Center" />
-        <Label
-            Padding="10,0"
-            FontAttributes="Bold"
-            FontSize="Small"
-            HorizontalOptions="Start"
-            Text="{x:Static strings:AppResources.RestoreBeforeUse}"
-            TextColor="Red"
-            VerticalOptions="Center" />
-        <Button
-            Margin="10,0"
-            Command="{Binding RestoreBackUpCommand}"
-            HorizontalOptions="End"
-            Text="{x:Static strings:AppResources.RestoreBackup}"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+            <BoxView
+                Margin="5"
+                HeightRequest="1"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="CenterAndExpand"
+                Color="Gray" />
+            <Label
+                Padding="5,0"
+                FontAttributes="Bold"
+                FontSize="Body"
+                HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.Restore}"
+                VerticalOptions="Center" />
+            <Label
+                Padding="10,0"
+                FontAttributes="Bold"
+                FontSize="Small"
+                HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.RestoreBeforeUse}"
+                TextColor="Red"
+                VerticalOptions="Center" />
+            <Button
+                Margin="10,0"
+                Command="{Binding RestoreBackUpCommand}"
+                HorizontalOptions="End"
+                Text="{x:Static strings:AppResources.RestoreBackup}"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
