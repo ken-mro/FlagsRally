@@ -22,7 +22,7 @@
                     Grid.Column="0"
                     Aspect="AspectFit"
                     HeightRequest="100"
-                    Source="passport_earth.png" />
+                    Source="passport_earth2.png" />
 
                 <Label
                     Grid.Column="1"
