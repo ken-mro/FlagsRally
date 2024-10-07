@@ -34,6 +34,7 @@ namespace FlagsRally_xunit
         [InlineData("PT", 20, "PT-11", "Lisboa")]
         [InlineData("AT", 9, "AT-5", "Salzburg")]
         [InlineData("UA", 27, "UA-30", "Kyïv")]
+    [InlineData("CZ", 14, "CZ-10", "Hlavní město Praha")]
         public void Get_blank_all_reagion_list_with_local_name_if_supported(string regionCode, int subRegionCount, string countryHyphenRegionCode, string localName)
         {
             // Arrange
