@@ -1,4 +1,5 @@
 ﻿using CountryData.Standard;
+using System.Diagnostics;
 
 namespace FlagsRally.Utilities;
 
@@ -16,6 +17,44 @@ public class CustomCountryHelper : CountryHelper
         UpdatePt();
         UpdateAt();
         UpdateUa();
+        UpdateCz();
+    }
+
+    private void UpdateCz()
+    {
+        var CountryRegion = new List<Regions>
+        {
+            new() { Name = "Hlavní město Praha", ShortCode = "10" },
+            new () { Name = "Prague", ShortCode = "10" },
+            new () { Name = "Středočeský kraj", ShortCode = "20" },
+            new () { Name = "Central Bohemian Region", ShortCode = "20" },
+            new () { Name = "Jihočeský kraj", ShortCode = "31" },
+            new () { Name = "South Bohemian Region", ShortCode = "31" },
+            new () { Name = "Plzeňský kraj", ShortCode = "32" },
+            new () { Name = "Plzeň", ShortCode = "32" },
+            new () { Name = "Karlovarský kraj", ShortCode = "41" },
+            new () { Name = "Karlovy Vary", ShortCode = "41" },
+            new () { Name = "Ústecký kraj", ShortCode = "42" },
+            new () { Name = "Ústí nad Labem", ShortCode = "42" },
+            new () { Name = "Liberecký kraj", ShortCode = "51" },
+            new () { Name = "Liberec Region", ShortCode = "51" },
+            new () { Name = "Královéhradecký kraj", ShortCode = "52" },
+            new () { Name = "Hradec Králové Region", ShortCode = "52" },
+            new () { Name = "Pardubický kraj", ShortCode = "53" },
+            new () { Name = "Pardubice Region", ShortCode = "53" },
+            new () { Name = "Kraj Vysočina", ShortCode = "63" },
+            new () { Name = "Vysočina Region", ShortCode = "63" },
+            new () { Name = "Jihomoravský kraj", ShortCode = "64" },
+            new () { Name = "South Moravia", ShortCode = "64" },
+            new () { Name = "Olomoucký kraj", ShortCode = "71" },
+            new () { Name = "Olomouc Region", ShortCode = "71" },
+            new () { Name = "Zlínský kraj", ShortCode = "72" },
+            new () { Name = "Zlín", ShortCode = "72" },
+            new () { Name = "Moravskoslezský kraj", ShortCode = "80" },
+            new () { Name = "Moravia-Silesia", ShortCode = "80" }
+        };
+
+        GetCountryByCode("CZ").Regions = CountryRegion;
     }
 
     private void UpdateAt()
