@@ -36,7 +36,7 @@ public class SettingsPreferencesTests
     }
 
     [Fact]
-    public void Set_a_string_which_is_not_countyr_code_is_invalid()
+    public void Set_a_string_which_is_not_country_code_is_invalid()
     {
         // Arrange
         var defaultPreferencesMock = new Mock<IPreferences>();
