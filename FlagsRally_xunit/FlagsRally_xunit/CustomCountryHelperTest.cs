@@ -1,6 +1,6 @@
 ﻿using FlagsRally.Utilities;
 
-namespace FlagsRally_xunit;
+namespace FlagsRallyTests.Utilities;
 
 public class CustomCountryHelperTest
 {
