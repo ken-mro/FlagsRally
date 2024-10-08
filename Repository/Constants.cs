@@ -18,5 +18,5 @@ public static class Constants
     public static string BingMapApiKey => BING_MAP_API_KEY;
     public static string RevenueCatApiKeyAndroid => REVENUECAT_API_KEY_ANDROID;
     public static string RevenueCatApiKeyIos => REVENUECAT_API_KEY_IOS;
-    public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "at", "ca", "fr", "de", "it", "jp", "my", "nl", "no","pt", "es", "ch", "ua", "us" };
+    public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "at", "ca", "cz", "fr", "de", "it", "jp", "my", "nl", "no","pt", "es", "ch", "ua", "us" };
 }

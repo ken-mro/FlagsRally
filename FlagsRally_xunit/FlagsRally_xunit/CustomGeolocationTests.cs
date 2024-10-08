@@ -2,7 +2,7 @@ using FlagsRally.Repository;
 using FlagsRally.Utilities;
 using Moq;
 
-namespace FlagsRally.Utilities.Tests;
+namespace FlagsRallyTests.Utilities;
 
 public class CustomGeolocationTests
 {

@@ -1,6 +1,6 @@
 ﻿using FlagsRally.Utilities;
 
-namespace FlagsRally_xunit;
+namespace FlagsRallyTests.Utilities;
 
 public class CustomCountryHelperTest
 {
@@ -18,6 +18,7 @@ public class CustomCountryHelperTest
     [InlineData("PT", 20)]
     [InlineData("AT", 9)]
     [InlineData("UA", 27)]
+    [InlineData("CZ", 14)]
     public void SubregionCode(string CountryCode, int regionCount)
     {
         //Arrange
