@@ -646,6 +646,7 @@
 		<PackageReference Include="SQLitePCLRaw.core" Version="2.1.8" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.8" />
 		<PackageReference Include="SQLitePCLRaw.provider.sqlite3" Version="2.1.8" />
+		<PackageReference Include="Syncfusion.Maui.Maps" Version="27.1.52" />
 	</ItemGroup>
 
 	<ItemGroup>

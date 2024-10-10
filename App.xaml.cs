@@ -8,6 +8,7 @@ public partial class App : Application
     private readonly IRevenueCatBilling _revenueCat;
     public App(IRevenueCatBilling revenueCatBilling)
     {
+        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Constants.SyncfusionLicenseKey);
         InitializeComponent();
         _revenueCat = revenueCatBilling;
         MainPage = new AppShell();

@@ -6,6 +6,7 @@ using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace FlagsRally
 {
@@ -16,6 +17,7 @@ namespace FlagsRally
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureSyncfusionCore()
                 .UseMauiCommunityToolkit()
 #if ANDROID || IOS
                     .UseMauiMaps()
