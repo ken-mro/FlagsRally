@@ -276,6 +276,8 @@
 		<None Remove="Resources\Images\es\es_vc.png" />
 		<None Remove="Resources\Images\es\es_vc_emblem.png" />
 		<None Remove="Resources\Images\filter.png" />
+		<None Remove="Resources\Images\fr\fr_20r.png" />
+		<None Remove="Resources\Images\fr\fr_20r_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_ara.png" />
 		<None Remove="Resources\Images\fr\fr_ara_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_bfc.png" />
@@ -283,8 +285,6 @@
 		<None Remove="Resources\Images\fr\fr_bre.png" />
 		<None Remove="Resources\Images\fr\fr_bre_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_cdr_emblem.png" />
-		<None Remove="Resources\Images\fr\fr_cor.png" />
-		<None Remove="Resources\Images\fr\fr_cor_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_cvl.png" />
 		<None Remove="Resources\Images\fr\fr_cvl_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_ges.png" />
@@ -869,14 +869,14 @@
 		<MauiImage Include="Resources\Images\es\es_ri_emblem.png" />
 		<MauiImage Include="Resources\Images\es\es_vc.png" />
 		<MauiImage Include="Resources\Images\es\es_vc_emblem.png" />
-		<MauiImage Include="Resources\Images\fr\fr_cor.png" />
+		<MauiImage Include="Resources\Images\fr\fr_20r.png" />
 		<MauiImage Include="Resources\Images\fr\fr_ara.png" />
 		<MauiImage Include="Resources\Images\fr\fr_ara_emblem.png" />
 		<MauiImage Include="Resources\Images\fr\fr_bfc.png" />
 		<MauiImage Include="Resources\Images\fr\fr_bfc_emblem.png" />
 		<MauiImage Include="Resources\Images\fr\fr_bre.png" />
 		<MauiImage Include="Resources\Images\fr\fr_bre_emblem.png" />
-		<MauiImage Include="Resources\Images\fr\fr_cor_emblem.png" />
+		<MauiImage Include="Resources\Images\fr\fr_20r_emblem.png" />
 		<MauiImage Include="Resources\Images\fr\fr_cvl.png" />
 		<MauiImage Include="Resources\Images\fr\fr_cvl_emblem.png" />
 		<MauiImage Include="Resources\Images\fr\fr_ges.png" />

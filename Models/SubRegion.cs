@@ -8,6 +8,7 @@ public class SubRegion
     public int Id { get; init;}
     public DateTime ArrivalDate { get; set; }
 
+    public string IsoCode => Code.lowerCountryCodeHyphenRegionCode.ToUpper();
     public string ArrivalDateString => ArrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US"));
     public string Name { get; init; }
     public string EnAdminAreaName { get; init; }
