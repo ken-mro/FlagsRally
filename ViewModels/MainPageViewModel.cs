@@ -33,6 +33,9 @@ namespace FlagsRally.ViewModels
         bool _isSettingsVisible;
 
         [ObservableProperty]
+        bool _isMapVisible;
+
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DateIsVisible))]
         bool _dateIsNotVisible;
  
@@ -49,6 +52,29 @@ namespace FlagsRally.ViewModels
         int _gridItemSpan = 2;
 
         public string PassportImageSourceString => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOfResidence().ToLower()}.png";
+
+        public ObservableCollection<ArrivalLocation> DistinctArrivalLocationList
+            => GetDistinctArrivalLocationList();
+
+        private ObservableCollection<ArrivalLocation> GetDistinctArrivalLocationList()
+        {
+            if (SourceArrivalLocationList is null) return [];
+            var arrivalLocations = SourceArrivalLocationList?.GroupBy(x => x.CountryCode)
+                .Select(x => x.FirstOrDefault())
+                .ToList();
+            return new ObservableCollection<ArrivalLocation>(arrivalLocations!);
+        }
+
+
+        private bool _isMapInitialized = false;
+        public string ShapesSource => GetShapesSource();
+        public string GetShapesSource()
+        {
+            if (!_isMapInitialized) return string.Empty;
+            var arrivedAq = SourceArrivalLocationList.Where(l => l.CountryCode.ToLower().Equals("aq")).Any();
+            if (arrivedAq) return $"{Constants.GeoJsonResourceBaseUrl}/world-map.json";
+            return $"{Constants.GeoJsonResourceBaseUrl}/non-aq-world-map.json";
+        }
 
         [ObservableProperty]
         ObservableCollection<ArrivalLocation> _sourceArrivalLocationList;
@@ -203,6 +229,34 @@ namespace FlagsRally.ViewModels
                                                                     $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
                                                                     $"{AppResources.Locality}: {arrivalLocation.LocalityName}\n" +
                                                                     $"{AppResources.Location}: {roundedLatitude}, {roundedLongitude}","OK");
+        }
+
+        [RelayCommand]
+        async Task ChangeMapVisibilityAsync()
+        {
+            if (IsBusy) return;
+            try
+            {
+                IsBusy = true;
+
+                IsMapVisible = !IsMapVisible;
+                if (!IsMapVisible) return;
+                if (_isMapInitialized) return;
+
+                _isMapInitialized = true;
+                // To Show the activity indicator before executing OnPropertyChanged
+                await Task.Delay(100);
+
+                OnPropertyChanged(nameof(ShapesSource));
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }
