@@ -16,6 +16,7 @@ public static class Constants
 
     private const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
 
+    private const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
     public static string DatabaseName => DATABSE_NAME;
     public static string DataBasePath => Path.Combine(FileSystem.AppDataDirectory, DATABSE_NAME);
     public static string GoogleMapApiKey => GOOGLE_MAP_API_KEY;
