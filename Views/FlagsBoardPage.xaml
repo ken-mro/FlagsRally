@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -15,11 +16,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="1">
+        <VerticalStackLayout Grid.Row="2">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
@@ -31,6 +34,17 @@
                     VerticalOptions="Center" />
                 <Image
                     Grid.Column="1"
+                    Margin="5,0"
+                    HeightRequest="25"
+                    HorizontalOptions="EndAndExpand"
+                    Source="earth.png"
+                    VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image
+                    Grid.Column="2"
                     Margin="5,0"
                     HeightRequest="25"
                     HorizontalOptions="EndAndExpand"
@@ -162,8 +176,55 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+        <map:SfMaps
+            Grid.Row="1"
+            BackgroundColor="SkyBlue"
+            IsVisible="{Binding IsMapVisible}">
+            <map:SfMaps.Layer>
+                <map:MapShapeLayer
+                    x:Name="shapeLayer"
+                    DataSource="{Binding DisplayFullSubRegionList}"
+                    EnableSelection="True"
+                    PrimaryValuePath="IsoCode"
+                    ShapeColorValuePath="HasBeenVisited"
+                    ShapeDataField="code"
+                    ShapeStroke="White"
+                    ShapeStrokeThickness="1"
+                    ShapesSource="{Binding ShapesSource}"
+                    ShowDataLabels="False"
+                    ShowShapeTooltip="True">
+                    <map:MapShapeLayer.DataLabelSettings>
+                        <map:MapDataLabelSettings DataLabelPath="Name">
+                            <map:MapDataLabelSettings.DataLabelStyle>
+                                <map:MapLabelStyle FontAttributes="Italic" TextColor="Black" />
+                            </map:MapDataLabelSettings.DataLabelStyle>
+                        </map:MapDataLabelSettings>
+                    </map:MapShapeLayer.DataLabelSettings>
+                    <map:MapShapeLayer.ColorMappings>
+                        <map:EqualColorMapping Color="LimeGreen" Value="True" />
+                        <map:EqualColorMapping Color="Gray" Value="False" />
+                    </map:MapShapeLayer.ColorMappings>
+                    <map:MapShapeLayer.ShapeTooltipTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Image
+                                    BackgroundColor="White"
+                                    HeightRequest="20"
+                                    Source="{Binding Path=DataItem.FlagSource, Source={x:Null}}"
+                                    WidthRequest="20" />
+                                <Label Text="{Binding Path=DataItem.Name, Source={x:Null}}" TextColor="White" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </map:MapShapeLayer.ShapeTooltipTemplate>
+                    <map:MapShapeLayer.ZoomPanBehavior>
+                        <map:MapZoomPanBehavior ZoomLevel="1" />
+                    </map:MapShapeLayer.ZoomPanBehavior>
+                </map:MapShapeLayer>
+            </map:SfMaps.Layer>
+        </map:SfMaps>
         <ActivityIndicator
             Grid.Row="0"
+            Grid.ColumnSpan="2"
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"

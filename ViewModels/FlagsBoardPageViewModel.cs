@@ -61,6 +61,17 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     [ObservableProperty]
     ObservableCollection<Country> _countryList;
 
+    private bool _isLoaded = false;
+    public string ShapesSource => GetShapesSource();
+
+    private string _mapCountryShortCode = string.Empty;
+    public string GetShapesSource()
+    {
+        if (!_isLoaded) return string.Empty;
+        _mapCountryShortCode = FilteredCountry.CountryShortCode.ToLower();
+        return $"{Constants.GeoJsonResourceBaseUrl}/{_mapCountryShortCode}.json";
+    }
+
     Country _filteredCountry;
     public Country FilteredCountry
     {
@@ -68,6 +79,12 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         set
         {
             SetProperty(ref _filteredCountry, value);
+
+            if (IsMapVisible)
+            {
+                OnPropertyChanged(nameof(ShapesSource));
+            }
+
             _ = Init();
         }
     }
@@ -76,12 +93,16 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     bool _isSettingsVisible;
 
     [ObservableProperty]
+    bool _isMapVisible;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DateIsVisible))]
     bool _dateIsNotVisible;
 
     public bool DateIsVisible => !DateIsNotVisible;
 
     public ObservableCollection<SubRegion> DisplayFullSubRegionList => GetFilteredList();
+    
 
     [ObservableProperty]
     bool _isRefreshing = false;
@@ -102,6 +123,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         }
         finally
         {
+            if (!_isLoaded) _isLoaded = true;
             IsBusy = false;
         }
     }
@@ -151,5 +173,33 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     void ChangeSettingsVisibility()
     {
         IsSettingsVisible = !IsSettingsVisible;
+    }
+
+    [RelayCommand]
+    async Task ChangeMapVisibilityAsync()
+    {
+        if (IsBusy) return;
+        try
+        {
+            IsBusy = true;
+
+            IsMapVisible = !IsMapVisible;
+            if (!IsMapVisible) return;
+
+            if (!FilteredCountry.CountryShortCode.ToLower().Equals(_mapCountryShortCode))
+            {
+                // To Show the activity indicator before executing OnPropertyChanged
+                await Task.Delay(100);
+                OnPropertyChanged(nameof(ShapesSource));
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 }
