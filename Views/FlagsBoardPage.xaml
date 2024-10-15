@@ -191,15 +191,7 @@
                     ShapeStroke="White"
                     ShapeStrokeThickness="1"
                     ShapesSource="{Binding ShapesSource}"
-                    ShowDataLabels="False"
                     ShowShapeTooltip="True">
-                    <map:MapShapeLayer.DataLabelSettings>
-                        <map:MapDataLabelSettings DataLabelPath="Name">
-                            <map:MapDataLabelSettings.DataLabelStyle>
-                                <map:MapLabelStyle FontAttributes="Italic" TextColor="Black" />
-                            </map:MapDataLabelSettings.DataLabelStyle>
-                        </map:MapDataLabelSettings>
-                    </map:MapShapeLayer.DataLabelSettings>
                     <map:MapShapeLayer.ColorMappings>
                         <map:EqualColorMapping Color="LimeGreen" Value="True" />
                         <map:EqualColorMapping Color="Gray" Value="False" />
