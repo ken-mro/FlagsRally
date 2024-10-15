@@ -284,7 +284,7 @@
             IsVisible="{Binding IsMapVisible}">
             <map:SfMaps.Layer>
                 <map:MapShapeLayer
-                    DataSource="{Binding DisplayArrivalLocationList}"
+                    DataSource="{Binding MapArrivalLocationList}"
                     EnableSelection="True"
                     PrimaryValuePath="CountryCode"
                     ShapeColorValuePath="Id"
@@ -294,7 +294,7 @@
                     ShapeStrokeThickness="1"
                     ShapesSource="{Binding ShapesSource}"
                     ShowDataLabels="False"
-                    ToolTipProperties.Text="CountryName">
+                    ShowShapeTooltip="True">
                     <map:MapShapeLayer.DataLabelSettings>
                         <map:MapDataLabelSettings DataLabelPath="CountryName">
                             <map:MapDataLabelSettings.DataLabelStyle>
@@ -305,9 +305,20 @@
                     <map:MapShapeLayer.ColorMappings>
                         <map:RangeColorMapping
                             Color="LimeGreen"
-                            From="0"
+                            From="1"
                             To="2147483647" />
                     </map:MapShapeLayer.ColorMappings>
+                    <map:MapShapeLayer.ShapeTooltipTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Label
+                                    HeightRequest="20"
+                                    Text="{Binding Path=DataItem.CountryFlagSource, Source={x:Null}}"
+                                    WidthRequest="20" />
+                                <Label Text="{Binding Path=DataItem.CountryName, Source={x:Null}}" TextColor="White" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </map:MapShapeLayer.ShapeTooltipTemplate>
                     <map:MapShapeLayer.ZoomPanBehavior>
                         <map:MapZoomPanBehavior ZoomLevel="1" />
                     </map:MapShapeLayer.ZoomPanBehavior>
