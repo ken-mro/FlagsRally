@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Maps;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
+using FlagsRally.Services;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Maui.RevenueCat.InAppBilling;
@@ -43,6 +44,7 @@ namespace FlagsRally
             builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton<CustomCountryHelper>();
+            builder.Services.AddSingleton<ArrivalLocationService>();
 
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();
