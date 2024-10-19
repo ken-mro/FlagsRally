@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using Moq;
 
