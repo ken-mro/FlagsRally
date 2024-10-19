@@ -65,6 +65,8 @@ public class CustomCountryHelper : CountryHelper
             return x;
         });
 
+        CountryRegion.Add(new Regions() { Name = "Carinthia", ShortCode = "2" });
+        CountryRegion.Add(new Regions() { Name = "Styria", ShortCode = "6" });
         CountryRegion.Add(new Regions() { Name = "Tyrol", ShortCode = "7" });
 
         GetCountryByCode("AT").Regions = CountryRegion;
@@ -90,6 +92,9 @@ public class CustomCountryHelper : CountryHelper
         CountryRegion.Add(new Regions() { Name = "Guarda District", ShortCode = "09" });
 
         CountryRegion.Add(new Regions() { Name = "Leiria District", ShortCode = "10" });
+
+        CountryRegion.Add(new Regions() { Name = "Santarém District", ShortCode = "14" });
+        CountryRegion.Add(new Regions() { Name = "Azores", ShortCode = "20" });
 
         GetCountryByCode("PT").Regions = CountryRegion;
     }
