@@ -25,5 +25,6 @@ public static class Constants
     public static string RevenueCatApiKeyIos => REVENUECAT_API_KEY_IOS;
     public static string TomtomApiKey => TOMTOM_API_KEY;
     public static string SyncfusionLicenseKey => SYNCFUSIOHN_LICENSE_KEY;
+    public static string GeoJsonResourceBaseUrl => GEOJSON_RESOURCE_BASE_URL;
     public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "at", "ca", "cz", "fr", "de", "it", "jp", "my", "nl", "no","pt", "es", "ch", "ua", "us" };
 }
