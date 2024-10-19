@@ -1,5 +1,5 @@
 ﻿using FlagsRally.Models;
-using FlagsRally.Utilities;
+using FlagsRally.Helpers;
 
 namespace FlagsRally.Services;
 
