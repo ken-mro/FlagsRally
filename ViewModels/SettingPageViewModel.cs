@@ -2,9 +2,9 @@ using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
+using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
-using FlagsRally.Utilities;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels

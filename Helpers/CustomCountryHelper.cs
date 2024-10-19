@@ -1,7 +1,7 @@
 ﻿using CountryData.Standard;
 using System.Diagnostics;
 
-namespace FlagsRally.Utilities;
+namespace FlagsRally.Helpers;
 
 public class CustomCountryHelper : CountryHelper
 {

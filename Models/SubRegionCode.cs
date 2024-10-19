@@ -6,8 +6,16 @@ public record SubRegionCode
 {
     public string lowerCountryCodeHyphenRegionCode => $"{CountryCode.ToLower()}-{RegionCode.ToLower()}";
     public string ImageResourceString => $"{CountryCode.ToLower()}_{RegionCode.ToLower()}";
+    /// <summary>
+    /// upper case sub region code for letters
+    /// </summary>
     public string RegionCode { get; init; }
+    /// <summary>
+    /// upper case 2 letter country code
+    /// </summary>
     public string CountryCode { get; init; }
+
+    private SubRegionCode() { }
     public SubRegionCode(string countryCodeHyphenSubRegionCode)
     {
         CountryCode = countryCodeHyphenSubRegionCode[0..2].ToUpper();
@@ -24,5 +32,14 @@ public record SubRegionCode
 
         CountryCode = countryCode.ToUpper();
         RegionCode = subRegionCode.ToUpper();
+    }
+
+    public static SubRegionCode EmptyCode()
+    {
+        return new SubRegionCode()
+        {
+            CountryCode = string.Empty,
+            RegionCode = string.Empty
+        };
     }
 }

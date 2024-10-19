@@ -1,10 +1,10 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Helpers;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
-using FlagsRally.Utilities;
 using FlagsRally.Views;
 using Maui.RevenueCat.InAppBilling.Services;
 using Microsoft.Maui.Maps;

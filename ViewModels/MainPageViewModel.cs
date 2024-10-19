@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
+using FlagsRally.Helpers;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
-using FlagsRally.Utilities;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
