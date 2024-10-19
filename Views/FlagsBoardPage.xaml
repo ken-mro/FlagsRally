@@ -188,21 +188,20 @@
                     PrimaryValuePath="IsoCode"
                     ShapeColorValuePath="HasBeenVisited"
                     ShapeDataField="code"
+                    ShapeFill="Gray"
                     ShapeStroke="White"
                     ShapeStrokeThickness="1"
                     ShapesSource="{Binding ShapesSource}"
                     ShowShapeTooltip="True">
                     <map:MapShapeLayer.ColorMappings>
                         <map:EqualColorMapping Color="LimeGreen" Value="True" />
-                        <map:EqualColorMapping Color="Gray" Value="False" />
                     </map:MapShapeLayer.ColorMappings>
                     <map:MapShapeLayer.ShapeTooltipTemplate>
                         <DataTemplate>
                             <VerticalStackLayout>
                                 <Image
-                                    BackgroundColor="White"
                                     HeightRequest="20"
-                                    Source="{Binding Path=DataItem.FlagSource, Source={x:Null}}"
+                                    Source="{Binding Path=DataItem.MapToolTipImageSource, Source={x:Null}}"
                                     WidthRequest="20" />
                                 <Label Text="{Binding Path=DataItem.Name, Source={x:Null}}" TextColor="White" />
                             </VerticalStackLayout>
