@@ -21,10 +21,10 @@ public class CustomGeolocation
         var jsonObject = await GetAllRequestsForLocationInfo(location, languageCode, _settingsPreferences);
         var enJsonObject = languageCode == "en" ? jsonObject : await GetAllRequestsForLocationInfo(location, "en", _settingsPreferences);
 
-        return GenerateFrom(datetime, jsonObject, enJsonObject, location, languageCode);
+        return await GenerateFrom(datetime, jsonObject, enJsonObject, location, languageCode);
     }
 
-    private ArrivalLocationData GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location, string languageCode)
+    private async Task<ArrivalLocationData> GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location, string languageCode)
     {
         var enResults = enJsonObject["results"]?.Value<JArray>();
         var enCountry = GetComponent(enResults, "country");
@@ -38,7 +38,11 @@ public class CustomGeolocation
 
         var countryCode = enCountry?["short_name"]?.Value<string>() ?? string.Empty;
         var adminAreaCode = _countryHelper.GetAdminAreaCode(countryCode, enAdminAreaName, enAdminAreaShortName);
-
+        if (string.IsNullOrEmpty(adminAreaCode))
+        {
+            var subRegionCode = await GetSubRegionCode(location);
+            adminAreaCode = subRegionCode.RegionCode;
+        }
 
         string countryName;
         string adminAreaName;
@@ -127,7 +131,7 @@ public class CustomGeolocation
         {
             if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
             if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
-            string apiKey = settings.GetApiKey() == string.Empty? Constants.GoogleMapApiKey : settings.GetApiKey();
+            string apiKey = settings.GetApiKey() == string.Empty ? Constants.GoogleMapApiKey : settings.GetApiKey();
 
             string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={apiKey}";
 
@@ -175,6 +179,41 @@ public class CustomGeolocation
         catch
         {
             return false;
+        }
+    }
+
+    private async Task<SubRegionCode> GetSubRegionCode(Location location)
+    {
+        try
+        {
+            string requestUrl = $"https://api.tomtom.com/search/2/reverseGeocode/{location.Latitude},{location.Longitude}.json?entityType=CountrySubdivision&key={Constants.TomtomApiKey}";
+            
+            using HttpClient httpClient = new();
+            
+            HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
+            if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            var subRegionCode = System.Text.Json.JsonSerializer.Deserialize<LocationDataResponse>(responseContent);
+            var countryCode = subRegionCode?.addresses.FirstOrDefault()?.address.countryCode;
+            var countrySubdivisionCode = subRegionCode?.addresses.FirstOrDefault()?.address.countrySubdivisionCode;
+
+            var isIntSubdivisionCode = int.TryParse(countrySubdivisionCode, out int intSubdivisionCode);
+            if (!isIntSubdivisionCode) return new SubRegionCode(countryCode ?? string.Empty, countrySubdivisionCode ?? string.Empty);
+
+            var subRegion = _countryHelper.GetCountryByCode(countryCode)?
+                            .Regions.Find(r =>
+                            {
+                                var result = int.TryParse(r.ShortCode, out int intShortCode);
+                                if (!result) return false;
+                                return intShortCode == intSubdivisionCode;
+                            });
+            return new SubRegionCode(countryCode ?? string.Empty, subRegion?.ShortCode ?? string.Empty);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return SubRegionCode.EmptyCode();
         }
     }
 }
