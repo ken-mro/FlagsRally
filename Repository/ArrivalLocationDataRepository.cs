@@ -1,6 +1,6 @@
-﻿using FlagsRally.Models;
+﻿using FlagsRally.Helpers;
+using FlagsRally.Models;
 using FlagsRally.Resources;
-using FlagsRally.Utilities;
 using SQLite;
 
 namespace FlagsRally.Repository;

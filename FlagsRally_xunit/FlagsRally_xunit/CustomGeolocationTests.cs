@@ -1,5 +1,4 @@
 using FlagsRally.Repository;
-using FlagsRally.Utilities;
 using Moq;
 
 namespace FlagsRallyTests.Utilities;

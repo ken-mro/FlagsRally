@@ -2,7 +2,6 @@
 using CommunityToolkit.Maui.Maps;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
-using FlagsRally.Utilities;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Maui.RevenueCat.InAppBilling;

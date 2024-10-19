@@ -3,7 +3,7 @@ using FlagsRally.Repository;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FlagsRally.Utilities;
+namespace FlagsRally.Helpers;
 
 public class CustomGeolocation
 {

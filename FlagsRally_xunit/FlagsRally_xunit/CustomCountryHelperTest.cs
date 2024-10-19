@@ -1,6 +1,4 @@
-﻿using FlagsRally.Utilities;
-
-namespace FlagsRallyTests.Utilities;
+﻿namespace FlagsRallyTests.Helpers;
 
 public class CustomCountryHelperTest
 {

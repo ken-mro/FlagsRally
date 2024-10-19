@@ -6,7 +6,6 @@ using FlagsRally.Repository;
 using FlagsRally.Helpers;
 using System.Collections.ObjectModel;
 using FlagsRally.Resources;
-using FlagsRally.Utilities;
 using System.Diagnostics;
 using System.Linq;
 
