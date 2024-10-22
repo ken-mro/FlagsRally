@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -16,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Image
@@ -34,12 +36,12 @@
                 Scrolled="collectionView_Scrolled"
                 VerticalOptions="FillAndExpand">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout Spacing="10" Padding="5">
+                    <VerticalStackLayout Padding="5" Spacing="10">
                         <Label
-                            FontSize="Large"
                             FontAttributes="Bold"
-                            HorizontalOptions="Center"
                             FontFamily="craftmincho"
+                            FontSize="Large"
+                            HorizontalOptions="Center"
                             Text="{x:Static strings:AppResources.HowTo}"
                             TextColor="Black"
                             VerticalOptions="Center" />
@@ -276,10 +278,50 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             Color="Gray" />
-        <VerticalStackLayout Grid.Row="2">
+        <map:SfMaps
+            Grid.Row="2"
+            BackgroundColor="SkyBlue"
+            IsVisible="{Binding IsMapVisible}">
+            <map:SfMaps.Layer>
+                <map:MapShapeLayer
+                    DataSource="{Binding MapArrivalLocationList}"
+                    EnableSelection="True"
+                    PrimaryValuePath="CountryCode"
+                    ShapeColorValuePath="Id"
+                    ShapeDataField="code"
+                    ShapeFill="Gray"
+                    ShapeStroke="White"
+                    ShapeStrokeThickness="1"
+                    ShapesSource="{Binding ShapesSource}"
+                    ShowShapeTooltip="True">
+                    <map:MapShapeLayer.ColorMappings>
+                        <map:RangeColorMapping
+                            Color="LimeGreen"
+                            From="1"
+                            To="2147483647" />
+                    </map:MapShapeLayer.ColorMappings>
+                    <map:MapShapeLayer.ShapeTooltipTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Label
+                                    HeightRequest="20"
+                                    Text="{Binding Path=DataItem.CountryFlagSource, Source={x:Null}}"
+                                    WidthRequest="20" />
+                                <Label Text="{Binding Path=DataItem.CountryName, Source={x:Null}}" TextColor="White" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </map:MapShapeLayer.ShapeTooltipTemplate>
+                    <map:MapShapeLayer.ZoomPanBehavior>
+                        <map:MapZoomPanBehavior ZoomLevel="1" />
+                    </map:MapShapeLayer.ZoomPanBehavior>
+                </map:MapShapeLayer>
+            </map:SfMaps.Layer>
+        </map:SfMaps>
+        <VerticalStackLayout Grid.Row="3">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
@@ -294,6 +336,17 @@
                     Margin="5,0"
                     HeightRequest="25"
                     HorizontalOptions="EndAndExpand"
+                    Source="earth.png"
+                    VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image
+                    Grid.Column="2"
+                    Margin="5,0"
+                    HeightRequest="25"
+                    HorizontalOptions="EndAndExpand"
                     Source="filter.png"
                     VerticalOptions="Center">
                     <Image.GestureRecognizers>
@@ -301,9 +354,7 @@
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
-            <VerticalStackLayout
-                Grid.ColumnSpan="2"
-                IsVisible="{Binding IsSettingsVisible}">
+            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
                 <Grid>
                     <Label
                         Padding="5,0"
@@ -313,10 +364,10 @@
                         VerticalOptions="Center" />
                     <Switch
                         Margin="20,5"
-                        VerticalOptions="Center"
                         HorizontalOptions="End"
                         IsToggled="{Binding IsUnique}"
-                        ThumbColor="Gray" />
+                        ThumbColor="Gray"
+                        VerticalOptions="Center" />
                 </Grid>
                 <BoxView
                     Margin="5,0"
@@ -333,10 +384,10 @@
                         VerticalOptions="Center" />
                     <Switch
                         Margin="20,5"
-                        VerticalOptions="Center"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="Gray" />
+                        ThumbColor="Gray"
+                        VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
             <Button

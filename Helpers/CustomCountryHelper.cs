@@ -227,7 +227,9 @@ public class CustomCountryHelper : CountryHelper
         CountryRegion.Add(new Regions() { Name = "Normandy", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Corse");
-        CountryRegion.Add(new Regions() { Name = "Corsica", ShortCode = region?.ShortCode });
+        var corse = CountryRegion?.Where(x => x.Name == "Corse").FirstOrDefault();
+        corse!.ShortCode = "20R";
+        CountryRegion.Add(new Regions() { Name = "Corsica", ShortCode = "20R" });
 
         region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Bretagne");
         CountryRegion.Add(new Regions() { Name = "Brittany", ShortCode = region?.ShortCode });

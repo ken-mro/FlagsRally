@@ -2,10 +2,12 @@
 using CommunityToolkit.Maui.Maps;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
+using FlagsRally.Services;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
 using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace FlagsRally
 {
@@ -16,6 +18,7 @@ namespace FlagsRally
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureSyncfusionCore()
                 .UseMauiCommunityToolkit()
 #if ANDROID || IOS
                     .UseMauiMaps()
@@ -41,6 +44,7 @@ namespace FlagsRally
             builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton<CustomCountryHelper>();
+            builder.Services.AddSingleton<ArrivalLocationService>();
 
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();
