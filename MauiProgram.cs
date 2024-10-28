@@ -42,6 +42,7 @@ namespace FlagsRally
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton<CustomCountryHelper>();
             builder.Services.AddSingleton<ArrivalLocationService>();
+            builder.Services.AddSingleton<CustomBoardService>();
 
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();
@@ -57,6 +58,9 @@ namespace FlagsRally
 
             builder.Services.AddSingleton<FlagsBoardPage>();
             builder.Services.AddSingleton<FlagsBoardPageViewModel>();
+
+            builder.Services.AddTransient<CustomBoardPage>();
+            builder.Services.AddTransient<CustomBoardPageViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();
