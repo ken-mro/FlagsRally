@@ -220,8 +220,8 @@ public class CustomCountryHelper : CountryHelper
     {
         var CountryRegion = GetCountryByCode("FR").Regions.Where(x => x.ShortCode.Length == 3).ToList();
 
-        var region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Provence-Alpes-Cote d'Azur");
-        CountryRegion.Add(new Regions() { Name = "Provence-Alpes-Côte d'Azur", ShortCode = region?.ShortCode });
+        var region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Provence-Alpes-Côte d'Azur");
+        CountryRegion.Add(new Regions() { Name = "Provence-Alpes-Cote d'Azur", ShortCode = region?.ShortCode });
 
         region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Normandie");
         CountryRegion.Add(new Regions() { Name = "Normandy", ShortCode = region?.ShortCode });
