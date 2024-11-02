@@ -14,7 +14,7 @@ public static class Constants
     private const string REVENUECAT_API_KEY_IOS = "PASTE-YOUR-API-KEY-HERE";
     private const string TOMTOM_API_KEY = "PASTE-YOUR-API-KEY-HERE";
 
-    private const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
+    public const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
 
     private const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
     public static string DatabaseName => DATABSE_NAME;
