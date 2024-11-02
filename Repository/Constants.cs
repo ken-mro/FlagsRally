@@ -8,7 +8,7 @@ namespace FlagsRally.Repository;
 public static class Constants
 {
     private const string DATABSE_NAME = "FlagsRally.db3";
-    private const string GOOGLE_MAP_API_KEY = "PASTE-YOUR-API-KEY-HERE";
+    public const string GOOGLE_MAP_API_KEY = "PASTE-YOUR-API-KEY-HERE";
     
     private const string REVENUECAT_API_KEY_ANDROID = "PASTE-YOUR-API-KEY-HERE";
     private const string REVENUECAT_API_KEY_IOS = "PASTE-YOUR-API-KEY-HERE";
@@ -19,7 +19,6 @@ public static class Constants
     private const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
     public static string DatabaseName => DATABSE_NAME;
     public static string DataBasePath => Path.Combine(FileSystem.AppDataDirectory, DATABSE_NAME);
-    public static string GoogleMapApiKey => GOOGLE_MAP_API_KEY;
     public static string RevenueCatApiKeyAndroid => REVENUECAT_API_KEY_ANDROID;
     public static string RevenueCatApiKeyIos => REVENUECAT_API_KEY_IOS;
     public static string TomtomApiKey => TOMTOM_API_KEY;

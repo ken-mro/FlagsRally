@@ -14,7 +14,7 @@ public class CustomGeolocationTests
         string languageCode = "en";
 
         var preferencesMock = new Mock<IPreferences>();
-        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GoogleMapApiKey);
+        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GOOGLE_MAP_API_KEY);
 
         var customGeolocation = new CustomGeolocation(new CustomCountryHelper(), new SettingsPreferences(preferencesMock.Object));
         var datetime = DateTime.Now;
@@ -46,7 +46,7 @@ public class CustomGeolocationTests
         Location location = new Location(37.7749, -122.4194);
         string languageCode = "ja";
         var preferencesMock = new Mock<IPreferences>();
-        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GoogleMapApiKey);
+        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GOOGLE_MAP_API_KEY);
 
         var customGeolocation = new CustomGeolocation(new CustomCountryHelper(), new SettingsPreferences(preferencesMock.Object));
         var datetime = DateTime.Now;
@@ -78,7 +78,7 @@ public class CustomGeolocationTests
         Location location = new Location(12.984305, -61.287228);
         string languageCode = "ja";
         var preferencesMock = new Mock<IPreferences>();
-        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GoogleMapApiKey);
+        preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GOOGLE_MAP_API_KEY);
 
         var customGeolocation = new CustomGeolocation(new CustomCountryHelper(), new SettingsPreferences(preferencesMock.Object));
         var datetime = DateTime.Now;

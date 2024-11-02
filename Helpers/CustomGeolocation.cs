@@ -131,7 +131,7 @@ public class CustomGeolocation
         {
             if (languageCode.Length != 2) throw new ArgumentException("Two-letter ISO language code must be 2 characters long");
             if (!languageCode.All(char.IsLetter)) throw new ArgumentException("Two-letter ISO language code only has letters");
-            string apiKey = settings.GetApiKey() == string.Empty ? Constants.GoogleMapApiKey : settings.GetApiKey();
+            string apiKey = settings.GetApiKey() == string.Empty ? Constants.GOOGLE_MAP_API_KEY : settings.GetApiKey();
 
             string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={apiKey}";
 
