@@ -31,9 +31,9 @@ public partial class App : Application
         var revenueCatApiKey = string.Empty;
 
 #if __ANDROID__
-        revenueCatApiKey = Constants.RevenueCatApiKeyAndroid;
+        revenueCatApiKey = Constants.REVENUECAT_API_KEY_ANDROID;
 #elif __IOS__
-        revenueCatApiKey = Constants.RevenueCatApiKeyIos;
+        revenueCatApiKey = Constants.REVENUECAT_API_KEY_IOS;
 #endif
 
         _revenueCat.Initialize(revenueCatApiKey);

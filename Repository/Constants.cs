@@ -10,8 +10,8 @@ public static class Constants
     private const string DATABSE_NAME = "FlagsRally.db3";
     public const string GOOGLE_MAP_API_KEY = "PASTE-YOUR-API-KEY-HERE";
     
-    private const string REVENUECAT_API_KEY_ANDROID = "PASTE-YOUR-API-KEY-HERE";
-    private const string REVENUECAT_API_KEY_IOS = "PASTE-YOUR-API-KEY-HERE";
+    public const string REVENUECAT_API_KEY_ANDROID = "PASTE-YOUR-API-KEY-HERE";
+    public const string REVENUECAT_API_KEY_IOS = "PASTE-YOUR-API-KEY-HERE";
     private const string TOMTOM_API_KEY = "PASTE-YOUR-API-KEY-HERE";
 
     public const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
