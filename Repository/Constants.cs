@@ -16,9 +16,8 @@ public static class Constants
 
     public const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
 
-    private const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
+    public const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
     public static string DatabaseName => DATABSE_NAME;
     public static string DataBasePath => Path.Combine(FileSystem.AppDataDirectory, DATABSE_NAME);
-    public static string GeoJsonResourceBaseUrl => GEOJSON_RESOURCE_BASE_URL;
     public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "at", "ca", "cz", "fr", "de", "it", "jp", "my", "nl", "no","pt", "es", "ch", "ua", "us" };
 }
