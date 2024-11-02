@@ -186,7 +186,7 @@ public class CustomGeolocation
     {
         try
         {
-            string requestUrl = $"https://api.tomtom.com/search/2/reverseGeocode/{location.Latitude},{location.Longitude}.json?entityType=CountrySubdivision&key={Constants.TomtomApiKey}";
+            string requestUrl = $"https://api.tomtom.com/search/2/reverseGeocode/{location.Latitude},{location.Longitude}.json?entityType=CountrySubdivision&key={Constants.TOMTOM_API_KEY}";
             
             using HttpClient httpClient = new();
             
