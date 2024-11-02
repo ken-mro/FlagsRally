@@ -69,7 +69,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     {
         if (!_isLoaded) return string.Empty;
         _mapCountryShortCode = FilteredCountry.CountryShortCode.ToLower();
-        return $"{Constants.GeoJsonResourceBaseUrl}/{_mapCountryShortCode}.json";
+        return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/{_mapCountryShortCode}.json";
     }
 
     Country _filteredCountry;

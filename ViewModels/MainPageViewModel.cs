@@ -87,8 +87,8 @@ namespace FlagsRally.ViewModels
 
             _allCountries = _arrivalLocationService.GetAllCountriesArrivalLocations();
             var arrivedAq = SourceArrivalLocationList.Where(l => l.CountryCode.ToLower().Equals("aq")).Any();
-            if (arrivedAq) return $"{Constants.GeoJsonResourceBaseUrl}/world-map.json";
-            return $"{Constants.GeoJsonResourceBaseUrl}/non-aq-world-map.json";
+            if (arrivedAq) return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/world-map.json";
+            return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/non-aq-world-map.json";
         }
 
         [ObservableProperty]
