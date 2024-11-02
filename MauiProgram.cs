@@ -22,8 +22,6 @@ namespace FlagsRally
                 .UseMauiCommunityToolkit()
 #if ANDROID || IOS
                     .UseMauiMaps()
-#elif WINDOWS
-                    .UseMauiCommunityToolkitMaps(Constants.BingMapApiKey)
 #endif
                 .ConfigureFonts(fonts =>
                 {
@@ -32,10 +30,6 @@ namespace FlagsRally
                     fonts.AddFont("JerseyclubGrungeBold-JRXVK.otf", "JerseyclubGrungeBold");
                     fonts.AddFont("craftmincho.otf", "craftmincho");
                     fonts.AddFont("KiwiMaru-Medium.ttf", "KiwiMaru-Medium");
-                })
-                .ConfigureEssentials(essentials =>
-                {
-                    essentials.UseMapServiceToken(Constants.BingMapApiKey);
                 });
 
             builder.Services.AddRevenueCatBilling();
