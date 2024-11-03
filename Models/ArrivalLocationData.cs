@@ -13,28 +13,28 @@ public class ArrivalLocationData
     public DateTime ArrivalDate { get; init; }
 
     [MaxLength(168)]
-    public string CountryName { get; init; }
+    public string CountryName { get; init; } = string.Empty;
 
     [MaxLength(168)]
-    public string AdminAreaName { get; init; }
+    public string AdminAreaName { get; init; } = string.Empty;
 
     [MaxLength(168)]
-    public string LocalityName { get; init; }
+    public string LocalityName { get; init; } = string.Empty;
 
     [MaxLength(168)]
-    public string EnCountryName { get; init; }
+    public string EnCountryName { get; init; } = string.Empty;
 
     [MaxLength(168)]
-    public string EnAdminAreaName { get; init; }
+    public string EnAdminAreaName { get; init; } = string.Empty;
 
     [MaxLength(168)]
-    public string EnLocalityName { get; init; }
+    public string EnLocalityName { get; init; } = string.Empty;
 
     [MaxLength(2)]
-    public string CountryCode { get; init; }
+    public string CountryCode { get; init; } = string.Empty;
 
     [MaxLength(5)]
-    public string AdminAreaCode { get; init; }
+    public string AdminAreaCode { get; init; } = string.Empty;
 
     public double Latitude { get; init; }
 

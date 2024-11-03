@@ -4,9 +4,9 @@ namespace FlagsRally.Converters
 {
     public class BoardFontSizeConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            string text = value as string;
+            string? text = value as string;
             if (string.IsNullOrEmpty(text)) return 20;
 
             var minValue = text.ContainsJapaneseCharacters() ?

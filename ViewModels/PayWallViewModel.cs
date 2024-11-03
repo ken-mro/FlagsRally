@@ -13,7 +13,7 @@ public partial class PayWallViewModel : BaseViewModel
 {
     private readonly IRevenueCatBilling _revenueCatBilling;
     private readonly SettingsPreferences _settingsPreferences;
-    public Popup Popup;
+    public Popup Popup = new();
 
     //RC data
     [ObservableProperty]

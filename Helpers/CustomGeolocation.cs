@@ -31,10 +31,10 @@ public class CustomGeolocation
         var enAdminArea = GetComponent(enResults, "administrative_area_level_1");
         var enLocality = GetComponent(enResults, "locality");
 
-        var enCountryName = enCountry?["long_name"]?.Value<string>();
+        var enCountryName = enCountry?["long_name"]?.Value<string>() ?? string.Empty;
         var enAdminAreaName = enAdminArea?["long_name"]?.Value<string>() ?? string.Empty;
         var enAdminAreaShortName = enAdminArea?["short_name"]?.Value<string>() ?? string.Empty;
-        var enLocalityName = enLocality?["long_name"]?.Value<string>();
+        var enLocalityName = enLocality?["long_name"]?.Value<string>() ?? string.Empty;
 
         var countryCode = enCountry?["short_name"]?.Value<string>() ?? string.Empty;
         var adminAreaCode = _countryHelper.GetAdminAreaCode(countryCode, enAdminAreaName, enAdminAreaShortName);
@@ -56,7 +56,7 @@ public class CustomGeolocation
         }
         else
         {
-            var results = jsonObject["results"]?.Value<JArray>();
+            var results = jsonObject["results"]?.Value<JArray>() ?? [];
             var country = GetComponent(results, "country", enCountryName, languageCode);
             var adminArea = GetComponent(results, "administrative_area_level_1", enAdminAreaName, languageCode);
             var locality = GetComponent(results, "locality", enLocalityName, languageCode);
