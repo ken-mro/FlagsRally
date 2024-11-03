@@ -229,10 +229,10 @@ public class CustomCountryHelper : CountryHelper
         region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Corse");
         var corse = CountryRegion?.Where(x => x.Name == "Corse").FirstOrDefault();
         corse!.ShortCode = "20R";
-        CountryRegion.Add(new Regions() { Name = "Corsica", ShortCode = "20R" });
+        CountryRegion?.Add(new Regions() { Name = "Corsica", ShortCode = "20R" });
 
         region = GetRegionByCountryCode("FR").FirstOrDefault(x => x.Name == "Bretagne");
-        CountryRegion.Add(new Regions() { Name = "Brittany", ShortCode = region?.ShortCode });
+        CountryRegion?.Add(new Regions() { Name = "Brittany", ShortCode = region?.ShortCode });
 
         GetCountryByCode("FR").Regions = CountryRegion;
     }

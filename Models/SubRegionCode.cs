@@ -9,11 +9,11 @@ public record SubRegionCode
     /// <summary>
     /// upper case sub region code for letters
     /// </summary>
-    public string RegionCode { get; init; }
+    public string RegionCode { get; init; } = string.Empty;
     /// <summary>
     /// upper case 2 letter country code
     /// </summary>
-    public string CountryCode { get; init; }
+    public string CountryCode { get; init; } = string.Empty;
 
     private SubRegionCode() { }
     public SubRegionCode(string countryCodeHyphenSubRegionCode)

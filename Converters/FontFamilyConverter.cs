@@ -6,10 +6,10 @@ namespace FlagsRally.Converters
 {
     public class FontFamilyConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             string fontFamily = "JerseyclubGrungeBold";
-            string text = value as string;
+            string? text = value as string;
 
             if (!string.IsNullOrEmpty(text) && text.ContainsJapaneseCharacters())
             {
@@ -19,7 +19,7 @@ namespace FlagsRally.Converters
             return fontFamily;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             return "JerseyclubGrungeBold";
         }

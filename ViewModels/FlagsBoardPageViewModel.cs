@@ -68,12 +68,12 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
     public string GetShapesSource()
     {
         if (!_isLoaded) return string.Empty;
-        _mapCountryShortCode = FilteredCountry.CountryShortCode.ToLower();
+        _mapCountryShortCode = FilteredCountry?.CountryShortCode.ToLower() ?? string.Empty;
         return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/{_mapCountryShortCode}.json";
     }
 
-    Country _filteredCountry;
-    public Country FilteredCountry
+    Country? _filteredCountry ;
+    public Country? FilteredCountry
     {
         get => _filteredCountry;
         set
@@ -114,7 +114,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             IsBusy = true;
             if (FilteredCountry == null) return;
 
-            var subRegionList = await _arrivalLocationDataRepository.GetSubRegionsByCountryCode(_filteredCountry.CountryShortCode);
+            var subRegionList = await _arrivalLocationDataRepository.GetSubRegionsByCountryCode(FilteredCountry.CountryShortCode);
             SourceArrivalSubRegionList = new ObservableCollection<SubRegion>(subRegionList);
         }
         catch (Exception ex)
@@ -130,7 +130,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
     private ObservableCollection<SubRegion> GetFilteredList()
     {
-        var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry.CountryShortCode);
+        var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry?.CountryShortCode);
         var twoLetterRegionName = _settingsPreferences.GetCountryOfResidence();
         List<SubRegion> blankAllSubregionList = _subRegionHelper.GetBlankAllRegionList(countryInfo, twoLetterRegionName);
 
@@ -152,7 +152,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             var blankInstance = blankAllSubregionList.Find(x => x.Code.lowerCountryCodeHyphenRegionCode == subRegionCode?.lowerCountryCodeHyphenRegionCode);
             if (blankInstance is null) continue;
 
-            if (blankInstance.ArrivalDate < SourceArrivalSubRegion.ArrivalDate)
+            if (blankInstance.ArrivalDate < SourceArrivalSubRegion?.ArrivalDate)
             {
                 blankInstance.ArrivalDate = SourceArrivalSubRegion.ArrivalDate;
             }
@@ -186,7 +186,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             IsMapVisible = !IsMapVisible;
             if (!IsMapVisible) return;
 
-            if (!FilteredCountry.CountryShortCode.ToLower().Equals(_mapCountryShortCode))
+            if (!FilteredCountry!.CountryShortCode.ToLower().Equals(_mapCountryShortCode))
             {
                 // To Show the activity indicator before executing OnPropertyChanged
                 await Task.Delay(100);

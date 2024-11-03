@@ -10,9 +10,9 @@ public class SubRegion
 
     public string IsoCode => Code.lowerCountryCodeHyphenRegionCode.ToUpper();
     public string ArrivalDateString => ArrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US"));
-    public string Name { get; init; }
-    public string EnAdminAreaName { get; init; }
-    public SubRegionCode Code { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string EnAdminAreaName { get; init; } = string.Empty;
+    public SubRegionCode Code { get; init; } = SubRegionCode.EmptyCode();
     public string FlagSource => GetFlagSource();
     public string MapToolTipImageSource => GetToolTipImageSource();
 

@@ -1,6 +1,7 @@
 ﻿using FlagsRally.Helpers;
 using FlagsRally.Models;
 using FlagsRally.Resources;
+using Maui.GoogleMaps;
 using SQLite;
 
 namespace FlagsRally.Repository;
@@ -10,7 +11,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     private string _dbPath = Constants.DataBasePath;
     private readonly CustomCountryHelper _countryHelper;
     private readonly CustomGeolocation _customGeolocation;
-    private SQLiteAsyncConnection _conn;
+    private SQLiteAsyncConnection? _conn;
 
     public ArrivalLocationDataRepository(CustomCountryHelper countryHelper, CustomGeolocation customGeolocation)
     {
@@ -30,13 +31,13 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     public async Task<int> DeleteAsync(int Id)
     {
         await Init();
-        return await _conn.Table<ArrivalLocationData>().Where(i => i.Id == Id).DeleteAsync();
+        return await _conn!.Table<ArrivalLocationData>().Where(i => i.Id == Id).DeleteAsync();
     }
 
     public async Task<List<ArrivalLocation>> GetAllArrivalLocations()
     {
         await Init();
-        var arrivalLocationDataList = await _conn.Table<ArrivalLocationData>().ToListAsync();
+        var arrivalLocationDataList = await _conn!.Table<ArrivalLocationData>().ToListAsync();
         return arrivalLocationDataList.Select(GetArrivalLocation).ToList();
     }
 
@@ -115,7 +116,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
 
         return new ArrivalLocation
         {
-            Id = ArrivalLocationData.Id,
+            Id = ArrivalLocationData!.Id,
             ArrivalDate = ArrivalLocationData.ArrivalDate,
             CountryCode = ArrivalLocationData.CountryCode,
             CountryName = ArrivalLocationData.CountryName,
@@ -135,34 +136,26 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     public async Task<int> Save(ArrivalLocationData arrivalLocationData)
     {
         await Init();
-        return await _conn.InsertAsync(arrivalLocationData);
+        return await _conn!.InsertAsync(arrivalLocationData);
     }
 
     public async Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync()
     {
         await Init();
-        var arrivalLocationList = await _conn.Table<ArrivalLocationData>().ToListAsync();
+        var arrivalLocationList = await _conn!.Table<ArrivalLocationData>().ToListAsync();
         return [.. arrivalLocationList.Select(GetArrivalLocationPin)];
     }
 
     private ArrivalLocationPin GetArrivalLocationPin(ArrivalLocationData ArrivalLocationData)
     {
-        return new ArrivalLocationPin
-        {
-            Id = ArrivalLocationData.Id,
-            ArrivalDate = ArrivalLocationData.ArrivalDate,
-            PinLocation = new Location
-            {
-                Latitude = ArrivalLocationData.Latitude,
-                Longitude = ArrivalLocationData.Longitude,
-            }
-        };
+        var position = new Position(ArrivalLocationData.Latitude, ArrivalLocationData.Longitude);
+        return new ArrivalLocationPin(ArrivalLocationData.Id, ArrivalLocationData.ArrivalDate, position);
     }
 
     public async Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode)
     {
         await Init();
-        var arrivalLocationList = await _conn.Table<ArrivalLocationData>().Where(i => i.CountryCode == countryCode).ToListAsync();
+        var arrivalLocationList = await _conn!.Table<ArrivalLocationData>().Where(i => i.CountryCode == countryCode).ToListAsync();
         return [.. arrivalLocationList.Select(GetArrivalLocationByLocation)];
     }
 
@@ -186,7 +179,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     {
         if (Id == 0) return 0;
         await Init();
-        var result = await _conn.ExecuteAsync("UPDATE ArrivalLocation SET AdminAreaCode = ? WHERE Id = ?", adminAreaCode, Id);
+        var result = await _conn!.ExecuteAsync("UPDATE ArrivalLocation SET AdminAreaCode = ? WHERE Id = ?", adminAreaCode, Id);
         return result;
     }
 }

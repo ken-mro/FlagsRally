@@ -92,19 +92,19 @@ namespace FlagsRally.ViewModels
         }
 
         [ObservableProperty]
-        ObservableCollection<ArrivalLocation> _sourceArrivalLocationList;
+        ObservableCollection<ArrivalLocation> _sourceArrivalLocationList = [];
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsCountry), nameof(IsAdminArea))]
         string _selectedRegion = AppResources.Country;
 
         [ObservableProperty]
-        ObservableCollection<Country> _countryList;
+        ObservableCollection<Country> _countryList = [];
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
         [NotifyPropertyChangedFor(nameof(MapArrivalLocationList))]
-        Country _filteredCountry;
+        Country _filteredCountry = new ();
 
         public bool IsCountry => SelectedRegion == AppResources.Country;
         public bool IsAdminArea => SelectedRegion == AppResources.AdminArea;
@@ -126,14 +126,14 @@ namespace FlagsRally.ViewModels
                 var distinctArrivalLocationList = sourceArrivalLocationList.GroupBy(x => x.CountryCode).Select(x => x.FirstOrDefault()).ToList();
                 var arrivalCountryList = distinctArrivalLocationList.ConvertAll(x => new Country()
                 {
-                    CountryName = x.CountryName,
-                    CountryShortCode = x.CountryCode,
+                    CountryName = x?.CountryName,
+                    CountryShortCode = x?.CountryCode,
                 });
 
                 var filteredCountryCode = FilteredCountry?.CountryShortCode ?? ALL_COUNTRY_CODE;
                 var countryList = new List<Country>()
                 {
-                    new Country()
+                    new ()
                     {
                         CountryName = ALL_COUNTRY_NAME,
                         CountryShortCode = ALL_COUNTRY_CODE
@@ -181,9 +181,13 @@ namespace FlagsRally.ViewModels
             catch (Exception ex)
             {
                 //To handle when FilteredCountry is null.
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+
             }
 
-            return new ObservableCollection<ArrivalLocation>();
+            return [];
         }
 
         [RelayCommand]
@@ -201,7 +205,7 @@ namespace FlagsRally.ViewModels
         }
 
         [RelayCommand]
-        public async Task ChangeRegionAsync()
+        public void ChangeRegion()
         {
             if (SelectedRegion == AppResources.Country)
             {

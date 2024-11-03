@@ -1,30 +1,43 @@
 using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Helpers;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Views;
+using Maui.GoogleMaps;
 using Maui.RevenueCat.InAppBilling.Services;
-using Microsoft.Maui.Maps;
-using System.Collections.ObjectModel;
 using System.Globalization;
+using Map = Maui.GoogleMaps.Map;
+using MapSpan = Maui.GoogleMaps.MapSpan;
 
 namespace FlagsRally.ViewModels;
 
 public partial class LocationPageViewModel : BaseViewModel
 {
+    private const double DEFAULT_LATITUDE = 46.22667333333333;
+    private const double DEFAULT_LONGITUDE = 6.140291666666666;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly CustomGeolocation _customGeolocation;
-    private CancellationTokenSource _cancelTokenSource;
+    private CancellationTokenSource? _cancelTokenSource;
     private bool _isCheckingLocation;
     private IRevenueCatBilling _revenueCat;
     private SettingsPreferences _settingsPreferences;
-    public Microsoft.Maui.Controls.Maps.Map ArrivalMap;
+    private Map? _arrivalMap;
 
-    [ObservableProperty]
-    ObservableCollection<ArrivalLocationPin> _positions;
+    public Map? ArrivalMap
+    {
+        get => _arrivalMap;
+        set
+        {
+            SetProperty(ref _arrivalMap, value);
+            _arrivalMap!.MyLocationEnabled = true;
+            _arrivalMap.UiSettings.MyLocationButtonEnabled = true;
+            _arrivalMap.UiSettings.CompassEnabled = true;
+            _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
+            _ = Init();
+        }
+    }
 
     public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences)
     {
@@ -32,29 +45,34 @@ public partial class LocationPageViewModel : BaseViewModel
         _customGeolocation = customGeolocation;
         _revenueCat = revenueCat;
         _settingsPreferences = settingsPreferences;
-        _ = init();
     }
 
-    private async Task init()
+    private async Task Init()
     {
-        var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
-        Positions = new ObservableCollection<ArrivalLocationPin>(arrivalLocationPins);
         try
         {
             IsBusy = true;
             _isCheckingLocation = true;
 
+            var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
+            foreach(var pin in arrivalLocationPins)
+            {
+                ArrivalMap?.Pins.Add(pin);
+            }
+
             Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
-                                ?? new Location(46.22667333333333, 6.140291666666666);
-            MapSpan mapSpan = new MapSpan(location, 0.01, 0.01);
-            ArrivalMap.MoveToRegion(mapSpan);
+                                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            var position = new Position(location.Latitude, location.Longitude);
+            ArrivalMap?.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMeters(5000)));
         }
         catch (Exception ex)
         {
             // Unable to get location
-            Location location = new Location(46.22667333333333, 6.140291666666666);
-            MapSpan mapSpan = new MapSpan(location, 0.01, 0.01);
-            ArrivalMap.MoveToRegion(mapSpan);
+#if DEBUG
+            Console.WriteLine(ex.Message);
+#endif
+            var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            ArrivalMap?.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMeters(5000)));
         }
         finally
         {
@@ -73,26 +91,24 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
-            if (Positions.Count >= 5 && !_settingsPreferences.IsApiKeySet())
+            if (ArrivalMap?.Pins.Count >= 5 && !_settingsPreferences.IsApiKeySet())
             {
                 await TryToOfferSubscription();
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
-            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+            GeolocationRequest request = new (GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
 #if IOS
             request.RequestFullAccuracy = true;
 #endif
 
             _cancelTokenSource = new CancellationTokenSource();
-            Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+            var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
             if (location is null)
                 throw new Exception($"{AppResources.UnableToGetLocation}");
 
-            var datetime = DateTime.Now;
-
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(datetime, location, languageCode);
+            var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, location, languageCode);
 
             if (arrivalLocationData is null)
                 throw new Exception($"{AppResources.UnableToGetLocationData}");
@@ -103,13 +119,9 @@ public partial class LocationPageViewModel : BaseViewModel
             {
                 var id = await _arrivalLocationRepository.Save(arrivalLocationData);
                 _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
-                ArrivalLocationPin arrivalLocationPins = new()
-                {
-                    Id = id,
-                    ArrivalDate = arrivalLocationData.ArrivalDate,
-                    PinLocation = location
-                };
-                Positions.Add(arrivalLocationPins);
+
+                ArrivalLocationPin arrivalLocationPin = new(id, arrivalLocationData.ArrivalDate, location);
+                ArrivalMap?.Pins.Add(arrivalLocationPin);
             }
         }
         catch (FeatureNotSupportedException ex)
@@ -151,9 +163,8 @@ public partial class LocationPageViewModel : BaseViewModel
         var customerInfo = await _revenueCat.GetCustomerInfo();
         var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
         _settingsPreferences.SetIsSubscribed(isSubscribed);
-        if (!_settingsPreferences.GetIsSubscribed())
-        {
-            await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
-        }
+
+        if (_settingsPreferences.GetIsSubscribed()) return;
+        await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
     }
 }
