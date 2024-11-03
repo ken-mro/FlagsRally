@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Maps;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Services;
 using FlagsRally.ViewModels;
 using FlagsRally.Views;
+using Maui.GoogleMaps.Hosting;
 using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
@@ -20,9 +20,6 @@ namespace FlagsRally
                 .UseMauiApp<App>()
                 .ConfigureSyncfusionCore()
                 .UseMauiCommunityToolkit()
-#if ANDROID || IOS
-                    .UseMauiMaps()
-#endif
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -31,6 +28,12 @@ namespace FlagsRally
                     fonts.AddFont("craftmincho.otf", "craftmincho");
                     fonts.AddFont("KiwiMaru-Medium.ttf", "KiwiMaru-Medium");
                 });
+
+#if ANDROID
+            builder.UseGoogleMaps();
+#elif IOS
+            builder.UseGoogleMaps(Constants.GOOGLE_MAP_API_KEY);
+#endif
 
             builder.Services.AddRevenueCatBilling();
 
