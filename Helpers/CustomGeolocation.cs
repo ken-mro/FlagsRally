@@ -26,7 +26,7 @@ public class CustomGeolocation
 
     private async Task<ArrivalLocationData> GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location, string languageCode)
     {
-        var enResults = enJsonObject["results"]?.Value<JArray>();
+        var enResults = enJsonObject["results"]?.Value<JArray>() ?? new();
         var enCountry = GetComponent(enResults, "country");
         var enAdminArea = GetComponent(enResults, "administrative_area_level_1");
         var enLocality = GetComponent(enResults, "locality");
@@ -100,7 +100,7 @@ public class CustomGeolocation
         foreach (var result in results)
         {
             var addressComponent = result?["address_components"];
-            var targetComponent = addressComponent?.Where(ac => ac["types"].Values<string>()
+            var targetComponent = addressComponent?.Where(ac => (ac["types"] ?? string.Empty).Values<string>()
                                     .Contains(type)).FirstOrDefault();
             if (targetComponent is not null) return targetComponent;
         }
@@ -115,7 +115,7 @@ public class CustomGeolocation
         foreach (var result in results)
         {
             var addressComponent = result?["address_components"];
-            var targetComponent = addressComponent?.Where(ac => ac["types"].Values<string>()
+            var targetComponent = addressComponent?.Where(ac => (ac["types"] ?? string.Empty).Values<string>()
                                     .Contains(type)).FirstOrDefault();
             if (targetComponent is null) continue;
 
@@ -141,7 +141,7 @@ public class CustomGeolocation
                 if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");
 
                 string responseContent = await response.Content.ReadAsStringAsync();
-                dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                dynamic? jsonResponse = JsonConvert.DeserializeObject(responseContent);
                 if (jsonResponse is null) throw new Exception("Unable to get location");
 
                 return JObject.Parse(responseContent);
@@ -166,11 +166,11 @@ public class CustomGeolocation
                 if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");
 
                 string responseContent = await response.Content.ReadAsStringAsync();
-                dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                dynamic? jsonResponse = JsonConvert.DeserializeObject(responseContent);
                 if (jsonResponse is null) throw new Exception("Unable to get location");
 
                 var jObject = JObject.Parse(responseContent);
-                var results = jObject["results"]?.Value<JArray>();
+                var results = jObject["results"]?.Value<JArray>() ?? new();
                 var country = GetComponent(results, "country");
                 var countryCode = country?["short_name"]?.Value<string>() ?? string.Empty;
                 return countryCode == "US";
