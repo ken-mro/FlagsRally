@@ -63,17 +63,17 @@ namespace FlagsRally.ViewModels
 
                 if (folderPickerResult.Folder is null) return;
 
-                string downloadPath = Path.Combine(folderPickerResult.Folder.Path, Constants.DatabaseName);
-
-                if (!Directory.Exists(Path.GetDirectoryName(downloadPath)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(downloadPath));
-                }
+                var folderPath = folderPickerResult.Folder.Path;
+                string downloadPath = Path.Combine(folderPath, Constants.DatabaseName);
 
                 File.Copy(dbPath, downloadPath, true);
                 await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
             }
-            catch(Exception ex)
+            catch(UnauthorizedAccessException)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.AccessDenied}", "OK");
+            }
+            catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
