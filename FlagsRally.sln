@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlagsRally", "FlagsRally.csproj", "{780E517E-6E76-4D64-A1BE-0076081E0F9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlagsRally_xunit", "FlagsRally_xunit\FlagsRally_xunit\FlagsRally_xunit.csproj", "{6A778AEF-4FA3-46B2-8B04-6C7F7F44198D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlagsRally_xunit", "FlagsRally_xunit\FlagsRally_xunit\FlagsRally_xunit.csproj", "{6A778AEF-4FA3-46B2-8B04-6C7F7F44198D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
