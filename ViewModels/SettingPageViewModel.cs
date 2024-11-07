@@ -6,6 +6,7 @@ using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using System.Collections.ObjectModel;
+using System.Runtime.Versioning;
 
 namespace FlagsRally.ViewModels
 {
@@ -48,6 +49,9 @@ namespace FlagsRally.ViewModels
             }
         }
 
+        [SupportedOSPlatform("android")]
+        [SupportedOSPlatform("ios14.2")]
+        [SupportedOSPlatform("maccatalyst14.2")]
         [RelayCommand]
         async Task CreateBackUpAsync()
         {
