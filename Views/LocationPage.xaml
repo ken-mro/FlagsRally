@@ -14,6 +14,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label
             Grid.Row="0"
@@ -21,12 +22,21 @@
             Text="{x:Static strings:AppResources.ConfirmLocationTapButton}"
             VerticalOptions="Center" />
         <maps:Map x:Name="map" Grid.Row="1" />
+        <VerticalStackLayout Grid.Row="2">
+            <Picker
+                Title="{x:Static strings:AppResources.FilterPin}"
+                HorizontalOptions="FillAndExpand"
+                ItemDisplayBinding="{Binding Name}"
+                ItemsSource="{Binding PinFilterList}"
+                SelectedItem="{Binding FilteredPinItem}"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
         <Button
-            Grid.Row="2"
+            Grid.Row="3"
             Command="{Binding GetCurrentLocationCommand}"
             Text="{x:Static strings:AppResources.GetLocation}" />
         <ActivityIndicator
-            Grid.Row="2"
+            Grid.Row="3"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}" />
     </Grid>

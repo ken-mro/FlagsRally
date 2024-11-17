@@ -1,13 +1,18 @@
 using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Helpers;
 using FlagsRally.Models;
+using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Services;
 using FlagsRally.Views;
 using Maui.GoogleMaps;
 using Maui.RevenueCat.InAppBilling.Services;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text.Json;
 using Map = Maui.GoogleMaps.Map;
 using MapSpan = Maui.GoogleMaps.MapSpan;
 
@@ -24,6 +29,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private IRevenueCatBilling _revenueCat;
     private SettingsPreferences _settingsPreferences;
     private Map? _arrivalMap;
+    private CustomBoardService _customBoardService;
 
     public Map? ArrivalMap
     {
@@ -39,12 +45,13 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customGeolocation = customGeolocation;
         _revenueCat = revenueCat;
         _settingsPreferences = settingsPreferences;
+        _customBoardService = customBoardService;
     }
 
     private async Task Init()
@@ -53,12 +60,28 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             IsBusy = true;
             _isCheckingLocation = true;
+            PinFilterList = new (CustomBoardPinFilterItem.CreateFilterList());
 
             var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
-            foreach(var pin in arrivalLocationPins)
+            var arrivalLocationPin = arrivalLocationPins.FirstOrDefault();
+            var tag = arrivalLocationPin?.Tag as MapPinTag;
+            if (tag is not null)
+            {
+                PinFilterList.Add(new CustomBoardPinFilterItem(tag.PinId, AppResources.ArrivalLocation));
+            }
+
+            foreach (var pin in arrivalLocationPins)
             {
                 ArrivalMap?.Pins.Add(pin);
             }
+
+            //Temp code. Get data locally.
+            var info = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+            using var stream1 = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.Sample.manhole_card_23_1.json");
+            using var stream2 = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.Sample.manhole_card_23_2.json");
+            using var stream3 = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.Sample.manhole_card_23_3.json");
+            var customLocationList = GetResources([stream1!, stream2!, stream3!]);
+            AddPinsToMap(customLocationList);
 
             Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
                                 ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
@@ -158,6 +181,43 @@ public partial class LocationPageViewModel : BaseViewModel
             _cancelTokenSource.Cancel();
     }
 
+    [ObservableProperty]
+    ObservableCollection<CustomBoardPinFilterItem> _pinFilterList = default!;
+
+    CustomBoardPinFilterItem _filteredPinItem = default!;
+
+    public CustomBoardPinFilterItem FilteredPinItem
+    {
+        get => _filteredPinItem;
+        set
+        {
+            SetProperty(ref _filteredPinItem, value);
+            UpdatePinsVisibility();
+        }
+    }
+
+    private void UpdatePinsVisibility()
+    {
+        if (ArrivalMap?.Pins is null) return;
+        foreach (var pin in ArrivalMap.Pins)
+        {
+            Console.WriteLine((pin.Tag as MapPinTag)?.PinId);
+            if (FilteredPinItem.IsAll)
+            {
+                pin.IsVisible = true;
+                continue;
+            }
+
+            if (FilteredPinItem.Id ==(pin.Tag as MapPinTag)?.PinId)
+            {
+                pin.IsVisible = true;
+            }
+            else
+            {
+                pin.IsVisible = false;
+            }
+        }
+    }
     private async Task TryToOfferSubscription()
     {
         var customerInfo = await _revenueCat.GetCustomerInfo();
@@ -166,5 +226,31 @@ public partial class LocationPageViewModel : BaseViewModel
 
         if (_settingsPreferences.GetIsSubscribed()) return;
         await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
+    }
+
+    private void AddPinsToMap(IEnumerable<CustomLocationPin> customLocationList)
+    {
+        foreach (var pin in customLocationList)
+        {
+            ArrivalMap?.Pins.Add(pin);
+        }
+    }
+
+    private IEnumerable<CustomLocationPin> GetResources(Stream[] streamList)
+    {
+        var sourceList = new List<CustomLocationPin>();
+        foreach (var stream in streamList)
+        {
+            if (stream == null) continue;
+            using var reader = new StreamReader(stream);
+            var json = reader.ReadToEnd();
+            var customBoardJson = JsonSerializer.Deserialize<CustomBoardJson>(json) ?? new();
+            
+            (var customBoard, var pins) = _customBoardService.GetCustomLocationPins(customBoardJson);
+            sourceList.AddRange(pins);
+            PinFilterList.Add(new CustomBoardPinFilterItem(customBoard));
+        }
+
+        return sourceList.AsEnumerable();
     }
 }
