@@ -97,11 +97,29 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Pins.
+        /// </summary>
+        internal static string AllPins {
+            get {
+                return ResourceManager.GetString("AllPins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to restore the backup file?.
         /// </summary>
         internal static string AreYouSureRestoreBackup {
             get {
                 return ResourceManager.GetString("AreYouSureRestoreBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrival location.
+        /// </summary>
+        internal static string ArrivalLocation {
+            get {
+                return ResourceManager.GetString("ArrivalLocation", resourceCulture);
             }
         }
         
@@ -273,6 +291,15 @@ namespace FlagsRally.Resources {
         internal static string FilterByCountry {
             get {
                 return ResourceManager.GetString("FilterByCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter pin.
+        /// </summary>
+        internal static string FilterPin {
+            get {
+                return ResourceManager.GetString("FilterPin", resourceCulture);
             }
         }
         

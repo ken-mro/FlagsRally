@@ -288,4 +288,13 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>Access to the selected folder denied.</value>
   </data>
+  <data name="FilterPin" xml:space="preserve">
+    <value>Filter pin</value>
+  </data>
+  <data name="AllPins" xml:space="preserve">
+    <value>All Pins</value>
+  </data>
+  <data name="ArrivalLocation" xml:space="preserve">
+    <value>Arrival location</value>
+  </data>
 </root>
