@@ -1,23 +1,29 @@
 ﻿using FlagsRally.Models.CustomBoard;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FlagsRally.Repository;
+using Maui.GoogleMaps;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FlagsRally.Services;
 
 public class CustomBoardService
 {
-    public CustomBoardService()
+    private readonly ICustomBoardRepository _customBoardRepository;
+    private readonly ICustomLocationDataRepository _customLocationDataRepository;
+    public CustomBoardService(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository)
     {
+        _customBoardRepository = customBoardRepository;
+        _customLocationDataRepository = customLocationDataRepository;
     }
 
-    private CustomBoard GetCustomBoard(CustomBoardJson json)
+
+    //temp code
+    static int i = 1;
+
+    public CustomBoard GetCustomBoard(CustomBoardJson json)
     {
         return new CustomBoard()
         {
+            Id = i++, //temp code
             Name = json.name,
             Url = json.url,
             Width = json.width,
@@ -25,29 +31,45 @@ public class CustomBoardService
         };
     }
 
+    private int locationId = 1; //temp
     public List<CustomLocation> GetCustomLocations(CustomBoardJson json)
     {
         var customBoard = GetCustomBoard(json);
         var locations = new List<CustomLocation>();
         foreach (var location in json.locations)
         {
-            locations.Add(new CustomLocation()
-            {
-                Board = customBoard,
-                Code = location.code,
-                Title = location.title,
-                Subtitle = location.subtitle,
-                Group = location.group,
-                ImageUrl = ReplaceUrlPlaceholders(customBoard.Url, location),
-                Location = new Location()
+            locations.Add(new CustomLocation
+            (
+                id: locationId++, //temp value
+                board: customBoard,
+                code: location.code,
+                title: location.title,
+                subtitle: location.subtitle,
+                group: location.group,
+                //ImageUrl = ReplaceUrlPlaceholders(customBoard.Url, location),
+                location: new Location()
                 {
                     Latitude = location.latitude,
                     Longitude = location.longtitude
                 },
-                ArrivalDate = DateTime.Now.Ticks % 2 == 0 ? DateTime.Now : null //temp value
-            });
+                arrivalDate: DateTime.Now.Ticks % 2 == 0 ? DateTime.Now : null //temp value
+            ));
         }
         return locations;
+    }
+
+    public (CustomBoard, List<CustomLocationPin>) GetCustomLocationPins(CustomBoardJson json)
+    {
+        var customBoard = GetCustomBoard(json);
+        var pins = new List<CustomLocationPin>();
+        int i = 0;
+        foreach (var location in json.locations)
+        {
+            var position = new Position(location.latitude, location.longtitude);
+            i++;
+            pins.Add(new CustomLocationPin(i, customBoard.Id, location.title ?? string.Empty, i % 3 == 0, position));
+        }
+        return (customBoard, pins);
     }
 
     private static string ReplaceUrlPlaceholders(string url, CustomBoardLocationJson location)
