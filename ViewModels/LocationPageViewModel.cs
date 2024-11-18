@@ -75,14 +75,6 @@ public partial class LocationPageViewModel : BaseViewModel
                 ArrivalMap?.Pins.Add(pin);
             }
 
-            //Temp code. Get data locally.
-            var info = System.Reflection.Assembly.GetExecutingAssembly().GetName();
-            using var stream1 = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.Sample.manhole_card_23_1.json");
-            using var stream2 = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.Sample.manhole_card_23_2.json");
-            using var stream3 = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{info.Name}.Resources.Sample.manhole_card_23_3.json");
-            var customLocationList = GetResources([stream1!, stream2!, stream3!]);
-            AddPinsToMap(customLocationList);
-
             Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
                                 ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var position = new Position(location.Latitude, location.Longitude);
@@ -175,6 +167,31 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
+    [RelayCommand]
+    public async Task AddCustomBoardJsonAsync()
+    {
+        if (IsBusy || _isCheckingLocation)
+            return;
+        try
+        {
+            IsBusy = true;
+            var pickedFile = await FilePicker.PickAsync();
+            if (pickedFile is null) return;
+            using var stram = await pickedFile.OpenReadAsync();  
+            var customLocationList = GetResources([stram]);
+            AddPinsToMap(customLocationList);
+
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
     public void CancelRequest()
     {
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
@@ -218,6 +235,7 @@ public partial class LocationPageViewModel : BaseViewModel
             }
         }
     }
+
     private async Task TryToOfferSubscription()
     {
         var customerInfo = await _revenueCat.GetCustomerInfo();
@@ -248,7 +266,9 @@ public partial class LocationPageViewModel : BaseViewModel
             
             (var customBoard, var pins) = _customBoardService.GetCustomLocationPins(customBoardJson);
             sourceList.AddRange(pins);
-            PinFilterList.Add(new CustomBoardPinFilterItem(customBoard));
+            var filterItem = new CustomBoardPinFilterItem(customBoard);
+            PinFilterList.Add(filterItem);
+            FilteredPinItem = filterItem;
         }
 
         return sourceList.AsEnumerable();
