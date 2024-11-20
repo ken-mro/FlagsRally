@@ -7,19 +7,16 @@ public record CustomBoardPinFilterItem
     const int ALL_PINS_ID = -1;
     const int ARRIVAL_PINS_ID = 0;
 
-    public CustomBoardPinFilterItem(int id, string name)
+    public CustomBoardPinFilterItem(string name)
     {
-        Id = id;
         Name = name;
     }
 
     public CustomBoardPinFilterItem(CustomBoard customBoard)
     {
-        Id = customBoard.Id;
         Name = customBoard.Name;
     }
 
-    public int Id { get; init; }
     public string Name { get; init; } = string.Empty;
     public bool IsAll => (All()).Equals(this);
 
@@ -30,6 +27,6 @@ public record CustomBoardPinFilterItem
 
     private static CustomBoardPinFilterItem All()
     {
-        return new CustomBoardPinFilterItem(ALL_PINS_ID, AppResources.AllPins);
+        return new CustomBoardPinFilterItem(AppResources.AllPins);
     }
 }

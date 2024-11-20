@@ -4,7 +4,7 @@ namespace FlagsRally.Models.CustomBoard;
 
 public class CustomLocation
 {
-    public int Id { get; init; }
+    public string CompositeKey => $"{Board.Name}-{Code}";
     public CustomBoard Board { get; init; } = new();
     public string Code { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
@@ -32,10 +32,9 @@ public class CustomLocation
         }
         return url;
     }
-    public CustomLocation(int id, CustomBoard board, string code, string title, string subtitle, string group, Location location, DateTime? arrivalDate)
+    public CustomLocation(CustomBoard board, string code, string title, string subtitle, string group, Location location, DateTime? arrivalDate)
     {
-        Id = id;
-        Board = board;
+        Board = board;   
         Code = code;
         Title = title;
         Subtitle = subtitle;

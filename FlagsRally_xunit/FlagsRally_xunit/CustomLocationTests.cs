@@ -10,8 +10,7 @@ public class CustomLocationTests
         // Arrange
         var customLocation = new CustomLocation
         (
-            id: 1,
-            board: new CustomBoard { Id = 1, Name= "Test Board", Url= "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width= 100, Height= 200 },
+            board: new CustomBoard { Name= "Test Board", Url= "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width= 100, Height= 200 },
             code : "01-204-B-01",
             title : "àÆêÏés",
             subtitle : "ñkäCìπ",
@@ -34,8 +33,7 @@ public class CustomLocationTests
         // Arrange
         var customLocation = new CustomLocation
         (
-            id: 1,
-            board: new CustomBoard { Id = 1, Name = "Test Board", Url = "https://www.sample/{title}/{subtitle}/{group}/{code}.jpg", Width = 100, Height = 200 },
+            board: new CustomBoard { Name = "Test Board", Url = "https://www.sample/{title}/{subtitle}/{group}/{code}.jpg", Width = 100, Height = 200 },
             code: "29-205-B-01",
             title: "kashihara-shi",
             subtitle: "nara-ken",
@@ -58,8 +56,7 @@ public class CustomLocationTests
         // Arrange
         var customLocation = new CustomLocation
         (
-            id: 1,
-            board: new CustomBoard { Id = 1, Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
+            board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
             title: "àÆêÏés",
             subtitle: "ñkäCìπ",
@@ -83,8 +80,7 @@ public class CustomLocationTests
         // Arrange
         var customLocation = new CustomLocation
         (
-            id: 1,
-            board: new CustomBoard { Id = 1, Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
+            board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
             title: "àÆêÏés",
             subtitle: "ñkäCìπ",
@@ -111,8 +107,7 @@ public class CustomLocationTests
         var arrivalDate = new DateTime(2023, 10, 1);
         var customLocation = new CustomLocation
         (
-            id: 1,
-            board: new CustomBoard { Id = 1, Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
+            board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
             title: "àÆêÏés",
             subtitle: "ñkäCìπ",
@@ -131,8 +126,7 @@ public class CustomLocationTests
         // Arrange
         var customLocation = new CustomLocation
         (
-            id: 1,
-            board: new CustomBoard { Id = 1, Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
+            board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
             title: "àÆêÏés",
             subtitle: "ñkäCìπ",

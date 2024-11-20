@@ -4,15 +4,18 @@ namespace FlagsRally.Models.CustomBoard;
 
 public class CustomLocationPin : Pin
 {
-    public CustomLocationPin(int id, int boardId, string title, bool isVisited, Position position)
+    public CustomLocationPin(string key, string boardName, string title, bool isVisited, Position position)
     {
         Label = title;
         Position = position;
-
-        var color = isVisited ? Color.FromArgb("#00552E") : Color.FromArgb("#1E50A2");
-        Icon = BitmapDescriptorFactory.DefaultMarker(color);
-
+        Icon = SetIcon(isVisited);
         Type = PinType.Place;
-        Tag = new MapPinTag(id, boardId);
+        Tag = new MapPinTag(key, boardName, isVisited);
+    }
+
+    public static BitmapDescriptor SetIcon(bool isVisited)
+    {
+        var color = isVisited ? Color.FromArgb("#00552E") : Color.FromArgb("#1E50A2");
+        return BitmapDescriptorFactory.DefaultMarker(color);
     }
 }

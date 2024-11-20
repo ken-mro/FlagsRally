@@ -44,6 +44,9 @@ namespace FlagsRally
             builder.Services.AddSingleton<ArrivalLocationService>();
             builder.Services.AddSingleton<CustomBoardService>();
 
+            builder.Services.AddSingleton<ICustomLocationDataRepository, CustomLocationDataRepository>();
+            builder.Services.AddSingleton<ICustomBoardRepository, CustomBoardRepository>();
+
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();
 

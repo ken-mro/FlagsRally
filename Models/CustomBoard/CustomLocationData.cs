@@ -5,10 +5,9 @@ namespace FlagsRally.Models.CustomBoard;
 [Table("CustomLocation")]
 public class CustomLocationData
 {
-    [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
-
-    public int BoardId { get; init; }
+    [PrimaryKey, MaxLength(168)]
+    public string CompositeKey { get; init; } = string.Empty;
+    public string BoardName { get; init; } = string.Empty;
     
     [MaxLength(168)]
     public string Code { get; init; } = string.Empty;
@@ -24,5 +23,5 @@ public class CustomLocationData
 
     public double Latitude { get; init; }
     public double Longitude { get; init; }
-    public DateTime? ArrivalDate { get; init; } = null;
+    public DateTime? ArrivalDate { get; set; } = null;
 }

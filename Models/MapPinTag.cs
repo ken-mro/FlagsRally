@@ -1,20 +1,23 @@
-﻿namespace FlagsRally.Models;
+﻿using FlagsRally.Resources;
+
+namespace FlagsRally.Models;
 
 public class MapPinTag
 {
-    const int ARRIVAL_LOCATION_PIN_ID = 0;
-    public int Id{ get; init; }
-    public int BoardId { get; init; } = ARRIVAL_LOCATION_PIN_ID;
-    public int PinId => BoardId;
+    public string CustomLocationKey { get; init; } = string.Empty;
+    public string BoardName { get; init; } = AppResources.ArrivalLocation;
+    public string PinKey => BoardName;
+    public bool IsVisited { get; set; } = true;
+    public bool IsCustomLocation => !string.IsNullOrEmpty(CustomLocationKey);
 
-    public MapPinTag(int id)
+    public MapPinTag()
     {
-        Id = id;
     }
 
-    public MapPinTag(int id, int boardId)
+    public MapPinTag(string key, string boardName, bool isVisited)
     {
-        Id = id;
-        BoardId = boardId;
+        CustomLocationKey = key;
+        BoardName = boardName;
+        IsVisited = isVisited;
     }
 }

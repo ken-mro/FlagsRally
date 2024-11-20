@@ -1,7 +1,6 @@
 ﻿using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
-using Maui.GoogleMaps;
-using System.Text.RegularExpressions;
+using System.Text.Json;
 
 namespace FlagsRally.Services;
 
@@ -15,15 +14,10 @@ public class CustomBoardService
         _customLocationDataRepository = customLocationDataRepository;
     }
 
-
-    //temp code
-    static int i = 1;
-
     public CustomBoard GetCustomBoard(CustomBoardJson json)
     {
         return new CustomBoard()
         {
-            Id = i++, //temp code
             Name = json.name,
             Url = json.url,
             Width = json.width,
@@ -31,7 +25,30 @@ public class CustomBoardService
         };
     }
 
-    private int locationId = 1; //temp
+    public List<CustomLocation> GetCustomLocations(CustomBoardJson json, CustomBoard customBoard)
+    {
+        var locations = new List<CustomLocation>();
+        foreach (var location in json.locations)
+        {
+            locations.Add(new CustomLocation
+            (
+                board: customBoard,
+                code: location.code,
+                title: location.title,
+                subtitle: location.subtitle,
+                group: location.group,
+                location: new Location()
+                {
+                    Latitude = location.latitude,
+                    Longitude = location.longtitude
+                },
+                arrivalDate: null
+            ));
+        }
+        return locations;
+    }
+
+    [Obsolete("Use GetCustomLocations(CustomBoardJson json, CustomBoard customBoard) instead")]
     public List<CustomLocation> GetCustomLocations(CustomBoardJson json)
     {
         var customBoard = GetCustomBoard(json);
@@ -40,13 +57,11 @@ public class CustomBoardService
         {
             locations.Add(new CustomLocation
             (
-                id: locationId++, //temp value
                 board: customBoard,
                 code: location.code,
                 title: location.title,
                 subtitle: location.subtitle,
                 group: location.group,
-                //ImageUrl = ReplaceUrlPlaceholders(customBoard.Url, location),
                 location: new Location()
                 {
                     Latitude = location.latitude,
@@ -58,31 +73,22 @@ public class CustomBoardService
         return locations;
     }
 
-    public (CustomBoard, List<CustomLocationPin>) GetCustomLocationPins(CustomBoardJson json)
+    public async Task<(CustomBoard, IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(Stream stream)
     {
-        var customBoard = GetCustomBoard(json);
-        var pins = new List<CustomLocationPin>();
-        int i = 0;
-        foreach (var location in json.locations)
-        {
-            var position = new Position(location.latitude, location.longtitude);
-            i++;
-            pins.Add(new CustomLocationPin(i, customBoard.Id, location.title ?? string.Empty, i % 3 == 0, position));
-        }
-        return (customBoard, pins);
+        if (stream is null) return new();
+
+        using var reader = new StreamReader(stream);
+        var json = reader.ReadToEnd();
+        var customBoardJson = JsonSerializer.Deserialize<CustomBoardJson>(json) ?? new();
+        return await SaveBoardAndLocations(customBoardJson);
     }
 
-    private static string ReplaceUrlPlaceholders(string url, CustomBoardLocationJson location)
+    private async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json)
     {
-        var matches = Regex.Matches(url, @"\{(\w+)\}");
-        foreach (Match match in matches)
-        {
-            var propertyName = match.Groups[1].Value;
-            var property = location.GetType().GetProperty(propertyName);
-            var value = property?.GetValue(location)?.ToString();
-
-            url = url.Replace($"{{{propertyName}}}", value);
-        }
-        return url;
+        var customBoard = GetCustomBoard(json);
+        await _customBoardRepository.InsertOrReplaceAsync(customBoard);
+        var customLocations = GetCustomLocations(json, customBoard);
+        var pins = await _customLocationDataRepository.InsertOrReplace(customLocations);
+        return (customBoard, pins);
     }
 }
