@@ -306,4 +306,7 @@
   <data name="TapCheckInNearTheSelectedPin" xml:space="preserve">
     <value>Go near the selected pin and tap 'Check In' below.</value>
   </data>
+  <data name="CustomBoard" xml:space="preserve">
+    <value>Custom Board</value>
+  </data>
 </root>

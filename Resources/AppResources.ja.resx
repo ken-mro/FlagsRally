@@ -306,4 +306,7 @@
   <data name="TapCheckInNearTheSelectedPin" xml:space="preserve">
     <value>選択したピンの付近で「チェックイン」を押してください。</value>
   </data>
+  <data name="CustomBoard" xml:space="preserve">
+    <value>カスタムボード</value>
+  </data>
 </root>

@@ -259,6 +259,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Board.
+        /// </summary>
+        internal static string CustomBoard {
+            get {
+                return ResourceManager.GetString("CustomBoard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         internal static string Date {

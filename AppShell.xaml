@@ -22,7 +22,7 @@
                 ContentTemplate="{DataTemplate views:FlagsBoardPage}"
                 Route="FlagsBoard" />
             <ShellContent
-                Title="Custom Board"
+                Title="{x:Static strings:AppResources.CustomBoard}"
                 ContentTemplate="{DataTemplate views:CustomBoardPage}"
                 Route="CustomBoard" />
         </Tab>
