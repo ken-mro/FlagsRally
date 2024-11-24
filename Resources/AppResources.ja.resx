@@ -297,4 +297,13 @@
   <data name="ArrivalLocation" xml:space="preserve">
     <value>到着地点</value>
   </data>
+  <data name="YouAreNotNearTheLocation" xml:space="preserve">
+    <value>この地点の近くではありません。</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>チェックイン</value>
+  </data>
+  <data name="TapCheckInNearTheSelectedPin" xml:space="preserve">
+    <value>選択したピンの付近で「チェックイン」を押してください。</value>
+  </data>
 </root>

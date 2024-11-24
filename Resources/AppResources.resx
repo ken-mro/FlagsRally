@@ -297,4 +297,13 @@
   <data name="ArrivalLocation" xml:space="preserve">
     <value>Arrival location</value>
   </data>
+  <data name="YouAreNotNearTheLocation" xml:space="preserve">
+    <value>You are not near the location.</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Check In</value>
+  </data>
+  <data name="TapCheckInNearTheSelectedPin" xml:space="preserve">
+    <value>Go near the selected pin and tap 'Check In' below.</value>
+  </data>
 </root>

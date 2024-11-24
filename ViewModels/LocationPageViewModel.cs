@@ -32,6 +32,12 @@ public partial class LocationPageViewModel : BaseViewModel
     private Map? _arrivalMap;
     private CustomBoardService _customBoardService;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectesCustomLocationPin))]
+    Pin? _selectedPin;
+
+    public bool SelectesCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
+
     public Map? ArrivalMap
     {
         get => _arrivalMap;
@@ -42,6 +48,7 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.MyLocationButtonEnabled = true;
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
+            _arrivalMap.UiSettings.MapToolbarEnabled = true;
             _ = Init();
         }
     }
@@ -97,6 +104,12 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
+            if (SelectesCustomLocationPin)
+            {
+                await CheckInCustomLocation();
+                return;
+            }
+
             if (ArrivalMap?.Pins.Count >= 5 && !_settingsPreferences.IsApiKeySet())
             {
                 await TryToOfferSubscription();
@@ -148,6 +161,31 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = false;
             _isCheckingLocation = false;
         }
+    }
+
+    private async Task CheckInCustomLocation()
+    {
+        var pinPosition = SelectedPin!.Position;
+        var pinLocation = new Location(pinPosition.Latitude, pinPosition.Longitude);
+        var currentLocation = await GetCurrentLocation();
+
+        var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+        var isNear = distance <= 0.05;
+        if (!isNear)
+        {
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+            return;
+        }
+
+        var tag = (MapPinTag)SelectedPin.Tag;
+        var isCustomLocation = !string.IsNullOrEmpty(tag.CustomLocationKey);
+
+        if (!isCustomLocation) return;
+
+        _customLocationDataRepository?.UpdateCustomLocation(tag.CustomLocationKey, DateTime.Now);
+
+        var color = Color.FromArgb("#00552E");
+        SelectedPin.Icon = BitmapDescriptorFactory.DefaultMarker(color);
     }
 
     private async Task<Location> GetCurrentLocation()

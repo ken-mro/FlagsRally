@@ -187,6 +187,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check In.
+        /// </summary>
+        internal static string CheckIn {
+            get {
+                return ResourceManager.GetString("CheckIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to API key is cleared successfully!.
         /// </summary>
         internal static string ClearAPIKey {
@@ -556,6 +565,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go near the selected pin and tap &apos;Check In&apos; below..
+        /// </summary>
+        internal static string TapCheckInNearTheSelectedPin {
+            get {
+                return ResourceManager.GetString("TapCheckInNearTheSelectedPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to get location..
         /// </summary>
         internal static string UnableToGetLocation {
@@ -597,6 +615,15 @@ namespace FlagsRally.Resources {
         internal static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not near the location..
+        /// </summary>
+        internal static string YouAreNotNearTheLocation {
+            get {
+                return ResourceManager.GetString("YouAreNotNearTheLocation", resourceCulture);
             }
         }
     }
