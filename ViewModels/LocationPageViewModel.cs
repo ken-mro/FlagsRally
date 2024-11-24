@@ -103,18 +103,10 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
-            GeolocationRequest request = new (GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-#if IOS
-            request.RequestFullAccuracy = true;
-#endif
-
-            _cancelTokenSource = new CancellationTokenSource();
-            var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-            if (location is null)
-                throw new Exception($"{AppResources.UnableToGetLocation}");
+            var currentLocation = await GetCurrentLocation();
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, location, languageCode);
+            var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
 
             if (arrivalLocationData is null)
                 throw new Exception($"{AppResources.UnableToGetLocationData}");
@@ -126,7 +118,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 var id = await _arrivalLocationRepository.Save(arrivalLocationData);
                 _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
 
-                ArrivalLocationPin arrivalLocationPin = new(arrivalLocationData.ArrivalDate, location);
+                ArrivalLocationPin arrivalLocationPin = new(arrivalLocationData.ArrivalDate, currentLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
             }
         }
@@ -156,6 +148,21 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = false;
             _isCheckingLocation = false;
         }
+    }
+
+    private async Task<Location> GetCurrentLocation()
+    {
+        GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+#if IOS
+            request.RequestFullAccuracy = true;
+#endif
+
+        _cancelTokenSource = new CancellationTokenSource();
+        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        if (location is null)
+            throw new Exception($"{AppResources.UnableToGetLocation}");
+
+        return location;
     }
 
     [RelayCommand]
