@@ -22,6 +22,7 @@
                 ContentTemplate="{DataTemplate views:FlagsBoardPage}"
                 Route="FlagsBoard" />
             <ShellContent
+                x:Name="customBoardPage"
                 Title="{x:Static strings:AppResources.CustomBoard}"
                 ContentTemplate="{DataTemplate views:CustomBoardPage}"
                 Route="CustomBoard" />

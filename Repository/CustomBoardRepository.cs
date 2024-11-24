@@ -16,6 +16,13 @@ public class CustomBoardRepository : ICustomBoardRepository
         await _conn.CreateTableAsync<CustomBoardData>();
     }
 
+    public async Task<bool> GetCustomBoardExists()
+    {
+        await Init();
+        var count = await _conn!.Table<CustomBoardData>().CountAsync();
+        return !(count == 0);
+    }
+
     public async Task<IEnumerable<CustomBoard>> GetAllCustomBoards()
     {
         await Init();

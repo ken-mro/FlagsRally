@@ -25,6 +25,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
+    private readonly AppShell _appShell;
     private CancellationTokenSource? _cancelTokenSource;
     private bool _isCheckingLocation;
     private IRevenueCatBilling _revenueCat;
@@ -53,8 +54,9 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell)
     {
+        _appShell = appShell;
         _arrivalLocationRepository = arrivalLocationRepository;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
@@ -215,6 +217,11 @@ public partial class LocationPageViewModel : BaseViewModel
             if (pickedFile is null) return;
             using var stram = await pickedFile.OpenReadAsync();
             (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stram);
+
+            if (!_appShell.CustomBoardPage.IsVisible)
+            {
+                _appShell.CustomBoardPage.IsVisible = true;
+            }
 
             var filterItem = new CustomBoardPinFilterItem(customBoard);
             if (!PinFilterList.Where(f => f.Name.Equals(filterItem.Name)).Any())
