@@ -617,16 +617,10 @@
 		<None Remove="Resources\Images\it\it_88.png" />
 		<None Remove="Resources\Images\it\it_88_emblem.png" />
 	  <None Remove="Resources\RegionCode\jp.json" />
-	  <None Remove="Resources\Sample\manhole_card_23_1.json" />
-	  <None Remove="Resources\Sample\manhole_card_23_2.json" />
-	  <None Remove="Resources\Sample\manhole_card_23_3.json" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\RegionCode\jp.json" />
-	  <EmbeddedResource Include="Resources\Sample\manhole_card_23_1.json" />
-	  <EmbeddedResource Include="Resources\Sample\manhole_card_23_2.json" />
-	  <EmbeddedResource Include="Resources\Sample\manhole_card_23_3.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -1229,9 +1223,5 @@
 	  <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime.Ktx.Android">
 	    <Version>2.8.6</Version>
 	  </PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Resources\Sample\" />
 	</ItemGroup>
 </Project>

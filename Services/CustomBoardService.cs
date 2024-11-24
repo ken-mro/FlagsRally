@@ -48,31 +48,6 @@ public class CustomBoardService
         return locations;
     }
 
-    [Obsolete("Use GetCustomLocations(CustomBoardJson json, CustomBoard customBoard) instead")]
-    public List<CustomLocation> GetCustomLocations(CustomBoardJson json)
-    {
-        var customBoard = GetCustomBoard(json);
-        var locations = new List<CustomLocation>();
-        foreach (var location in json.locations)
-        {
-            locations.Add(new CustomLocation
-            (
-                board: customBoard,
-                code: location.code,
-                title: location.title,
-                subtitle: location.subtitle,
-                group: location.group,
-                location: new Location()
-                {
-                    Latitude = location.latitude,
-                    Longitude = location.longtitude
-                },
-                arrivalDate: DateTime.Now.Ticks % 2 == 0 ? DateTime.Now : null //temp value
-            ));
-        }
-        return locations;
-    }
-
     public async Task<(CustomBoard, IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(Stream stream)
     {
         if (stream is null) return new();
