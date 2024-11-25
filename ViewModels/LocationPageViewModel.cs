@@ -186,8 +186,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         _customLocationDataRepository?.UpdateCustomLocation(tag.CustomLocationKey, DateTime.Now);
 
-        var color = Color.FromArgb("#00552E");
-        SelectedPin.Icon = BitmapDescriptorFactory.DefaultMarker(color);
+        SelectedPin.Icon = CustomLocationPin.SetIcon(true);
     }
 
     private async Task<Location> GetCurrentLocation()

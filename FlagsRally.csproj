@@ -199,6 +199,7 @@
 		<None Remove="Resources\Images\cz\cz_72_emblem.png" />
 		<None Remove="Resources\Images\cz\cz_80.png" />
 		<None Remove="Resources\Images\cz\cz_80_emblem.png" />
+		<None Remove="Resources\Images\default_pin.png" />
 		<None Remove="Resources\Images\de\de_bb.png" />
 		<None Remove="Resources\Images\de\de_bb_emblem.png" />
 		<None Remove="Resources\Images\de\de_be.png" />
@@ -480,6 +481,8 @@
 		<None Remove="Resources\Images\no\no_56.png" />
 		<None Remove="Resources\Images\no\no_56_emblem.png" />
 		<None Remove="Resources\Images\passport_earth2.png" />
+		<None Remove="Resources\Images\pin.png" />
+		<None Remove="Resources\Images\pin_arrived.png" />
 		<None Remove="Resources\Images\pt\pt_01.png" />
 		<None Remove="Resources\Images\pt\pt_01_emblem.png" />
 		<None Remove="Resources\Images\pt\pt_02.png" />

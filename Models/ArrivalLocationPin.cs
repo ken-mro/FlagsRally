@@ -22,5 +22,23 @@ public class ArrivalLocationPin : Pin
         Position = position;
         Type = PinType.SavedPin;
         Tag = new MapPinTag();
+        Icon = SetIcon();
+    }
+
+    private static BitmapDescriptor SetIcon()
+    {
+        var icon = "default_pin.png";
+
+        var imageSource = () => new ContentView()
+        {
+            Content = new Image
+            {
+                Source = icon,
+                WidthRequest = 40,
+                HeightRequest = 40
+            }
+        };
+
+        return BitmapDescriptorFactory.FromView(imageSource);
     }
 }

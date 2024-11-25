@@ -15,7 +15,18 @@ public class CustomLocationPin : Pin
 
     public static BitmapDescriptor SetIcon(bool isVisited)
     {
-        var color = isVisited ? Color.FromArgb("#00552E") : Color.FromArgb("#1E50A2");
-        return BitmapDescriptorFactory.DefaultMarker(color);
+        var icon = isVisited ? "pin_arrived.png" : "pin.png";
+
+        var imageSource = () => new ContentView()
+        {
+            Content = new Image
+            {
+                Source = icon,
+                WidthRequest = 40,
+                HeightRequest = 40
+            }
+        };
+
+        return = BitmapDescriptorFactory.FromView(imageSource);        
     }
 }
