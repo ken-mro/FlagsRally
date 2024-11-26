@@ -27,6 +27,6 @@ public class CustomLocationPin : Pin
             }
         };
 
-        return = BitmapDescriptorFactory.FromView(imageSource);        
+        return BitmapDescriptorFactory.FromView(imageSource);        
     }
 }
