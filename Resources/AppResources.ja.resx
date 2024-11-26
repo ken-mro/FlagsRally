@@ -309,4 +309,7 @@
   <data name="CustomBoard" xml:space="preserve">
     <value>カスタムボード</value>
   </data>
+  <data name="FailedToCheckIn" xml:space="preserve">
+    <value>チェックインンに失敗しました。</value>
+  </data>
 </root>

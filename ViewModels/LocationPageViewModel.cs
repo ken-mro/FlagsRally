@@ -184,7 +184,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
         if (!isCustomLocation) return;
 
-        _customLocationDataRepository?.UpdateCustomLocation(tag.CustomLocationKey, DateTime.Now);
+        var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(tag.CustomLocationKey, DateTime.Now);
+        
+        if (affectedRow != 1)
+        {
+            throw new Exception($"{AppResources.FailedToCheckIn}");
+        }
 
         SelectedPin.Icon = CustomLocationPin.SetIcon(true);
     }

@@ -304,6 +304,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to check in..
+        /// </summary>
+        internal static string FailedToCheckIn {
+            get {
+                return ResourceManager.GetString("FailedToCheckIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter by Country.
         /// </summary>
         internal static string FilterByCountry {
