@@ -26,7 +26,6 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
-                    Title="{x:Static strings:AppResources.FilterByCountry}"
                     HorizontalOptions="FillAndExpand"
                     ItemDisplayBinding="{Binding CountryName}"
                     ItemsSource="{Binding CountryList}"
