@@ -1227,4 +1227,16 @@
 	    <Version>2.8.6</Version>
 	  </PackageReference>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiFont Update="Resources\Fonts\craftmincho.otf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\KiwiMaru-Medium.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	</ItemGroup>
 </Project>
