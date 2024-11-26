@@ -50,6 +50,8 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
+            _arrivalMap.UiSettings.TiltGesturesEnabled = true;
+ 
             _ = Init();
         }
     }
