@@ -11,6 +11,7 @@ public class CustomLocationPin : Pin
         Icon = SetIcon(isVisited);
         Type = PinType.Place;
         Tag = new MapPinTag(key, boardName, isVisited);
+        Anchor = new Point(0.5, 1);
     }
 
     public static BitmapDescriptor SetIcon(bool isVisited)
@@ -22,8 +23,8 @@ public class CustomLocationPin : Pin
             Content = new Image
             {
                 Source = icon,
-                WidthRequest = 40,
-                HeightRequest = 40
+                WidthRequest = 50,
+                HeightRequest = 50
             }
         };
 

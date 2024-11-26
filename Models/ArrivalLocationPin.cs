@@ -22,6 +22,7 @@ public class ArrivalLocationPin : Pin
         Position = position;
         Type = PinType.SavedPin;
         Tag = new MapPinTag();
+        Anchor = new Point(0.5, 1);
         Icon = SetIcon();
     }
 
@@ -34,8 +35,8 @@ public class ArrivalLocationPin : Pin
             Content = new Image
             {
                 Source = icon,
-                WidthRequest = 40,
-                HeightRequest = 40
+                WidthRequest = 50,
+                HeightRequest = 50
             }
         };
 
