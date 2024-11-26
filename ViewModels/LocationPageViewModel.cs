@@ -114,7 +114,8 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
-            if (ArrivalMap?.Pins.Count >= 5 && !_settingsPreferences.IsApiKeySet())
+            var arrivalLocationCount = (await _arrivalLocationRepository.GetAllArrivalLocations()).Count;
+            if (arrivalLocationCount >= 5 && !_settingsPreferences.IsApiKeySet())
             {
                 await TryToOfferSubscription();
                 if (!_settingsPreferences.GetIsSubscribed()) return;
