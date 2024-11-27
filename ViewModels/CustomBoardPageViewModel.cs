@@ -12,14 +12,10 @@ namespace FlagsRally.ViewModels;
 public partial class CustomBoardPageViewModel : BaseViewModel
 {
 
-    readonly CustomBoardService _customBoardService;
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
     public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository)
     {
-        Title = "Custom Board";
-
-        _customBoardService = customBoardService;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
 

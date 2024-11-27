@@ -183,10 +183,6 @@ public partial class LocationPageViewModel : BaseViewModel
         }
 
         var tag = (MapPinTag)SelectedPin.Tag;
-        var isCustomLocation = !string.IsNullOrEmpty(tag.CustomLocationKey);
-
-        if (!isCustomLocation) return;
-
         var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(tag.CustomLocationKey, DateTime.Now);
         
         if (affectedRow != 1)
