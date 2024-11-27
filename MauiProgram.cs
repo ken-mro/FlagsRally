@@ -37,11 +37,17 @@ namespace FlagsRally
 
             builder.Services.AddRevenueCatBilling();
 
+            builder.Services.AddSingleton<AppShell>();
+
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationDataRepository>();
             builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton<CustomCountryHelper>();
             builder.Services.AddSingleton<ArrivalLocationService>();
+            builder.Services.AddSingleton<CustomBoardService>();
+
+            builder.Services.AddSingleton<ICustomLocationDataRepository, CustomLocationDataRepository>();
+            builder.Services.AddSingleton<ICustomBoardRepository, CustomBoardRepository>();
 
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();
@@ -57,6 +63,9 @@ namespace FlagsRally
 
             builder.Services.AddSingleton<FlagsBoardPage>();
             builder.Services.AddSingleton<FlagsBoardPageViewModel>();
+
+            builder.Services.AddTransient<CustomBoardPage>();
+            builder.Services.AddTransient<CustomBoardPageViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

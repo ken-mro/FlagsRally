@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="FlagsRally.Views.FlagsBoardPage"
+    x:Class="FlagsRally.Views.CustomBoardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:customboard="clr-namespace:FlagsRally.Models.CustomBoard"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-    x:DataType="viewmodels:FlagsBoardPageViewModel">
+    x:DataType="viewmodels:CustomBoardPageViewModel">
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
     </ContentPage.Resources>
@@ -16,34 +17,21 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="2">
+        <VerticalStackLayout Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
                     HorizontalOptions="FillAndExpand"
-                    ItemDisplayBinding="{Binding CountryName}"
-                    ItemsSource="{Binding CountryList}"
-                    SelectedItem="{Binding FilteredCountry}"
+                    ItemDisplayBinding="{Binding Name}"
+                    ItemsSource="{Binding CustomBoardList}"
+                    SelectedItem="{Binding FilteredCustomBoard}"
                     VerticalOptions="Center" />
                 <Image
                     Grid.Column="1"
-                    Margin="5,0"
-                    HeightRequest="25"
-                    HorizontalOptions="EndAndExpand"
-                    Source="earth.png"
-                    VerticalOptions="Center">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
-                    </Image.GestureRecognizers>
-                </Image>
-                <Image
-                    Grid.Column="2"
                     Margin="5,0"
                     HeightRequest="25"
                     HorizontalOptions="EndAndExpand"
@@ -78,30 +66,30 @@
             <CollectionView
                 x:Name="collectionView"
                 Background="AntiqueWhite"
-                ItemsSource="{Binding DisplayFullSubRegionList}"
+                ItemsSource="{Binding DisplayCustomLocationList}"
                 VerticalOptions="FillAndExpand">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Type models:SubRegion}">
+                    <DataTemplate x:DataType="{x:Type customboard:CustomLocation}">
                         <Border
                             BackgroundColor="Transparent"
                             Stroke="Black"
-                            StrokeShape="RoundRectangle 20,20,20,20"
-                            StrokeThickness="4">
+                            StrokeShape="Rectangle"
+                            StrokeThickness="2">
                             <StackLayout>
                                 <Label
                                     Padding="2"
                                     FontFamily="KiwiMaru-Medium"
-                                    FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                    HeightRequest="134.48"
+                                    FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
+                                    HeightRequest="{Binding Board.Height}"
                                     HorizontalOptions="CenterAndExpand"
                                     IsVisible="{Binding HasNotBeenVisited}"
                                     LineBreakMode="MiddleTruncation"
                                     LineHeight="1"
                                     MaxLines="2"
-                                    Text="{Binding Name}"
+                                    Text="{Binding Title}"
                                     TextColor="Gray"
                                     VerticalOptions="Center" />
                                 <VerticalStackLayout
@@ -111,20 +99,26 @@
                                                          Default=0}"
                                     VerticalOptions="Center">
                                     <Image
-                                        Margin="5"
-                                        HeightRequest="40"
+                                        HeightRequest="{Binding Board.Height}"
                                         HorizontalOptions="Center"
-                                        Source="{Binding FlagSource}"
-                                        VerticalOptions="Center" />
+                                        VerticalOptions="Center"
+                                        WidthRequest="{Binding Board.Width}">
+                                        <Image.Source>
+                                            <UriImageSource
+                                                CacheValidity="30"
+                                                CachingEnabled="True"
+                                                Uri="{Binding ImageUrl}" />
+                                        </Image.Source>
+                                    </Image>
                                     <StackLayout BackgroundColor="Black">
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
-                                            FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
+                                            FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
                                             HorizontalOptions="CenterAndExpand"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
                                             MaxLines="2"
-                                            Text="{Binding Name}"
+                                            Text="{Binding Title}"
                                             TextColor="AntiqueWhite"
                                             VerticalOptions="Center" />
                                     </StackLayout>
@@ -133,7 +127,7 @@
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FlagsBoardPageViewModel}}, Path=DateIsVisible}"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, Path=DateIsVisible}"
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDateString}"
@@ -144,29 +138,11 @@
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FlagsBoardPageViewModel}}, Path=DateIsNotVisible}"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, Path=DateIsNotVisible}"
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
                                         TextColor="Red"
-                                        VerticalOptions="Center" />
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="Black"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="120"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontAutoScalingEnabled="True"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="35"
-                                        HorizontalOptions="Center"
-                                        LineBreakMode="NoWrap"
-                                        Text="ARRIVAL"
-                                        TextColor="{StaticResource Black}"
                                         VerticalOptions="Center" />
                                 </VerticalStackLayout>
                             </StackLayout>
@@ -175,43 +151,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <map:SfMaps
-            Grid.Row="1"
-            BackgroundColor="SkyBlue"
-            IsVisible="{Binding IsMapVisible}">
-            <map:SfMaps.Layer>
-                <map:MapShapeLayer
-                    x:Name="shapeLayer"
-                    DataSource="{Binding DisplayFullSubRegionList}"
-                    EnableSelection="True"
-                    PrimaryValuePath="IsoCode"
-                    ShapeColorValuePath="HasBeenVisited"
-                    ShapeDataField="code"
-                    ShapeFill="Gray"
-                    ShapeStroke="White"
-                    ShapeStrokeThickness="1"
-                    ShapesSource="{Binding ShapesSource}"
-                    ShowShapeTooltip="True">
-                    <map:MapShapeLayer.ColorMappings>
-                        <map:EqualColorMapping Color="LimeGreen" Value="True" />
-                    </map:MapShapeLayer.ColorMappings>
-                    <map:MapShapeLayer.ShapeTooltipTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout>
-                                <Image
-                                    HeightRequest="20"
-                                    Source="{Binding Path=DataItem.MapToolTipImageSource, Source={x:Null}}"
-                                    WidthRequest="20" />
-                                <Label Text="{Binding Path=DataItem.Name, Source={x:Null}}" TextColor="White" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </map:MapShapeLayer.ShapeTooltipTemplate>
-                    <map:MapShapeLayer.ZoomPanBehavior>
-                        <map:MapZoomPanBehavior ZoomLevel="1" />
-                    </map:MapShapeLayer.ZoomPanBehavior>
-                </map:MapShapeLayer>
-            </map:SfMaps.Layer>
-        </map:SfMaps>
+
         <ActivityIndicator
             Grid.Row="0"
             Grid.ColumnSpan="2"

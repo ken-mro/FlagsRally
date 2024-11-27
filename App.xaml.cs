@@ -6,12 +6,12 @@ namespace FlagsRally;
 public partial class App : Application
 {
     private readonly IRevenueCatBilling _revenueCat;
-    public App(IRevenueCatBilling revenueCatBilling)
+    public App(IRevenueCatBilling revenueCatBilling, AppShell appShell)
     {
         Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Constants.SYNCFUSIOHN_LICENSE_KEY);
         InitializeComponent();
         _revenueCat = revenueCatBilling;
-        MainPage = new AppShell();
+        MainPage = appShell;
     }
     protected override Window CreateWindow(IActivationState? activationState)
     {

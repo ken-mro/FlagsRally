@@ -1,0 +1,120 @@
+{
+  "name": "マンホールカード第23弾-1",
+  "url": "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg",
+  "width": 192,
+  "height": 270,
+  "locations": [
+    {
+      "code": "01-204-B-01",
+      "title": "旭川市",
+      "subtitle": "北海道",
+      "group": "北海道",
+      "latitude": 43.762278,
+      "longtitude": 142.359194
+    },
+    {
+      "code": "01-220-A-01",
+      "title": "士別市",
+      "subtitle": "北海道",
+      "group": "北海道",
+      "latitude": 44.17625,
+      "longtitude": 142.392528
+    },
+    {
+      "code": "01-555-A-01",
+      "title": "遠軽町",
+      "subtitle": "北海道",
+      "group": "北海道",
+      "latitude": 44.059194,
+      "longtitude": 143.521167
+    },
+    {
+      "code": "02-208-A-01",
+      "title": "むつ市",
+      "subtitle": "青森県",
+      "group": "東北",
+      "latitude": 41.256611,
+      "longtitude": 141.139
+    },
+    {
+      "code": "03-201-B-01",
+      "title": "盛岡市",
+      "subtitle": "岩手県",
+      "group": "東北",
+      "latitude": 39.700972,
+      "longtitude": 141.147528
+    },
+    {
+      "code": "04-207-B-01",
+      "title": "名取市",
+      "subtitle": "宮城県",
+      "group": "東北",
+      "latitude": 38.165472,
+      "longtitude": 140.896222
+    },
+    {
+      "code": "07-207-A-01",
+      "title": "須賀川市",
+      "subtitle": "福島県",
+      "group": "東北",
+      "latitude": 37.285472,
+      "longtitude": 140.375639
+    },
+    {
+      "code": "08-203-E-01",
+      "title": "土浦市",
+      "subtitle": "茨城県",
+      "group": "関東",
+      "latitude": 36.076083,
+      "longtitude": 140.202083
+    },
+    {
+      "code": "08-204-A-01",
+      "title": "古河市",
+      "subtitle": "茨城県",
+      "group": "関東",
+      "latitude": 36.197361,
+      "longtitude": 139.704639
+    },
+    {
+      "code": "08-208-B-01",
+      "title": "龍ケ崎市",
+      "subtitle": "茨城県",
+      "group": "関東",
+      "latitude": 35.929889,
+      "longtitude": 140.138611
+    },
+    {
+      "code": "09-201-C-01",
+      "title": "宇都宮市",
+      "subtitle": "栃木県",
+      "group": "関東",
+      "latitude": 36.5475,
+      "longtitude": 139.983333
+    },
+    {
+      "code": "09-301-A-01",
+      "title": "上三川町",
+      "subtitle": "栃木県",
+      "group": "関東",
+      "latitude": 36.436611,
+      "longtitude": 139.909889
+    },
+    {
+      "code": "11-210-A-01",
+      "title": "加須市",
+      "subtitle": "埼玉県",
+      "group": "関東",
+      "latitude": 36.125667,
+      "longtitude": 139.597722
+    },
+    {
+      "code": "11-218-B-01",
+      "title": "深谷市",
+      "subtitle": "埼玉県",
+      "group": "関東",
+      "latitude": 36.192306,
+      "longtitude": 139.281083
+    }
+  ]
+}

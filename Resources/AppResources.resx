@@ -288,4 +288,28 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>Access to the selected folder denied.</value>
   </data>
+  <data name="FilterPin" xml:space="preserve">
+    <value>Filter pin</value>
+  </data>
+  <data name="AllPins" xml:space="preserve">
+    <value>All Pins</value>
+  </data>
+  <data name="ArrivalLocation" xml:space="preserve">
+    <value>Arrival location</value>
+  </data>
+  <data name="YouAreNotNearTheLocation" xml:space="preserve">
+    <value>You are not near the location.</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Check In</value>
+  </data>
+  <data name="TapCheckInNearTheSelectedPin" xml:space="preserve">
+    <value>Go near the selected pin and tap 'Check In' below.</value>
+  </data>
+  <data name="CustomBoard" xml:space="preserve">
+    <value>Custom Board</value>
+  </data>
+  <data name="FailedToCheckIn" xml:space="preserve">
+    <value>Failed to check in.</value>
+  </data>
 </root>

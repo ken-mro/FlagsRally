@@ -97,11 +97,29 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Pins.
+        /// </summary>
+        internal static string AllPins {
+            get {
+                return ResourceManager.GetString("AllPins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to restore the backup file?.
         /// </summary>
         internal static string AreYouSureRestoreBackup {
             get {
                 return ResourceManager.GetString("AreYouSureRestoreBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrival location.
+        /// </summary>
+        internal static string ArrivalLocation {
+            get {
+                return ResourceManager.GetString("ArrivalLocation", resourceCulture);
             }
         }
         
@@ -169,6 +187,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check In.
+        /// </summary>
+        internal static string CheckIn {
+            get {
+                return ResourceManager.GetString("CheckIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to API key is cleared successfully!.
         /// </summary>
         internal static string ClearAPIKey {
@@ -232,6 +259,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Board.
+        /// </summary>
+        internal static string CustomBoard {
+            get {
+                return ResourceManager.GetString("CustomBoard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         internal static string Date {
@@ -268,11 +304,29 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to check in..
+        /// </summary>
+        internal static string FailedToCheckIn {
+            get {
+                return ResourceManager.GetString("FailedToCheckIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter by Country.
         /// </summary>
         internal static string FilterByCountry {
             get {
                 return ResourceManager.GetString("FilterByCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter pin.
+        /// </summary>
+        internal static string FilterPin {
+            get {
+                return ResourceManager.GetString("FilterPin", resourceCulture);
             }
         }
         
@@ -529,6 +583,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go near the selected pin and tap &apos;Check In&apos; below..
+        /// </summary>
+        internal static string TapCheckInNearTheSelectedPin {
+            get {
+                return ResourceManager.GetString("TapCheckInNearTheSelectedPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to get location..
         /// </summary>
         internal static string UnableToGetLocation {
@@ -570,6 +633,15 @@ namespace FlagsRally.Resources {
         internal static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not near the location..
+        /// </summary>
+        internal static string YouAreNotNearTheLocation {
+            get {
+                return ResourceManager.GetString("YouAreNotNearTheLocation", resourceCulture);
             }
         }
     }

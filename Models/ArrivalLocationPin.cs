@@ -5,20 +5,41 @@ namespace FlagsRally.Models;
 
 public class ArrivalLocationPin : Pin
 {
-    public int Id { get; set; }
-    public DateTime ArrivalDate { get; set; }
-
-    public ArrivalLocationPin(int id, DateTime dateTime, Location location)
-        : this(id, dateTime, new Position(location.Latitude, location.Longitude))
+    public ArrivalLocationPin(DateTime dateTime, Location location)
     {
+        var position = new Position(location.Latitude, location.Longitude);
+        Initialize(dateTime, position);
     }
 
-    public ArrivalLocationPin(int id, DateTime dateTime, Position position)
+    public ArrivalLocationPin(DateTime dateTime, Position position)
     {
-        Id = id;
-        ArrivalDate = dateTime;
-        Label = ArrivalDate.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Initialize(dateTime, position);
+    }
+
+    private void Initialize(DateTime dateTime, Position position)
+    {
+        Label = dateTime.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
         Position = position;
-        Type = PinType.Place;
+        Type = PinType.SavedPin;
+        Tag = new MapPinTag();
+        Anchor = new Point(0.5, 1);
+        Icon = SetIcon();
+    }
+
+    private static BitmapDescriptor SetIcon()
+    {
+        var icon = "default_pin.png";
+
+        var imageSource = () => new ContentView()
+        {
+            Content = new Image
+            {
+                Source = icon,
+                WidthRequest = 50,
+                HeightRequest = 50
+            }
+        };
+
+        return BitmapDescriptorFactory.FromView(imageSource);
     }
 }

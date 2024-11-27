@@ -1,4 +1,6 @@
+using FlagsRally.Models;
 using FlagsRally.ViewModels;
+using Maui.GoogleMaps;
 
 namespace FlagsRally.Views;
 

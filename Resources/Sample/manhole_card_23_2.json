@@ -1,0 +1,120 @@
+{
+  "name": "マンホールカード第23弾-2",
+  "url": "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg",
+  "width": 192,
+  "height": 270,
+  "locations": [
+    {
+      "code": "11-224-B-01",
+      "title": "戸田市",
+      "subtitle": "埼玉県",
+      "group": "関東",
+      "latitude": 35.817861,
+      "longtitude": 139.669056
+    },
+    {
+      "code": "12-203-D-01",
+      "title": "市川市",
+      "subtitle": "北海道",
+      "group": "北海道",
+      "latitude": 35.729167,
+      "longtitude": 139.906389
+    },
+    {
+      "code": "14-218-A-01",
+      "title": "綾瀬市",
+      "subtitle": "神奈川県",
+      "group": "関東",
+      "latitude": 35.43675,
+      "longtitude": 139.427694
+    },
+    {
+      "code": "15-224-C-01",
+      "title": "佐渡市",
+      "subtitle": "新潟県",
+      "group": "中部",
+      "latitude": 37.816861,
+      "longtitude": 138.281444
+    },
+    {
+      "code": "16-206-A-01",
+      "title": "滑川市",
+      "subtitle": "富山県",
+      "group": "中部",
+      "latitude": 36.768694,
+      "longtitude": 137.34475
+    },
+    {
+      "code": "17-201-A-01",
+      "title": "金沢市",
+      "subtitle": "石川県",
+      "group": "中部",
+      "latitude": 36.566333,
+      "longtitude": 136.65375
+    },
+    {
+      "code": "20-000-D-01",
+      "title": "流域下水道",
+      "subtitle": "長野県",
+      "group": "中部",
+      "latitude": 36.314778,
+      "longtitude": 137.921222
+    },
+    {
+      "code": "20-361-C-01",
+      "title": "下諏訪町",
+      "subtitle": "長野県",
+      "group": "中部",
+      "latitude": 36.081139,
+      "longtitude": 138.081139
+    },
+    {
+      "code": "23-211-C-01",
+      "title": "豊田市",
+      "subtitle": "愛知県",
+      "group": "中部",
+      "latitude": 35.087278,
+      "longtitude": 137.157083
+    },
+    {
+      "code": "23-216-A-01",
+      "title": "常滑市",
+      "subtitle": "愛知県",
+      "group": "中部",
+      "latitude": 34.886472,
+      "longtitude": 136.840028
+    },
+    {
+      "code": "24-204-C-01",
+      "title": "松阪市",
+      "subtitle": "三重県",
+      "group": "中部",
+      "latitude": 34.578167,
+      "longtitude": 136.522111
+    },
+    {
+      "code": "25-206-C-01",
+      "title": "草津市",
+      "subtitle": "滋賀県",
+      "group": "近畿",
+      "latitude": 35.073722,
+      "longtitude": 135.933528
+    },
+    {
+      "code": "25-209-A-01",
+      "title": "甲賀市",
+      "subtitle": "滋賀県",
+      "group": "近畿",
+      "latitude": 34.899972,
+      "longtitude": 136.229611
+    },
+    {
+      "code": "26-212-B-01",
+      "title": "京丹後市",
+      "subtitle": "京都府",
+      "group": "近畿",
+      "latitude": 35.663583,
+      "longtitude": 134.96625
+    }
+  ]
+}

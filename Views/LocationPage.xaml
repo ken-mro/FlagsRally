@@ -14,19 +14,69 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label
             Grid.Row="0"
             HorizontalOptions="Center"
             Text="{x:Static strings:AppResources.ConfirmLocationTapButton}"
-            VerticalOptions="Center" />
-        <maps:Map x:Name="map" Grid.Row="1" />
+            VerticalOptions="Center">
+            <Label.Triggers>
+                <DataTrigger
+                    Binding="{Binding SelectesCustomLocationPin}"
+                    TargetType="Label"
+                    Value="True">
+                    <Setter Property="Text" Value="{x:Static strings:AppResources.TapCheckInNearTheSelectedPin}" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+        <maps:Map
+            x:Name="map"
+            Grid.Row="1"
+            SelectedPin="{Binding SelectedPin}" />
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Picker
+                Title="{x:Static strings:AppResources.FilterPin}"
+                Grid.Column="0"
+                HorizontalOptions="FillAndExpand"
+                ItemDisplayBinding="{Binding Name}"
+                ItemsSource="{Binding PinFilterList}"
+                SelectedItem="{Binding FilteredPinItem}"
+                VerticalOptions="Center" />
+            <Label
+                Grid.Column="1"
+                FontSize="35"
+                HorizontalOptions="End"
+                Text="+"
+                TextColor="Gray"
+                VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AddCustomBoardJsonCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
         <Button
-            Grid.Row="2"
+            Grid.Row="3"
+            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                              Dark={StaticResource PrimaryDark}}"
             Command="{Binding GetCurrentLocationCommand}"
-            Text="{x:Static strings:AppResources.GetLocation}" />
+            Text="{x:Static strings:AppResources.GetLocation}">
+            <Button.Triggers>
+                <DataTrigger
+                    Binding="{Binding SelectesCustomLocationPin}"
+                    TargetType="Button"
+                    Value="True">
+                    <Setter Property="Text" Value="{x:Static strings:AppResources.CheckIn}" />
+                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#1E50A2', Dark='DodgerBlue'}" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
         <ActivityIndicator
-            Grid.Row="2"
+            Grid.Row="3"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}" />
     </Grid>

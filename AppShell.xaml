@@ -21,6 +21,11 @@
                 Title="{x:Static strings:AppResources.Boards}"
                 ContentTemplate="{DataTemplate views:FlagsBoardPage}"
                 Route="FlagsBoard" />
+            <ShellContent
+                x:Name="customBoardPage"
+                Title="{x:Static strings:AppResources.CustomBoard}"
+                ContentTemplate="{DataTemplate views:CustomBoardPage}"
+                Route="CustomBoard" />
         </Tab>
         <Tab Title="{x:Static strings:AppResources.Location}" Icon="location.png">
             <ShellContent

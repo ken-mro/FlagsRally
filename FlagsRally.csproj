@@ -199,6 +199,7 @@
 		<None Remove="Resources\Images\cz\cz_72_emblem.png" />
 		<None Remove="Resources\Images\cz\cz_80.png" />
 		<None Remove="Resources\Images\cz\cz_80_emblem.png" />
+		<None Remove="Resources\Images\default_pin.png" />
 		<None Remove="Resources\Images\de\de_bb.png" />
 		<None Remove="Resources\Images\de\de_bb_emblem.png" />
 		<None Remove="Resources\Images\de\de_be.png" />
@@ -480,6 +481,8 @@
 		<None Remove="Resources\Images\no\no_56.png" />
 		<None Remove="Resources\Images\no\no_56_emblem.png" />
 		<None Remove="Resources\Images\passport_earth2.png" />
+		<None Remove="Resources\Images\pin.png" />
+		<None Remove="Resources\Images\pin_arrived.png" />
 		<None Remove="Resources\Images\pt\pt_01.png" />
 		<None Remove="Resources\Images\pt\pt_01_emblem.png" />
 		<None Remove="Resources\Images\pt\pt_02.png" />
@@ -658,6 +661,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Views\CustomBoardPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\FlagsBoardPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -1220,5 +1226,17 @@
 	  <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime.Ktx.Android">
 	    <Version>2.8.6</Version>
 	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiFont Update="Resources\Fonts\craftmincho.otf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\KiwiMaru-Medium.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
 	</ItemGroup>
 </Project>
