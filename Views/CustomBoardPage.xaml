@@ -99,10 +99,9 @@
                                                          Default=0}"
                                     VerticalOptions="Center">
                                     <Image
-                                        HeightRequest="{Binding Board.Height}"
+                                        Aspect="AspectFit"
                                         HorizontalOptions="Center"
-                                        VerticalOptions="Center"
-                                        WidthRequest="{Binding Board.Width}">
+                                        VerticalOptions="Center">
                                         <Image.Source>
                                             <UriImageSource
                                                 CacheValidity="30"
