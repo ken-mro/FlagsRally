@@ -16,5 +16,5 @@ public class CustomBoardLocationJson
     public string subtitle { get; set; } = string.Empty;
     public string group { get; set; } = string.Empty;
     public double latitude { get; set; }
-    public double longtitude { get; set; }
+    public double Longitude { get; set; }
 }
