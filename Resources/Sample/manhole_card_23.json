@@ -10,7 +10,7 @@
       "subtitle": "北海道",
       "group": "北海道",
       "latitude": 43.762278,
-      "longtitude": 142.359194
+      "Longitude": 142.359194
     },
     {
       "code": "01-220-A-01",
@@ -18,7 +18,7 @@
       "subtitle": "北海道",
       "group": "北海道",
       "latitude": 44.17625,
-      "longtitude": 142.392528
+      "Longitude": 142.392528
     },
     {
       "code": "01-555-A-01",
@@ -26,7 +26,7 @@
       "subtitle": "北海道",
       "group": "北海道",
       "latitude": 44.059194,
-      "longtitude": 143.521167
+      "Longitude": 143.521167
     },
     {
       "code": "02-208-A-01",
@@ -34,7 +34,7 @@
       "subtitle": "青森県",
       "group": "東北",
       "latitude": 41.256611,
-      "longtitude": 141.139
+      "Longitude": 141.139
     },
     {
       "code": "03-201-B-01",
@@ -42,7 +42,7 @@
       "subtitle": "岩手県",
       "group": "東北",
       "latitude": 39.700972,
-      "longtitude": 141.147528
+      "Longitude": 141.147528
     },
     {
       "code": "04-207-B-01",
@@ -50,15 +50,15 @@
       "subtitle": "宮城県",
       "group": "東北",
       "latitude": 38.165472,
-      "longtitude": 140.896222
+      "Longitude": 140.896222
     },
     {
       "code": "07-207-A-01",
       "title": "須賀川市",
       "subtitle": "福島県",
       "group": "東北",
-      "latitude": 37.285472,
-      "longtitude": 140.375639
+      "latitude": 37.300222,
+      "Longitude": 140.373111
     },
     {
       "code": "08-203-E-01",
@@ -66,7 +66,7 @@
       "subtitle": "茨城県",
       "group": "関東",
       "latitude": 36.076083,
-      "longtitude": 140.202083
+      "Longitude": 140.202083
     },
     {
       "code": "08-204-A-01",
@@ -74,7 +74,7 @@
       "subtitle": "茨城県",
       "group": "関東",
       "latitude": 36.197361,
-      "longtitude": 139.704639
+      "Longitude": 139.704639
     },
     {
       "code": "08-208-B-01",
@@ -82,7 +82,7 @@
       "subtitle": "茨城県",
       "group": "関東",
       "latitude": 35.929889,
-      "longtitude": 140.138611
+      "Longitude": 140.138611
     },
     {
       "code": "09-201-C-01",
@@ -90,7 +90,7 @@
       "subtitle": "栃木県",
       "group": "関東",
       "latitude": 36.5475,
-      "longtitude": 139.983333
+      "Longitude": 139.983333
     },
     {
       "code": "09-301-A-01",
@@ -98,7 +98,7 @@
       "subtitle": "栃木県",
       "group": "関東",
       "latitude": 36.436611,
-      "longtitude": 139.909889
+      "Longitude": 139.909889
     },
     {
       "code": "11-210-A-01",
@@ -106,7 +106,7 @@
       "subtitle": "埼玉県",
       "group": "関東",
       "latitude": 36.125667,
-      "longtitude": 139.597722
+      "Longitude": 139.597722
     },
     {
       "code": "11-218-B-01",
@@ -114,7 +114,7 @@
       "subtitle": "埼玉県",
       "group": "関東",
       "latitude": 36.192306,
-      "longtitude": 139.281083
+      "Longitude": 139.281083
     },
     {
       "code": "11-224-B-01",
@@ -122,15 +122,15 @@
       "subtitle": "埼玉県",
       "group": "関東",
       "latitude": 35.817861,
-      "longtitude": 139.669056
+      "Longitude": 139.669056
     },
     {
       "code": "12-203-D-01",
       "title": "市川市",
-      "subtitle": "北海道",
-      "group": "北海道",
+      "subtitle": "千葉県",
+      "group": "関東",
       "latitude": 35.729167,
-      "longtitude": 139.906389
+      "Longitude": 139.906389
     },
     {
       "code": "14-218-A-01",
@@ -138,7 +138,7 @@
       "subtitle": "神奈川県",
       "group": "関東",
       "latitude": 35.43675,
-      "longtitude": 139.427694
+      "Longitude": 139.427694
     },
     {
       "code": "15-224-C-01",
@@ -146,7 +146,7 @@
       "subtitle": "新潟県",
       "group": "中部",
       "latitude": 37.816861,
-      "longtitude": 138.281444
+      "Longitude": 138.281444
     },
     {
       "code": "16-206-A-01",
@@ -154,7 +154,7 @@
       "subtitle": "富山県",
       "group": "中部",
       "latitude": 36.768694,
-      "longtitude": 137.34475
+      "Longitude": 137.34475
     },
     {
       "code": "17-201-A-01",
@@ -162,7 +162,7 @@
       "subtitle": "石川県",
       "group": "中部",
       "latitude": 36.566333,
-      "longtitude": 136.65375
+      "Longitude": 136.65375
     },
     {
       "code": "20-000-D-01",
@@ -170,7 +170,7 @@
       "subtitle": "長野県",
       "group": "中部",
       "latitude": 36.314778,
-      "longtitude": 137.921222
+      "Longitude": 137.921222
     },
     {
       "code": "20-361-C-01",
@@ -178,7 +178,7 @@
       "subtitle": "長野県",
       "group": "中部",
       "latitude": 36.081139,
-      "longtitude": 138.081139
+      "Longitude": 138.081139
     },
     {
       "code": "23-211-C-01",
@@ -186,7 +186,7 @@
       "subtitle": "愛知県",
       "group": "中部",
       "latitude": 35.087278,
-      "longtitude": 137.157083
+      "Longitude": 137.157083
     },
     {
       "code": "23-216-A-01",
@@ -194,7 +194,7 @@
       "subtitle": "愛知県",
       "group": "中部",
       "latitude": 34.886472,
-      "longtitude": 136.840028
+      "Longitude": 136.840028
     },
     {
       "code": "24-204-C-01",
@@ -202,7 +202,7 @@
       "subtitle": "三重県",
       "group": "中部",
       "latitude": 34.578167,
-      "longtitude": 136.522111
+      "Longitude": 136.522111
     },
     {
       "code": "25-206-C-01",
@@ -210,7 +210,7 @@
       "subtitle": "滋賀県",
       "group": "近畿",
       "latitude": 35.073722,
-      "longtitude": 135.933528
+      "Longitude": 135.933528
     },
     {
       "code": "25-209-A-01",
@@ -218,7 +218,7 @@
       "subtitle": "滋賀県",
       "group": "近畿",
       "latitude": 34.899972,
-      "longtitude": 136.229611
+      "Longitude": 136.229611
     },
     {
       "code": "26-212-B-01",
@@ -226,7 +226,7 @@
       "subtitle": "京都府",
       "group": "近畿",
       "latitude": 35.663583,
-      "longtitude": 134.96625
+      "Longitude": 134.96625
     },
     {
       "code": "26-322-A-01",
@@ -234,7 +234,7 @@
       "subtitle": "京都府",
       "group": "近畿",
       "latitude": 34.891833,
-      "longtitude": 135.747139
+      "Longitude": 135.747139
     },
     {
       "code": "27-221-C-01",
@@ -242,7 +242,7 @@
       "subtitle": "大阪府",
       "group": "近畿",
       "latitude": 34.588889,
-      "longtitude": 135.623389
+      "Longitude": 135.623389
     },
     {
       "code": "28-464-A-01",
@@ -250,7 +250,7 @@
       "subtitle": "兵庫県",
       "group": "近畿",
       "latitude": 34.840056,
-      "longtitude": 134.589111
+      "Longitude": 134.589111
     },
     {
       "code": "29-205-B-01",
@@ -258,7 +258,7 @@
       "subtitle": "奈良県",
       "group": "近畿",
       "latitude": 34.4835,
-      "longtitude": 135.793528
+      "Longitude": 135.793528
     },
     {
       "code": "33-207-A-01",
@@ -266,7 +266,7 @@
       "subtitle": "岡山県",
       "group": "中国",
       "latitude": 34.672167,
-      "longtitude": 133.544778
+      "Longitude": 133.544778
     },
     {
       "code": "34-100-F-01",
@@ -274,7 +274,7 @@
       "subtitle": "広島県",
       "group": "中国",
       "latitude": 34.399,
-      "longtitude": 132.460528
+      "Longitude": 132.460528
     },
     {
       "code": "35-208-B-01",
@@ -282,7 +282,7 @@
       "subtitle": "山口県",
       "group": "中国",
       "latitude": 34.172583,
-      "longtitude": 132.224667
+      "Longitude": 132.224667
     },
     {
       "code": "35-212-A-01",
@@ -290,7 +290,7 @@
       "subtitle": "山口県",
       "group": "中国",
       "latitude": 33.969222,
-      "longtitude": 132.109361
+      "Longitude": 132.109361
     },
     {
       "code": "36-202-B-01",
@@ -298,7 +298,7 @@
       "subtitle": "徳島県",
       "group": "四国",
       "latitude": 34.179528,
-      "longtitude": 134.608917
+      "Longitude": 134.608917
     },
     {
       "code": "36-388-A-01",
@@ -306,7 +306,7 @@
       "subtitle": "徳島県",
       "group": "四国",
       "latitude": 33.568917,
-      "longtitude": 134.307194
+      "Longitude": 134.307194
     },
     {
       "code": "38-213-B-01",
@@ -314,7 +314,7 @@
       "subtitle": "愛媛県",
       "group": "四国",
       "latitude": 34.014556,
-      "longtitude": 133.574333
+      "Longitude": 133.574333
     },
     {
       "code": "38-442-A-01",
@@ -322,7 +322,7 @@
       "subtitle": "愛媛県",
       "group": "四国",
       "latitude": 33.488528,
-      "longtitude": 132.354
+      "Longitude": 132.354
     },
     {
       "code": "46-208-A-01",
@@ -330,7 +330,7 @@
       "subtitle": "鹿児島県",
       "group": "九州",
       "latitude": 32.097972,
-      "longtitude": 130.344194
+      "Longitude": 130.344194
     }
   ]
 }
