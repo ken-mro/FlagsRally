@@ -69,7 +69,10 @@ public partial class LocationPageViewModel : BaseViewModel
         var zoomLevel = distance < 0.05 ? 18d : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
 
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
-        await ArrivalMap?.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel))!;
+        if (ArrivalMap is not null)
+        {
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel))!;
+        }
     }
 
     private async Task<Location> GetUserLocationAsync()
@@ -126,7 +129,10 @@ public partial class LocationPageViewModel : BaseViewModel
             Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
                                 ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var position = new Position(location.Latitude, location.Longitude);
-            await ArrivalMap?.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
+            if (ArrivalMap is not null)
+            {
+                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
+            }
         }
         catch (Exception ex)
         {
@@ -135,7 +141,10 @@ public partial class LocationPageViewModel : BaseViewModel
             Console.WriteLine(ex.Message);
 #endif
             var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            await ArrivalMap?.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
+            if (ArrivalMap is not null)
+            {
+                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
+            }
         }
         finally
         {
