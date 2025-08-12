@@ -56,6 +56,21 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
+    private async Task<Location> GetCurrentLocation()
+    {
+        GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+#if IOS
+            request.RequestFullAccuracy = true;
+#endif
+
+        _cancelTokenSource = new CancellationTokenSource();
+        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        if (location is null)
+            throw new Exception($"{AppResources.UnableToGetLocation}");
+
+        return location;
+    }
+
     public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell)
     {
         _appShell = appShell;
@@ -191,21 +206,6 @@ public partial class LocationPageViewModel : BaseViewModel
         }
 
         SelectedPin.Icon = CustomLocationPin.SetIcon(true);
-    }
-
-    private async Task<Location> GetCurrentLocation()
-    {
-        GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-#if IOS
-            request.RequestFullAccuracy = true;
-#endif
-
-        _cancelTokenSource = new CancellationTokenSource();
-        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-        if (location is null)
-            throw new Exception($"{AppResources.UnableToGetLocation}");
-
-        return location;
     }
 
     [RelayCommand]
