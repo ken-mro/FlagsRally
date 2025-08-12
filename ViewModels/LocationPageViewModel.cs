@@ -71,7 +71,7 @@ public partial class LocationPageViewModel : BaseViewModel
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
         {
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel))!;
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
         }
     }
 
@@ -131,7 +131,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {
-                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
+                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
             }
         }
         catch (Exception ex)
@@ -143,7 +143,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             if (ArrivalMap is not null)
             {
-                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
+                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
             }
         }
         finally
