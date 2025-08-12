@@ -21,6 +21,7 @@ public partial class LocationPageViewModel : BaseViewModel
 {
     private const double DEFAULT_LATITUDE = 46.22667333333333;
     private const double DEFAULT_LONGITUDE = 6.140291666666666;
+    private const double DEFAULT_ZOOM_LEVEL = 14d;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -95,7 +96,7 @@ public partial class LocationPageViewModel : BaseViewModel
             Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
                                 ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var position = new Position(location.Latitude, location.Longitude);
-            ArrivalMap?.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMeters(5000)));
+            await ArrivalMap?.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
         }
         catch (Exception ex)
         {
@@ -104,7 +105,7 @@ public partial class LocationPageViewModel : BaseViewModel
             Console.WriteLine(ex.Message);
 #endif
             var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            ArrivalMap?.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMeters(5000)));
+            await ArrivalMap?.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL))!;
         }
         finally
         {
