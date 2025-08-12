@@ -52,9 +52,38 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
             _arrivalMap.UiSettings.TiltGesturesEnabled = true;
- 
+            _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
+
             _ = Init();
         }
+    }
+
+    private async Task OnMyLocationButtonClickedAsync()
+    {
+        var userLocation = await GetUserLocationAsync();
+        var currentCameraLocation = GetCurrentCameraLocation();
+        
+        var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
+        var position = new Position(userLocation.Latitude, userLocation.Longitude);
+        var zoomLevel = distance < 0.05 ? 18d : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
+
+        await Task.Delay(100); // Delay to allow map to update
+        await ArrivalMap?.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel))!;
+    }
+
+    private async Task<Location> GetUserLocationAsync()
+    {
+        return await Geolocation.Default.GetLastKnownLocationAsync() 
+               ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+    }
+
+    private Location GetCurrentCameraLocation()
+    {
+        var cameraTarget = ArrivalMap?.CameraPosition.Target;
+        return new Location(
+            cameraTarget?.Latitude ?? DEFAULT_LATITUDE, 
+            cameraTarget?.Longitude ?? DEFAULT_LONGITUDE
+        );
     }
 
     private async Task<Location> GetCurrentLocation()
