@@ -22,6 +22,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double DEFAULT_LATITUDE = 46.22667333333333;
     private const double DEFAULT_LONGITUDE = 6.140291666666666;
     private const double DEFAULT_ZOOM_LEVEL = 14d;
+    private const int MAP_UPDATE_DELAY_MS = 100;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -67,7 +68,7 @@ public partial class LocationPageViewModel : BaseViewModel
         var position = new Position(userLocation.Latitude, userLocation.Longitude);
         var zoomLevel = distance < 0.05 ? 18d : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
 
-        await Task.Delay(100); // Delay to allow map to update
+        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         await ArrivalMap?.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel))!;
     }
 
