@@ -22,7 +22,9 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double DEFAULT_LATITUDE = 46.22667333333333;
     private const double DEFAULT_LONGITUDE = 6.140291666666666;
     private const double DEFAULT_ZOOM_LEVEL = 14d;
+    private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
+    private const double CLOSE_DISTANCE_THRESHOLD_KM = 0.05;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -66,7 +68,7 @@ public partial class LocationPageViewModel : BaseViewModel
         
         var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
         var position = new Position(userLocation.Latitude, userLocation.Longitude);
-        var zoomLevel = distance < 0.05 ? 18d : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
+        var zoomLevel = distance < CLOSE_DISTANCE_THRESHOLD_KM ? CLOSE_ZOOM_LEVEL : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
 
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
@@ -230,7 +232,7 @@ public partial class LocationPageViewModel : BaseViewModel
         var currentLocation = await GetCurrentLocation();
 
         var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-        var isNear = distance <= 0.05;
+        var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
         if (!isNear)
         {
             await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
