@@ -23,7 +23,7 @@
             VerticalOptions="Center">
             <Label.Triggers>
                 <DataTrigger
-                    Binding="{Binding SelectesCustomLocationPin}"
+                    Binding="{Binding SelectsCustomLocationPin}"
                     TargetType="Label"
                     Value="True">
                     <Setter Property="Text" Value="{x:Static strings:AppResources.TapCheckInNearTheSelectedPin}" />
@@ -67,7 +67,7 @@
             Text="{x:Static strings:AppResources.GetLocation}">
             <Button.Triggers>
                 <DataTrigger
-                    Binding="{Binding SelectesCustomLocationPin}"
+                    Binding="{Binding SelectsCustomLocationPin}"
                     TargetType="Button"
                     Value="True">
                     <Setter Property="Text" Value="{x:Static strings:AppResources.CheckIn}" />

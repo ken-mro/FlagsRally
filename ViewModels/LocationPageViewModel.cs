@@ -21,6 +21,10 @@ public partial class LocationPageViewModel : BaseViewModel
 {
     private const double DEFAULT_LATITUDE = 46.22667333333333;
     private const double DEFAULT_LONGITUDE = 6.140291666666666;
+    private const double DEFAULT_ZOOM_LEVEL = 14d;
+    private const double CLOSE_ZOOM_LEVEL = 18d;
+    private const int MAP_UPDATE_DELAY_MS = 100;
+    private const double CLOSE_DISTANCE_THRESHOLD_KM = 0.05;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -34,10 +38,10 @@ public partial class LocationPageViewModel : BaseViewModel
     private CustomBoardService _customBoardService;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(SelectesCustomLocationPin))]
+    [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
     Pin? _selectedPin;
 
-    public bool SelectesCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
+    public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
 
     public Map? ArrivalMap
     {
@@ -51,9 +55,69 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
             _arrivalMap.UiSettings.TiltGesturesEnabled = true;
- 
+            _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
+
             _ = Init();
         }
+    }
+
+    private async Task OnMyLocationButtonClickedAsync()
+    {
+        var userLocation = await GetUserLocationAsync();
+        var currentCameraLocation = GetCurrentCameraLocation();
+        
+        var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
+        var position = new Position(userLocation.Latitude, userLocation.Longitude);
+        var zoomLevel = distance < CLOSE_DISTANCE_THRESHOLD_KM ? CLOSE_ZOOM_LEVEL : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
+
+        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
+        if (ArrivalMap is not null)
+        {
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
+        }
+    }
+
+    private async Task<Location> GetUserLocationAsync()
+    {
+        return await Geolocation.Default.GetLastKnownLocationAsync() 
+               ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+    }
+    private async Task MoveAndZoomToCurrentLocationAsync()
+    {
+        var userLocation = await GetUserLocationAsync();
+        var currentCameraLocation = GetCurrentCameraLocation();
+        var position = new Position(userLocation.Latitude, userLocation.Longitude);
+
+        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
+        if (ArrivalMap is not null)
+        {
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, CLOSE_ZOOM_LEVEL));
+        }
+    }
+
+    private Location GetCurrentCameraLocation()
+    {
+        var cameraTarget = ArrivalMap?.CameraPosition.Target;
+        return new Location(
+            cameraTarget?.Latitude ?? DEFAULT_LATITUDE, 
+            cameraTarget?.Longitude ?? DEFAULT_LONGITUDE
+        );
+    }
+
+    private async Task<Location> GetCurrentLocation()
+    {
+        await MoveAndZoomToCurrentLocationAsync();
+        GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+#if IOS
+            request.RequestFullAccuracy = true;
+#endif
+
+        _cancelTokenSource = new CancellationTokenSource();
+        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        if (location is null)
+            throw new Exception($"{AppResources.UnableToGetLocation}");
+
+        return location;
     }
 
     public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell)
@@ -80,7 +144,10 @@ public partial class LocationPageViewModel : BaseViewModel
             Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
                                 ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var position = new Position(location.Latitude, location.Longitude);
-            ArrivalMap?.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMeters(5000)));
+            if (ArrivalMap is not null)
+            {
+                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
+            }
         }
         catch (Exception ex)
         {
@@ -89,7 +156,10 @@ public partial class LocationPageViewModel : BaseViewModel
             Console.WriteLine(ex.Message);
 #endif
             var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            ArrivalMap?.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMeters(5000)));
+            if (ArrivalMap is not null)
+            {
+                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
+            }
         }
         finally
         {
@@ -108,7 +178,7 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
-            if (SelectesCustomLocationPin)
+            if (SelectsCustomLocationPin)
             {
                 await CheckInCustomLocation();
                 return;
@@ -175,7 +245,7 @@ public partial class LocationPageViewModel : BaseViewModel
         var currentLocation = await GetCurrentLocation();
 
         var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-        var isNear = distance <= 0.05;
+        var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
         if (!isNear)
         {
             await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
@@ -191,21 +261,6 @@ public partial class LocationPageViewModel : BaseViewModel
         }
 
         SelectedPin.Icon = CustomLocationPin.SetIcon(true);
-    }
-
-    private async Task<Location> GetCurrentLocation()
-    {
-        GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-#if IOS
-            request.RequestFullAccuracy = true;
-#endif
-
-        _cancelTokenSource = new CancellationTokenSource();
-        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-        if (location is null)
-            throw new Exception($"{AppResources.UnableToGetLocation}");
-
-        return location;
     }
 
     [RelayCommand]
