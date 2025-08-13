@@ -38,10 +38,10 @@ public partial class LocationPageViewModel : BaseViewModel
     private CustomBoardService _customBoardService;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(SelectesCustomLocationPin))]
+    [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
     Pin? _selectedPin;
 
-    public bool SelectesCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
+    public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
 
     public Map? ArrivalMap
     {
@@ -178,7 +178,7 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             _isCheckingLocation = true;
 
-            if (SelectesCustomLocationPin)
+            if (SelectsCustomLocationPin)
             {
                 await CheckInCustomLocation();
                 return;
