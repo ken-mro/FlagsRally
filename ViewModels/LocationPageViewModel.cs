@@ -82,6 +82,18 @@ public partial class LocationPageViewModel : BaseViewModel
         return await Geolocation.Default.GetLastKnownLocationAsync() 
                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
+    private async Task MoveAndZoomToCurrentLocationAsync()
+    {
+        var userLocation = await GetUserLocationAsync();
+        var currentCameraLocation = GetCurrentCameraLocation();
+        var position = new Position(userLocation.Latitude, userLocation.Longitude);
+
+        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
+        if (ArrivalMap is not null)
+        {
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, CLOSE_ZOOM_LEVEL));
+        }
+    }
 
     private Location GetCurrentCameraLocation()
     {
@@ -94,6 +106,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task<Location> GetCurrentLocation()
     {
+        await MoveAndZoomToCurrentLocationAsync();
         GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
 #if IOS
             request.RequestFullAccuracy = true;
