@@ -194,6 +194,14 @@ public partial class LocationPageViewModel : BaseViewModel
             await MoveAndZoomToCurrentLocationAsync();
             var currentLocation = await GetCurrentLocation();
 
+#if DEBUG
+#else
+            if (!currentLocation.IsFromMockProvider)
+            {
+                throw new Exception("Fake Location!");
+            }
+#endif
+
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
 
