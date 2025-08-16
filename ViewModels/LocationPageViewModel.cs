@@ -63,7 +63,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task OnMyLocationButtonClickedAsync()
     {
-        var userLocation = await GetUserLocationAsync();
+        var userLocation = await GetLastKnownOrDefaultLocationAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
         
         var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
@@ -77,14 +77,14 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    private async Task<Location> GetUserLocationAsync()
+    private static async Task<Location> GetLastKnownOrDefaultLocationAsync()
     {
         return await Geolocation.Default.GetLastKnownLocationAsync() 
                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
     private async Task MoveAndZoomToCurrentLocationAsync()
     {
-        var userLocation = await GetUserLocationAsync();
+        var userLocation = await GetLastKnownOrDefaultLocationAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
         var position = new Position(userLocation.Latitude, userLocation.Longitude);
 
