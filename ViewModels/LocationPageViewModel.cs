@@ -195,7 +195,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var currentLocation = await GetCurrentLocation();
 
 #if DEBUG
-#else
+#if !DEBUG
             if (currentLocation.IsFromMockProvider)
             {
                 throw new Exception("Fake Location!");
