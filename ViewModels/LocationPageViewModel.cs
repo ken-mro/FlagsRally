@@ -142,8 +142,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
             await InitializeMapPins();
 
-            Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
-                                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            Location location = await GetLastKnownOrDefaultLocationAsync();
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {
