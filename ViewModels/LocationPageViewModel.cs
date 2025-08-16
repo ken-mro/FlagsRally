@@ -194,7 +194,6 @@ public partial class LocationPageViewModel : BaseViewModel
             await MoveAndZoomToCurrentLocationAsync();
             var currentLocation = await GetCurrentLocation();
 
-#if DEBUG
 #if !DEBUG
             if (currentLocation.IsFromMockProvider)
             {
