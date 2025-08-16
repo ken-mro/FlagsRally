@@ -196,7 +196,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
 #if DEBUG
 #else
-            if (!currentLocation.IsFromMockProvider)
+            if (currentLocation.IsFromMockProvider)
             {
                 throw new Exception("Fake Location!");
             }
