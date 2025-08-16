@@ -88,10 +88,12 @@ public partial class LocationPageViewModel : BaseViewModel
         var currentCameraLocation = GetCurrentCameraLocation();
         var position = new Position(userLocation.Latitude, userLocation.Longitude);
 
+        var currentZoom = ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL;
+        var zoomLevel = Math.Max(currentZoom, CLOSE_ZOOM_LEVEL);
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
         {
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, CLOSE_ZOOM_LEVEL));
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
         }
     }
 
