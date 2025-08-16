@@ -108,7 +108,6 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task<Location> GetCurrentLocation()
     {
-        await MoveAndZoomToCurrentLocationAsync();
         GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
 #if IOS
             request.RequestFullAccuracy = true;
@@ -193,6 +192,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
+            await MoveAndZoomToCurrentLocationAsync();
             var currentLocation = await GetCurrentLocation();
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -244,6 +244,8 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         var pinPosition = SelectedPin!.Position;
         var pinLocation = new Location(pinPosition.Latitude, pinPosition.Longitude);
+
+        await MoveAndZoomToCurrentLocationAsync();
         var currentLocation = await GetCurrentLocation();
 
         var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
