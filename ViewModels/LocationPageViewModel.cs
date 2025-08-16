@@ -63,7 +63,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task OnMyLocationButtonClickedAsync()
     {
-        var userLocation = await GetUserLocationAsync();
+        var userLocation = await GetLastKnownOrDefaultLocationAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
         
         var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
@@ -77,21 +77,23 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    private async Task<Location> GetUserLocationAsync()
+    private static async Task<Location> GetLastKnownOrDefaultLocationAsync()
     {
         return await Geolocation.Default.GetLastKnownLocationAsync() 
                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
     private async Task MoveAndZoomToCurrentLocationAsync()
     {
-        var userLocation = await GetUserLocationAsync();
+        var userLocation = await GetLastKnownOrDefaultLocationAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
         var position = new Position(userLocation.Latitude, userLocation.Longitude);
 
+        var currentZoom = ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL;
+        var zoomLevel = Math.Max(currentZoom, CLOSE_ZOOM_LEVEL);
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
         {
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, CLOSE_ZOOM_LEVEL));
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
         }
     }
 
@@ -106,7 +108,6 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task<Location> GetCurrentLocation()
     {
-        await MoveAndZoomToCurrentLocationAsync();
         GeolocationRequest request = new(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
 #if IOS
             request.RequestFullAccuracy = true;
@@ -141,8 +142,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
             await InitializeMapPins();
 
-            Location location = await Geolocation.Default.GetLastKnownLocationAsync() 
-                                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            Location location = await GetLastKnownOrDefaultLocationAsync();
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {
@@ -191,7 +191,15 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
+            await MoveAndZoomToCurrentLocationAsync();
             var currentLocation = await GetCurrentLocation();
+
+#if !DEBUG
+            if (currentLocation.IsFromMockProvider)
+            {
+                throw new Exception("Fake Location!");
+            }
+#endif
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
@@ -242,6 +250,8 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         var pinPosition = SelectedPin!.Position;
         var pinLocation = new Location(pinPosition.Latitude, pinPosition.Longitude);
+
+        await MoveAndZoomToCurrentLocationAsync();
         var currentLocation = await GetCurrentLocation();
 
         var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
