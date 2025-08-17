@@ -26,6 +26,8 @@ public class ArrivalLocationPin : Pin
         Icon = SetIcon();
     }
 
+    public int Id => ((MapPinTag)Tag).ArrivalLocationId;
+
     private static BitmapDescriptor SetIcon()
     {
         var icon = "default_pin.png";

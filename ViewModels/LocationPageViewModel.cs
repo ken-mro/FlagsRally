@@ -65,37 +65,44 @@ public partial class LocationPageViewModel : BaseViewModel
     private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
     {
         var pin = e.Pin;
-        var tag = pin.Tag as MapPinTag;
-        if (tag is null) return;
-        if (tag.IsArrivalLocation)
+
+        if (pin is ArrivalLocationPin arrivalLocationPin)
         {
-            var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
-            if (result)
+            var deletes = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (!deletes) return;
+
+            //update database
+            var affectedRow = await _arrivalLocationRepository.DeleteAsync(arrivalLocationPin.Id);
+            var deleteIsFailed = affectedRow != 1;
+
+            if (deleteIsFailed)
             {
-                var affectedRow = await _arrivalLocationRepository.DeleteAsync(tag.ArrivalLocationId);
-                if (affectedRow != 1)
-                {
                     await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
                     return;
                 }
+
+            //update pin on map
                 ArrivalMap?.Pins.Remove(pin);
             }
-        }
-
-        if (tag.IsCustomLocation && tag.IsVisited)
+        else if (pin is CustomLocationPin customLocationPin)
         {
-            var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
-            if (result)
-            {
-                var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(tag.CustomLocationKey, null);
-                if (affectedRow != 1)
-                {
+            if (!customLocationPin.IsVisited) return;
+
+            var clears = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (!clears) return;
+            
+            //update database
+            var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(customLocationPin.CustomLocationKey, null);
+            var clearIsFailed = affectedRow != 1;
+
+            if (clearIsFailed)
+        {
                     await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
                     return;
                 }
-                tag.IsVisited = false;
-                pin.Icon = CustomLocationPin.SetIcon(false);
-            }
+
+            //update pin on map
+            customLocationPin.UpdateVisitStatus(false);            
         }        
     }
 
