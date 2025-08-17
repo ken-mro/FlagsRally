@@ -55,10 +55,55 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
             _arrivalMap.UiSettings.TiltGesturesEnabled = true;
+            _arrivalMap.InfoWindowLongClicked += async (sender, e) => await OnInfoWindowLongClicked(sender, e);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
 
             _ = Init();
         }
+    }
+
+    private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
+    {
+        var pin = e.Pin;
+
+        if (pin is ArrivalLocationPin arrivalLocationPin)
+        {
+            var deletes = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (!deletes) return;
+
+            //update database
+            var affectedRow = await _arrivalLocationRepository.DeleteAsync(arrivalLocationPin.Id);
+            var deleteIsFailed = affectedRow != 1;
+
+            if (deleteIsFailed)
+            {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                    return;
+                }
+
+            //update pin on map
+                ArrivalMap?.Pins.Remove(pin);
+            }
+        else if (pin is CustomLocationPin customLocationPin)
+        {
+            if (!customLocationPin.IsVisited) return;
+
+            var clears = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (!clears) return;
+            
+            //update database
+            var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(customLocationPin.CustomLocationKey, null);
+            var clearIsFailed = affectedRow != 1;
+
+            if (clearIsFailed)
+        {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                    return;
+                }
+
+            //update pin on map
+            customLocationPin.UpdateVisitStatus(false);            
+        }        
     }
 
     private async Task OnMyLocationButtonClickedAsync()
@@ -214,7 +259,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 var id = await _arrivalLocationRepository.Save(arrivalLocationData);
                 _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
 
-                ArrivalLocationPin arrivalLocationPin = new(arrivalLocationData.ArrivalDate, currentLocation);
+                ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData.Id, arrivalLocationData.ArrivalDate, currentLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
             }
         }
@@ -270,6 +315,7 @@ public partial class LocationPageViewModel : BaseViewModel
             throw new Exception($"{AppResources.FailedToCheckIn}");
         }
 
+        tag.IsVisited = true;
         SelectedPin.Icon = CustomLocationPin.SetIcon(true);
     }
 

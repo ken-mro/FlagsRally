@@ -149,7 +149,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     private ArrivalLocationPin GetArrivalLocationPin(ArrivalLocationData ArrivalLocationData)
     {
         var position = new Position(ArrivalLocationData.Latitude, ArrivalLocationData.Longitude);
-        return new ArrivalLocationPin(ArrivalLocationData.ArrivalDate, position);
+        return new ArrivalLocationPin(ArrivalLocationData.Id, ArrivalLocationData.ArrivalDate, position);
     }
 
     public async Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode)

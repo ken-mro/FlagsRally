@@ -8,11 +8,21 @@ public class CustomLocationPin : Pin
     {
         Label = title;
         Position = position;
-        Icon = SetIcon(isVisited);
+        Icon = CustomLocationPin.SetIcon(isVisited);
         Type = PinType.Place;
-        Tag = new MapPinTag(key, boardName, isVisited);
+        Tag = MapPinTag.SetCustomLocationTag(key, boardName, isVisited);
         Anchor = new Point(0.5, 1);
     }
+
+    public string CustomLocationKey => ((MapPinTag)Tag).CustomLocationKey;
+
+    public void UpdateVisitStatus(bool isVisited)
+    {
+        Icon = SetIcon(isVisited);
+        ((MapPinTag)Tag).IsVisited = isVisited;
+    }
+
+    public bool IsVisited => ((MapPinTag)Tag).IsVisited;
 
     public static BitmapDescriptor SetIcon(bool isVisited)
     {

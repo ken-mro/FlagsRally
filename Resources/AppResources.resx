@@ -312,4 +312,10 @@
   <data name="FailedToCheckIn" xml:space="preserve">
     <value>Failed to check in.</value>
   </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Are you sure to delete?</value>
+  </data>
+  <data name="ConfirmReset" xml:space="preserve">
+    <value>Are you sure to reset?</value>
+  </data>
 </root>

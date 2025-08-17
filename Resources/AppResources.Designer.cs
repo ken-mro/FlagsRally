@@ -223,11 +223,29 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure to delete?.
+        /// </summary>
+        internal static string ConfirmDelete {
+            get {
+                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm the current location and tap &apos;Get Location&apos; below..
         /// </summary>
         internal static string ConfirmLocationTapButton {
             get {
                 return ResourceManager.GetString("ConfirmLocationTapButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure to reset?.
+        /// </summary>
+        internal static string ConfirmReset {
+            get {
+                return ResourceManager.GetString("ConfirmReset", resourceCulture);
             }
         }
         
