@@ -10,7 +10,7 @@ public class CustomLocationPin : Pin
         Position = position;
         Icon = SetIcon(isVisited);
         Type = PinType.Place;
-        Tag = new MapPinTag(key, boardName, isVisited);
+        Tag = MapPinTag.SetCustomLocationTag(key, boardName, isVisited);
         Anchor = new Point(0.5, 1);
     }
 
