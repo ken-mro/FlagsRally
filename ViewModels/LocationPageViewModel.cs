@@ -55,10 +55,48 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
             _arrivalMap.UiSettings.TiltGesturesEnabled = true;
+            _arrivalMap.InfoWindowLongClicked += async (sender, e) => await OnInfoWindowLongClicked(sender, e);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
 
             _ = Init();
         }
+    }
+
+    private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
+    {
+        var pin = e.Pin;
+        var tag = pin.Tag as MapPinTag;
+        if (tag is null) return;
+        if (tag.IsArrivalLocation)
+        {
+            var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (result)
+            {
+                var affectedRow = await _arrivalLocationRepository.DeleteAsync(tag.ArrivalLocationId);
+                if (affectedRow != 1)
+                {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                    return;
+                }
+                ArrivalMap?.Pins.Remove(pin);
+            }
+        }
+
+        if (tag.IsCustomLocation && tag.IsVisited)
+        {
+            var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (result)
+            {
+                var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(tag.CustomLocationKey, null);
+                if (affectedRow != 1)
+                {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                    return;
+                }
+                tag.IsVisited = false;
+                pin.Icon = CustomLocationPin.SetIcon(false);
+            }
+        }        
     }
 
     private async Task OnMyLocationButtonClickedAsync()
@@ -270,6 +308,7 @@ public partial class LocationPageViewModel : BaseViewModel
             throw new Exception($"{AppResources.FailedToCheckIn}");
         }
 
+        tag.IsVisited = true;
         SelectedPin.Icon = CustomLocationPin.SetIcon(true);
     }
 
