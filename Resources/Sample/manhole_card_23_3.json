@@ -10,7 +10,7 @@
       "subtitle": "京都府",
       "group": "近畿",
       "latitude": 34.891833,
-      "longtitude": 135.747139
+      "longitude": 135.747139
     },
     {
       "code": "27-221-C-01",
@@ -18,7 +18,7 @@
       "subtitle": "大阪府",
       "group": "近畿",
       "latitude": 34.588889,
-      "longtitude": 135.623389
+      "longitude": 135.623389
     },
     {
       "code": "28-464-A-01",
@@ -26,7 +26,7 @@
       "subtitle": "兵庫県",
       "group": "近畿",
       "latitude": 34.840056,
-      "longtitude": 134.589111
+      "longitude": 134.589111
     },
     {
       "code": "29-205-B-01",
@@ -34,7 +34,7 @@
       "subtitle": "奈良県",
       "group": "近畿",
       "latitude": 34.4835,
-      "longtitude": 135.793528
+      "longitude": 135.793528
     },
     {
       "code": "33-207-A-01",
@@ -42,7 +42,7 @@
       "subtitle": "岡山県",
       "group": "中国",
       "latitude": 34.672167,
-      "longtitude": 133.544778
+      "longitude": 133.544778
     },
     {
       "code": "34-100-F-01",
@@ -50,7 +50,7 @@
       "subtitle": "広島県",
       "group": "中国",
       "latitude": 34.399,
-      "longtitude": 132.460528
+      "longitude": 132.460528
     },
     {
       "code": "35-208-B-01",
@@ -58,7 +58,7 @@
       "subtitle": "山口県",
       "group": "中国",
       "latitude": 34.172583,
-      "longtitude": 132.224667
+      "longitude": 132.224667
     },
     {
       "code": "35-212-A-01",
@@ -66,7 +66,7 @@
       "subtitle": "山口県",
       "group": "中国",
       "latitude": 33.969222,
-      "longtitude": 132.109361
+      "longitude": 132.109361
     },
     {
       "code": "36-202-B-01",
@@ -74,7 +74,7 @@
       "subtitle": "徳島県",
       "group": "四国",
       "latitude": 34.179528,
-      "longtitude": 134.608917
+      "longitude": 134.608917
     },
     {
       "code": "36-388-A-01",
@@ -82,7 +82,7 @@
       "subtitle": "徳島県",
       "group": "四国",
       "latitude": 33.568917,
-      "longtitude": 134.307194
+      "longitude": 134.307194
     },
     {
       "code": "38-213-B-01",
@@ -90,7 +90,7 @@
       "subtitle": "愛媛県",
       "group": "四国",
       "latitude": 34.014556,
-      "longtitude": 133.574333
+      "longitude": 133.574333
     },
     {
       "code": "38-442-A-01",
@@ -98,7 +98,7 @@
       "subtitle": "愛媛県",
       "group": "四国",
       "latitude": 33.488528,
-      "longtitude": 132.354
+      "longitude": 132.354
     },
     {
       "code": "46-208-A-01",
@@ -106,7 +106,7 @@
       "subtitle": "鹿児島県",
       "group": "九州",
       "latitude": 32.097972,
-      "longtitude": 130.344194
+      "longitude": 130.344194
     }
   ]
 }

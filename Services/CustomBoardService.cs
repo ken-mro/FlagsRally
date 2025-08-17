@@ -40,7 +40,7 @@ public class CustomBoardService
                 location: new Location()
                 {
                     Latitude = location.latitude,
-                    Longitude = location.Longitude
+                    Longitude = location.longitude
                 },
                 arrivalDate: null
             ));
