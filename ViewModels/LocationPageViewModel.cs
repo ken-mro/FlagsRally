@@ -214,7 +214,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 var id = await _arrivalLocationRepository.Save(arrivalLocationData);
                 _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
 
-                ArrivalLocationPin arrivalLocationPin = new(arrivalLocationData.ArrivalDate, currentLocation);
+                ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData.Id, arrivalLocationData.ArrivalDate, currentLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
             }
         }
