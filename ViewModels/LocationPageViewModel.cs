@@ -96,7 +96,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var clearIsFailed = affectedRow != 1;
 
             if (clearIsFailed)
-        {
+            {
                     await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
                     return;
                 }
@@ -106,19 +106,26 @@ public partial class LocationPageViewModel : BaseViewModel
         }        
     }
 
+    private static double GetCloseDistanceThresholdKMFrom(double zoomLevel)
+    {
+        return -99.999 / 20 * (zoomLevel - 2) + 100;
+    }
+
     private async Task OnMyLocationButtonClickedAsync()
     {
         var userLocation = await GetLastKnownOrDefaultLocationAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
-        
         var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
-        var position = new Position(userLocation.Latitude, userLocation.Longitude);
-        var zoomLevel = distance < CLOSE_DISTANCE_THRESHOLD_KM ? CLOSE_ZOOM_LEVEL : (ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL);
+
+        var currentZoomLevel = ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL;
+        var closeDistanceThresholdKM = GetCloseDistanceThresholdKMFrom(currentZoomLevel);
+        var targetZoomLevel = distance > closeDistanceThresholdKM ? currentZoomLevel : Math.Max(currentZoomLevel, CLOSE_ZOOM_LEVEL);
 
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
         {
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
+            var position = new Position(userLocation.Latitude, userLocation.Longitude);
+            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel));
         }
     }
 
