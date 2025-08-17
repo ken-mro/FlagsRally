@@ -52,7 +52,7 @@ public class CustomLocationDataRepository : ICustomLocationDataRepository
         return resultLocationList;
     }
 
-    public async Task<int> UpdateCustomLocation(string key, DateTime now)
+    public async Task<int> UpdateCustomLocation(string key, DateTime? now)
     {
         await Init();
         var result = await _conn!.ExecuteAsync("UPDATE CustomLocation SET ArrivalDate = ? WHERE CompositeKey = ?", now, key);
