@@ -41,6 +41,8 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
     Pin? _selectedPin;
 
+    Pin? _tappedPointPin;
+
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
 
     public Map? ArrivalMap
@@ -54,12 +56,43 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
-            _arrivalMap.UiSettings.TiltGesturesEnabled = true;
             _arrivalMap.InfoWindowLongClicked += async (sender, e) => await OnInfoWindowLongClicked(sender, e);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
+            _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
+            _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
 
             _ = Init();
         }
+    }
+
+    private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)
+    {
+        if (_tappedPointPin is not null)
+        {
+            ArrivalMap?.Pins.Remove(_tappedPointPin);
+            _tappedPointPin = null;
+        }
+
+        var position = e.Point;
+        var pin = new Pin()
+        {
+            Position = position,
+            Label = $"{Math.Round(position.Longitude,3)}, {Math.Round(position.Latitude,3)}",
+            Anchor = new Point(0.5, 1),
+            IsDraggable = true,
+        };
+
+        _tappedPointPin = pin;
+
+        ArrivalMap?.Pins.Add(_tappedPointPin);
+    }
+
+    private void ClearTappedPointPin(object? sender, MapClickedEventArgs e)
+    {
+        if (_tappedPointPin is null) return;
+
+        ArrivalMap?.Pins.Remove(_tappedPointPin);
+        _tappedPointPin = null;
     }
 
     private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
@@ -243,8 +276,47 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
-            await MoveAndZoomToCurrentLocationAsync();
             var currentLocation = await GetCurrentLocation();
+
+            if (_tappedPointPin is null)
+            {
+                await MoveAndZoomToCurrentLocationAsync();
+
+                var position = new Position(currentLocation.Latitude, currentLocation.Longitude);
+                var currentPin = new Pin()
+                {
+                    Label = "Test",
+                    Anchor = new Point(0.5, 1),
+                    Position = position
+                };
+
+                _tappedPointPin = currentPin;
+                ArrivalMap?.Pins.Add(_tappedPointPin);
+                await Task.Delay(1000);
+            }
+            else
+            {
+                var tappedPinLocation = new Location()
+                {
+                    Longitude = _tappedPointPin.Position.Longitude,
+                    Latitude = _tappedPointPin.Position.Latitude
+                };
+
+                var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+                var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
+                if (!isNear)
+                {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+                    return;
+                }
+
+                var point = new Location()
+                {
+                    Longitude = _tappedPointPin.Position.Longitude,
+                    Latitude = _tappedPointPin.Position.Latitude,
+                };
+                currentLocation = point;
+            }
 
 #if !DEBUG
             if (currentLocation.IsFromMockProvider)
@@ -268,6 +340,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
                 ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData.Id, arrivalLocationData.ArrivalDate, currentLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
+
+                if (_tappedPointPin is null) return;
+
+                ArrivalMap?.Pins.Remove(_tappedPointPin);
+                _tappedPointPin = null;
+
             }
         }
         catch (FeatureNotSupportedException ex)
