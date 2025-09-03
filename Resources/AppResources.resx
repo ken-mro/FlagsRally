@@ -318,4 +318,7 @@
   <data name="ConfirmReset" xml:space="preserve">
     <value>Are you sure to reset?</value>
   </data>
+  <data name="GetLocationHere" xml:space="preserve">
+    <value>I'm here!</value>
+  </data>
 </root>

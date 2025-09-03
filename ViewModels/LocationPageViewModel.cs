@@ -13,7 +13,6 @@ using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Map = Maui.GoogleMaps.Map;
-using MapSpan = Maui.GoogleMaps.MapSpan;
 
 namespace FlagsRally.ViewModels;
 
@@ -60,8 +59,23 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
+            _arrivalMap.PinDragEnd += (sender, e) => _arrivalMap_PinDragEnd(sender, e);
 
             _ = Init();
+        }
+    }
+
+    private void _arrivalMap_PinDragEnd(object? sender, PinDragEventArgs e)
+    {
+        var position = e.Pin.Position;
+
+        var selectedLocationPin = e.Pin as SelectedLocationPin;
+        selectedLocationPin?.UpdateLocation(position);
+
+        if (ArrivalMap is not null)
+        {
+            ArrivalMap.SelectedPin = null;
+            ArrivalMap.SelectedPin = e.Pin;
         }
     }
 
@@ -73,18 +87,14 @@ public partial class LocationPageViewModel : BaseViewModel
             _tappedPointPin = null;
         }
 
-        var position = e.Point;
-        var pin = new Pin()
-        {
-            Position = position,
-            Label = $"{Math.Round(position.Longitude,3)}, {Math.Round(position.Latitude,3)}",
-            Anchor = new Point(0.5, 1),
-            IsDraggable = true,
-        };
+        _tappedPointPin = new SelectedLocationPin(e.Point);
 
-        _tappedPointPin = pin;
 
         ArrivalMap?.Pins.Add(_tappedPointPin);
+        if (ArrivalMap is not null)
+        {
+            ArrivalMap.SelectedPin = _tappedPointPin;
+        }
     }
 
     private void ClearTappedPointPin(object? sender, MapClickedEventArgs e)
@@ -283,12 +293,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 await MoveAndZoomToCurrentLocationAsync();
 
                 var position = new Position(currentLocation.Latitude, currentLocation.Longitude);
-                var currentPin = new Pin()
-                {
-                    Label = "Test",
-                    Anchor = new Point(0.5, 1),
-                    Position = position
-                };
+                var currentPin = new SelectedLocationPin(position);
 
                 _tappedPointPin = currentPin;
                 ArrivalMap?.Pins.Add(_tappedPointPin);
