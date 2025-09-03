@@ -319,6 +319,6 @@
     <value>リセットしますか？</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>ここ!</value>
+    <value>ここにいます!</value>
   </data>
 </root>
