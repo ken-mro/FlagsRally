@@ -329,10 +329,9 @@ public partial class LocationPageViewModel : BaseViewModel
                                                             $"{arrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
             if (result)
             {
-                var id = await _arrivalLocationRepository.Save(arrivalLocationData);
+                await _arrivalLocationRepository.Save(arrivalLocationData);
                 _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
-
-                ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData.Id, arrivalLocationData.ArrivalDate, currentLocation);
+                ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
 
                 if (_tappedPointPin is null) return;

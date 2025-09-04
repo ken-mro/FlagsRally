@@ -5,23 +5,13 @@ namespace FlagsRally.Models;
 
 public class ArrivalLocationPin : Pin
 {
-    public ArrivalLocationPin(int id, DateTime dateTime, Location location)
+    public ArrivalLocationPin(ArrivalLocationData arrivalLocationData)
     {
-        var position = new Position(location.Latitude, location.Longitude);
-        Initialize(id, dateTime, position);
-    }
-
-    public ArrivalLocationPin(int id, DateTime dateTime, Position position)
-    {
-        Initialize(id, dateTime, position);
-    }
-
-    private void Initialize(int id, DateTime dateTime, Position position)
-    {
-        Label = dateTime.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
-        Position = position;
+        Label = arrivalLocationData.AdminAreaName;
+        Address = arrivalLocationData.ArrivalDate.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Position = new Position(arrivalLocationData.Latitude, arrivalLocationData.Longitude);
         Type = PinType.SavedPin;
-        Tag = MapPinTag.SetArrivalLocationTag(id);
+        Tag = MapPinTag.SetArrivalLocationTag(arrivalLocationData.Id);
         Anchor = new Point(0.5, 1);
         Icon = SetIcon();
     }
