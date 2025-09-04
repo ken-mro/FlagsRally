@@ -90,7 +90,6 @@ public partial class LocationPageViewModel : BaseViewModel
 
         _tappedPointPin = new SelectedLocationPin(e.Point);
 
-
         ArrivalMap?.Pins.Add(_tappedPointPin);
         if (ArrivalMap is not null)
         {
@@ -302,8 +301,7 @@ public partial class LocationPageViewModel : BaseViewModel
             }
             else
             {
-                var location = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
-                var tappedPinLocation = new Location(location);
+                var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
 
                 var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
                 var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
@@ -313,15 +311,13 @@ public partial class LocationPageViewModel : BaseViewModel
                     return;
                 }
 
-                currentLocation = location; 
+                currentLocation = tappedPinLocation; 
             }
 
-#if !DEBUG
             if (currentLocation.IsFromMockProvider)
             {
                 throw new Exception("Fake Location!");
             }
-#endif
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
