@@ -145,7 +145,11 @@ public partial class LocationPageViewModel : BaseViewModel
                 }
 
             //update pin on map
-            customLocationPin.UpdateVisitStatus(false);            
+            customLocationPin.ClearVisitStatus();
+
+            if (ArrivalMap is null) return;
+            ArrivalMap.SelectedPin = null;
+            ArrivalMap.SelectedPin = customLocationPin;
         }        
     }
 
@@ -330,7 +334,7 @@ public partial class LocationPageViewModel : BaseViewModel
             if (result)
             {
                 await _arrivalLocationRepository.Save(arrivalLocationData);
-                _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);
+                _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);                
                 ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
 
@@ -371,7 +375,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task CheckInCustomLocation()
     {
-        var pinPosition = SelectedPin!.Position;
+        var selectedCustomLocationPin = SelectedPin as CustomLocationPin;
+        var pinPosition = selectedCustomLocationPin!.Position;
         var pinLocation = new Location(pinPosition.Latitude, pinPosition.Longitude);
 
         await MoveAndZoomToCurrentLocationAsync();
@@ -385,16 +390,19 @@ public partial class LocationPageViewModel : BaseViewModel
             return;
         }
 
-        var tag = (MapPinTag)SelectedPin.Tag;
-        var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(tag.CustomLocationKey, DateTime.Now);
+        var now = DateTime.Now;
+        var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(selectedCustomLocationPin.CustomLocationKey, now);
         
         if (affectedRow != 1)
         {
             throw new Exception($"{AppResources.FailedToCheckIn}");
         }
 
-        tag.IsVisited = true;
-        SelectedPin.Icon = CustomLocationPin.SetIcon(true);
+        selectedCustomLocationPin.UpdateAsVisited(now);
+
+        if (ArrivalMap is null) return;
+        ArrivalMap.SelectedPin = null;
+        ArrivalMap.SelectedPin = selectedCustomLocationPin;
     }
 
     [RelayCommand]

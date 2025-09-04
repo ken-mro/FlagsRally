@@ -61,9 +61,7 @@ public class CustomLocationDataRepository : ICustomLocationDataRepository
 
     private CustomLocationPin GetCustomLocationPin(CustomLocationData data)
     {
-        var isVisited = data.ArrivalDate is not null;
-        var position = new Position(data.Latitude, data.Longitude);
-        return new CustomLocationPin(data.CompositeKey, data.BoardName, data.Title, isVisited, position);
+        return new CustomLocationPin(data);
     }
 
     private async Task<CustomLocationData> GetCustomLocation(string compositeKey)
