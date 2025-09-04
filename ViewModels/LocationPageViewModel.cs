@@ -23,6 +23,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double DEFAULT_ZOOM_LEVEL = 14d;
     private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
+    private const int PAUSE_DURATION_MS = 1000;
     private const double CLOSE_DISTANCE_THRESHOLD_KM = 0.05;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
@@ -297,15 +298,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
                 _tappedPointPin = currentPin;
                 ArrivalMap?.Pins.Add(_tappedPointPin);
-                await Task.Delay(1000);
+                await Task.Delay(PAUSE_DURATION_MS);
             }
             else
             {
-                var tappedPinLocation = new Location()
-                {
-                    Longitude = _tappedPointPin.Position.Longitude,
-                    Latitude = _tappedPointPin.Position.Latitude
-                };
+                var location = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+                var tappedPinLocation = new Location(location);
 
                 var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
                 var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
@@ -315,12 +313,7 @@ public partial class LocationPageViewModel : BaseViewModel
                     return;
                 }
 
-                var point = new Location()
-                {
-                    Longitude = _tappedPointPin.Position.Longitude,
-                    Latitude = _tappedPointPin.Position.Latitude,
-                };
-                currentLocation = point;
+                currentLocation = location; 
             }
 
 #if !DEBUG
