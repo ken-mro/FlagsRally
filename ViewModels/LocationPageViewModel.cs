@@ -13,7 +13,6 @@ using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Map = Maui.GoogleMaps.Map;
-using MapSpan = Maui.GoogleMaps.MapSpan;
 
 namespace FlagsRally.ViewModels;
 
@@ -24,6 +23,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double DEFAULT_ZOOM_LEVEL = 14d;
     private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
+    private const int PAUSE_DURATION_MS = 1000;
     private const double CLOSE_DISTANCE_THRESHOLD_KM = 0.05;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
@@ -41,6 +41,8 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
     Pin? _selectedPin;
 
+    Pin? _tappedPointPin;
+
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
 
     public Map? ArrivalMap
@@ -54,12 +56,53 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
-            _arrivalMap.UiSettings.TiltGesturesEnabled = true;
             _arrivalMap.InfoWindowLongClicked += async (sender, e) => await OnInfoWindowLongClicked(sender, e);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
+            _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
+            _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
+            _arrivalMap.PinDragEnd += (sender, e) => _arrivalMap_PinDragEnd(sender, e);
 
             _ = Init();
         }
+    }
+
+    private void _arrivalMap_PinDragEnd(object? sender, PinDragEventArgs e)
+    {
+        var position = e.Pin.Position;
+
+        var selectedLocationPin = e.Pin as SelectedLocationPin;
+        selectedLocationPin?.UpdateLocation(position);
+
+        if (ArrivalMap is not null)
+        {
+            ArrivalMap.SelectedPin = null;
+            ArrivalMap.SelectedPin = e.Pin;
+        }
+    }
+
+    private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)
+    {
+        if (_tappedPointPin is not null)
+        {
+            ArrivalMap?.Pins.Remove(_tappedPointPin);
+            _tappedPointPin = null;
+        }
+
+        _tappedPointPin = new SelectedLocationPin(e.Point);
+
+        ArrivalMap?.Pins.Add(_tappedPointPin);
+        if (ArrivalMap is not null)
+        {
+            ArrivalMap.SelectedPin = _tappedPointPin;
+        }
+    }
+
+    private void ClearTappedPointPin(object? sender, MapClickedEventArgs e)
+    {
+        if (_tappedPointPin is null) return;
+
+        ArrivalMap?.Pins.Remove(_tappedPointPin);
+        _tappedPointPin = null;
     }
 
     private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
@@ -243,15 +286,38 @@ public partial class LocationPageViewModel : BaseViewModel
                 if (!_settingsPreferences.GetIsSubscribed()) return;
             }
 
-            await MoveAndZoomToCurrentLocationAsync();
             var currentLocation = await GetCurrentLocation();
 
-#if !DEBUG
+            if (_tappedPointPin is null)
+            {
+                await MoveAndZoomToCurrentLocationAsync();
+
+                var position = new Position(currentLocation.Latitude, currentLocation.Longitude);
+                var currentPin = new SelectedLocationPin(position);
+
+                _tappedPointPin = currentPin;
+                ArrivalMap?.Pins.Add(_tappedPointPin);
+                await Task.Delay(PAUSE_DURATION_MS);
+            }
+            else
+            {
+                var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+
+                var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+                var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
+                if (!isNear)
+                {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+                    return;
+                }
+
+                currentLocation = tappedPinLocation; 
+            }
+
             if (currentLocation.IsFromMockProvider)
             {
                 throw new Exception("Fake Location!");
             }
-#endif
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
@@ -268,6 +334,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
                 ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData.Id, arrivalLocationData.ArrivalDate, currentLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
+
+                if (_tappedPointPin is null) return;
+
+                ArrivalMap?.Pins.Remove(_tappedPointPin);
+                _tappedPointPin = null;
+
             }
         }
         catch (FeatureNotSupportedException ex)

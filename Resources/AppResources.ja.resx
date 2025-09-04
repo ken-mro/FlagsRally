@@ -318,4 +318,7 @@
   <data name="ConfirmReset" xml:space="preserve">
     <value>リセットしますか？</value>
   </data>
+  <data name="GetLocationHere" xml:space="preserve">
+    <value>ここにいます!</value>
+  </data>
 </root>

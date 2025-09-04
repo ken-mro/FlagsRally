@@ -358,6 +358,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I&apos;m here!.
+        /// </summary>
+        internal static string GetLocationHere {
+            get {
+                return ResourceManager.GetString("GetLocationHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide date and month.
         /// </summary>
         internal static string HideDateAndMonth {
