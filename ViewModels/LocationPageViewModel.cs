@@ -145,7 +145,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 }
 
             //update pin on map
-            customLocationPin.ClearVisitStatus();
+            customLocationPin.UpdateVisitStatus(null);
 
             if (ArrivalMap is null) return;
             ArrivalMap.SelectedPin = null;
@@ -398,7 +398,7 @@ public partial class LocationPageViewModel : BaseViewModel
             throw new Exception($"{AppResources.FailedToCheckIn}");
         }
 
-        selectedCustomLocationPin.UpdateAsVisited(now);
+        selectedCustomLocationPin.UpdateVisitStatus(now);
 
         if (ArrivalMap is null) return;
         ArrivalMap.SelectedPin = null;
@@ -415,8 +415,8 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = true;
             var pickedFile = await FilePicker.PickAsync();
             if (pickedFile is null) return;
-            using var stram = await pickedFile.OpenReadAsync();
-            (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stram);
+            using var stream = await pickedFile.OpenReadAsync();
+            (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stream);
 
             if (!_appShell.CustomBoardPage.IsVisible)
             {

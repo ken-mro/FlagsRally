@@ -23,23 +23,13 @@ public class CustomLocationPin : Pin
 
     public string CustomLocationKey => ((MapPinTag)Tag).CustomLocationKey;
 
-    private void UpdateVisitStatus(bool isVisited)
+    public void UpdateVisitStatus(DateTime? date)
     {
+        var isVisited = date is not null;
         Icon = SetIcon(isVisited);
         ((MapPinTag)Tag).IsVisited = isVisited;
 
-        Address = isVisited ? DateTime.Now.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US")) : null;
-    }
-
-    public void UpdateAsVisited(DateTime date)
-    {
-        UpdateVisitStatus(true);
-        Address = date.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
-    }
-
-    public void ClearVisitStatus()
-    {
-        UpdateVisitStatus(false);
+        Address = isVisited ? date?.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US")) : null;
     }
 
     public bool IsVisited => ((MapPinTag)Tag).IsVisited;
