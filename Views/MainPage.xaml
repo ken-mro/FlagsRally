@@ -93,18 +93,15 @@
                                     IconImageSource="eraser.png"
                                     Text="{x:Static strings:AppResources.Delete}" />
                             </SwipeView.LeftItems>
-                            <Frame
-                                Padding="2"
-                                BackgroundColor="Transparent"
-                                BorderColor="Transparent">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=ShowLocationInfoCommand}" CommandParameter="{Binding .}" />
-                                </Frame.GestureRecognizers>
                                 <Border
+                                Margin="2"
                                     BackgroundColor="Transparent"
                                     Stroke="Black"
                                     StrokeShape="Rectangle"
                                     StrokeThickness="4">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=ShowLocationInfoCommand}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
                                     <Border
                                         Margin="2"
                                         BackgroundColor="Transparent"
@@ -266,7 +263,6 @@
                                         </VerticalStackLayout>
                                     </Border>
                                 </Border>
-                            </Frame>
                         </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
