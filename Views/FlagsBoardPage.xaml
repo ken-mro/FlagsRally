@@ -200,9 +200,9 @@
                             <VerticalStackLayout>
                                 <Image
                                     HeightRequest="20"
-                                    Source="{Binding Path=DataItem.MapToolTipImageSource, Source={x:Null}}"
+                                    Source="{Binding Source={RelativeSource Self}, Path=BindingContext.DataItem.MapToolTipImageSource}"
                                     WidthRequest="20" />
-                                <Label Text="{Binding Path=DataItem.Name, Source={x:Null}}" TextColor="White" />
+                                <Label Text="{Binding Source={RelativeSource Self}, Path=BindingContext.DataItem.Name}" TextColor="White" />
                             </VerticalStackLayout>
                         </DataTemplate>
                     </map:MapShapeLayer.ShapeTooltipTemplate>
