@@ -217,6 +217,11 @@ public partial class LocationPageViewModel : BaseViewModel
         if (location is null)
             throw new Exception($"{AppResources.UnableToGetLocation}");
 
+        if (location.IsFromMockProvider)
+        {
+            throw new Exception($"{AppResources.FakeLocationDetected}");
+        }
+
         return location;
     }
 
@@ -316,11 +321,6 @@ public partial class LocationPageViewModel : BaseViewModel
                 }
 
                 currentLocation = tappedPinLocation; 
-            }
-
-            if (currentLocation.IsFromMockProvider)
-            {
-                throw new Exception("Fake Location!");
             }
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
