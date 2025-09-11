@@ -42,7 +42,7 @@
             <Picker
                 Title="{x:Static strings:AppResources.FilterPin}"
                 Grid.Column="0"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 ItemDisplayBinding="{Binding Name}"
                 ItemsSource="{Binding PinFilterList}"
                 SelectedItem="{Binding FilteredPinItem}"

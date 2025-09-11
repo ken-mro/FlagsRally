@@ -26,7 +26,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     ItemDisplayBinding="{Binding CountryName}"
                     ItemsSource="{Binding CountryList}"
                     SelectedItem="{Binding FilteredCountry}"
@@ -35,7 +35,7 @@
                     Grid.Column="1"
                     Margin="5,0"
                     HeightRequest="25"
-                    HorizontalOptions="EndAndExpand"
+                    HorizontalOptions="End"
                     Source="earth.png"
                     VerticalOptions="Center">
                     <Image.GestureRecognizers>
@@ -46,7 +46,7 @@
                     Grid.Column="2"
                     Margin="5,0"
                     HeightRequest="25"
-                    HorizontalOptions="EndAndExpand"
+                    HorizontalOptions="End"
                     Source="filter.png"
                     VerticalOptions="Center">
                     <Image.GestureRecognizers>
@@ -59,7 +59,7 @@
                     <Label
                         Padding="5,0"
                         FontSize="16"
-                        HorizontalOptions="StartAndExpand"
+                        HorizontalOptions="Start"
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
@@ -79,7 +79,7 @@
                 x:Name="collectionView"
                 Background="AntiqueWhite"
                 ItemsSource="{Binding DisplayFullSubRegionList}"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="Fill">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>
@@ -96,7 +96,7 @@
                                     FontFamily="KiwiMaru-Medium"
                                     FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
                                     HeightRequest="134.48"
-                                    HorizontalOptions="CenterAndExpand"
+                                    HorizontalOptions="Center"
                                     IsVisible="{Binding HasNotBeenVisited}"
                                     LineBreakMode="MiddleTruncation"
                                     LineHeight="1"
@@ -120,7 +120,7 @@
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                            HorizontalOptions="CenterAndExpand"
+                                            HorizontalOptions="Center"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
                                             MaxLines="2"
