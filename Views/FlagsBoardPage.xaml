@@ -144,7 +144,7 @@
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FlagsBoardPageViewModel}}, Path=DateIsNotVisible}"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FlagsBoardPageViewModel}}, x:DataType=viewmodels:FlagsBoardPageViewModel, Path=DateIsNotVisible}"
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
@@ -196,13 +196,13 @@
                         <map:EqualColorMapping Color="LimeGreen" Value="True" />
                     </map:MapShapeLayer.ColorMappings>
                     <map:MapShapeLayer.ShapeTooltipTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="map:MapTooltipInfo">
                             <VerticalStackLayout>
                                 <Image
                                     HeightRequest="20"
-                                    Source="{Binding Source={RelativeSource Self}, Path=BindingContext.DataItem.MapToolTipImageSource}"
+                                    Source="{Binding DataItem.MapToolTipImageSource}"
                                     WidthRequest="20" />
-                                <Label Text="{Binding Source={RelativeSource Self}, Path=BindingContext.DataItem.Name}" TextColor="White" />
+                                <Label Text="{Binding DataItem.Name}" TextColor="White" />
                             </VerticalStackLayout>
                         </DataTemplate>
                     </map:MapShapeLayer.ShapeTooltipTemplate>
