@@ -25,7 +25,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     ItemDisplayBinding="{Binding Name}"
                     ItemsSource="{Binding CustomBoardList}"
                     SelectedItem="{Binding FilteredCustomBoard}"
@@ -34,7 +34,7 @@
                     Grid.Column="1"
                     Margin="5,0"
                     HeightRequest="25"
-                    HorizontalOptions="EndAndExpand"
+                    HorizontalOptions="End"
                     Source="filter.png"
                     VerticalOptions="Center">
                     <Image.GestureRecognizers>
@@ -47,7 +47,7 @@
                     <Label
                         Padding="5,0"
                         FontSize="16"
-                        HorizontalOptions="StartAndExpand"
+                        HorizontalOptions="Start"
                         Text="{x:Static strings:AppResources.HideDateAndMonth}"
                         VerticalOptions="Center" />
                     <Switch
@@ -67,7 +67,7 @@
                 x:Name="collectionView"
                 Background="AntiqueWhite"
                 ItemsSource="{Binding DisplayCustomLocationList}"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="Fill">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>
@@ -84,7 +84,7 @@
                                     FontFamily="KiwiMaru-Medium"
                                     FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
                                     HeightRequest="{Binding Board.Height}"
-                                    HorizontalOptions="CenterAndExpand"
+                                    HorizontalOptions="Center"
                                     IsVisible="{Binding HasNotBeenVisited}"
                                     LineBreakMode="MiddleTruncation"
                                     LineHeight="1"
@@ -113,7 +113,7 @@
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
-                                            HorizontalOptions="CenterAndExpand"
+                                            HorizontalOptions="Center"
                                             LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
                                             MaxLines="2"
@@ -126,7 +126,7 @@
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, Path=DateIsVisible}"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=DateIsVisible}"
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDateString}"
@@ -137,7 +137,7 @@
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, Path=DateIsNotVisible}"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=DateIsNotVisible}"
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"

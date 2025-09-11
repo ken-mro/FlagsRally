@@ -6,24 +6,17 @@ namespace FlagsRally;
 public partial class App : Application
 {
     private readonly IRevenueCatBilling _revenueCat;
+    private readonly AppShell _appShell;
     public App(IRevenueCatBilling revenueCatBilling, AppShell appShell)
     {
         Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Constants.SYNCFUSIOHN_LICENSE_KEY);
         InitializeComponent();
         _revenueCat = revenueCatBilling;
-        MainPage = appShell;
+        _appShell = appShell;
     }
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = base.CreateWindow(activationState);
-
-        const int newWidth = 600;
-        const int newHeight = 800;
-
-        window.MinimumHeight = window.Height = newHeight;
-        window.MinimumWidth = window.Width = newWidth;
-
-        return window;
+        return new Window(_appShell);
     }
 
     protected override void OnStart()
