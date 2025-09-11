@@ -331,6 +331,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fake location detected!.
+        /// </summary>
+        internal static string FakeLocationDetected {
+            get {
+                return ResourceManager.GetString("FakeLocationDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter by Country.
         /// </summary>
         internal static string FilterByCountry {

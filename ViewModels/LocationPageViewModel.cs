@@ -219,7 +219,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         if (location.IsFromMockProvider)
         {
-            throw new Exception("Fake Location!");
+            throw new Exception($"{AppResources.FakeLocationDetected}");
         }
 
         return location;

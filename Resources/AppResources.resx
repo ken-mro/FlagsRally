@@ -321,4 +321,7 @@
   <data name="GetLocationHere" xml:space="preserve">
     <value>I'm here!</value>
   </data>
+  <data name="FakeLocationDetected" xml:space="preserve">
+    <value>Fake location detected!</value>
+  </data>
 </root>
