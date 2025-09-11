@@ -118,7 +118,7 @@ public class CustomLocationTests
         );
 
         // Assert
-        Assert.Equal(arrivalDate.ToString("dd MMM yyyy"), customLocation.ArrivalDateString);
+        Assert.Equal(arrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US")), customLocation.ArrivalDateString);
     }
 
     [Fact]

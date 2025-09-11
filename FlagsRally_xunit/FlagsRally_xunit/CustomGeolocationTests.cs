@@ -75,7 +75,7 @@ public class CustomGeolocationTests
     public async Task Generate_location_data_from_location_coordinates_in_other_2()
     {
         // Arrange
-        Location location = new Location(12.984305, -61.287228);
+        Location location = new Location(13.0109, -61.2357);
         string languageCode = "ja";
         var preferencesMock = new Mock<IPreferences>();
         preferencesMock.Setup(p => p.Get<string>("ApiKey", string.Empty, null)).Returns(Constants.GOOGLE_MAP_API_KEY);
