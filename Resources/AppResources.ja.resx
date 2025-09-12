@@ -244,7 +244,7 @@
     <value>世界中の旗を集めよう</value>
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
-    <value>再度一度取得してください。</value>
+    <value>再度取得してください。</value>
   </data>
   <data name="RelaunchToEnable" xml:space="preserve">
     <value>アプリを再起動してください。</value>
