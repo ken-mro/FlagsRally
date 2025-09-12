@@ -1,6 +1,5 @@
 ﻿namespace FlagsRally.Exceptions;
 
-[Serializable]
 public class FakeLocationException : Exception
 {
     public FakeLocationException() { }
