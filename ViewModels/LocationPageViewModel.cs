@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Exceptions;
 using FlagsRally.Helpers;
 using FlagsRally.Models;
 using FlagsRally.Models.CustomBoard;
@@ -219,7 +220,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         if (location.IsFromMockProvider)
         {
-            throw new Exception($"{AppResources.FakeLocationDetected}");
+            throw new FakeLocationException($"{AppResources.FakeLocationDetected}");
         }
 
         return location;
@@ -359,6 +360,11 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             // Handle permission exception
             await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nSomething wrong with the permission", "OK");
+        }
+        catch(FakeLocationException ex)
+        {
+            // Handle fake location exception
+            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}", "OK");
         }
         catch (Exception ex)
         {
