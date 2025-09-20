@@ -324,4 +324,7 @@
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>Fake location detected!</value>
   </data>
+  <data name="InvalidOrCorruptedFile" xml:space="preserve">
+    <value>Invalid or corrupted file</value>
+  </data>
 </root>

@@ -448,6 +448,15 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid or corrupted file.
+        /// </summary>
+        internal static string InvalidOrCorruptedFile {
+            get {
+                return ResourceManager.GetString("InvalidOrCorruptedFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Is the following your current location?.
         /// </summary>
         internal static string IsTheFollowingYourLocatoin {
