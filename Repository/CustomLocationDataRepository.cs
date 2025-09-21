@@ -1,6 +1,7 @@
 ﻿using FlagsRally.Models.CustomBoard;
 using Maui.GoogleMaps;
 using SQLite;
+using System.Text.Json;
 
 namespace FlagsRally.Repository;
 
@@ -52,11 +53,41 @@ public class CustomLocationDataRepository : ICustomLocationDataRepository
         return resultLocationList;
     }
 
+    public async Task<IEnumerable<CustomLocationPin>> InsertOrReplaceWithExtensionData(IEnumerable<CustomLocation> customLocationList, CustomBoardLocationJson[] jsonLocations)
+    {
+        await Init();
+        var resultLocationList = new List<CustomLocationPin>();
+        
+        for (int i = 0; i < customLocationList.Count(); i++)
+        {
+            var customLocation = customLocationList.ElementAt(i);
+            var jsonLocation = i < jsonLocations.Length ? jsonLocations[i] : null;
+            
+            await InsertOrReplaceWithExtensionData(customLocation, jsonLocation?.ExtensionData);
+            var customLocationData = GetCustomLocationData(customLocation, jsonLocation?.ExtensionData);
+            resultLocationList.Add(GetCustomLocationPin(customLocationData));
+        }
+        return resultLocationList;
+    }
+
     public async Task<int> UpdateCustomLocation(string key, DateTime? now)
     {
         await Init();
         var result = await _conn!.ExecuteAsync("UPDATE CustomLocation SET ArrivalDate = ? WHERE CompositeKey = ?", now, key);
         return result;
+    }
+
+    public async Task<Dictionary<string, JsonElement>?> GetExtensionData(string compositeKey)
+    {
+        await Init();
+        var locationData = await _conn!.Table<CustomLocationData>()
+                                      .Where(l => l.CompositeKey == compositeKey)
+                                      .FirstOrDefaultAsync();
+        
+        if (locationData?.ExtensionData == null)
+            return null;
+            
+        return JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(locationData.ExtensionData);
     }
 
     private CustomLocationPin GetCustomLocationPin(CustomLocationData data)
@@ -88,6 +119,23 @@ public class CustomLocationDataRepository : ICustomLocationDataRepository
         };
     }
 
+    private CustomLocationData GetCustomLocationData(CustomLocation customLocation, Dictionary<string, JsonElement>? extensionData)
+    {
+        return new CustomLocationData
+        {
+            CompositeKey = customLocation.CompositeKey,
+            BoardName = customLocation.Board.Name,
+            Code = customLocation.Code,
+            Title = customLocation.Title,
+            Subtitle = customLocation.Subtitle,
+            Group = customLocation.Group,
+            Latitude = customLocation.Location.Latitude,
+            Longitude = customLocation.Location.Longitude,
+            ArrivalDate = customLocation.ArrivalDate,
+            ExtensionData = extensionData != null ? JsonSerializer.Serialize(extensionData) : null
+        };
+    }
+
     private CustomLocation GetCustomLocation(CustomBoard customBoard, CustomLocationData customLocationData)
     {
         return new CustomLocation
@@ -114,6 +162,25 @@ public class CustomLocationDataRepository : ICustomLocationDataRepository
         if (existingCustomLocationData is not null)
         {
             customLocationData.ArrivalDate = existingCustomLocationData.ArrivalDate;
+            return await _conn!.InsertOrReplaceAsync(customLocationData);
+        }
+        
+        return await _conn!.InsertOrReplaceAsync(customLocationData);
+    }
+
+    private async Task<int> InsertOrReplaceWithExtensionData(CustomLocation customLocation, Dictionary<string, JsonElement>? extensionData)
+    {
+        await Init();
+        var customLocationData = GetCustomLocationData(customLocation, extensionData);
+        var existingCustomLocationData = await GetCustomLocation(customLocation.CompositeKey);
+        if (existingCustomLocationData is not null)
+        {
+            customLocationData.ArrivalDate = existingCustomLocationData.ArrivalDate;
+            // Preserve existing extension data if new one is null
+            if (extensionData == null && !string.IsNullOrEmpty(existingCustomLocationData.ExtensionData))
+            {
+                customLocationData.ExtensionData = existingCustomLocationData.ExtensionData;
+            }
             return await _conn!.InsertOrReplaceAsync(customLocationData);
         }
         

@@ -13,4 +13,8 @@ public class CustomBoardData
 
     public int Width { get; set; }
     public int Height { get; set; }
+    
+    // Store additional JSON properties as a JSON string
+    [MaxLength(168)]
+    public string? ExtensionData { get; set; }
 }

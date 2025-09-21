@@ -81,9 +81,38 @@ public class CustomBoardService
     private async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json)
     {
         var customBoard = GetCustomBoard(json);
-        await _customBoardRepository.InsertOrReplaceAsync(customBoard);
+        
+        // Check if the board has extension data and use appropriate method
+        if (json.ExtensionData != null && json.ExtensionData.Count > 0)
+        {
+            await _customBoardRepository.InsertOrReplaceWithExtensionDataAsync(customBoard, json.ExtensionData);
+        }
+        else
+        {
+            await _customBoardRepository.InsertOrReplaceAsync(customBoard);
+        }
+        
         var customLocations = GetCustomLocations(json, customBoard);
-        var pins = await _customLocationDataRepository.InsertOrReplace(customLocations);
+        // Use the new method that preserves extension data
+        var pins = await _customLocationDataRepository.InsertOrReplaceWithExtensionData(customLocations, json.locations);
         return (customBoard, pins);
+    }
+
+    // Helper method to serialize extension data
+    public static string? SerializeExtensionData(Dictionary<string, JsonElement>? extensionData)
+    {
+        if (extensionData == null || extensionData.Count == 0)
+            return null;
+            
+        return JsonSerializer.Serialize(extensionData);
+    }
+    
+    // Helper method to deserialize extension data
+    public static Dictionary<string, JsonElement>? DeserializeExtensionData(string? extensionData)
+    {
+        if (string.IsNullOrEmpty(extensionData))
+            return null;
+            
+        return JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(extensionData);
     }
 }

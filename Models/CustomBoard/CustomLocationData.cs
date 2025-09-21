@@ -24,4 +24,8 @@ public class CustomLocationData
     public double Latitude { get; init; }
     public double Longitude { get; init; }
     public DateTime? ArrivalDate { get; set; } = null;
+    
+    // Store additional JSON properties as a JSON string
+    [MaxLength(168)]
+    public string? ExtensionData { get; set; }
 }

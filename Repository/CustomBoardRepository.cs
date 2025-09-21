@@ -1,5 +1,6 @@
 ﻿using FlagsRally.Models.CustomBoard;
 using SQLite;
+using System.Text.Json;
 
 namespace FlagsRally.Repository;
 
@@ -37,6 +38,26 @@ public class CustomBoardRepository : ICustomBoardRepository
         return await _conn!.InsertOrReplaceAsync(customBoardData);
     }
 
+    public async Task<int> InsertOrReplaceWithExtensionDataAsync(CustomBoard customBoard, Dictionary<string, JsonElement>? extensionData)
+    {
+        await Init();
+        var customBoardData = GetCustomBoardData(customBoard, extensionData);
+        return await _conn!.InsertOrReplaceAsync(customBoardData);
+    }
+
+    public async Task<Dictionary<string, JsonElement>?> GetExtensionData(string boardName)
+    {
+        await Init();
+        var boardData = await _conn!.Table<CustomBoardData>()
+                                   .Where(b => b.Name == boardName)
+                                   .FirstOrDefaultAsync();
+        
+        if (boardData?.ExtensionData == null)
+            return null;
+            
+        return JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(boardData.ExtensionData);
+    }
+
     private CustomBoard GetCustomBoard(CustomBoardData customBoardData)
     {
         return new CustomBoard()
@@ -59,4 +80,15 @@ public class CustomBoardRepository : ICustomBoardRepository
         };
     }
 
+    private CustomBoardData GetCustomBoardData(CustomBoard customBoard, Dictionary<string, JsonElement>? extensionData)
+    {
+        return new CustomBoardData()
+        {
+            Name = customBoard.Name,
+            Width = customBoard.Width,
+            Height = customBoard.Height,
+            Url = customBoard.Url,
+            ExtensionData = extensionData != null ? JsonSerializer.Serialize(extensionData) : null
+        };
+    }
 }

@@ -1,4 +1,7 @@
-﻿namespace FlagsRally.Models.CustomBoard;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace FlagsRally.Models.CustomBoard;
 
 public class CustomBoardJson
 {
@@ -7,6 +10,10 @@ public class CustomBoardJson
     public int width { get; set; }
     public int height { get; set; }
     public CustomBoardLocationJson[] locations { get; set; } = [];
+    
+    // Capture any additional properties not explicitly defined
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement>? ExtensionData { get; set; }
 }
 
 public class CustomBoardLocationJson
@@ -17,4 +24,8 @@ public class CustomBoardLocationJson
     public string group { get; set; } = string.Empty;
     public double latitude { get; set; }
     public double longitude { get; set; }
+    
+    // Capture any additional properties not explicitly defined
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement>? ExtensionData { get; set; }
 }
