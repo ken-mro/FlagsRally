@@ -8,10 +8,13 @@ public class CustomBoardService
 {
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
-    public CustomBoardService(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository)
+    private readonly CryptoService _cryptoService;
+
+    public CustomBoardService(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, CryptoService cryptoService)
     {
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
+        _cryptoService = cryptoService;
     }
 
     public CustomBoard GetCustomBoard(CustomBoardJson json)
@@ -48,12 +51,29 @@ public class CustomBoardService
         return locations;
     }
 
-    public async Task<(CustomBoard, IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(Stream stream)
+    public async Task<(CustomBoard, IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(Stream stream, string fileName)
     {
         if (stream is null) return new();
 
-        using var reader = new StreamReader(stream);
-        var json = reader.ReadToEnd();
+        string json = string.Empty;
+
+        // Check if file is encrypted based on extension
+        if (CryptoService.IsEncryptedFile(fileName))
+        {
+            // Read encrypted data
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var encryptedData = memoryStream.ToArray();
+
+            json = _cryptoService.DecryptJson(encryptedData);
+        }
+        else
+        {
+            // Read plain text JSON
+            using var reader = new StreamReader(stream);
+            json = await reader.ReadToEndAsync();
+        }
+
         var customBoardJson = JsonSerializer.Deserialize<CustomBoardJson>(json) ?? new();
         return await SaveBoardAndLocations(customBoardJson);
     }

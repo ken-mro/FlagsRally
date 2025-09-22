@@ -324,4 +324,7 @@
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>位置情報の偽装が検出されました。</value>
   </data>
+  <data name="InvalidOrCorruptedFile" xml:space="preserve">
+    <value>無効または破損したファイルです。</value>
+  </data>
 </root>

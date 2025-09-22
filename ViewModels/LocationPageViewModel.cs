@@ -422,7 +422,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var pickedFile = await FilePicker.PickAsync();
             if (pickedFile is null) return;
             using var stream = await pickedFile.OpenReadAsync();
-            (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stream);
+            (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stream, pickedFile.FileName);
 
             if (!_appShell.CustomBoardPage.IsVisible)
             {
@@ -441,6 +441,10 @@ public partial class LocationPageViewModel : BaseViewModel
             }
 
             AddPinsToMap(pins);
+        }
+        catch (OperationCanceledException)
+        {
+            // User cancelled password entry, just return without showing error
         }
         catch (Exception ex)
         {

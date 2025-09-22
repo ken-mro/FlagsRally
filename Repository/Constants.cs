@@ -8,6 +8,8 @@ namespace FlagsRally.Repository;
 public static class Constants
 {
     private const string DATABSE_NAME = "FlagsRally.db3";
+    public const string ENCRYPTION_KEY = "ENCRYPTION_KEY";
+
     public const string GOOGLE_MAP_API_KEY = "PASTE-YOUR-API-KEY-HERE";
 
     public const string REVENUECAT_API_KEY_ANDROID = "PASTE-YOUR-API-KEY-HERE";
