@@ -72,7 +72,7 @@ public class CryptoService
         }
         catch (CryptographicException)
         {
-            throw new UnauthorizedAccessException(AppResources.InvalidOrCorruptedFile);
+            throw new InvalidOperationException(AppResources.InvalidOrCorruptedFile);
         }
     }
 
