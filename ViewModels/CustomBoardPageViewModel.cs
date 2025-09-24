@@ -74,7 +74,8 @@ public partial class CustomBoardPageViewModel : BaseViewModel
             CustomBoardList = new ObservableCollection<CustomBoard>(allBoards);
             if (FilteredCustomBoard is null)
             {
-                FilteredCustomBoard = allBoards.Where(x => x.Name.Equals(latestCustomLocation?.Board.Name)).First();
+                var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(latestCustomLocation?.Board.Name));
+                FilteredCustomBoard = matchingBoard ?? allBoards.FirstOrDefault();
             }
         }
         catch (Exception ex)
