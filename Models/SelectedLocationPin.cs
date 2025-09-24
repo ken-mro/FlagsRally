@@ -34,7 +34,7 @@ public class SelectedLocationPin : Pin
 
     private static string SetAddress(Position position)
     {
-        return $"{Math.Round(position.Latitude, 3)}, {Math.Round(position.Longitude, 3)}";
+        return $"{Math.Round(position.Latitude, 6)}, {Math.Round(position.Longitude, 6)}";
     }
 
     public void UpdateLocation(Position position)
