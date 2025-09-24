@@ -66,15 +66,16 @@ public partial class CustomBoardPageViewModel : BaseViewModel
         {
             IsBusy = true;
 
+            var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
+            SourceCustomLocationList = new ObservableCollection<CustomLocation>(allCustomLocations);
+            var latestCustomLocation = allCustomLocations.MaxBy(x => x.ArrivalDate);
+
             var allBoards = await _customBoardRepository.GetAllCustomBoards();
             CustomBoardList = new ObservableCollection<CustomBoard>(allBoards);
             if (FilteredCustomBoard is null)
             {
-            FilteredCustomBoard = allBoards.First();
+                FilteredCustomBoard = allBoards.Where(x => x.Name.Equals(latestCustomLocation?.Board.Name)).First();
             }
-
-            var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
-            SourceCustomLocationList = new ObservableCollection<CustomLocation>(allCustomLocations);
         }
         catch (Exception ex)
         {
