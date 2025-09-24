@@ -76,8 +76,10 @@
             </Button.Triggers>
         </Button>
         <ActivityIndicator
-            Grid.Row="3"
+            Grid.Row="1"
             IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}" />
+            IsVisible="{Binding IsBusy}"
+            WidthRequest="50"
+            Color="Gray" />
     </Grid>
 </ContentPage>
