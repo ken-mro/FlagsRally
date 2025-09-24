@@ -240,9 +240,9 @@ namespace FlagsRally.ViewModels
         async Task ShowLocationInfo(ArrivalLocation arrivalLocation)
         {
             var longitude = arrivalLocation.Location.Longitude;
-            var roundedLongitude = Math.Round(longitude, 3);
+            var roundedLongitude = Math.Round(longitude, 6);
             var latitude = arrivalLocation.Location.Latitude;
-            var roundedLatitude = Math.Round(latitude, 3);
+            var roundedLatitude = Math.Round(latitude, 6);
 
             await Shell.Current.DisplayAlert($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
                                                                     $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
