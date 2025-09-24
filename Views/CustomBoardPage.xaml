@@ -5,13 +5,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:customboard="clr-namespace:FlagsRally.Models.CustomBoard"
+    xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CustomBoardPageViewModel">
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
+        <converters:IsSvgUrlConverter x:Key="IsSvgUrlConverter" />
     </ContentPage.Resources>
     <Grid Padding="5" RowSpacing="10">
         <Grid.RowDefinitions>
@@ -98,17 +101,26 @@
                                                          iOS=2,
                                                          Default=0}"
                                     VerticalOptions="Center">
-                                    <Image
-                                        Aspect="AspectFit"
-                                        HorizontalOptions="Center"
-                                        VerticalOptions="Center">
-                                        <Image.Source>
-                                            <UriImageSource
-                                                CacheValidity="30"
-                                                CachingEnabled="True"
-                                                Uri="{Binding ImageUrl}" />
-                                        </Image.Source>
-                                    </Image>
+                                    <Grid>
+                                        <ff:SvgCachedImage
+                                            Aspect="AspectFit"
+                                            CacheDuration="30"
+                                            CacheType="Memory"
+                                            IsVisible="{Binding ImageUrl, Converter={StaticResource IsSvgUrlConverter}}"
+                                            Source="{Binding ImageUrl}" />
+                                        <Image
+                                            Aspect="AspectFit"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding ImageUrl, Converter={StaticResource IsPngUrlConverter}}"
+                                            VerticalOptions="Center">
+                                            <Image.Source>
+                                                <UriImageSource
+                                                    CacheValidity="30"
+                                                    CachingEnabled="True"
+                                                    Uri="{Binding ImageUrl}" />
+                                            </Image.Source>
+                                        </Image>
+                                    </Grid>
                                     <StackLayout BackgroundColor="Black">
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
