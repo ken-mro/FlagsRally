@@ -8,7 +8,6 @@ using Maui.GoogleMaps.Hosting;
 using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
-using FFImageLoading.Maui;
 
 namespace FlagsRally
 {
@@ -21,7 +20,6 @@ namespace FlagsRally
                 .UseMauiApp<App>()
                 .ConfigureSyncfusionCore()
                 .UseMauiCommunityToolkit()
-                .UseFFImageLoading()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
