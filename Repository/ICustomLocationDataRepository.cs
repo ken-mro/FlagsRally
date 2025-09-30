@@ -8,4 +8,5 @@ public interface ICustomLocationDataRepository
     Task<int> UpdateCustomLocation(string key, DateTime? now);
     Task<IEnumerable<CustomLocation>> GetAllCustomLocations();
     Task<IEnumerable<CustomLocationPin>> GetAllCustomLocationPins();
+    Task<CustomLocation?> GetCustomLocationByCompositeKey(string compositeKey);
 }

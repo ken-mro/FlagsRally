@@ -419,8 +419,7 @@ public partial class LocationPageViewModel : BaseViewModel
         try
         {
             // Get the custom location data to create the popup
-            var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
-            var customLocation = allCustomLocations.FirstOrDefault(cl => cl.CompositeKey == customLocationKey);
+            var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
 
             if (customLocation is not null)
             {
