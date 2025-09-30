@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.CustomLocationImagePopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:CustomLocationImagePopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    VerticalOptions="Center">
+
+
+    <Grid Padding="20" RowSpacing="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Location Title  -->
+        <Label
+            Grid.Row="0"
+            FontAutoScalingEnabled="True"
+            FontSize="Title"
+            HorizontalOptions="Center"
+            Style="{StaticResource Headline}"
+            Text="{Binding LocationTitle}"
+            TextColor="Black" />
+
+        <Grid Grid.Row="1">
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="{Binding Height}"
+                Source="{Binding ImageUrl}"
+                WidthRequest="{Binding Width}" />
+        </Grid>
+        <Button
+            Grid.Row="2"
+            Command="{Binding ClosePopupCommand}"
+            HorizontalOptions="Center"
+            Text="OK"
+            WidthRequest="100" />
+    </Grid>
+</toolkit:Popup>

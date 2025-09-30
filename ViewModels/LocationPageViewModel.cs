@@ -409,6 +409,44 @@ public partial class LocationPageViewModel : BaseViewModel
         if (ArrivalMap is null) return;
         ArrivalMap.SelectedPin = null;
         ArrivalMap.SelectedPin = selectedCustomLocationPin;
+
+        // Show the image popup for successful check-in
+        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, now);
+    }
+
+    private async Task ShowCustomLocationImagePopup(string customLocationKey, DateTime arrivalDate)
+    {
+        try
+        {
+            // Get the custom location data to create the popup
+            var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
+            var customLocation = allCustomLocations.FirstOrDefault(cl => cl.CompositeKey == customLocationKey);
+
+            if (customLocation is not null)
+            {
+                // Update the arrival date to the current check-in time
+                var updatedCustomLocation = new CustomLocation(
+                    customLocation.Board,
+                    customLocation.Code,
+                    customLocation.Title,
+                    customLocation.Subtitle,
+                    customLocation.Group,
+                    customLocation.Location,
+                    arrivalDate
+                );
+
+                var popupViewModel = new CustomLocationImagePopupViewModel(updatedCustomLocation);
+                var popup = new CustomLocationImagePopupView(popupViewModel);
+                await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+            }
+        }
+        catch (Exception ex)
+        {
+            // If popup fails, don't block the check-in process
+#if DEBUG
+            Console.WriteLine($"Failed to show image popup: {ex.Message}");
+#endif
+        }
     }
 
     [RelayCommand]
