@@ -18,18 +18,7 @@ public class SelectedLocationPin : Pin
     private static BitmapDescriptor SetIcon()
     {
         var icon = "selected_location_pin.png";
-
-        var imageSource = () => new ContentView()
-        {
-            Content = new Image
-            {
-                Source = icon,
-                WidthRequest = 80,
-                HeightRequest = 80
-            }
-        };
-
-        return BitmapDescriptorFactory.FromView(imageSource);
+        return BitmapDescriptorFactory.FromBundle(icon);
     }
 
     private static string SetAddress(Position position)

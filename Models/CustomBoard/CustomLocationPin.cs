@@ -38,16 +38,6 @@ public class CustomLocationPin : Pin
     {
         var icon = isVisited ? "pin_arrived.png" : "pin.png";
 
-        var imageSource = () => new ContentView()
-        {
-            Content = new Image
-            {
-                Source = icon,
-                WidthRequest = 50,
-                HeightRequest = 50
-            }
-        };
-
-        return BitmapDescriptorFactory.FromView(imageSource);        
+        return BitmapDescriptorFactory.FromBundle(icon);       
     }
 }
