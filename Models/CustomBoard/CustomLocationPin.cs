@@ -38,6 +38,6 @@ public class CustomLocationPin : Pin
     {
         var icon = isVisited ? "pin_arrived" : "pin";
 
-        return BitmapDescriptorFactory.FromBundle(icon);       
+        return BitmapDescriptorFactory.FromBundle(icon);
     }
 }
