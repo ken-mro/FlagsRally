@@ -17,7 +17,7 @@ public class SelectedLocationPin : Pin
 
     private static BitmapDescriptor SetIcon()
     {
-        var icon = "selected_location_pin.png";
+        var icon = "selected_location_pin";
         return BitmapDescriptorFactory.FromBundle(icon);
     }
 

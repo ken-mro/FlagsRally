@@ -36,7 +36,7 @@ public class CustomLocationPin : Pin
 
     private static BitmapDescriptor SetIcon(bool isVisited)
     {
-        var icon = isVisited ? "pin_arrived.png" : "pin.png";
+        var icon = isVisited ? "pin_arrived" : "pin";
 
         return BitmapDescriptorFactory.FromBundle(icon);       
     }
