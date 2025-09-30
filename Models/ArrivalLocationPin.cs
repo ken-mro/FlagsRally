@@ -20,18 +20,7 @@ public class ArrivalLocationPin : Pin
 
     private static BitmapDescriptor SetIcon()
     {
-        var icon = "default_pin.png";
-
-        var imageSource = () => new ContentView()
-        {
-            Content = new Image
-            {
-                Source = icon,
-                WidthRequest = 50,
-                HeightRequest = 50
-            }
-        };
-
-        return BitmapDescriptorFactory.FromView(imageSource);
+        var icon = "default_pin";
+        return BitmapDescriptorFactory.FromBundle(icon);
     }
 }
