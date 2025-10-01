@@ -9,6 +9,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CustomLocationImagePopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
     VerticalOptions="Center">
     <Grid Padding="20" RowSpacing="15">
         <Grid.RowDefinitions>
@@ -33,7 +34,7 @@
             Grid.Row="0"
             Grid.RowSpan="2"
             HeightRequest="{Binding Height}"
-            HorizontalOptions="Center"
+            HorizontalOptions="Fill"
             IsAnimationEnabled="{Binding IsAnimationEnabled}"
             RepeatMode="Restart"
             Source="celebration.json"
