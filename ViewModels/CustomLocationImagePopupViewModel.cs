@@ -21,12 +21,16 @@ public partial class CustomLocationImagePopupViewModel : BaseViewModel
     [ObservableProperty]
     private int _width = 0;
 
-    public CustomLocationImagePopupViewModel(CustomLocation customLocation)
+    [ObservableProperty]
+    private bool _isAnimationEnabled;
+
+    public CustomLocationImagePopupViewModel(CustomLocation customLocation, bool isAnimationEnabled = true)
     {
         ImageUrl = customLocation.ImageUrl;
         LocationTitle = customLocation.Title;
         Height = customLocation.Board.Height;
         Width = customLocation.Board.Width;
+        IsAnimationEnabled = isAnimationEnabled;
     }
 
     [RelayCommand]
