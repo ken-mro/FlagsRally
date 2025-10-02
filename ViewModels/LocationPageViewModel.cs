@@ -420,24 +420,12 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             // Get the custom location data to create the popup
             var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
+            if (customLocation is null) return;
 
-            if (customLocation is not null)
-            {
-                // Update the arrival date to the current check-in time
-                var updatedCustomLocation = new CustomLocation(
-                    customLocation.Board,
-                    customLocation.Code,
-                    customLocation.Title,
-                    customLocation.Subtitle,
-                    customLocation.Group,
-                    customLocation.Location,
-                    arrivalDate
-                );
+            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation);
+            var popup = new CustomLocationImagePopupView(popupViewModel);
+            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
 
-                var popupViewModel = new CustomLocationImagePopupViewModel(updatedCustomLocation);
-                var popup = new CustomLocationImagePopupView(popupViewModel);
-                await Shell.Current.CurrentPage.ShowPopupAsync(popup);
-            }
         }
         catch (Exception ex)
         {
