@@ -7,6 +7,7 @@ using FlagsRally.Views;
 using Maui.GoogleMaps.Hosting;
 using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using Syncfusion.Maui.Core.Hosting;
 
 namespace FlagsRally
@@ -18,6 +19,7 @@ namespace FlagsRally
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp()
                 .ConfigureSyncfusionCore()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>

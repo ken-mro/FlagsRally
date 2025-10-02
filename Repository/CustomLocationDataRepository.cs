@@ -39,6 +39,22 @@ public class CustomLocationDataRepository : ICustomLocationDataRepository
         return customLocationDataList.Select(l => GetCustomLocation(customBoardList.Where(b => b.Name == l.BoardName).FirstOrDefault() ?? new(), l)).ToList();
     }
 
+    public async Task<CustomLocation?> GetCustomLocationByCompositeKey(string compositeKey)
+    {
+        await Init();
+        var customLocationData = await _conn!.Table<CustomLocationData>()
+                           .Where(x => x.CompositeKey.Equals(compositeKey))
+                           .FirstOrDefaultAsync();
+        
+        if (customLocationData is null)
+            return null;
+
+        var customBoardList = await _customBoardRepository.GetAllCustomBoards();
+        var customBoard = customBoardList.FirstOrDefault(b => b.Name == customLocationData.BoardName) ?? new();
+        
+        return GetCustomLocation(customBoard, customLocationData);
+    }
+
     public async Task<IEnumerable<CustomLocationPin>> InsertOrReplace(IEnumerable<CustomLocation> customLocationList)
     {
         await Init();
