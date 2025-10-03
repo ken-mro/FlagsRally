@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.LocationDiscoveryPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:LocationDiscoveryPopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <Grid
+        Padding="20"
+        BackgroundColor="White"
+        RowSpacing="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label
+            Grid.Row="0"
+            FontAutoScalingEnabled="True"
+            FontSize="Title"
+            HorizontalOptions="Center"
+            Style="{StaticResource Headline}"
+            Text="{Binding LocationTitle}"
+            TextColor="Black" />
+
+        <Image
+            Grid.Row="1"
+            Aspect="AspectFit"
+            HeightRequest="{Binding Height}"
+            Source="{Binding ImageUrl}"
+            WidthRequest="{Binding Width}" />
+
+        <!--  Show celebration animation only for first time country visits  -->
+        <skia:SKLottieView
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            HeightRequest="{Binding Height}"
+            HorizontalOptions="Fill"
+            IsAnimationEnabled="{Binding IsAnimationEnabled}"
+            RepeatMode="Restart"
+            Source="celebration.json"
+            VerticalOptions="Center" />
+
+        <Button
+            Grid.Row="2"
+            Command="{Binding ClosePopupCommand}"
+            HorizontalOptions="Center"
+            Text="OK"
+            WidthRequest="100" />
+    </Grid>
+</toolkit:Popup>

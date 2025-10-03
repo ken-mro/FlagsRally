@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Exceptions;
@@ -37,6 +37,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private SettingsPreferences _settingsPreferences;
     private Map? _arrivalMap;
     private CustomBoardService _customBoardService;
+    private ArrivalLocationService _arrivalLocationService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
@@ -226,7 +227,7 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell, ArrivalLocationService arrivalLocationService)
     {
         _appShell = appShell;
         _arrivalLocationRepository = arrivalLocationRepository;
@@ -236,6 +237,7 @@ public partial class LocationPageViewModel : BaseViewModel
         _revenueCat = revenueCat;
         _settingsPreferences = settingsPreferences;
         _customBoardService = customBoardService;
+        _arrivalLocationService = arrivalLocationService;
     }
 
     private async Task Init()
@@ -334,16 +336,21 @@ public partial class LocationPageViewModel : BaseViewModel
                                                             $"{arrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
             if (result)
             {
+                // Check if this is the first time visiting this country before saving
+                var isFirstTimeCountry = !await _arrivalLocationService.HasVisitedCountryBefore(arrivalLocationData.CountryCode);
+                
                 await _arrivalLocationRepository.Save(arrivalLocationData);
                 _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);                
                 ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
 
+                // Show popup based on conditions
+                await ShowLocationDiscoveryPopup(arrivalLocationData, isFirstTimeCountry);
+
                 if (_tappedPointPin is null) return;
 
                 ArrivalMap?.Pins.Remove(_tappedPointPin);
                 _tappedPointPin = null;
-
             }
         }
         catch (FeatureNotSupportedException ex)
@@ -432,6 +439,49 @@ public partial class LocationPageViewModel : BaseViewModel
             // If popup fails, don't block the check-in process
 #if DEBUG
             Console.WriteLine($"Failed to show image popup: {ex.Message}");
+#endif
+        }
+    }
+
+    private async Task ShowLocationDiscoveryPopup(ArrivalLocationData arrivalLocationData, bool isFirstTimeCountry)
+    {
+        try
+        {
+            string imageUrl = string.Empty;
+            string title = string.Empty;
+
+            if (isFirstTimeCountry)
+            {
+                // Show country flag for first time country visit
+#if WINDOWS
+                imageUrl = $"https://flagcdn.com/160x120/{arrivalLocationData.CountryCode.ToLower()}.png";
+#else
+                imageUrl = $"https://flagcdn.com/160x120/{arrivalLocationData.CountryCode.ToLower()}.png";
+#endif
+                title = $"New Country: {arrivalLocationData.CountryName}";
+            }
+            else if (Constants.SupportedSubRegionCountryCodeList.Contains(arrivalLocationData.CountryCode.ToLower()) 
+                     && !string.IsNullOrEmpty(arrivalLocationData.AdminAreaCode))
+            {
+                // Show emblem for supported sub-region
+                var subRegionCode = new SubRegionCode(arrivalLocationData.CountryCode, arrivalLocationData.AdminAreaCode);
+                imageUrl = $"{subRegionCode.ImageResourceString}.png";
+                title = $"New Region: {arrivalLocationData.AdminAreaName}";
+            }
+
+            // Only show popup if we have an image to display
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                var popupViewModel = new LocationDiscoveryPopupViewModel(imageUrl, title, isFirstTimeCountry);
+                var popup = new LocationDiscoveryPopupView(popupViewModel);
+                await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+            }
+        }
+        catch (Exception ex)
+        {
+            // If popup fails, don't block the location saving process
+#if DEBUG
+            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
 #endif
         }
     }
