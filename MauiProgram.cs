@@ -38,7 +38,9 @@ namespace FlagsRally
 #endif
 
             builder.Services.AddRevenueCatBilling();
-            
+
+            builder.Services.AddSingleton<AppShell>();
+
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationDataRepository>();
             builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton(Preferences.Default);
