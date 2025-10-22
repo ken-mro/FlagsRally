@@ -133,10 +133,16 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
         };
     }
 
-    public async Task<int> Save(ArrivalLocationData arrivalLocationData)
+    public async Task<ArrivalLocation> Save(ArrivalLocationData arrivalLocationData)
     {
         await Init();
-        return await _conn!.InsertAsync(arrivalLocationData);
+        var result = await _conn!.InsertAsync(arrivalLocationData);
+        if (result == 0)
+        {
+            throw new Exception("Failed to save ArrivalLocationData");
+        }
+
+        return GetArrivalLocation(arrivalLocationData);
     }
 
     public async Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync()
