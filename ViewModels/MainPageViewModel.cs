@@ -85,7 +85,7 @@ namespace FlagsRally.ViewModels
         {
             if (!_isMapInitialized) return string.Empty;
 
-            _allCountries = _arrivalLocationService.GetAllCountriesArrivalLocations();
+            _allCountries = _arrivalLocationService.GetAllCountriesArrivalLocationsForShapes();
             var arrivedAq = SourceArrivalLocationList.Where(l => l.CountryCode.ToLower().Equals("aq")).Any();
             if (arrivedAq) return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/world-map.json";
             return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/non-aq-world-map.json";
