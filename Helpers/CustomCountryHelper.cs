@@ -93,6 +93,8 @@ public class CustomCountryHelper : CountryHelper
 
         CountryRegion.Add(new Regions() { Name = "Leiria District", ShortCode = "10" });
 
+        CountryRegion.Add(new Regions() { Name = "Portalegre District", ShortCode = "12" });
+
         CountryRegion.Add(new Regions() { Name = "Santarém District", ShortCode = "14" });
         CountryRegion.Add(new Regions() { Name = "Azores", ShortCode = "20" });
 
