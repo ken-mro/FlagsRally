@@ -31,14 +31,14 @@
             TextColor="Black" />
 
         <Image
-            IsVisible="{Binding IsSupportedAdminArea}"
             Grid.Row="1"
+            IsVisible="{Binding IsSupportedAdminArea}"
             Aspect="AspectFit"
             HeightRequest="80"
             Source="{Binding ImageSource}"/>
         <Label
-            IsVisible="{Binding IsCountry}"
             Grid.Row="1"
+            IsVisible="{Binding IsCountry}"
             HorizontalOptions="Center"
             FontSize="80"
             Text="{Binding ImageSource}"/>
