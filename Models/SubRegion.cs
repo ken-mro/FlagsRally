@@ -13,31 +13,31 @@ public class SubRegion
     public string Name { get; init; } = string.Empty;
     public string EnAdminAreaName { get; init; } = string.Empty;
     public SubRegionCode Code { get; init; } = SubRegionCode.EmptyCode();
-    public string FlagSource => GetFlagSource();
+    public string FlagSource => GetFlagSource(Code);
     public string MapToolTipImageSource => GetToolTipImageSource();
 
 
     public bool HasBeenVisited => !(ArrivalDate == DateTime.MinValue);
     public bool HasNotBeenVisited => !HasBeenVisited;
 
-    private string GetFlagSource()
+    public static string GetFlagSource(SubRegionCode subRegionCode)
     {
-        if (Code.lowerCountryCodeHyphenRegionCode[0..2] == "us")
+        if (subRegionCode.lowerCountryCodeHyphenRegionCode[0..2] == "us")
         {
-            if (Code.lowerCountryCodeHyphenRegionCode == "us-dc") return "us_dc.png";
+            if (subRegionCode.lowerCountryCodeHyphenRegionCode == "us-dc") return "us_dc.png";
 
-            return $"https://flagcdn.com/160x120/{Code.lowerCountryCodeHyphenRegionCode}.png";
+            return $"https://flagcdn.com/160x120/{subRegionCode.lowerCountryCodeHyphenRegionCode}.png";
         }
-        else if (Constants.SupportedSubRegionCountryCodeList.Contains(Code.lowerCountryCodeHyphenRegionCode[0..2]))
+        else if (Constants.SupportedSubRegionCountryCodeList.Contains(subRegionCode.lowerCountryCodeHyphenRegionCode[0..2]))
         {
-            return $"{Code.ImageResourceString}_emblem.png";
+            return $"{subRegionCode.ImageResourceString}_emblem.png";
         }
         else
         {
             throw new ArgumentException("Unexpected country's SubRegionCode");
         }
     }
-    private string GetToolTipImageSource()
+        private string GetToolTipImageSource()
     {
         if (Code.lowerCountryCodeHyphenRegionCode[0..2] == "us")
         {
