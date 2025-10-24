@@ -38,7 +38,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     {
         await Init();
         var arrivalLocationDataList = await _conn!.Table<ArrivalLocationData>().ToListAsync();
-        var tasks = arrivalLocationDataList.Select(async data => await GetArrivalLocation(data));
+        var tasks = arrivalLocationDataList.Select(GetArrivalLocation);
         return [.. (await Task.WhenAll(tasks))];
     }
 
