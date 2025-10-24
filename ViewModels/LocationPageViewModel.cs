@@ -13,8 +13,6 @@ using Maui.GoogleMaps;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using static System.Net.WebRequestMethods;
 using Map = Maui.GoogleMaps.Map;
 
 namespace FlagsRally.ViewModels;
