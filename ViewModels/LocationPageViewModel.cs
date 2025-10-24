@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Exceptions;
@@ -13,6 +13,8 @@ using Maui.GoogleMaps;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
+using static System.Net.WebRequestMethods;
 using Map = Maui.GoogleMaps.Map;
 
 namespace FlagsRally.ViewModels;
@@ -37,6 +39,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private SettingsPreferences _settingsPreferences;
     private Map? _arrivalMap;
     private CustomBoardService _customBoardService;
+    private ArrivalLocationService _arrivalLocationService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
@@ -121,29 +124,29 @@ public partial class LocationPageViewModel : BaseViewModel
 
             if (deleteIsFailed)
             {
-                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
-                    return;
-                }
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                return;
+            }
 
             //update pin on map
-                ArrivalMap?.Pins.Remove(pin);
-            }
+            ArrivalMap?.Pins.Remove(pin);
+        }
         else if (pin is CustomLocationPin customLocationPin)
         {
             if (!customLocationPin.IsVisited) return;
 
             var clears = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
             if (!clears) return;
-            
+
             //update database
             var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(customLocationPin.CustomLocationKey, null);
             var clearIsFailed = affectedRow != 1;
 
             if (clearIsFailed)
             {
-                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
-                    return;
-                }
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                return;
+            }
 
             //update pin on map
             customLocationPin.UpdateVisitStatus(null);
@@ -151,7 +154,7 @@ public partial class LocationPageViewModel : BaseViewModel
             if (ArrivalMap is null) return;
             ArrivalMap.SelectedPin = null;
             ArrivalMap.SelectedPin = customLocationPin;
-        }        
+        }
     }
 
     private static double GetCloseDistanceThresholdKMFrom(double zoomLevel)
@@ -179,7 +182,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private static async Task<Location> GetLastKnownOrDefaultLocationAsync()
     {
-        return await Geolocation.Default.GetLastKnownLocationAsync() 
+        return await Geolocation.Default.GetLastKnownLocationAsync()
                ?? new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
     private async Task MoveAndZoomToCurrentLocationAsync()
@@ -201,7 +204,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         var cameraTarget = ArrivalMap?.CameraPosition.Target;
         return new Location(
-            cameraTarget?.Latitude ?? DEFAULT_LATITUDE, 
+            cameraTarget?.Latitude ?? DEFAULT_LATITUDE,
             cameraTarget?.Longitude ?? DEFAULT_LONGITUDE
         );
     }
@@ -226,7 +229,7 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell, ArrivalLocationService arrivalLocationService)
     {
         _appShell = appShell;
         _arrivalLocationRepository = arrivalLocationRepository;
@@ -236,6 +239,7 @@ public partial class LocationPageViewModel : BaseViewModel
         _revenueCat = revenueCat;
         _settingsPreferences = settingsPreferences;
         _customBoardService = customBoardService;
+        _arrivalLocationService = arrivalLocationService;
     }
 
     private async Task Init()
@@ -321,23 +325,44 @@ public partial class LocationPageViewModel : BaseViewModel
                     return;
                 }
 
-                currentLocation = tappedPinLocation; 
+                currentLocation = tappedPinLocation;
             }
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var arrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
+            var rawArrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
 
-            if (arrivalLocationData is null)
+            if (rawArrivalLocationData is null)
                 throw new Exception($"{AppResources.UnableToGetLocationData}");
 
             var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
-                                                            $"{arrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
+                                                            $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
             if (result)
             {
-                await _arrivalLocationRepository.Save(arrivalLocationData);
-                _settingsPreferences.SetLatestCountry(arrivalLocationData.CountryCode);                
-                ArrivalLocationPin arrivalLocationPin = new (arrivalLocationData);
+                // Check if this is the first time visiting this country before saving
+                var isFirstTimeCountry = !await _arrivalLocationService.HasVisitedCountryBefore(rawArrivalLocationData.CountryCode);
+
+                SubRegionCode? subRegionCode = null;
+                bool isFirstTimeSupportedSubRegion = false;
+                if (Constants.SupportedSubRegionCountryCodeList.Any(c => c.Equals(rawArrivalLocationData.CountryCode.ToLower())))
+                {
+                    subRegionCode = new SubRegionCode(rawArrivalLocationData.CountryCode, rawArrivalLocationData.AdminAreaCode);
+                    isFirstTimeSupportedSubRegion = !await _arrivalLocationService.HasVisitedSubRegionBefore(subRegionCode);
+                }
+
+                var arrivalLocation = await _arrivalLocationRepository.Save(rawArrivalLocationData);
+                _settingsPreferences.SetLatestCountry(arrivalLocation.CountryCode);
+                ArrivalLocationPin arrivalLocationPin = new(arrivalLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
+
+                if (isFirstTimeCountry)
+                {
+                    await ShowLocationDiscoveryPopup(arrivalLocation);
+                }
+
+                if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
+                {
+                    await ShowLocationDiscoveryPopup(arrivalLocation.AdminAreaName, subRegionCode);
+                }
 
                 if (_tappedPointPin is null) return;
 
@@ -398,7 +423,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         var now = DateTime.Now;
         var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(selectedCustomLocationPin.CustomLocationKey, now);
-        
+
         if (affectedRow != 1)
         {
             throw new Exception($"{AppResources.FailedToCheckIn}");
@@ -432,6 +457,61 @@ public partial class LocationPageViewModel : BaseViewModel
             // If popup fails, don't block the check-in process
 #if DEBUG
             Console.WriteLine($"Failed to show image popup: {ex.Message}");
+#endif
+        }
+    }
+
+    private static async Task ShowLocationDiscoveryPopup(ArrivalLocation arrivalLocation)
+    {
+        try
+        {
+            string imageSource = arrivalLocation.CountryFlagSource;
+            string title = string.Empty;
+
+            title = $"{AppResources.NewCountry}: {arrivalLocation.CountryName}";
+
+            // Only show popup if we have an image to display
+            if (string.IsNullOrEmpty(imageSource)) return;
+
+            var popupViewModel = new LocationDiscoveryPopupViewModel(imageSource, true, title);
+            var popup = new LocationDiscoveryPopupView(popupViewModel);
+            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+        }
+        catch (Exception ex)
+        {
+            // If popup fails, don't block the location saving process
+#if DEBUG
+            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
+#endif
+        }
+    }
+
+    private static async Task ShowLocationDiscoveryPopup(string subRegionTitle, SubRegionCode subRegionCode)
+    {
+        try
+        {
+            string imageUrl = string.Empty;
+            string title = string.Empty;
+
+            if (Constants.SupportedSubRegionCountryCodeList.Contains(subRegionCode.CountryCode.ToLower()))
+            {
+                // Show emblem for supported sub-region
+                imageUrl = SubRegion.GetFlagSource(subRegionCode);
+                title = $"{AppResources.NewRegion}: {subRegionTitle}";
+            }
+
+            // Only show popup if we have an image to display
+            if (string.IsNullOrEmpty(imageUrl)) return;
+
+            var popupViewModel = new LocationDiscoveryPopupViewModel(imageUrl, false, title);
+            var popup = new LocationDiscoveryPopupView(popupViewModel);
+            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+        }
+        catch (Exception ex)
+        {
+            // If popup fails, don't block the location saving process
+#if DEBUG
+            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
 #endif
         }
     }
