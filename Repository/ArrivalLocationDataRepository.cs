@@ -38,11 +38,22 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
     {
         await Init();
         var arrivalLocationDataList = await _conn!.Table<ArrivalLocationData>().ToListAsync();
-        return arrivalLocationDataList.Select(GetArrivalLocation).ToList();
+        var tasks = arrivalLocationDataList.Select(GetArrivalLocation);
+        return [.. (await Task.WhenAll(tasks))];
     }
 
-    private ArrivalLocation GetArrivalLocation(ArrivalLocationData ArrivalLocationData)
+    private async Task<ArrivalLocation> GetArrivalLocation(ArrivalLocationData ArrivalLocationData)
     {
+        var adminAreaCode = ArrivalLocationData.AdminAreaCode;
+        if (!string.IsNullOrEmpty(ArrivalLocationData.CountryName) && string.IsNullOrEmpty(adminAreaCode))
+        {
+            adminAreaCode = _countryHelper.GetAdminAreaCode(ArrivalLocationData.CountryCode, ArrivalLocationData.EnAdminAreaName);
+            if (!string.IsNullOrEmpty(adminAreaCode))
+            {
+                await UpdateAdminAreaCode(ArrivalLocationData.Id, adminAreaCode);
+            }
+        }
+
         if (string.IsNullOrEmpty(ArrivalLocationData.CountryName)
             && string.IsNullOrEmpty(ArrivalLocationData.AdminAreaName)
             && string.IsNullOrEmpty(ArrivalLocationData.LocalityName))
@@ -55,7 +66,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
                 CountryName = AppResources.UnexploredLocation,
                 CountryFlagSource = "🏝️",
                 AdminAreaName = AppResources.UnexploredLocation,
-                AdminAreaCode = ArrivalLocationData.AdminAreaCode,
+                AdminAreaCode = adminAreaCode,
                 AdminAreaFlagSource = "unknown_arrival.png",
                 LocalityName = AppResources.UnexploredLocation,
                 Location = new Location
@@ -76,7 +87,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
                 CountryName = ArrivalLocationData.CountryName,
                 CountryFlagSource = "🏖️",
                 AdminAreaName = ArrivalLocationData.AdminAreaName,
-                AdminAreaCode = ArrivalLocationData.AdminAreaCode,
+                AdminAreaCode = adminAreaCode,
                 AdminAreaFlagSource = "earth_noised.png",
                 LocalityName = ArrivalLocationData.LocalityName,
                 Location = new Location
@@ -142,7 +153,7 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
             throw new Exception("Failed to save ArrivalLocationData");
         }
 
-        return GetArrivalLocation(arrivalLocationData);
+        return await GetArrivalLocation(arrivalLocationData);
     }
 
     public async Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync()

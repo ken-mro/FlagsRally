@@ -141,12 +141,8 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
             if (string.IsNullOrEmpty(subRegionCode?.RegionCode))
             {
-                //Try to get code and save it if acquired.
                 var acquiredSubRegionCodeString = _customCountryHelper.GetAdminAreaCode(countryInfo.CountryShortCode, SourceArrivalSubRegion?.EnAdminAreaName ?? string.Empty);
                 if (string.IsNullOrEmpty(acquiredSubRegionCodeString)) continue;
-
-                _arrivalLocationDataRepository.UpdateAdminAreaCode(SourceArrivalSubRegion?.Id ?? 0, acquiredSubRegionCodeString);
-                subRegionCode = new SubRegionCode(countryInfo.CountryShortCode, acquiredSubRegionCodeString);
             }
 
             var blankInstance = blankAllSubregionList.Find(x => x.Code.lowerCountryCodeHyphenRegionCode == subRegionCode?.lowerCountryCodeHyphenRegionCode);
