@@ -327,4 +327,10 @@
   <data name="InvalidOrCorruptedFile" xml:space="preserve">
     <value>Invalid or corrupted file</value>
   </data>
+  <data name="NewCountry" xml:space="preserve">
+    <value>New Country</value>
+  </data>
+  <data name="NewRegion" xml:space="preserve">
+    <value>New Region</value>
+  </data>
 </root>

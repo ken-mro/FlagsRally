@@ -16,6 +16,17 @@ public class ArrivalLocationPin : Pin
         Icon = SetIcon();
     }
 
+    public ArrivalLocationPin(ArrivalLocation arrivalLocation)
+    {
+        Label = arrivalLocation.AdminAreaName;
+        Address = arrivalLocation.ArrivalDate.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Position = new Position(arrivalLocation.Location.Latitude, arrivalLocation.Location.Longitude);
+        Type = PinType.SavedPin;
+        Tag = MapPinTag.SetArrivalLocationTag(arrivalLocation.Id);
+        Anchor = new Point(0.5, 1);
+        Icon = SetIcon();
+    }
+
     public int Id => ((MapPinTag)Tag).ArrivalLocationId;
 
     private static BitmapDescriptor SetIcon()

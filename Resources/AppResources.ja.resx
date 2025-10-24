@@ -327,4 +327,10 @@
   <data name="InvalidOrCorruptedFile" xml:space="preserve">
     <value>無効または破損したファイルです。</value>
   </data>
+  <data name="NewCountry" xml:space="preserve">
+    <value>初めての国</value>
+  </data>
+  <data name="NewRegion" xml:space="preserve">
+    <value>初めての地域</value>
+  </data>
 </root>

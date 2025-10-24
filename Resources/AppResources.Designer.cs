@@ -502,6 +502,24 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Country.
+        /// </summary>
+        internal static string NewCountry {
+            get {
+                return ResourceManager.GetString("NewCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Region.
+        /// </summary>
+        internal static string NewRegion {
+            get {
+                return ResourceManager.GetString("NewRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
