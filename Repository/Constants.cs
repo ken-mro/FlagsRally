@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace FlagsRally.Repository;
 public static class Constants
 {
-    private const string DATABSE_NAME = "FlagsRally.db3";
+    private const string DATABASE_NAME = "FlagsRally.db3";
     private const string DATABASE_PASSWORD = "YOUR-DATABASE-PASSWORD";
     private const string BACKUP_FILE_PATTERN = @"^backup_flagsrally_\d{14}\.zip$";
 
@@ -23,10 +23,10 @@ public static class Constants
     public const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
 
     public const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
-    public static string DatabaseName => DATABSE_NAME;
+    public static string DatabaseName => DATABASE_NAME;
     public static string DatabasePassword => DATABASE_PASSWORD;
     public static string BackupZipName => $"backup_flagsrally_{DateTime.Now:yyyyMMddHHmmss}.zip";
-    public static string DataBasePath => Path.Combine(FileSystem.AppDataDirectory, DATABSE_NAME);
+    public static string DataBasePath => Path.Combine(FileSystem.AppDataDirectory, DATABASE_NAME);
     public static List<string> SupportedSubRegionCountryCodeList => new List<string> { "at", "ca", "cz", "fr", "de", "it", "jp", "my", "nl", "no", "pt", "es", "ch", "ua", "us" };
     
     /// <summary>
