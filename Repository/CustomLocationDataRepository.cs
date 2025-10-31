@@ -4,24 +4,18 @@ using SQLite;
 
 namespace FlagsRally.Repository;
 
-public class CustomLocationDataRepository : ICustomLocationDataRepository
+public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataRepository
 {
-    private string _dbPath = Constants.DataBasePath;
-    private SQLiteAsyncConnection? _conn;
-
     private readonly ICustomBoardRepository _customBoardRepository;
+    
     public CustomLocationDataRepository(ICustomBoardRepository customBoardRepository)
     {
         _customBoardRepository = customBoardRepository;
     }
 
-    private async Task Init()
+    protected override async Task CreateTableAsync()
     {
-        if (_conn != null)
-            return;
-
-        _conn = new SQLiteAsyncConnection(_dbPath);
-        await _conn.CreateTableAsync<CustomLocationData>();
+        await _conn!.CreateTableAsync<CustomLocationData>();
     }
 
     public async Task<IEnumerable<CustomLocationPin>> GetAllCustomLocationPins()

@@ -3,17 +3,11 @@ using SQLite;
 
 namespace FlagsRally.Repository;
 
-public class CustomBoardRepository : ICustomBoardRepository
+public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
 {
-    private string _dbPath = Constants.DataBasePath;
-    private SQLiteAsyncConnection? _conn;
-
-    private async Task Init()
+    protected override async Task CreateTableAsync()
     {
-        if (_conn != null) return;
-
-        _conn = new SQLiteAsyncConnection(_dbPath);
-        await _conn.CreateTableAsync<CustomBoardData>();
+        await _conn!.CreateTableAsync<CustomBoardData>();
     }
 
     public async Task<bool> GetCustomBoardExists()

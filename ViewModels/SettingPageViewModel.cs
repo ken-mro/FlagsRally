@@ -5,6 +5,7 @@ using CountryData.Standard;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.Runtime.Versioning;
 
@@ -64,9 +65,29 @@ namespace FlagsRally.ViewModels
                 if (folderPickerResult.Folder is null) return;
 
                 var folderPath = folderPickerResult.Folder.Path;
-                string downloadPath = Path.Combine(folderPath, Constants.DatabaseName);
+                string zipPath = Path.Combine(folderPath, Constants.BackupZipName);
 
-                File.Copy(dbPath, downloadPath, true);
+                // Create password-protected zip file
+                using (var zipStream = new ZipOutputStream(File.Create(zipPath)))
+                {
+                    zipStream.SetLevel(9); // Compression level (0-9)
+                    zipStream.Password = Constants.DatabasePassword;
+
+                    var entry = new ZipEntry(Constants.DatabaseName)
+                    {
+                        DateTime = DateTime.Now
+                    };
+
+                    zipStream.PutNextEntry(entry);
+
+                    using (var fileStream = File.OpenRead(dbPath))
+                    {
+                        await fileStream.CopyToAsync(zipStream);
+                    }
+
+                    zipStream.CloseEntry();
+                }
+
                 await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
             }
             catch(UnauthorizedAccessException)
@@ -117,15 +138,49 @@ namespace FlagsRally.ViewModels
 
                 var pickedFile = await FilePicker.PickAsync();
                 if (pickedFile is null) return;
-                if (pickedFile.FileName != Constants.DatabaseName)
+                
+                // Validate the backup file using the pattern from Constants
+                if (!Constants.IsValidBackupFileName(pickedFile.FileName))
                 {
                     await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
                     return;
                 }
 
-                File.Copy(pickedFile.FullPath, Constants.DataBasePath, true);
+                // Extract database from password-protected zip file
+                using (var zipStream = new ZipInputStream(File.OpenRead(pickedFile.FullPath)))
+                {
+                    zipStream.Password = Constants.DatabasePassword;
+
+                    ZipEntry? entry;
+                    bool databaseFound = false;
+
+                    while ((entry = zipStream.GetNextEntry()) != null)
+                    {
+                        if (entry.Name == Constants.DatabaseName)
+                        {
+                            databaseFound = true;
+                            
+                            using (var fileStream = File.Create(Constants.DataBasePath))
+                            {
+                                await zipStream.CopyToAsync(fileStream);
+                            }
+                            break;
+                        }
+                    }
+
+                    if (!databaseFound)
+                {
+                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                    return;
+                }
+                }
+
                 await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
                 $"{AppResources.RelaunchToEnable}", "OK");
+            }
+            catch (ZipException)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
             }
             catch (Exception ex)
             {

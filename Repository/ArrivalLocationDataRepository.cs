@@ -6,12 +6,10 @@ using SQLite;
 
 namespace FlagsRally.Repository;
 
-public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
+public class ArrivalLocationDataRepository : BaseRepository, IArrivalLocationDataRepository
 {
-    private string _dbPath = Constants.DataBasePath;
     private readonly CustomCountryHelper _countryHelper;
     private readonly CustomGeolocation _customGeolocation;
-    private SQLiteAsyncConnection? _conn;
 
     public ArrivalLocationDataRepository(CustomCountryHelper countryHelper, CustomGeolocation customGeolocation)
     {
@@ -19,13 +17,9 @@ public class ArrivalLocationDataRepository : IArrivalLocationDataRepository
         _customGeolocation = customGeolocation;
     }
 
-    private async Task Init()
+    protected override async Task CreateTableAsync()
     {
-        if (_conn != null)
-            return;
-
-        _conn = new SQLiteAsyncConnection(_dbPath);
-        await _conn.CreateTableAsync<ArrivalLocationData>();
+        await _conn!.CreateTableAsync<ArrivalLocationData>();
     }
 
     public async Task<int> DeleteAsync(int Id)
