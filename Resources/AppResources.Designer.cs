@@ -493,7 +493,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Monthly subscription for.
+        ///   Looks up a localized string similar to Monthly for.
         /// </summary>
         internal static string MonthlySubFor {
             get {
@@ -543,6 +543,15 @@ namespace FlagsRally.Resources {
         internal static string OverwriteExistingFile {
             get {
                 return ResourceManager.GetString("OverwriteExistingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For getting more locations, subscribe or configure your own Google Maps API key in Settings..
+        /// </summary>
+        internal static string PayWallDescription {
+            get {
+                return ResourceManager.GetString("PayWallDescription", resourceCulture);
             }
         }
         
@@ -682,7 +691,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yearly subscription for.
+        ///   Looks up a localized string similar to Yearly for.
         /// </summary>
         internal static string YearlySubFor {
             get {

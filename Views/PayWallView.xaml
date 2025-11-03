@@ -10,7 +10,7 @@
     x:DataType="viewmodels:PayWallViewModel"
     VerticalOptions="End">
     <ScrollView Padding="20">
-        <VerticalStackLayout Padding="30,0" Spacing="25">
+        <VerticalStackLayout Padding="30,0" Spacing="15">
 
             <Grid Padding="0,20,0,0">
                 <Grid.ColumnDefinitions>
@@ -35,11 +35,18 @@
 
             <Label
                 HorizontalOptions="Center"
+                LineBreakMode="WordWrap"
+                FontSize="Default"
+                Style="{StaticResource SubHeadline}"
+                Text="{x:Static strings:AppResources.PayWallDescription}"
+                TextColor="Black" />
+
+            <Label
+                HorizontalOptions="Center"
                 IsVisible="{Binding AreOfferingsLoaded}"
                 Style="{StaticResource SubHeadline}"
                 Text="{x:Static strings:AppResources.PayWallSubTitle}"
                 TextColor="Black" />
-
             <Button
                 Command="{Binding LoadOfferingsCommand}"
                 HorizontalOptions="Fill"
@@ -49,7 +56,7 @@
 
             <Label
                 IsVisible="{Binding AreOfferingsLoaded}"
-                SemanticProperties.HeadingLevel="Level2"
+                FontSize="Title"
                 Style="{StaticResource SubHeadline}"
                 Text="{x:Static strings:AppResources.Subscription}"
                 TextColor="Black" />

@@ -226,7 +226,7 @@
     <value>Location</value>
   </data>
   <data name="MonthlySubFor" xml:space="preserve">
-    <value>Monthly subscription for</value>
+    <value>Monthly for</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
@@ -280,7 +280,7 @@
     <value>Unexplored Location</value>
   </data>
   <data name="YearlySubFor" xml:space="preserve">
-    <value>Yearly subscription for</value>
+    <value>Yearly for</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
@@ -332,5 +332,8 @@
   </data>
   <data name="NewRegion" xml:space="preserve">
     <value>New Region</value>
+  </data>
+  <data name="PayWallDescription" xml:space="preserve">
+    <value>For getting more locations, subscribe or configure your own Google Maps API key in Settings.</value>
   </data>
 </root>
