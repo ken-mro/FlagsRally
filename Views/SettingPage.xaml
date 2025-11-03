@@ -68,7 +68,7 @@
                 FontAttributes="Bold"
                 FontSize="Body"
                 HorizontalOptions="Start"
-                Text="API Key"
+                Text="Google Maps API Key"
                 VerticalOptions="Center" />
             <Grid Margin="5">
                 <Grid.RowDefinitions>

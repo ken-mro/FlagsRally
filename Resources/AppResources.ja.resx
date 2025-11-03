@@ -333,4 +333,7 @@
   <data name="NewRegion" xml:space="preserve">
     <value>初めての地域</value>
   </data>
+  <data name="PayWallDescription" xml:space="preserve">
+    <value>さらに位置情報を取得するには、サブスクリプションまたは設定でご自身のGoogle Maps API keyを指定してください。</value>
+  </data>
 </root>

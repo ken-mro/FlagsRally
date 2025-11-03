@@ -51,8 +51,8 @@ namespace FlagsRally.ViewModels
         }
 
         [SupportedOSPlatform("android")]
-        [SupportedOSPlatform("ios14.2")]
-        [SupportedOSPlatform("maccatalyst14.2")]
+        [SupportedOSPlatform("ios15.0")]
+        [SupportedOSPlatform("maccatalyst15.0")]
         [RelayCommand]
         async Task CreateBackUpAsync()
         {
@@ -169,10 +169,10 @@ namespace FlagsRally.ViewModels
                     }
 
                     if (!databaseFound)
-                {
-                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
-                    return;
-                }
+                    {
+                        await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                        return;
+                    }
                 }
 
                 await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
