@@ -538,7 +538,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This operation over write the existing file..
+        ///   Looks up a localized string similar to This operation overwrites the existing file..
         /// </summary>
         internal static string OverwriteExistingFile {
             get {

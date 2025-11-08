@@ -235,7 +235,7 @@
     <value>No duplicate countries</value>
   </data>
   <data name="OverwriteExistingFile" xml:space="preserve">
-    <value>This operation over write the existing file.</value>
+    <value>This operation overwrites the existing file.</value>
   </data>
   <data name="PayWallSubTitle" xml:space="preserve">
     <value>The first 3 months are free for new subscribers.</value>
