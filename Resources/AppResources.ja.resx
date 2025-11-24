@@ -336,4 +336,13 @@
   <data name="PayWallDescription" xml:space="preserve">
     <value>さらに位置情報を取得するには、サブスクリプションまたは設定でご自身のGoogle Maps API keyを指定してください。</value>
   </data>
+  <data name="Information" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="TermsOfUse" xml:space="preserve">
+    <value>利用規約</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>プライバシーポリシー</value>
+  </data>
 </root>

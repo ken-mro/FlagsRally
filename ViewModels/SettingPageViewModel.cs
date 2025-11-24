@@ -187,5 +187,31 @@ namespace FlagsRally.ViewModels
                 await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
         }
+
+        [RelayCommand]
+        async Task OpenTermsOfUseAsync()
+        {
+            try
+            {
+                await Browser.Default.OpenAsync("https://doc-hosting.flycricket.io/flagsrally-terms-of-use/ffd4eac4-1892-4fd4-940d-7ada8775f93a/terms", BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            }
+        }
+
+        [RelayCommand]
+        async Task OpenPrivacyPolicyAsync()
+        {
+            try
+            {
+                await Browser.Default.OpenAsync("https://doc-hosting.flycricket.io/flagsrally-privacy-policy/4cade2a6-c6e3-47e3-85b6-ca608fbaea31/privacy", BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            }
+        }
     }
 }

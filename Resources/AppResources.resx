@@ -336,4 +336,13 @@
   <data name="PayWallDescription" xml:space="preserve">
     <value>For getting more locations, subscribe or configure your own Google Maps API key in Settings.</value>
   </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="TermsOfUse" xml:space="preserve">
+    <value>Terms of Use</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
 </root>
