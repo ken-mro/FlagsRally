@@ -193,7 +193,7 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                await Browser.Default.OpenAsync("https://doc-hosting.flycricket.io/flagsrally-terms-of-use/ffd4eac4-1892-4fd4-940d-7ada8775f93a/terms", BrowserLaunchMode.SystemPreferred);
+                await Browser.Default.OpenAsync(Constants.TERMS_OF_USE_URL, BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {
@@ -206,7 +206,7 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                await Browser.Default.OpenAsync("https://doc-hosting.flycricket.io/flagsrally-privacy-policy/4cade2a6-c6e3-47e3-85b6-ca608fbaea31/privacy", BrowserLaunchMode.SystemPreferred);
+                await Browser.Default.OpenAsync(Constants.PRIVACY_POLICY_URL, BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {
