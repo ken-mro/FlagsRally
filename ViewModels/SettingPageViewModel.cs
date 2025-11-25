@@ -187,5 +187,31 @@ namespace FlagsRally.ViewModels
                 await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
         }
+
+        [RelayCommand]
+        async Task OpenTermsOfUseAsync()
+        {
+            try
+            {
+                await Browser.Default.OpenAsync(Constants.TERMS_OF_USE_URL, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            }
+        }
+
+        [RelayCommand]
+        async Task OpenPrivacyPolicyAsync()
+        {
+            try
+            {
+                await Browser.Default.OpenAsync(Constants.PRIVACY_POLICY_URL, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            }
+        }
     }
 }

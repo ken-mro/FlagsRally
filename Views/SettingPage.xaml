@@ -148,6 +148,45 @@
                 HorizontalOptions="End"
                 Text="{x:Static strings:AppResources.RestoreBackup}"
                 VerticalOptions="Center" />
+            <BoxView
+                Margin="5"
+                HeightRequest="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center"
+                Color="Gray" />
+            <Label
+                Padding="5,0"
+                FontAttributes="Bold"
+                FontSize="Body"
+                HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.Information}"
+                VerticalOptions="Center" />
+            <Label
+                Padding="20,0"
+                FontSize="Body"
+                HorizontalOptions="End"
+                Text="{x:Static strings:AppResources.TermsOfUse}"
+                TextColor="{AppThemeBinding Light=#0000EE,
+                                            Dark=#4A9EFF}"
+                TextDecorations="Underline"
+                VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenTermsOfUseCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label
+                Padding="20,0"
+                FontSize="Body"
+                HorizontalOptions="End"
+                Text="{x:Static strings:AppResources.PrivacyPolicy}"
+                TextColor="{AppThemeBinding Light=#0000EE,
+                                            Dark=#4A9EFF}"
+                TextDecorations="Underline"
+                VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenPrivacyPolicyCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

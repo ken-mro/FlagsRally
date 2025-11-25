@@ -23,6 +23,10 @@ public static class Constants
     public const string SYNCFUSIOHN_LICENSE_KEY = "PASTE-YOUR-LISENCE-KEY";
 
     public const string GEOJSON_RESOURCE_BASE_URL = "PASTE_YOUR_BASE_URL";
+
+    public const string TERMS_OF_USE_URL = "https://doc-hosting.flycricket.io/flagsrally-terms-of-use/ffd4eac4-1892-4fd4-940d-7ada8775f93a/terms";
+    public const string PRIVACY_POLICY_URL = "https://doc-hosting.flycricket.io/flagsrally-privacy-policy/4cade2a6-c6e3-47e3-85b6-ca608fbaea31/privacy";
+
     public static string DatabaseName => DATABASE_NAME;
     public static string DatabasePassword => DATABASE_PASSWORD;
     public static string BackupZipName => $"backup_flagsrally_{DateTime.Now:yyyyMMddHHmmss}.zip";
