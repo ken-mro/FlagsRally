@@ -29,12 +29,14 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Can we use your location when your app is being used?</string>
+	<string>This app needs access to your location to get location information.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>ja</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleVersion</key>
+	<string>4</string>
 </dict>
 </plist>

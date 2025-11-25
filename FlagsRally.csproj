@@ -1243,4 +1243,10 @@
 	    <Version>2.9.1</Version>
 	  </PackageReference>
 	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<BundleResource Include="Platforms\iOS\en.lproj\InfoPlist.strings" LogicalName="en.lproj/%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\ja.lproj\InfoPlist.strings" LogicalName="ja.lproj/%(Filename)%(Extension)" /> 
+	</ItemGroup>
+	
 </Project>
