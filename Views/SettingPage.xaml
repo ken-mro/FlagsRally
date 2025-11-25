@@ -68,6 +68,45 @@
                 FontAttributes="Bold"
                 FontSize="Body"
                 HorizontalOptions="Start"
+                Text="{x:Static strings:AppResources.SubscriptionStatus}"
+                VerticalOptions="Center" />
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="10,0"
+                    FontSize="Medium"
+                    HorizontalOptions="Start"
+                    Text="{Binding SubscriptionStatusText}"
+                    VerticalOptions="Center" />
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="10,0"
+                    Command="{Binding ManageSubscriptionCommand}"
+                    HorizontalOptions="End"
+                    Text="{x:Static strings:AppResources.Subscribe}"
+                    VerticalOptions="Center" />
+            </Grid>
+            <BoxView
+                Margin="5"
+                HeightRequest="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center"
+                Color="Gray" />
+            <Label
+                Padding="5,0"
+                FontAttributes="Bold"
+                FontSize="Body"
+                HorizontalOptions="Start"
                 Text="Google Maps API Key"
                 VerticalOptions="Center" />
             <Grid Margin="5">

@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
@@ -6,6 +7,7 @@ using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using ICSharpCode.SharpZipLib.Zip;
+using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
 using System.Runtime.Versioning;
 
@@ -15,6 +17,7 @@ namespace FlagsRally.ViewModels
     {
         private CustomCountryHelper _countryHelper;
         private SettingsPreferences _settingPreferences;
+        private IRevenueCatBilling _revenueCatBilling;
         private CancellationTokenSource cancellationSource = new CancellationTokenSource();
 
         [ObservableProperty]
@@ -27,12 +30,19 @@ namespace FlagsRally.ViewModels
         [ObservableProperty]
         private string _apiKey;
 
-        public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SubscriptionStatusText))]
+        private bool _isSubscribed;
 
-        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper)
+        public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
+        public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
+
+        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper, IRevenueCatBilling revenueCatBilling)
         {
             _settingPreferences = settingPreferences;
+            _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
+            IsSubscribed = _settingPreferences.GetIsSubscribed();
 
             _countryHelper = countryHelper;
             CountryList = new ObservableCollection<Country>(_countryHelper.GetCountryData());
@@ -47,6 +57,41 @@ namespace FlagsRally.ViewModels
             if (e.PropertyName == nameof(SelectedCountry))
             {
                 _settingPreferences.SetCountryOfResidence(SelectedCountry.CountryShortCode);
+            }
+        }
+
+        [RelayCommand]
+        async Task ManageSubscriptionAsync()
+        {
+            try
+            {
+                // Refresh subscription status
+                var customerInfo = await _revenueCatBilling.GetCustomerInfo();
+                var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+                _settingPreferences.SetIsSubscribed(isSubscribed);
+                IsSubscribed = isSubscribed;
+
+                if (IsSubscribed)
+                {
+                    // Show thank you message if already subscribed
+                    await Shell.Current.DisplayAlert(
+                        AppResources.Subscription.TrimEnd(':'), 
+                        AppResources.ThankYouForSubscribing, 
+                        "OK");
+                }
+                else
+                {
+                    // Show subscription paywall if not subscribed
+                    await Shell.Current.CurrentPage.ShowPopupAsync(
+                        new Views.PayWallView(new PayWallViewModel(_revenueCatBilling, _settingPreferences)));
+                    
+                    // Refresh subscription status after popup closes
+                    IsSubscribed = _settingPreferences.GetIsSubscribed();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
             }
         }
 
