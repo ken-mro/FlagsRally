@@ -1,0 +1,2 @@
+/* Location permission description */
+"NSLocationWhenInUseUsageDescription" = "このアプリは位置情報を取得するために、現在地情報へのアクセスが必要です。";
