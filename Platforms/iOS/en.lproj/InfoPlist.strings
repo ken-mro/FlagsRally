@@ -1,2 +1,2 @@
 /* Location permission description */
-"NSLocationWhenInUseUsageDescription" = "FlagsRally uses your location to mark and record places you've visited. For example, when you tap the Get Location button, the app will identify your current country and region (such as \"California, USA\") and add it to the map with the current date.";
+"NSLocationWhenInUseUsageDescription" = "FlagsRally uses your location to record places you've visited. For example, when you tap the Get Location button, the app will identify your current country and region (such as \"California, USA\") and add it to the map with the current date.";
