@@ -29,7 +29,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to get location information.</string>
+	<string>FlagsRally uses your location to mark and record places you've visited. For example, when you tap the Get Location button, the app will identify your current country and region (such as \"California, USA\") and add it to the map with the current date.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>ja</string>
