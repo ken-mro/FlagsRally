@@ -38,5 +38,9 @@
 	<string>en</string>
 	<key>CFBundleVersion</key>
 	<string>5</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 </dict>
 </plist>
