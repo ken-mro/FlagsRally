@@ -104,17 +104,12 @@ namespace FlagsRally.ViewModels
             try
             {
                 string dbPath = Constants.DataBasePath;
-                await Permissions.RequestAsync<Permissions.StorageWrite>();
-                var folderPickerResult = await FolderPicker.PickAsync(cancellationSource.Token);
 
-                if (folderPickerResult.Folder is null) return;
-
-                var folderPath = folderPickerResult.Folder.Path;
-                string zipPath = Path.Combine(folderPath, Constants.BackupZipName);
-
-                // Create password-protected zip file
-                using (var zipStream = new ZipOutputStream(File.Create(zipPath)))
+                // Create password-protected zip file in memory
+                using var memoryStream = new MemoryStream();
+                using (var zipStream = new ZipOutputStream(memoryStream))
                 {
+                    zipStream.IsStreamOwner = false; // Prevent closing the underlying stream
                     zipStream.SetLevel(9); // Compression level (0-9)
                     zipStream.Password = Constants.DatabasePassword;
 
@@ -133,10 +128,25 @@ namespace FlagsRally.ViewModels
                     zipStream.CloseEntry();
                 }
 
+                memoryStream.Position = 0;
+
+                // Use FileSaver instead of FolderPicker for better iPadOS compatibility
+                var fileSaverResult = await FileSaver.SaveAsync(Constants.BackupZipName, memoryStream, cancellationSource.Token);
+
+                if (!fileSaverResult.IsSuccessful)
+                {
+                    if (fileSaverResult.Exception != null)
+                    {
+                        throw fileSaverResult.Exception;
+                    }
+                    return;
+                }
+
                 await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
             }
-            catch(UnauthorizedAccessException)
+            catch(UnauthorizedAccessException ex)
             {
+                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}", "OK");
                 await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.AccessDenied}", "OK");
             }
             catch (Exception ex)
