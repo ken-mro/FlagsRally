@@ -673,7 +673,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscribed.
+        ///   Looks up a localized string similar to Subscribed✅.
         /// </summary>
         internal static string Subscribed {
             get {
