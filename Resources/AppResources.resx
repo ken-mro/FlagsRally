@@ -135,9 +135,6 @@
   <data name="Backup" xml:space="preserve">
     <value>Backup</value>
   </data>
-  <data name="BackupInstruction" xml:space="preserve">
-    <value>Please select a folder in the Download folder.</value>
-  </data>
   <data name="BackupSucceeded" xml:space="preserve">
     <value>Backup saved successfully!</value>
   </data>
