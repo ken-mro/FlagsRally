@@ -146,7 +146,6 @@ namespace FlagsRally.ViewModels
             }
             catch(UnauthorizedAccessException ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}", "OK");
                 await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.AccessDenied}", "OK");
             }
             catch (Exception ex)
