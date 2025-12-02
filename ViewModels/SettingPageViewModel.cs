@@ -42,7 +42,7 @@ namespace FlagsRally.ViewModels
             _settingPreferences = settingPreferences;
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
-            IsSubscribed = _settingPreferences.GetIsSubscribed();
+            _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;
             CountryList = new ObservableCollection<Country>(_countryHelper.GetCountryData());
@@ -50,6 +50,22 @@ namespace FlagsRally.ViewModels
             _selectedCountry = _countryHelper.GetCountryByCode(_settingPreferences.GetCountryOfResidence());
 
             PropertyChanged += OnSelectedCountryChanged;
+        }
+
+        private async Task UpdateSubscriptionStatusAsync()
+        {
+            try
+            {
+                var customerInfo = await _revenueCatBilling.GetCustomerInfo();
+                var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+                _settingPreferences.SetIsSubscribed(isSubscribed);
+                IsSubscribed = isSubscribed;
+            }
+            catch (Exception)
+            {
+                // Handle error gracefully, possibly with default value
+                IsSubscribed = _settingPreferences.GetIsSubscribed();
+            }
         }
 
         private void OnSelectedCountryChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -66,10 +82,7 @@ namespace FlagsRally.ViewModels
             try
             {
                 // Refresh subscription status
-                var customerInfo = await _revenueCatBilling.GetCustomerInfo();
-                var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
-                _settingPreferences.SetIsSubscribed(isSubscribed);
-                IsSubscribed = isSubscribed;
+                await UpdateSubscriptionStatusAsync();
 
                 if (IsSubscribed)
                 {

@@ -349,7 +349,7 @@
     <value>サブスクリプション</value>
   </data>
   <data name="Subscribed" xml:space="preserve">
-    <value>登録済み</value>
+    <value>登録済み✅</value>
   </data>
   <data name="NotSubscribed" xml:space="preserve">
     <value>未登録</value>
