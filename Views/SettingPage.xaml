@@ -146,14 +146,6 @@
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.Backup}"
                 VerticalOptions="Center" />
-            <Label
-                Padding="10,0"
-                FontAttributes="Bold"
-                FontSize="Small"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.BackupInstruction}"
-                TextColor="Red"
-                VerticalOptions="Center" />
             <Button
                 Margin="10,0"
                 Command="{Binding CreateBackUpCommand}"
