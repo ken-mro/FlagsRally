@@ -54,10 +54,18 @@ namespace FlagsRally.ViewModels
 
         private async Task UpdateSubscriptionStatusAsync()
         {
-            var customerInfo = await _revenueCatBilling.GetCustomerInfo();
-            var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
-            _settingPreferences.SetIsSubscribed(isSubscribed);
-            IsSubscribed = isSubscribed;
+            try
+            {
+                var customerInfo = await _revenueCatBilling.GetCustomerInfo();
+                var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+                _settingPreferences.SetIsSubscribed(isSubscribed);
+                IsSubscribed = isSubscribed;
+            }
+            catch (Exception)
+            {
+                // Handle error gracefully, possibly with default value
+                IsSubscribed = _settingPreferences.GetIsSubscribed();
+            }
         }
 
         private void OnSelectedCountryChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
