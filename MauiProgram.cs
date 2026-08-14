@@ -9,11 +9,17 @@ using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using Syncfusion.Maui.Core.Hosting;
+using System.Runtime.Versioning;
 
 namespace FlagsRally
 {
     public static class MauiProgram
     {
+        // The plain net10.0 TFM exists only for unit tests and never calls this entry point.
+        [SupportedOSPlatform("android21.0")]
+        [SupportedOSPlatform("ios15.0")]
+        [SupportedOSPlatform("maccatalyst15.0")]
+        [SupportedOSPlatform("windows10.0.17763")]
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();

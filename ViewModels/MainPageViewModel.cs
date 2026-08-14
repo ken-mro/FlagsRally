@@ -147,7 +147,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
             finally
             {
@@ -228,7 +228,7 @@ namespace FlagsRally.ViewModels
             }
             catch(Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
             finally
             {
@@ -244,7 +244,7 @@ namespace FlagsRally.ViewModels
             var latitude = arrivalLocation.Location.Latitude;
             var roundedLatitude = Math.Round(latitude, 6);
 
-            await Shell.Current.DisplayAlert($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
+            await Shell.Current.DisplayAlertAsync($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
                                                                     $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
                                                                     $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
                                                                     $"{AppResources.Locality}: {arrivalLocation.LocalityName}\n" +
@@ -272,7 +272,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
             finally
             {

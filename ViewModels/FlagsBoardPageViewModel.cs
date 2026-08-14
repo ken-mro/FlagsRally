@@ -119,7 +119,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
         }
         finally
         {
@@ -191,7 +191,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
         }
         finally
         {

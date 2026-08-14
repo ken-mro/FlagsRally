@@ -59,8 +59,7 @@ public class CryptoService
             Array.Copy(ciphertextWithTag, ciphertext.Length, tag, 0, TAG_SIZE_BYTES);
 
             // Derive key using PBKDF2
-            using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, PBKDF2_ITERATIONS, HashAlgorithmName.SHA256);
-            var key = pbkdf2.GetBytes(KEY_SIZE_BYTES);
+            var key = Rfc2898DeriveBytes.Pbkdf2(password, salt, PBKDF2_ITERATIONS, HashAlgorithmName.SHA256, KEY_SIZE_BYTES);
 
             // Decrypt using AES-GCM
             using var aes = new AesGcm(key, TAG_SIZE_BYTES);

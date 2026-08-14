@@ -9,6 +9,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CustomLocationImagePopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="True"
+    Margin="0,1,0,0"
     HorizontalOptions="Fill"
     VerticalOptions="Center">
     <Grid Padding="20" RowSpacing="15">
