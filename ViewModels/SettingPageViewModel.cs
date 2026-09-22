@@ -57,8 +57,8 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                var customerInfo = await _revenueCatBilling.GetCustomerInfo();
-                var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+                var customerInfoResult = await _revenueCatBilling.GetCustomerInfo();
+                var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
                 _settingPreferences.SetIsSubscribed(isSubscribed);
                 IsSubscribed = isSubscribed;
             }

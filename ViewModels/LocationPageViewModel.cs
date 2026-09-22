@@ -605,8 +605,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task TryToOfferSubscription()
     {
-        var customerInfo = await _revenueCat.GetCustomerInfo();
-        var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+        var customerInfoResult = await _revenueCat.GetCustomerInfo();
+        var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
         _settingsPreferences.SetIsSubscribed(isSubscribed);
 
         if (_settingsPreferences.GetIsSubscribed()) return;
