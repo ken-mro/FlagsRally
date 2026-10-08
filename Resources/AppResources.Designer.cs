@@ -896,5 +896,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add board.
+        /// </summary>
+        internal static string AddBoard {
+            get {
+                return ResourceManager.GetString("AddBoard", resourceCulture);
+            }
+        }
     }
 }

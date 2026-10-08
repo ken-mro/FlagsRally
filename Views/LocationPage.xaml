@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:maps="clr-namespace:Maui.GoogleMaps;assembly=Maui.GoogleMaps"
+    xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:LocationPageViewModel">
@@ -21,65 +22,75 @@
             Grid.Row="0"
             SelectedPin="{Binding SelectedPin}" />
 
-        <!--  Default controls: filter and record the current location  -->
-        <VerticalStackLayout
+        <!--  Filter chips over the map (right margin keeps the my-location button free)  -->
+        <ScrollView
+            Grid.Row="0"
+            Margin="8,8,64,0"
+            HorizontalScrollBarVisibility="Never"
+            Orientation="Horizontal"
+            VerticalOptions="Start">
+            <HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterChips}" Spacing="6">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:PinFilterChip">
+                        <Border
+                            Padding="12,6"
+                            BackgroundColor="{StaticResource PaperCard}"
+                            Stroke="{StaticResource PaperEdge}"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="1">
+                            <Border.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsSelected}"
+                                    TargetType="Border"
+                                    Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
+                                    <Setter Property="Stroke" Value="{StaticResource Navy}" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:LocationPageViewModel}}, x:DataType=viewmodels:LocationPageViewModel, Path=ToggleFilterChipCommand}" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <Label
+                                FontSize="13"
+                                Text="{Binding Name}"
+                                TextColor="{StaticResource Ink}">
+                                <Label.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsSelected}"
+                                        TargetType="Label"
+                                        Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!--  Default controls: record the current location, import a board  -->
+        <Grid
             Grid.Row="1"
-            IsVisible="{Binding HasNoPinDetails}"
-            Spacing="10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    Grid.Column="0"
-                    Padding="10,8"
-                    SemanticProperties.Description="{x:Static strings:AppResources.FilterPin}"
-                    Stroke="{StaticResource InkMuted}"
-                    StrokeShape="RoundRectangle 6"
-                    StrokeThickness="1"
-                    VerticalOptions="Center">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenPinFilterCommand}" />
-                    </Border.GestureRecognizers>
-                    <Grid ColumnSpacing="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Image
-                            Grid.Column="0"
-                            HeightRequest="18"
-                            Source="filter.png"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Column="1"
-                            FontSize="14"
-                            LineBreakMode="TailTruncation"
-                            Text="{Binding FilterSummary}"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Column="2"
-                            Text="▾"
-                            TextColor="{StaticResource InkMuted}"
-                            VerticalOptions="Center" />
-                    </Grid>
-                </Border>
-                <Label
-                    Grid.Column="1"
-                    FontSize="35"
-                    HorizontalOptions="End"
-                    Text="+"
-                    TextColor="{StaticResource InkMuted}"
-                    VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding AddCustomBoardJsonCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>
-            </Grid>
+            ColumnSpacing="8"
+            IsVisible="{Binding HasNoPinDetails}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
             <Button Command="{Binding GetCurrentLocationCommand}" Text="{x:Static strings:AppResources.GetLocation}" />
-        </VerticalStackLayout>
+            <Button
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource Navy}"
+                BorderWidth="1"
+                Command="{Binding AddCustomBoardJsonCommand}"
+                FontSize="20"
+                SemanticProperties.Description="{x:Static strings:AppResources.AddBoard}"
+                Text="+"
+                TextColor="{StaticResource Navy}"
+                WidthRequest="52" />
+        </Grid>
 
         <!--  Details of the selected pin, with its actions as buttons  -->
         <Border

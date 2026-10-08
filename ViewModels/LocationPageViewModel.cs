@@ -687,33 +687,26 @@ public partial class LocationPageViewModel : BaseViewModel
     }
 
     [ObservableProperty]
-    ObservableCollection<CustomBoardPinFilterItem> _pinFilterList = default!;
+    ObservableCollection<PinFilterChip> _filterChips = [];
 
     // Pin keys (board names / arrival location) currently shown. Empty means all pins are shown.
     readonly HashSet<string> _visiblePinKeys = [];
 
-    public string FilterSummary => _visiblePinKeys.Count switch
-    {
-        0 => AppResources.AllPins,
-        1 => _visiblePinKeys.First(),
-        _ => string.Format(AppResources.NSelected, _visiblePinKeys.Count),
-    };
-
     [RelayCommand]
-    async Task OpenPinFilterAsync()
+    void ToggleFilterChip(PinFilterChip chip)
     {
-        var popupViewModel = new PinFilterPopupViewModel(PinFilterList, _visiblePinKeys);
-        await Shell.Current.CurrentPage.ShowPopupAsync(new PinFilterPopupView(popupViewModel));
-        if (popupViewModel.Result is null) return;
-
+        var keys = PinFilterRules.Toggle(FilterChips, chip);
         _visiblePinKeys.Clear();
-        _visiblePinKeys.UnionWith(popupViewModel.Result);
-        OnPinFilterChanged();
+        _visiblePinKeys.UnionWith(keys);
+        UpdatePinsVisibility();
     }
 
     private void OnPinFilterChanged()
     {
-        OnPropertyChanged(nameof(FilterSummary));
+        foreach (var chip in FilterChips)
+        {
+            chip.IsSelected = chip.IsAll ? _visiblePinKeys.Count == 0 : _visiblePinKeys.Contains(chip.Name);
+        }
         UpdatePinsVisibility();
     }
 
@@ -775,7 +768,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task RebuildPinFilterList()
     {
-        var filterList = new ObservableCollection<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
+        var filterList = new List<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
 
         var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
         if (hasArrivalPins)
@@ -789,12 +782,14 @@ public partial class LocationPageViewModel : BaseViewModel
             filterList.Add(new CustomBoardPinFilterItem(board.Name));
         }
 
-        PinFilterList = filterList;
-
         // Drop keys of filters that no longer exist (e.g. deleted boards).
-        if (_visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0)
+        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0;
+
+        FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _visiblePinKeys));
+
+        if (removed)
         {
-            OnPinFilterChanged();
+            UpdatePinsVisibility();
         }
     }
 
