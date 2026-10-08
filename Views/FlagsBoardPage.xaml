@@ -12,72 +12,81 @@
     x:DataType="viewmodels:FlagsBoardPageViewModel"
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.RegionalFlags}" />
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{Binding FilteredCountry.CountryName}" />
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
     </ContentPage.Resources>
-    <Grid Padding="5" RowSpacing="10">
+    <Grid Padding="5" RowSpacing="8">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="2">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Picker
-                    HorizontalOptions="Fill"
-                    ItemDisplayBinding="{Binding CountryName}"
-                    ItemsSource="{Binding CountryList}"
-                    SelectedItem="{Binding FilteredCountry}"
-                    VerticalOptions="Center" />
-                <Image
-                    Grid.Column="1"
-                    Margin="5,0"
-                    HeightRequest="25"
-                    HorizontalOptions="End"
-                    Source="earth.png"
-                    VerticalOptions="Center">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
-                    </Image.GestureRecognizers>
-                </Image>
-                <Image
-                    Grid.Column="2"
-                    Margin="5,0"
-                    HeightRequest="25"
-                    HorizontalOptions="End"
-                    Source="filter.png"
-                    VerticalOptions="Center">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
-                    </Image.GestureRecognizers>
-                </Image>
-            </Grid>
-            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
-                <Grid>
-                    <Label
-                        Padding="5,0"
-                        FontSize="16"
-                        HorizontalOptions="Start"
-                        Text="{x:Static strings:AppResources.HideDateAndMonth}"
-                        VerticalOptions="Center" />
-                    <Switch
-                        Margin="20,5"
-                        HorizontalOptions="End"
-                        IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="{StaticResource PaperEdge}"
-                        VerticalOptions="Center" />
-                </Grid>
+
+        <!--  Progress, map and display options  -->
+        <Grid
+            Grid.Row="0"
+            Padding="6,6,6,0"
+            ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    Text="{Binding ProgressText}" />
+                <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
             </VerticalStackLayout>
+            <Image
+                Grid.Column="1"
+                Margin="5,0"
+                HeightRequest="25"
+                Source="earth.png"
+                VerticalOptions="Center">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
+                </Image.GestureRecognizers>
+            </Image>
+            <Image
+                Grid.Column="2"
+                Margin="5,0"
+                HeightRequest="25"
+                SemanticProperties.Description="{x:Static strings:AppResources.HideDateAndMonth}"
+                Source="filter.png"
+                VerticalOptions="Center">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
+                </Image.GestureRecognizers>
+            </Image>
+        </Grid>
+
+        <!--  All / Visited / Not visited, and display options  -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="6,0"
+            Spacing="6">
+            <controls:VisitFilterBar />
+            <Grid IsVisible="{Binding IsSettingsVisible}">
+                <Label
+                    Padding="5,0"
+                    FontSize="16"
+                    HorizontalOptions="Start"
+                    Text="{x:Static strings:AppResources.HideDateAndMonth}"
+                    VerticalOptions="Center" />
+                <Switch
+                    Margin="20,5"
+                    HorizontalOptions="End"
+                    IsToggled="{Binding DateIsNotVisible}"
+                    VerticalOptions="Center" />
+            </Grid>
         </VerticalStackLayout>
         <RefreshView
-            Grid.Row="0"
+            Grid.Row="2"
             Command="{Binding RefreshCountriesCommand}"
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
@@ -93,14 +102,14 @@
                         <Border
                             BackgroundColor="Transparent"
                             Stroke="{StaticResource Ink}"
-                            StrokeShape="RoundRectangle 20,20,20,20"
-                            StrokeThickness="4">
+                            StrokeShape="Rectangle"
+                            StrokeThickness="2">
                             <StackLayout>
                                 <Label
                                     Padding="2"
                                     FontFamily="KiwiMaru-Medium"
                                     FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                    HeightRequest="134.48"
+                                    HeightRequest="96"
                                     HorizontalOptions="Center"
                                     IsVisible="{Binding HasNotBeenVisited}"
                                     LineBreakMode="MiddleTruncation"
@@ -108,7 +117,8 @@
                                     MaxLines="2"
                                     Text="{Binding Name}"
                                     TextColor="{StaticResource InkMuted}"
-                                    VerticalOptions="Center" />
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
                                 <VerticalStackLayout
                                     IsVisible="{Binding HasBeenVisited}"
                                     Spacing="{OnPlatform MacCatalyst=2,
@@ -155,24 +165,6 @@
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
                                         TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="{StaticResource Ink}"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="120"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontAutoScalingEnabled="True"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="35"
-                                        HorizontalOptions="Center"
-                                        LineBreakMode="NoWrap"
-                                        Text="ARRIVAL"
-                                        TextColor="{StaticResource Ink}"
-                                        VerticalOptions="Center" />
                                 </VerticalStackLayout>
                             </StackLayout>
                         </Border>
@@ -181,13 +173,13 @@
             </CollectionView>
         </RefreshView>
         <map:SfMaps
-            Grid.Row="1"
+            Grid.Row="3"
             BackgroundColor="{StaticResource MapSea}"
             IsVisible="{Binding IsMapVisible}">
             <map:SfMaps.Layer>
                 <map:MapShapeLayer
                     x:Name="shapeLayer"
-                    DataSource="{Binding DisplayFullSubRegionList}"
+                    DataSource="{Binding SourceArrivalSubRegionList}"
                     EnableSelection="True"
                     PrimaryValuePath="IsoCode"
                     ShapeColorValuePath="HasBeenVisited"
@@ -218,7 +210,7 @@
             </map:SfMaps.Layer>
         </map:SfMaps>
         <ActivityIndicator
-            Grid.Row="0"
+            Grid.Row="2"
             Grid.ColumnSpan="2"
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"

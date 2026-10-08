@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  All / Visited / Not visited segmented control for a board page (binds to IVisitFilterable).  -->
+<ContentView
+    x:Class="FlagsRally.Controls.VisitFilterBar"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:IVisitFilterable">
+    <Border
+        Padding="2"
+        BackgroundColor="{StaticResource PaperEdge}"
+        StrokeShape="RoundRectangle 8"
+        StrokeThickness="0">
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="2">
+            <Border
+                Grid.Column="0"
+                Padding="0,6"
+                BackgroundColor="Transparent"
+                StrokeShape="RoundRectangle 6"
+                StrokeThickness="0">
+                <Border.Triggers>
+                    <DataTrigger
+                        Binding="{Binding ShowsAll}"
+                        TargetType="Border"
+                        Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                    </DataTrigger>
+                </Border.Triggers>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="All" />
+                </Border.GestureRecognizers>
+                <Label
+                    FontSize="13"
+                    HorizontalOptions="Center"
+                    Text="{x:Static strings:AppResources.AllFilter}" />
+            </Border>
+            <Border
+                Grid.Column="1"
+                Padding="0,6"
+                BackgroundColor="Transparent"
+                StrokeShape="RoundRectangle 6"
+                StrokeThickness="0">
+                <Border.Triggers>
+                    <DataTrigger
+                        Binding="{Binding ShowsVisited}"
+                        TargetType="Border"
+                        Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                    </DataTrigger>
+                </Border.Triggers>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Visited" />
+                </Border.GestureRecognizers>
+                <Label
+                    FontSize="13"
+                    HorizontalOptions="Center"
+                    Text="{x:Static strings:AppResources.Visited}" />
+            </Border>
+            <Border
+                Grid.Column="2"
+                Padding="0,6"
+                BackgroundColor="Transparent"
+                StrokeShape="RoundRectangle 6"
+                StrokeThickness="0">
+                <Border.Triggers>
+                    <DataTrigger
+                        Binding="{Binding ShowsUnvisited}"
+                        TargetType="Border"
+                        Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                    </DataTrigger>
+                </Border.Triggers>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Unvisited" />
+                </Border.GestureRecognizers>
+                <Label
+                    FontSize="13"
+                    HorizontalOptions="Center"
+                    Text="{x:Static strings:AppResources.NotVisited}" />
+            </Border>
+        </Grid>
+    </Border>
+</ContentView>

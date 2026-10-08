@@ -9,7 +9,7 @@ using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
-public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
+public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable, IVisitFilterable
 {
     public const string CountryQueryKey = "country";
 
@@ -20,17 +20,15 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
         Title = "Flags Board";
 
         _regionalFlagsService = regionalFlagsService;
-
-        CountryList = new ObservableCollection<Country>(_regionalFlagsService.GetCountries());
-        FilteredCountry = CountryList.First();
+        FilteredCountry = _regionalFlagsService.GetCountries().First();
     }
 
-    // Opened from a country card on the Collections page.
+    // Opened from a country card on the Collections page; loaded by the next Init().
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue(CountryQueryKey, out var code) && code is string countryCode)
         {
-            FilteredCountry = CountryList.FirstOrDefault(x => x.CountryShortCode.Equals(countryCode, StringComparison.OrdinalIgnoreCase)) ?? FilteredCountry;
+            FilteredCountry = _regionalFlagsService.GetCountry(countryCode);
         }
     }
 
@@ -39,10 +37,33 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
+    [NotifyPropertyChangedFor(nameof(VisitedCount))]
+    [NotifyPropertyChangedFor(nameof(TotalCount))]
+    [NotifyPropertyChangedFor(nameof(Progress))]
+    [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<SubRegion> _sourceArrivalSubRegionList = [];
 
     [ObservableProperty]
-    ObservableCollection<Country> _countryList;
+    [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
+    [NotifyPropertyChangedFor(nameof(ShowsAll))]
+    [NotifyPropertyChangedFor(nameof(ShowsVisited))]
+    [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
+    VisitFilter _selectedVisitFilter = VisitFilter.All;
+
+    public bool ShowsAll => SelectedVisitFilter == VisitFilter.All;
+    public bool ShowsVisited => SelectedVisitFilter == VisitFilter.Visited;
+    public bool ShowsUnvisited => SelectedVisitFilter == VisitFilter.Unvisited;
+
+    public int VisitedCount => SourceArrivalSubRegionList.Count(x => x.HasBeenVisited);
+    public int TotalCount => SourceArrivalSubRegionList.Count;
+    public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
+    public string ProgressText => $"{VisitedCount} / {TotalCount}";
+
+    [RelayCommand]
+    void SetVisitFilter(string filter)
+    {
+        SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
+    }
 
     private bool _isLoaded = false;
     public string ShapesSource => GetShapesSource();
@@ -55,22 +76,8 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
         return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/{_mapCountryShortCode}.json";
     }
 
-    Country? _filteredCountry ;
-    public Country? FilteredCountry
-    {
-        get => _filteredCountry;
-        set
-        {
-            SetProperty(ref _filteredCountry, value);
-
-            if (IsMapVisible)
-            {
-                OnPropertyChanged(nameof(ShapesSource));
-            }
-
-            _ = Init();
-        }
-    }
+    [ObservableProperty]
+    Country? _filteredCountry;
 
     [ObservableProperty]
     bool _isSettingsVisible;
@@ -84,13 +91,13 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
 
     public bool DateIsVisible => !DateIsNotVisible;
 
-    public ObservableCollection<SubRegion> DisplayFullSubRegionList => GetFilteredList();
-    
+    public ObservableCollection<SubRegion> DisplayFullSubRegionList =>
+        new(SourceArrivalSubRegionList.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited)));
 
     [ObservableProperty]
     bool _isRefreshing = false;
 
-    private async Task Init()
+    public async Task Init()
     {
         try
         {
@@ -110,8 +117,6 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
             IsBusy = false;
         }
     }
-
-    private ObservableCollection<SubRegion> GetFilteredList() => new(SourceArrivalSubRegionList);
 
     [RelayCommand]
     public async Task RefreshCountriesAsync()

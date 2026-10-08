@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace FlagsRally.ViewModels;
 
-public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributable
+public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributable, IVisitFilterable
 {
     public const string BoardQueryKey = "board";
 
@@ -38,8 +38,6 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
 
     [ObservableProperty]
     int _gridItemSpan = 2;
-
-    public enum VisitFilter { All, Visited, Unvisited }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
@@ -147,12 +145,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     private ObservableCollection<CustomLocation> GetFilteredList()
     {
         var filteredList = BoardLocations
-                            .Where(x => SelectedVisitFilter switch
-                            {
-                                VisitFilter.Visited => x.HasBeenVisited,
-                                VisitFilter.Unvisited => x.HasNotBeenVisited,
-                                _ => true,
-                            })
+                            .Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited))
                             .OrderByDescending(x => x.ArrivalDate).ToList();
         return new ObservableCollection<CustomLocation>(filteredList);
     }

@@ -93,6 +93,25 @@ public class RedesignViewModelTests
         Assert.Equal([vm.RegionalCards, vm.BoardCards], vm.Sections);
     }
 
+    // ---------- Regional flags board ----------
+
+    [Theory]
+    [InlineData("All", 47)]
+    [InlineData("Visited", 2)]
+    [InlineData("Unvisited", 45)]
+    public async Task Regional_board_opens_the_requested_country_and_filters_by_visit_status(string filter, int expectedCount)
+    {
+        var vm = new FlagsBoardPageViewModel(CreateRegionalFlagsService());
+        vm.ApplyQueryAttributes(new Dictionary<string, object> { [FlagsBoardPageViewModel.CountryQueryKey] = "jp" });
+        await vm.Init();
+
+        vm.SetVisitFilterCommand.Execute(filter);
+
+        Assert.Equal("JP", vm.FilteredCountry?.CountryShortCode);
+        Assert.Equal("2 / 47", vm.ProgressText);
+        Assert.Equal(expectedCount, vm.DisplayFullSubRegionList.Count);
+    }
+
     // ---------- Board details ----------
 
     private static async Task<CustomBoardPageViewModel> OpenBoardAsync(string boardName)

@@ -8,9 +8,15 @@ public partial class FlagsBoardPage : ContentPage
 
     private readonly FlagsBoardPageViewModel _flagsBoardPageViewModel;
     public FlagsBoardPage(FlagsBoardPageViewModel vm)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         BindingContext = _flagsBoardPageViewModel = vm;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _flagsBoardPageViewModel.Init();
     }
 
     protected override void OnSizeAllocated(double width, double height)
