@@ -450,4 +450,22 @@
   <data name="DragToReorder" xml:space="preserve">
     <value>Drag ≡ to change the order</value>
   </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Sort by</value>
+  </data>
+  <data name="SortGroup" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="SortJsonOrder" xml:space="preserve">
+    <value>Board order</value>
+  </data>
+  <data name="SortNewest" xml:space="preserve">
+    <value>Newest check-in</value>
+  </data>
+  <data name="SortOldest" xml:space="preserve">
+    <value>Oldest check-in</value>
+  </data>
+  <data name="OtherGroup" xml:space="preserve">
+    <value>Other</value>
+  </data>
 </root>

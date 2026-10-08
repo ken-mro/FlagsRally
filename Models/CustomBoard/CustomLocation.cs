@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace FlagsRally.Models.CustomBoard;
@@ -14,6 +14,10 @@ public class CustomLocation
     public string ImageUrl { get; init; } = string.Empty;
     public Location Location { get; init; } = new ();
     public DateTime? ArrivalDate { get; init; } = null;
+    /// <summary>
+    /// 1-based position in the board's JSON.
+    /// </summary>
+    public int SortIndex { get; init; }
     public bool HasBeenVisited => ArrivalDate is not null;
     public bool HasNotBeenVisited => !HasBeenVisited;
     public string ArrivalDateString => ArrivalDate?.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US")) ?? string.Empty;

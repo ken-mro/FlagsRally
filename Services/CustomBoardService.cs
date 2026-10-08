@@ -1,4 +1,4 @@
-﻿using FlagsRally.Models.CustomBoard;
+using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
 using System.Text.Json;
 
@@ -43,7 +43,7 @@ public class CustomBoardService
     public List<CustomLocation> GetCustomLocations(CustomBoardJson json, CustomBoard customBoard)
     {
         var locations = new List<CustomLocation>();
-        foreach (var location in json.locations)
+        foreach (var (location, index) in json.locations.Select((x, i) => (x, i)))
         {
             locations.Add(new CustomLocation
             (
@@ -58,7 +58,10 @@ public class CustomBoardService
                     Longitude = location.longitude
                 },
                 arrivalDate: null
-            ));
+            )
+            {
+                SortIndex = index + 1
+            });
         }
         return locations;
     }

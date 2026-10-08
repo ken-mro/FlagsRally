@@ -33,6 +33,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <VerticalStackLayout Spacing="4" VerticalOptions="Center">
                 <Label
@@ -41,8 +42,25 @@
                     Text="{Binding ProgressText}" />
                 <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
             </VerticalStackLayout>
-            <Image
+            <!--  Sort order  -->
+            <Border
                 Grid.Column="1"
+                Padding="10,6"
+                BackgroundColor="{StaticResource PaperCard}"
+                SemanticProperties.Description="{x:Static strings:AppResources.SortBy}"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 16"
+                VerticalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChooseSortCommand}" />
+                </Border.GestureRecognizers>
+                <Label
+                    FontSize="13"
+                    Text="{Binding SortText, StringFormat='⇅  {0}'}"
+                    TextColor="{StaticResource Navy}" />
+            </Border>
+            <Image
+                Grid.Column="2"
                 Margin="5,0"
                 HeightRequest="25"
                 SemanticProperties.Description="{x:Static strings:AppResources.HideDateAndMonth}"
@@ -81,8 +99,37 @@
             <CollectionView
                 x:Name="collectionView"
                 Background="Transparent"
-                ItemsSource="{Binding DisplayCustomLocationList}"
+                IsGrouped="True"
+                ItemsSource="{Binding DisplayCustomLocationGroups}"
                 VerticalOptions="Fill">
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="viewmodels:CustomLocationGroup">
+                        <Grid Padding="4,12,4,4" ColumnDefinitions="*,Auto">
+                            <!--  Without a heading the header still takes space on Android, so collapse it  -->
+                            <Grid.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding HasHeading}"
+                                    TargetType="Grid"
+                                    Value="False">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="HeightRequest" Value="0" />
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Grid.Triggers>
+                            <controls:StampLabel
+                                FontSize="18"
+                                Text="{Binding Name}"
+                                TextColor="{StaticResource Navy}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontSize="13"
+                                Text="{Binding ProgressText}"
+                                TextColor="{StaticResource InkMuted}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>
@@ -109,7 +156,8 @@
                                     MaxLines="2"
                                     Text="{Binding Title}"
                                     TextColor="{StaticResource InkMuted}"
-                                    VerticalOptions="Center" />
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
                                 <VerticalStackLayout
                                     IsVisible="{Binding HasBeenVisited}"
                                     Spacing="{OnPlatform MacCatalyst=2,

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Globalization;
 
 namespace FlagsRally.Repository;
@@ -10,6 +10,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _isSubscribed = "IsSubscribed";
     private string _latestCountry = "LatestCountry";
     private string _apiKey = "ApiKey";
+    private string _customBoardSort = "CustomBoardSort";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -66,5 +67,15 @@ public partial class SettingsPreferences : ObservableObject
     public void SetApiKey(string apiKey)
     {
         _defaultPreferences.Set(_apiKey, apiKey);
+    }
+
+    public string GetCustomBoardSort(string defaultValue)
+    {
+        return _defaultPreferences.Get(_customBoardSort, defaultValue);
+    }
+
+    public void SetCustomBoardSort(string sort)
+    {
+        _defaultPreferences.Set(_customBoardSort, sort);
     }
 }

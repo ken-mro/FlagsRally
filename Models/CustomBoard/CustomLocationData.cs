@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 
 namespace FlagsRally.Models.CustomBoard;
 
@@ -24,4 +24,9 @@ public class CustomLocationData
     public double Latitude { get; init; }
     public double Longitude { get; init; }
     public DateTime? ArrivalDate { get; set; } = null;
+
+    /// <summary>
+    /// 1-based position in the board's JSON; 0 for rows saved before the order was recorded.
+    /// </summary>
+    public int SortIndex { get; set; }
 }

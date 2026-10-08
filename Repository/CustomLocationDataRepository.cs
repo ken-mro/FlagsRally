@@ -1,4 +1,4 @@
-﻿using FlagsRally.Models.CustomBoard;
+using FlagsRally.Models.CustomBoard;
 using Maui.GoogleMaps;
 using SQLite;
 
@@ -16,6 +16,8 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     protected override async Task CreateTableAsync()
     {
         await _conn!.CreateTableAsync<CustomLocationData>();
+        // Rows saved before SortIndex existed were inserted in JSON order, so their rowid keeps that order.
+        await _conn!.ExecuteAsync("UPDATE CustomLocation SET SortIndex = rowid WHERE SortIndex = 0");
     }
 
     public async Task<IEnumerable<CustomLocationPin>> GetAllCustomLocationPins()
@@ -34,7 +36,7 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     public async Task<IEnumerable<CustomLocation>> GetAllCustomLocations()
     {
         await Init();
-        var customLocationDataList = await _conn!.Table<CustomLocationData>().ToListAsync();
+        var customLocationDataList = await _conn!.Table<CustomLocationData>().OrderBy(x => x.SortIndex).ToListAsync();
         var customBoardList = await _customBoardRepository.GetAllCustomBoards();
         return customLocationDataList.Select(l => GetCustomLocation(customBoardList.Where(b => b.Name == l.BoardName).FirstOrDefault() ?? new(), l)).ToList();
     }
@@ -100,7 +102,8 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
             Group = customLocation.Group,
             Latitude = customLocation.Location.Latitude,
             Longitude = customLocation.Location.Longitude,
-            ArrivalDate = customLocation.ArrivalDate
+            ArrivalDate = customLocation.ArrivalDate,
+            SortIndex = customLocation.SortIndex
         };
     }
 
@@ -119,7 +122,10 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
                 Longitude = customLocationData.Longitude
             },
             arrivalDate: customLocationData.ArrivalDate
-        );
+        )
+        {
+            SortIndex = customLocationData.SortIndex
+        };
     }
 
     private async Task<int> InsertOrReplace(CustomLocation customLocation)

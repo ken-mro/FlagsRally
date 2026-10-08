@@ -1058,5 +1058,59 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("DragToReorder", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by.
+        /// </summary>
+        internal static string SortBy {
+            get {
+                return ResourceManager.GetString("SortBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        internal static string SortGroup {
+            get {
+                return ResourceManager.GetString("SortGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Board order.
+        /// </summary>
+        internal static string SortJsonOrder {
+            get {
+                return ResourceManager.GetString("SortJsonOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Newest check-in.
+        /// </summary>
+        internal static string SortNewest {
+            get {
+                return ResourceManager.GetString("SortNewest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oldest check-in.
+        /// </summary>
+        internal static string SortOldest {
+            get {
+                return ResourceManager.GetString("SortOldest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string OtherGroup {
+            get {
+                return ResourceManager.GetString("OtherGroup", resourceCulture);
+            }
+        }
     }
 }

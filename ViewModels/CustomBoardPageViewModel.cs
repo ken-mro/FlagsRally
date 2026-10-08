@@ -29,9 +29,12 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
     readonly MapFocusRequest _mapFocusRequest;
-    public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, MapFocusRequest mapFocusRequest)
+    readonly SettingsPreferences _settingsPreferences;
+    public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, MapFocusRequest mapFocusRequest, SettingsPreferences settingsPreferences)
     {
         _mapFocusRequest = mapFocusRequest;
+        _settingsPreferences = settingsPreferences;
+        _selectedSort = Enum.TryParse<LocationSort>(settingsPreferences.GetCustomBoardSort(nameof(LocationSort.NewestFirst)), out var sort) ? sort : LocationSort.NewestFirst;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
     }
@@ -41,6 +44,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
     [NotifyPropertyChangedFor(nameof(VisitedCount))]
     [NotifyPropertyChangedFor(nameof(TotalCount))]
     [NotifyPropertyChangedFor(nameof(Progress))]
@@ -49,6 +53,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
     [NotifyPropertyChangedFor(nameof(ShowsAll))]
     [NotifyPropertyChangedFor(nameof(ShowsVisited))]
     [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
@@ -71,6 +76,24 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
     }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
+    [NotifyPropertyChangedFor(nameof(SortText))]
+    LocationSort _selectedSort;
+
+    partial void OnSelectedSortChanged(LocationSort value) => _settingsPreferences.SetCustomBoardSort(value.ToString());
+
+    public string SortText => SelectedSort.DisplayName();
+
+    [RelayCommand]
+    async Task ChooseSortAsync()
+    {
+        var sorts = Enum.GetValues<LocationSort>();
+        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.SortBy, AppResources.Cancel, null, sorts.Select(x => x.DisplayName()).ToArray());
+        SelectedSort = sorts.FirstOrDefault(x => x.DisplayName() == choice, SelectedSort);
+    }
+
     [RelayCommand]
     async Task ShowOnMapAsync(CustomLocation location)
     {
@@ -90,6 +113,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         {
             SetProperty(ref _filteredCustomBoard, value);
             OnPropertyChanged(nameof(DisplayCustomLocationList));
+            OnPropertyChanged(nameof(DisplayCustomLocationGroups));
             OnPropertyChanged(nameof(VisitedCount));
             OnPropertyChanged(nameof(TotalCount));
             OnPropertyChanged(nameof(Progress));
@@ -107,7 +131,9 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
 
     public bool DateIsVisible => !DateIsNotVisible;
 
-    public ObservableCollection<CustomLocation> DisplayCustomLocationList => GetFilteredList();
+    public ObservableCollection<CustomLocation> DisplayCustomLocationList => new(LocationSorter.Sort(FilteredLocations, SelectedSort));
+
+    public List<CustomLocationGroup> DisplayCustomLocationGroups => LocationSorter.Group(FilteredLocations, SelectedSort);
 
 
     [ObservableProperty]
@@ -142,13 +168,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         }
     }
 
-    private ObservableCollection<CustomLocation> GetFilteredList()
-    {
-        var filteredList = BoardLocations
-                            .Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited))
-                            .OrderByDescending(x => x.ArrivalDate).ToList();
-        return new ObservableCollection<CustomLocation>(filteredList);
-    }
+    IEnumerable<CustomLocation> FilteredLocations => BoardLocations.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited));
 
     [RelayCommand]
     public async Task RefreshCountriesAsync()

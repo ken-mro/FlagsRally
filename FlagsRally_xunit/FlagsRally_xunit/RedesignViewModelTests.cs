@@ -46,11 +46,17 @@ public class RedesignViewModelTests
             new SubRegion { Code = new SubRegionCode("JP", "13"), ArrivalDate = new DateTime(2026, 10, 1) },
             new SubRegion { Code = new SubRegionCode("JP", "01"), ArrivalDate = new DateTime(2026, 8, 1) },
         ]);
+        var countryHelper = new CustomCountryHelper();
+        return new RegionalFlagsService(arrivals.Object, new SubRegionHelper(countryHelper), countryHelper, CreateSettings());
+    }
+
+    // Preferences that always return the default value.
+    private static SettingsPreferences CreateSettings()
+    {
         var preferences = new Mock<IPreferences>();
         preferences.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                    .Returns((string _, string defaultValue, string? _) => defaultValue);
-        var countryHelper = new CustomCountryHelper();
-        return new RegionalFlagsService(arrivals.Object, new SubRegionHelper(countryHelper), countryHelper, new SettingsPreferences(preferences.Object));
+        return new SettingsPreferences(preferences.Object);
     }
 
     // ---------- Collections ----------
@@ -117,7 +123,7 @@ public class RedesignViewModelTests
     private static async Task<CustomBoardPageViewModel> OpenBoardAsync(string boardName)
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CustomBoardPageViewModel(CreateService(boards, locations), boards.Object, locations.Object, new MapFocusRequest());
+        var vm = new CustomBoardPageViewModel(CreateService(boards, locations), boards.Object, locations.Object, new MapFocusRequest(), CreateSettings());
         vm.ApplyQueryAttributes(new Dictionary<string, object> { [CustomBoardPageViewModel.BoardQueryKey] = boardName });
         await vm.Init();
         return vm;
@@ -144,6 +150,51 @@ public class RedesignViewModelTests
         vm.SetVisitFilterCommand.Execute(filter);
 
         Assert.Equal(expectedCodes, vm.DisplayCustomLocationList.Select(x => x.Code));
+    }
+
+    // ---------- Sorting a custom board ----------
+
+    // JSON order: k1 (Kanto), h1 (Hokkaido, visited 3 Oct), k2 (Kanto, visited 1 Oct), x1 (no group), h2 (Hokkaido)
+    private static List<CustomLocation> SortSample() =>
+    [
+        new(BoardA, "k1", "k1", string.Empty, "Kanto", new Location(35, 139), null) { SortIndex = 1 },
+        new(BoardA, "h1", "h1", string.Empty, "Hokkaido", new Location(43, 141), new DateTime(2026, 10, 3)) { SortIndex = 2 },
+        new(BoardA, "k2", "k2", string.Empty, "Kanto", new Location(35, 139), new DateTime(2026, 10, 1)) { SortIndex = 3 },
+        new(BoardA, "x1", "x1", string.Empty, string.Empty, new Location(35, 135), null) { SortIndex = 4 },
+        new(BoardA, "h2", "h2", string.Empty, "Hokkaido", new Location(43, 141), null) { SortIndex = 5 },
+    ];
+
+    [Theory]
+    [InlineData(LocationSort.JsonOrder, new[] { "k1", "h1", "k2", "x1", "h2" })]
+    [InlineData(LocationSort.NewestFirst, new[] { "h1", "k2", "k1", "x1", "h2" })]
+    [InlineData(LocationSort.OldestFirst, new[] { "k2", "h1", "k1", "x1", "h2" })]
+    [InlineData(LocationSort.Group, new[] { "k1", "k2", "h1", "h2", "x1" })]
+    public void Places_are_sorted_with_unvisited_ones_in_board_order(LocationSort sort, string[] expectedCodes)
+    {
+        var shuffled = SortSample().OrderBy(x => x.Code);
+
+        Assert.Equal(expectedCodes, LocationSorter.Sort(shuffled, sort).Select(x => x.Code));
+    }
+
+    [Fact]
+    public void Grouping_keeps_the_board_order_of_groups_and_collects_ungrouped_places()
+    {
+        var groups = LocationSorter.Group(SortSample(), LocationSort.Group);
+
+        Assert.Equal(["Kanto", "Hokkaido"], groups.Take(2).Select(g => g.Name));
+        Assert.Equal(["x1"], groups[2].Select(x => x.Code)); // ungrouped places last, under "Other"
+        Assert.Equal("1 / 2", groups[0].ProgressText);
+        Assert.All(groups, g => Assert.True(g.HasHeading));
+    }
+
+    [Fact]
+    public void Other_sorts_show_one_group_without_a_heading()
+    {
+        var groups = LocationSorter.Group(SortSample(), LocationSort.JsonOrder);
+
+        var only = Assert.Single(groups);
+        Assert.False(only.HasHeading);
+        Assert.Equal(5, only.Count);
     }
 
     // ---------- Manage boards ----------
