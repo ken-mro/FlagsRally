@@ -51,31 +51,46 @@
 
 ## 5. アイコンとスプラッシュ
 
-現在はアイコンが「黒地に赤いパスポート」、スプラッシュが「黒地に旗の立った地球」で、起動時に別のアプリに見える。どちらもビットマップをトレースしたSVGで、小さいと線が潰れる。マークを1つに決め、アイコン・スプラッシュ・アプリバーで共通に使う。
+今のモチーフ（アイコン：赤いパスポート・地球・ピン・金の帯／スプラッシュ：旗を立てた地球・ピン・弧）と構図・色の組み合わせは変えず、描き方を整える。素材は`docs/design/assets/`にある。
 
-| 案 | 内容 | 長所 | 短所 |
-|---|---|---|---|
-| **A 地球と旗（推奨）** | 紺地に紙色の地球、赤い旗 | アプリ名を表す。24pxでも判別できる。スプラッシュにそのまま使える | パスポートの世界観は画面側で伝える |
-| B パスポート | 紙色の地に紺の表紙、金の地球、赤い消印 | 現在のアイコンとの連続性 | 小さいと金の線と消印が消える |
-| C スタンプ | 赤い丸スタンプに「FR」 | 目立つ。スタンプ集めと直結 | 文字入りで小さいと読めない |
+| 項目 | 現在 | 提案 |
+|---|---|---|
+| 線と形 | ビットマップのトレース。輪郭が波打ち、小さいと潰れる | 図形で描き直し、線幅と角丸を統一 |
+| 背景 | 黒。アイコンは黒い四角が残る | 深い紺のグラデーションとかすかな緯線。アイコンとスプラッシュで共通 |
+| 輪郭線 | スプラッシュは太いグレーの縁取り | 縁取りをやめ、面の色とハイライトで形を見せる |
+| 色 | 原色に近く、2つの画像で少しずつ違う | 同じ色相で彩度をそろえる（赤`#C2414A`、海`#3E9BEA`→`#2878C9`、陸`#46C38C`、金`#E9C46A`） |
+| 奥行き | パスポートが平面 | 背表紙、型押しの枠、上辺の光、落ち影 |
+| 要素の重なり | ピンが地球に埋もれる | ピンを表紙の色で縁取って分離 |
+| 弧 | 太いグレーの線 | 金の点線（旅のルート） |
+| 切り抜きへの対応 | 考慮なし | アイコンは半径33、スプラッシュは半径36の円に収める |
 
-スプラッシュ：
+| 現在 | 提案 |
+|---|---|
+| ![現在のアプリ一覧](assets/launcher-before.png) | ![提案のアプリ一覧](assets/launcher-after.png) |
+| ![現在のスプラッシュ](assets/splash-before.png) | ![提案のスプラッシュ](assets/splash-after.png) |
 
-- **Android 12以降**：OSの仕様で円に切り抜いたアイコンと背景色のみ。背景はアイコンと同じ紺（`#1F3A68`）。
-- **iOS**：紺の地にマークと「FlagsRally」の文字。
-- **起動直後（任意）**：スプラッシュは静止画にとどめ、最初の画面で新しいスタンプを押す演出を一度だけ見せる。
+上の画像は、提案のSVGを一時的にアプリへ組み込んでエミュレーター（Pixel 7 / Android 16）で撮影したもの。確認後、アプリの素材は元に戻している。iOSは未確認。
 
-実装メモ：現在プラットフォームごとに4行ある`MauiIcon`を、背景と前景を分けた1組にまとめる。前景はアダプティブアイコンの安全領域（108単位中央の直径66の円）に収める。
+組み込み方：
 
-```xml
-<MauiIcon Include="Resources\AppIcon\appicon.svg"
-          ForegroundFile="Resources\AppIcon\appiconfg.svg"
-          Color="#1F3A68" ForegroundScale="0.65" />
-<MauiSplashScreen Include="Resources\Splash\splash.svg"
-                  Color="#1F3A68" BaseSize="128,128" />
+```text
+docs/design/assets/icon-background.svg → Resources/AppIcon/appicon.svg
+docs/design/assets/icon-foreground.svg → Resources/AppIcon/appiconfg.svg
+docs/design/assets/splash.svg          → Resources/Splash/splash.svg
 ```
 
-Android 13のテーマアイコン用の単色版と、ストア用512pxアイコンも同じマークから作る。
+```xml
+<!-- FlagsRally.csproj：プラットフォーム別の4行を1行にまとめる -->
+<MauiIcon Include="Resources\AppIcon\appicon.svg"
+          ForegroundFile="Resources\AppIcon\appiconfg.svg"
+          Color="#14254A" ForegroundScale="1.0" />
+<MauiSplashScreen Include="Resources\Splash\splash.svg"
+                  Color="#14254A" BaseSize="128,128" />
+```
+
+- スプラッシュの後に一瞬出るアプリ本体の背景（今はテンプレートの紫）も、`Platforms/Android/Resources/values/colors.xml`の`colorPrimary`を紺にそろえる
+- Android 12以降のスプラッシュはOSが拡大するため少し柔らかく見える。気になる場合は`BaseSize`を大きくして比べる
+- ストア用512pxアイコンも同じ2枚のSVGから書き出す。Android 13のテーマアイコンには単色版を追加する
 
 ## 6. 使いやすさの改善
 
@@ -99,5 +114,5 @@ Android 13のテーマアイコン用の単色版と、ストア用512pxアイ�
 1. 配色の方向性（紺・赤・紙）でよいか。別案として緑系や御朱印帳寄りの和紙・朱色系も可能
 2. ボトムシートにライブラリ（例：The49.Maui.BottomSheet）を使うか、自前で作るか
 3. タブ再編（段階3）まで進めるか、段階1・2を先に出すか
-4. アイコンはどの案にするか（推奨は案A、連続性を優先するなら案B）
+4. アイコンとスプラッシュの背景を紺にするか、今の黒を残すか（紺にする場合はアプリ本体の背景色も合わせる）
 5. スタンプ用フォント（Jerseyclub Grunge、craftmincho）を続投するか（ライセンス確認）
