@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108">
+  <!-- FlagsRally app icon foreground.
+       Vector redraw of the existing icon (red passport, globe, pin, band), same colours,
+       flat style. Fits the adaptive-icon safe zone (circle r=33 around 54,54). -->
+  <defs>
+    <clipPath id="globe">
+      <circle cx="53.83" cy="48.11" r="12.36"/>
+    </clipPath>
+  </defs>
+
+  <!-- passport cover: dark edge + lighter face -->
+  <rect x="33.3" y="28.0" width="41.4" height="52.0" rx="3.84" fill="#7C030C"/>
+  <rect x="35.46" y="30.16" width="37.08" height="47.68" rx="1.4" fill="#B94047"/>
+
+  <!-- globe -->
+  <circle cx="53.83" cy="48.11" r="12.36" fill="#4ED195"/>
+  <path clip-path="url(#globe)" d="M40.84 45.66 L47.68 50.13 L51.45 49.01 L53.55 46.64 L57.74 46.22 L58.29 41.89 L62.06 39.24 L67.37 37.42 L67.37 43.01 L65.0 43.43 L60.04 46.5 L58.85 51.04 L60.39 52.64 L61.09 58.37 L62.48 62.56 L56.2 62.56 L56.2 60.46 L54.66 54.18 L48.52 53.13 L43.07 54.32 L40.49 54.88 Z" fill="#2594EF"/>
+
+  <!-- location pin -->
+  <path d="M49.99 43.36 L46.62 39.63 A4.54 4.54 0 1 1 53.36 39.63 Z" fill="#FB5968"/>
+  <circle cx="49.99" cy="36.59" r="1.75" fill="#D8304C"/>
+
+  <!-- band -->
+  <rect x="39.93" y="68.28" width="28.21" height="2.09" rx="1.04" fill="#FFEEA3"/>
+</svg>

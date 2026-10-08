@@ -23,7 +23,7 @@
   <path d="M51.2 22.4 H66.5 L63.6 27.2 L66.5 32 H51.2 Z" fill="#FB5968"/>
 
   <!-- location pin, same colours as the pin on the app icon.
-       Outlined in the background colour so it separates from the globe. -->
-  <path d="M72 57.5 C72 57.5 66.2 52 66.2 47.8 A5.8 5.8 0 1 1 77.8 47.8 C77.8 52 72 57.5 72 57.5 Z" fill="#FB5968" stroke="#000000" stroke-width="1.6" stroke-linejoin="round"/>
+       Outlined in the splash background colour (#182A52) so it separates from the globe. -->
+  <path d="M72 57.5 C72 57.5 66.2 52 66.2 47.8 A5.8 5.8 0 1 1 77.8 47.8 C77.8 52 72 57.5 72 57.5 Z" fill="#FB5968" stroke="#182A52" stroke-width="1.6" stroke-linejoin="round"/>
   <circle cx="72" cy="47.7" r="2.3" fill="#D8304C"/>
 </svg>

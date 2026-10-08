@@ -251,7 +251,7 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
 .cur-splash, .new-splash { width: 112px; height: 112px; border-radius: 14px; overflow: hidden; display: grid; place-items: center; }
 .cur-splash { background: #000000; }
 .cur-splash img { width: 74%; }
-.new-splash { background: #000000; }
+.new-splash { background: #182A52; }
 .new-splash img { width: 100%; }
 .sizes-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
@@ -482,59 +482,59 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
 
   <section id="icon">
     <div class="sec-head">
-      <div class="eyebrow">5 · アイコンとスプラッシュ</div>
-      <h2>アイコンは今のまま、スプラッシュはフラットに整える</h2>
+      <div class="eyebrow">5 · アイコンとスプラッシュ（決定）</div>
+      <h2>今の絵柄をそのままSVGに描き直し、背景を紺にそろえる</h2>
     </div>
-    <p class="prose">マテリアルデザイン風のシンプルな見た目を優先します。アプリアイコンは今のフラットな絵柄がその方針に合っているので変更しません。スプラッシュは構図（地球に立てた旗と位置情報のピン）を残したまま、太い輪郭線と弧をなくし、アイコンと同じ色のフラットな図形に描き直します。</p>
+    <p class="prose">マテリアルデザイン風のシンプルな見た目を優先します。アイコンは今の絵柄（赤いパスポート・地球・ピン・黄色の帯）を、スプラッシュは旗を立てた地球と位置情報のピンを、それぞれトレースではない正確なSVGに描き直しました。背景はアイコンとスプラッシュで同じ紺です。</p>
 
     <div class="ba">
       <div class="panel">
-        <h3>アプリアイコン（変更なし）</h3>
+        <h3>アプリアイコン</h3>
         <div class="pair">
-          <div class="side"><div class="cur-icon"><img src="assets/current-icon.png" alt="現在のアイコン。黒地に赤いパスポート、地球、ピン"></div>現在のまま</div>
+          <div class="side"><div class="cur-icon"><img src="assets/current-icon.png" alt="これまでのアイコン。黒地に赤いパスポート、地球、ピン"></div>これまで</div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="side"><div class="ico" style="width: 112px; height: 112px"><img src="assets/icon-background.svg" alt=""><img src="assets/icon-foreground.svg" alt="新しいアイコン。紺地に、同じ絵柄の赤いパスポート"></div>新しいSVG</div>
         </div>
-        <p style="font-size: 13px; color: var(--muted)">スプラッシュの色はこのアイコンから取ります。ピン <code>#FB5968</code>（中心 <code>#D8304C</code>）、海 <code>#2594EF</code>、陸 <code>#4ED195</code>。</p>
+        <p style="font-size: 13px; color: var(--muted)">絵柄と色はこれまでと同じです（表紙 <code>#B94047</code>／縁 <code>#7C030C</code>、海 <code>#2594EF</code>、陸 <code>#4ED195</code>、ピン <code>#FB5968</code>／<code>#D8304C</code>、帯 <code>#FFEEA3</code>）。背景だけを黒から紺のグラデーションとかすかな緯線に変えています。</p>
       </div>
       <div class="panel">
         <h3>スプラッシュのマーク</h3>
         <div class="pair">
-          <div class="side"><div class="cur-splash"><img src="assets/current-splash.png" alt="現在のスプラッシュ。太いグレーの輪郭の半球と旗と青いピン、グレーの弧"></div>現在</div>
+          <div class="side"><div class="cur-splash"><img src="assets/current-splash.png" alt="これまでのスプラッシュ。太いグレーの輪郭の半球と旗と青いピン"></div>これまで</div>
           <div class="arrow" aria-hidden="true">→</div>
-          <div class="side"><div class="new-splash"><img src="assets/splash.svg" alt="提案するスプラッシュ。輪郭線のない半球、明るいグレーの旗竿と赤い旗、赤いピン"></div>提案</div>
+          <div class="side"><div class="new-splash"><img src="assets/splash.svg" alt="新しいスプラッシュ。輪郭線のない半球、明るいグレーの旗竿と赤い旗、赤いピン"></div>新しいSVG</div>
         </div>
+        <p style="font-size: 13px; color: var(--muted)">輪郭線と弧をなくしたフラットな図形です。ピンと旗はアイコンのピンと同じ赤、地球はアイコンと同じ青と緑です。</p>
       </div>
     </div>
 
     <div class="table-scroll">
       <table>
-        <thead><tr><th>項目</th><th>現在</th><th>提案</th></tr></thead>
+        <thead><tr><th>ファイル</th><th>内容</th></tr></thead>
         <tbody>
-          <tr><td>線と形</td><td>ビットマップをトレースしたSVGで、輪郭が波打つ</td><td>円と曲線の図形で描き直す</td></tr>
-          <tr><td>輪郭線</td><td>太いグレーの縁取り。黒地の上では重く見える</td><td>縁取りなし。面の色だけで形を見せるフラットな描き方</td></tr>
-          <tr><td>弧</td><td>地球を囲むグレーの弧</td><td>なし</td></tr>
-          <tr><td>位置情報のピン</td><td>青に緑の中心。アイコンのピンと色が違う</td><td>アイコンのピンと同じ赤（<code>#FB5968</code>、中心 <code>#D8304C</code>）</td></tr>
-          <tr><td>旗と旗竿</td><td>赤い旗に濃いグレーの竿（黒地では見えにくい）</td><td>旗はピンと同じ赤、竿は明るいグレー <code>#E0E0E0</code></td></tr>
-          <tr><td>地球の色</td><td>アイコンとわずかに違う青と緑</td><td>アイコンと同じ海 <code>#2594EF</code>、陸 <code>#4ED195</code></td></tr>
-          <tr><td>背景</td><td>黒</td><td>黒のまま（アイコンの背景とそろえる）</td></tr>
-          <tr><td>切り抜きへの対応</td><td>考慮なし</td><td>Android 12以降で円形に切り抜かれても欠けないよう、中心から半径36の円に収める</td></tr>
+          <tr><td><code>Resources/AppIcon/appicon.svg</code></td><td>アイコンの背景。紺のグラデーション（<code>#22396A</code>→<code>#0F1C3A</code>）にかすかな緯線</td></tr>
+          <tr><td><code>Resources/AppIcon/appiconfg.svg</code></td><td>アイコンの前景。パスポート・地球・ピン・帯。Androidのアダプティブアイコンの安全領域（中心から半径33）に収まる</td></tr>
+          <tr><td><code>Resources/Splash/splash.svg</code></td><td>スプラッシュのマーク。Android 12以降で円形に切り抜かれても欠けないよう、中心から半径36の円に収まる</td></tr>
+          <tr><td><code>FlagsRally.csproj</code></td><td>プラットフォーム別に4行あった<code>MauiIcon</code>を1行にまとめ、アイコンとスプラッシュの背景色を<code>#182A52</code>（グラデーションの中間色）にする</td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>エミュレーターでの確認（Pixel 7 / Android 16）</h3>
-    <p class="prose">提案のSVGを一時的にアプリへ組み込み、起動時の表示を撮影しました。確認後、アプリの素材は元に戻しています。</p>
+    <div class="shots">
+      <figure class="shot"><img src="assets/launcher-before.png" alt="これまでのアイコンをアプリ一覧に表示した画面"><figcaption>アプリ一覧・これまで</figcaption></figure>
+      <figure class="shot"><img src="assets/launcher-after.png" alt="新しいアイコンをアプリ一覧に表示した画面"><figcaption>アプリ一覧・新しいSVG</figcaption></figure>
+    </div>
     <div class="phones-ba">
-      <figure><img src="assets/splash-before.png" alt="現在のスプラッシュ画面"><figcaption>現在</figcaption></figure>
-      <figure><img src="assets/splash-after.png" alt="提案のスプラッシュ画面"><figcaption>提案</figcaption></figure>
+      <figure><img src="assets/splash-before.png" alt="これまでのスプラッシュ画面"><figcaption>スプラッシュ・これまで</figcaption></figure>
+      <figure><img src="assets/splash-after.png" alt="新しいスプラッシュ画面"><figcaption>スプラッシュ・新しいSVG</figcaption></figure>
     </div>
 
     <div class="spec">
-      <h3>組み込み方</h3>
-      <p class="prose">差し替えるのは1ファイルだけです。背景色は今の黒のままなので、<code>FlagsRally.csproj</code>の変更は不要です。Androidではビルドと表示を確認済みで、iOSは未確認です。</p>
-      <pre>docs/design/assets/splash.svg → Resources/Splash/splash.svg</pre>
+      <h3>残っている調整</h3>
       <ul class="clean" style="font-size: 14px">
-        <li>スプラッシュの直後に一瞬出るアプリ本体の背景は、今はテンプレートの紫です。黒（またはアプリ本体の背景色）にそろえると、起動がひと続きに見えます。</li>
-        <li>Android 12以降のスプラッシュはOSが拡大表示するため、わずかに柔らかく見えます。</li>
+        <li>スプラッシュの直後に一瞬出るアプリ本体の背景は、まだテンプレートの紫です。<code>Platforms/Android/Resources/values/colors.xml</code>の<code>colorPrimary</code>も紺にそろえると、起動がひと続きに見えます。</li>
+        <li>iOS・macOS・Windowsのアイコンも同じ2枚のSVGから生成されます。これらの実機表示は未確認です。</li>
       </ul>
     </div>
   </section>
@@ -575,7 +575,7 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
       <div class="phase">
         <div class="when">段階1<span>見た目の土台</span></div>
         <div class="what">
-          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。スプラッシュをフラットな図形に差し替える（アイコンは変更しない）。画面構成は変えないので、リスクがいちばん低い段階です。</p>
+          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。アイコンとスプラッシュはSVG化と紺の背景への差し替えが完了。画面構成は変えないので、リスクがいちばん低い段階です。</p>
           <div class="files">Resources/Styles/Colors.xaml · Styles.xaml · Platforms/Android/Resources/values/colors.xml · Views/*.xamlの直書き色 · Resources/Splash/splash.svg</div>
         </div>
       </div>
@@ -612,7 +612,6 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
       <div class="q"><b>配色の方向性はこの「紺・赤・紙」でよいか</b><span>別案として、地図アプリらしい明るい緑系や、御朱印帳に寄せた和紙・朱色系も作れます。</span></div>
       <div class="q"><b>ボトムシートにライブラリを使ってよいか</b><span>MAUIには標準のボトムシートがありません。The49.Maui.BottomSheetなどを使うか、自前のオーバーレイで作るかを選びます。</span></div>
       <div class="q"><b>タブ再編（段階3）まで進めるか</b><span>既存ユーザーにとって場所が変わる変更です。段階1・2だけ先に出して反応を見る方法もあります。</span></div>
-      <div class="q"><b>スプラッシュの差し替えを進めるか</b><span>アイコンは今のまま、スプラッシュだけを<code>splash.svg</code>の1ファイルで差し替えます。合わせてアプリ本体の背景色（今の紫）も変えるかを決めてください。</span></div>
       <div class="q"><b>スタンプ用フォントを続投するか</b><span>Jerseyclub Grungeとcraftminchoはアプリの個性です。続投する前提で提案していますが、ライセンスの確認だけお願いします。</span></div>
     </div>
   </section>
