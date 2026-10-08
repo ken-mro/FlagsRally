@@ -316,7 +316,7 @@
     <value>Are you sure to reset?</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>I'm here!</value>
+    <value>You are here</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>Fake location detected!</value>

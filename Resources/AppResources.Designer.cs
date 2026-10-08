@@ -358,7 +358,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m here!.
+        ///   Looks up a localized string similar to You are here.
         /// </summary>
         internal static string GetLocationHere {
             get {

@@ -316,7 +316,7 @@
     <value>リセットしますか？</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>ここにいます!</value>
+    <value>現在地</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>位置情報の偽装が検出されました。</value>
