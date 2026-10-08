@@ -38,41 +38,54 @@
                 Aspect="AspectFit"
                 HeightRequest="{Binding PassportImageHeight}"
                 Source="{Binding PassportImageSourceString}" />
-            <HorizontalStackLayout
+            <!--  Equal columns keep the three numbers evenly spaced whatever their width  -->
+            <Grid
                 Grid.Column="1"
-                Spacing="18"
+                ColumnDefinitions="*,*,*"
                 VerticalOptions="Center">
-                <VerticalStackLayout Spacing="0">
-                    <controls:StampLabel
+                <VerticalStackLayout Grid.Column="0" Spacing="0">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="craftmincho"
                         FontSize="30"
+                        HorizontalTextAlignment="Center"
                         Text="{Binding VisitedCountryCount}"
                         TextColor="{StaticResource Navy}" />
                     <Label
                         FontSize="12"
+                        HorizontalTextAlignment="Center"
                         Text="{x:Static strings:AppResources.StatCountries}"
                         TextColor="{StaticResource InkMuted}" />
                 </VerticalStackLayout>
-                <VerticalStackLayout Spacing="0">
-                    <controls:StampLabel
+                <VerticalStackLayout Grid.Column="1" Spacing="0">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="craftmincho"
                         FontSize="30"
+                        HorizontalTextAlignment="Center"
                         Text="{Binding VisitedRegionCount}"
                         TextColor="{StaticResource Navy}" />
                     <Label
                         FontSize="12"
+                        HorizontalTextAlignment="Center"
                         Text="{x:Static strings:AppResources.StatRegions}"
                         TextColor="{StaticResource InkMuted}" />
                 </VerticalStackLayout>
-                <VerticalStackLayout Spacing="0">
-                    <controls:StampLabel
+                <VerticalStackLayout Grid.Column="2" Spacing="0">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="craftmincho"
                         FontSize="30"
+                        HorizontalTextAlignment="Center"
                         Text="{Binding CheckInCount}"
                         TextColor="{StaticResource Navy}" />
                     <Label
                         FontSize="12"
+                        HorizontalTextAlignment="Center"
                         Text="{x:Static strings:AppResources.StatCheckIns}"
                         TextColor="{StaticResource InkMuted}" />
                 </VerticalStackLayout>
-            </HorizontalStackLayout>
+            </Grid>
         </Grid>
         <RefreshView
             Grid.Row="1"
