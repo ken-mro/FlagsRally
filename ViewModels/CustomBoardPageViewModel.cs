@@ -75,12 +75,12 @@ public partial class CustomBoardPageViewModel : BaseViewModel
             if (FilteredCustomBoard is null)
             {
                 var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(latestCustomLocation?.Board.Name));
-                FilteredCustomBoard = matchingBoard ?? allBoards.FirstOrDefault();
+                FilteredCustomBoard = (matchingBoard ?? allBoards.FirstOrDefault())!;
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
         }
         finally
         {

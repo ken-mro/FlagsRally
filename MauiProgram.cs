@@ -9,11 +9,17 @@ using Maui.RevenueCat.InAppBilling;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using Syncfusion.Maui.Core.Hosting;
+using System.Runtime.Versioning;
 
 namespace FlagsRally
 {
     public static class MauiProgram
     {
+        // The plain net10.0 TFM exists only for unit tests and never calls this entry point.
+        [SupportedOSPlatform("android21.0")]
+        [SupportedOSPlatform("ios15.0")]
+        [SupportedOSPlatform("maccatalyst15.0")]
+        [SupportedOSPlatform("windows10.0.17763")]
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -33,6 +39,19 @@ namespace FlagsRally
 
 #if ANDROID
             builder.UseGoogleMaps();
+
+            // Workaround for a .NET MAUI 10 Android issue where an ActivityIndicator
+            // hidden around the time its handler is created (IsBusy set back to false
+            // during startup) keeps its native view visible. Re-sync the native
+            // visibility from the cross-platform state once the view has attached.
+            Microsoft.Maui.Handlers.ActivityIndicatorHandler.Mapper.AppendToMapping("FixInitialVisibility", (handler, indicator) =>
+            {
+                handler.PlatformView.Post(() =>
+                {
+                    var isShown = indicator.IsRunning && (indicator as VisualElement)?.IsVisible != false;
+                    handler.PlatformView.Visibility = isShown ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
+                });
+            });
 #elif IOS
             builder.UseGoogleMaps(Constants.GOOGLE_MAP_API_KEY);
 #endif

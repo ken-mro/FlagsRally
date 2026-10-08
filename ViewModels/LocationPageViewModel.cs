@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Exceptions;
@@ -113,7 +114,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         if (pin is ArrivalLocationPin arrivalLocationPin)
         {
-            var deletes = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
             if (!deletes) return;
 
             //update database
@@ -122,7 +123,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
             if (deleteIsFailed)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
                 return;
             }
 
@@ -133,7 +134,7 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             if (!customLocationPin.IsVisited) return;
 
-            var clears = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var clears = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
             if (!clears) return;
 
             //update database
@@ -142,7 +143,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
             if (clearIsFailed)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
                 return;
             }
 
@@ -319,7 +320,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
                 if (!isNear)
                 {
-                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+                    await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
                     return;
                 }
 
@@ -332,7 +333,7 @@ public partial class LocationPageViewModel : BaseViewModel
             if (rawArrivalLocationData is null)
                 throw new Exception($"{AppResources.UnableToGetLocationData}");
 
-            var result = await Shell.Current.DisplayAlert($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
+            var result = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
                                                             $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
             if (result)
             {
@@ -372,28 +373,28 @@ public partial class LocationPageViewModel : BaseViewModel
         catch (FeatureNotSupportedException ex)
         {
             // Handle not supported on device exception
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nNot supported on device.", "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nNot supported on device.", "OK");
         }
         catch (FeatureNotEnabledException ex)
         {
             // Handle not enabled on device exception
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nNot enabled on device.", "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nNot enabled on device.", "OK");
         }
         catch (PermissionException ex)
         {
             // Handle permission exception
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\nSomething wrong with the permission", "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nSomething wrong with the permission", "OK");
         }
         catch(FakeLocationException ex)
         {
             // Handle fake location exception
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}", "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}", "OK");
         }
         catch (Exception ex)
         {
             // Unable to get location
             // Todo:add logger
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
         }
         finally
         {
@@ -415,7 +416,7 @@ public partial class LocationPageViewModel : BaseViewModel
         var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
         if (!isNear)
         {
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
             return;
         }
 
@@ -551,7 +552,7 @@ public partial class LocationPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
         }
         finally
         {
@@ -604,8 +605,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task TryToOfferSubscription()
     {
-        var customerInfo = await _revenueCat.GetCustomerInfo();
-        var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+        var customerInfoResult = await _revenueCat.GetCustomerInfo();
+        var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
         _settingsPreferences.SetIsSubscribed(isSubscribed);
 
         if (_settingsPreferences.GetIsSubscribed()) return;

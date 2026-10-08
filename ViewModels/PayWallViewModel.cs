@@ -45,8 +45,9 @@ public partial class PayWallViewModel : BaseViewModel
     {
         Task.Run(async () =>
         {
-            var loadedOfferings = await _revenueCatBilling.GetOfferings();
-            LoadedOfferings = new ObservableCollection<OfferingDto>(loadedOfferings);
+            var offeringsResult = await _revenueCatBilling.GetOfferings();
+            if (offeringsResult.IsError || offeringsResult.Value is null) return;
+            LoadedOfferings = new ObservableCollection<OfferingDto>(offeringsResult.Value);
 
             MonthlySubscription = LoadedOfferings
                 .SelectMany(x => x.AvailablePackages)

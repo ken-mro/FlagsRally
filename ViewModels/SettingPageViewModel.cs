@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -56,8 +57,8 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                var customerInfo = await _revenueCatBilling.GetCustomerInfo();
-                var isSubscribed = customerInfo?.ActiveSubscriptions?.Count > 0;
+                var customerInfoResult = await _revenueCatBilling.GetCustomerInfo();
+                var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
                 _settingPreferences.SetIsSubscribed(isSubscribed);
                 IsSubscribed = isSubscribed;
             }
@@ -87,7 +88,7 @@ namespace FlagsRally.ViewModels
                 if (IsSubscribed)
                 {
                     // Show thank you message if already subscribed
-                    await Shell.Current.DisplayAlert(
+                    await Shell.Current.DisplayAlertAsync(
                         AppResources.Subscription.TrimEnd(':'), 
                         AppResources.ThankYouForSubscribing, 
                         "OK");
@@ -104,7 +105,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
 
@@ -155,15 +156,15 @@ namespace FlagsRally.ViewModels
                     return;
                 }
 
-                await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
             }
             catch (UnauthorizedAccessException)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.AccessDenied}", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.AccessDenied}", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
 
@@ -175,7 +176,7 @@ namespace FlagsRally.ViewModels
                 if (!string.IsNullOrEmpty(_settingPreferences.GetApiKey()))
                 {
                     _settingPreferences.SetApiKey(string.Empty);
-                    await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.ClearAPIKey}", "OK");
+                    await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.ClearAPIKey}", "OK");
                 }
 
                 return;
@@ -185,11 +186,11 @@ namespace FlagsRally.ViewModels
             if (isApiKeyValid)
             {
                 _settingPreferences.SetApiKey(ApiKey);
-                await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.SetAPIKey}", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.SetAPIKey}", "OK");
             }
             else
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidAPIKey}", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidAPIKey}", "OK");
             }
         }
 
@@ -198,7 +199,7 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                var result = await Shell.Current.DisplayAlert($"{AppResources.AreYouSureRestoreBackup}", $"{AppResources.OverwriteExistingFile}\n" +
+                var result = await Shell.Current.DisplayAlertAsync($"{AppResources.AreYouSureRestoreBackup}", $"{AppResources.OverwriteExistingFile}\n" +
                     $"{AppResources.ActionCannotUndone}", $"{AppResources.Yes}", $"{AppResources.No}");
 
                 if (!result) return;
@@ -209,7 +210,7 @@ namespace FlagsRally.ViewModels
                 // Validate the backup file using the pattern from Constants
                 if (!Constants.IsValidBackupFileName(pickedFile.FileName))
                 {
-                    await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                    await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
                     return;
                 }
 
@@ -237,21 +238,21 @@ namespace FlagsRally.ViewModels
 
                     if (!databaseFound)
                     {
-                        await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                        await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
                         return;
                     }
                 }
 
-                await Shell.Current.DisplayAlert($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
                 $"{AppResources.RelaunchToEnable}", "OK");
             }
             catch (ZipException)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
 
@@ -264,7 +265,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
 
@@ -277,7 +278,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert($"{AppResources.Error}", ex.Message, "OK");
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
     }

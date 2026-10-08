@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-    <TargetFrameworks>net9.0;net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+    <!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
 		<!-- Note for MacCatalyst:
 		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
 		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
 		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
 		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
 		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
-    <OutputType Condition="'$(TargetFramework)' != 'net9.0'">Exe</OutputType>
+    <OutputType Condition="'$(TargetFramework)' != 'net10.0'">Exe</OutputType>
 		<RootNamespace>FlagsRally</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
@@ -31,11 +31,15 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">35</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">36</SupportedOSPlatformVersion>
 		<DefaultLanguage>en-us</DefaultLanguage>
 		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 
+	<!-- Fix for Gradle rebuild issue -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidSkipGradleRestore>true</AndroidSkipGradleRestore>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' " Include="Resources\AppIcon\appicon.svg" Color="Transparent" BaseSize="128, 128" ForegroundScale="0.95" />
@@ -280,7 +284,6 @@
 		<None Remove="Resources\Images\fr\fr_bfc_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_bre.png" />
 		<None Remove="Resources\Images\fr\fr_bre_emblem.png" />
-		<None Remove="Resources\Images\fr\fr_cdr_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_cvl.png" />
 		<None Remove="Resources\Images\fr\fr_cvl_emblem.png" />
 		<None Remove="Resources\Images\fr\fr_ges.png" />
@@ -626,26 +629,27 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="11.2.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="15.0.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="CountryData.Standard" Version="1.5.0" />
-		<PackageReference Include="Kebechet.Maui.RevenueCat.InAppBilling" Version="5.3.2" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.120" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
+		<PackageReference Include="Kebechet.Maui.RevenueCat.InAppBilling" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.101" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.101" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />
 		<PackageReference Include="Moq" Version="4.20.72" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Onion.Maui.GoogleMaps" Version="6.2.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="Onion.Maui.GoogleMaps" Version="6.4.0" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
-		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="3.0.0-preview.18" />
-		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
-		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
-		<PackageReference Include="SQLitePCLRaw.core" Version="3.0.2" />
-		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="3.0.2" />
-		<PackageReference Include="SQLitePCLRaw.provider.sqlite3" Version="3.0.2" />
-		<PackageReference Include="Syncfusion.Maui.Maps" Version="31.1.17" />
+		<!-- Direct reference to override a vulnerable transitive version (NU1902) -->
+		<PackageReference Include="SharpCompress" Version="1.0.0" />
+		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="3.0.0" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
+		<PackageReference Include="SQLitePCLRaw.core" Version="3.0.5" />
+		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="3.0.5" />
+		<PackageReference Include="SQLitePCLRaw.provider.sqlite3" Version="3.0.5" />
+		<PackageReference Include="Syncfusion.Maui.Maps" Version="34.2.9" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -1238,9 +1242,9 @@
 	  </MauiFont>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
 	  <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData">
-	    <Version>2.9.1</Version>
+	    <Version>2.10.0.2</Version>
 	  </PackageReference>
 	</ItemGroup>
 
