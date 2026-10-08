@@ -1040,5 +1040,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("Advanced", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is about {0} from here..
+        /// </summary>
+        internal static string DistanceFromHere {
+            get {
+                return ResourceManager.GetString("DistanceFromHere", resourceCulture);
+            }
+        }
     }
 }

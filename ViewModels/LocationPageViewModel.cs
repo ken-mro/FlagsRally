@@ -585,7 +585,13 @@ public partial class LocationPageViewModel : BaseViewModel
         var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
         if (!isNear)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+            // Say how far away the location is and offer directions to it.
+            var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, DistanceFormatter.Format(distance))}";
+            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", "OK");
+            if (wantsDirections)
+            {
+                await OpenDirectionsAsync();
+            }
             return;
         }
 

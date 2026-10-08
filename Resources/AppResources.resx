@@ -444,4 +444,7 @@
   <data name="Advanced" xml:space="preserve">
     <value>Advanced</value>
   </data>
+  <data name="DistanceFromHere" xml:space="preserve">
+    <value>It is about {0} from here.</value>
+  </data>
 </root>

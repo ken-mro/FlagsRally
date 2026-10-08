@@ -444,4 +444,7 @@
   <data name="Advanced" xml:space="preserve">
     <value>詳細設定</value>
   </data>
+  <data name="DistanceFromHere" xml:space="preserve">
+    <value>ここから約{0}です。</value>
+  </data>
 </root>
