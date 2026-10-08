@@ -280,7 +280,27 @@ public partial class LocationPageViewModel : BaseViewModel
         if (ArrivalMap is not null)
         {
             var position = new Position(userLocation.Latitude, userLocation.Longitude);
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel));
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel), animate: true);
+        }
+    }
+
+    private static readonly TimeSpan CameraMoveTimeout = TimeSpan.FromSeconds(3);
+
+    // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
+    // which would leave IsBusy set and block Get Location. Wait a short time at most.
+    private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
+    {
+        if (ArrivalMap is null) return;
+        try
+        {
+            var move = animate ? ArrivalMap.AnimateCamera(update) : ArrivalMap.MoveCamera(update);
+            await move.WaitAsync(CameraMoveTimeout);
+        }
+        catch (TimeoutException)
+        {
+#if DEBUG
+            Console.WriteLine("Camera move did not complete in time; continuing.");
+#endif
         }
     }
 
@@ -300,7 +320,7 @@ public partial class LocationPageViewModel : BaseViewModel
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
         {
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, zoomLevel), animate: true);
         }
     }
 
@@ -380,7 +400,7 @@ public partial class LocationPageViewModel : BaseViewModel
             OnPinFilterChanged();
         }
 
-        await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL));
+        await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
         ArrivalMap.SelectedPin = pin;
     }
 
@@ -420,7 +440,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {
-                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
+                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
             }
         }
         catch (Exception ex)
@@ -432,7 +452,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             if (ArrivalMap is not null)
             {
-                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
+                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
             }
         }
         finally
