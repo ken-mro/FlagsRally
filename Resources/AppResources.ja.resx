@@ -384,4 +384,16 @@
   <data name="ChooseLocation" xml:space="preserve">
     <value>この場所には複数のピンがあります。選択してください</value>
   </data>
+  <data name="NotVisited" xml:space="preserve">
+    <value>未訪問</value>
+  </data>
+  <data name="ResetCheckIn" xml:space="preserve">
+    <value>チェックインを取り消す</value>
+  </data>
+  <data name="Directions" xml:space="preserve">
+    <value>経路</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
 </root>

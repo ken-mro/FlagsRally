@@ -860,5 +860,41 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("ChooseLocation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not visited.
+        /// </summary>
+        internal static string NotVisited {
+            get {
+                return ResourceManager.GetString("NotVisited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset check-in.
+        /// </summary>
+        internal static string ResetCheckIn {
+            get {
+                return ResourceManager.GetString("ResetCheckIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directions.
+        /// </summary>
+        internal static string Directions {
+            get {
+                return ResourceManager.GetString("Directions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        internal static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
     }
 }

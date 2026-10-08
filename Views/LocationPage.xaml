@@ -5,8 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:maps="clr-namespace:Maui.GoogleMaps;assembly=Maui.GoogleMaps"
-    xmlns:models="clr-namespace:FlagsRally.Models"
-    xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:LocationPageViewModel">
@@ -15,99 +13,154 @@
     </Shell.TitleView>
     <Grid Padding="10" RowSpacing="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label
-            Grid.Row="0"
-            HorizontalOptions="Center"
-            Text="{x:Static strings:AppResources.ConfirmLocationTapButton}"
-            VerticalOptions="Center">
-            <Label.Triggers>
-                <DataTrigger
-                    Binding="{Binding SelectsCustomLocationPin}"
-                    TargetType="Label"
-                    Value="True">
-                    <Setter Property="Text" Value="{x:Static strings:AppResources.TapCheckInNearTheSelectedPin}" />
-                </DataTrigger>
-            </Label.Triggers>
-        </Label>
         <maps:Map
             x:Name="map"
-            Grid.Row="1"
+            Grid.Row="0"
             SelectedPin="{Binding SelectedPin}" />
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Border
-                Grid.Column="0"
-                Padding="10,8"
-                SemanticProperties.Description="{x:Static strings:AppResources.FilterPin}"
-                Stroke="{StaticResource InkMuted}"
-                StrokeShape="RoundRectangle 6"
-                StrokeThickness="1"
-                VerticalOptions="Center">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OpenPinFilterCommand}" />
-                </Border.GestureRecognizers>
-                <Grid ColumnSpacing="5">
+
+        <!--  Default controls: filter and record the current location  -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            IsVisible="{Binding HasNoPinDetails}"
+            Spacing="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Padding="10,8"
+                    SemanticProperties.Description="{x:Static strings:AppResources.FilterPin}"
+                    Stroke="{StaticResource InkMuted}"
+                    StrokeShape="RoundRectangle 6"
+                    StrokeThickness="1"
+                    VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenPinFilterCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Grid.Column="0"
+                            HeightRequest="18"
+                            Source="filter.png"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="14"
+                            LineBreakMode="TailTruncation"
+                            Text="{Binding FilterSummary}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="2"
+                            Text="▾"
+                            TextColor="{StaticResource InkMuted}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+                <Label
+                    Grid.Column="1"
+                    FontSize="35"
+                    HorizontalOptions="End"
+                    Text="+"
+                    TextColor="{StaticResource InkMuted}"
+                    VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddCustomBoardJsonCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <Button Command="{Binding GetCurrentLocationCommand}" Text="{x:Static strings:AppResources.GetLocation}" />
+        </VerticalStackLayout>
+
+        <!--  Details of the selected pin, with its actions as buttons  -->
+        <Border
+            Grid.Row="1"
+            Padding="14,10,6,12"
+            BackgroundColor="{StaticResource PaperCard}"
+            IsVisible="{Binding HasPinDetails}"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 12">
+            <Grid ColumnSpacing="4" RowSpacing="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    LineBreakMode="TailTruncation"
+                    Text="{Binding SelectedPinTitle}" />
+                <Label
+                    Grid.Row="1"
+                    FontSize="13"
+                    LineBreakMode="TailTruncation"
+                    Text="{Binding SelectedPinSubtitle}"
+                    TextColor="{StaticResource InkMuted}" />
+                <Button
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ClosePinDetailsCommand}"
+                    FontSize="18"
+                    SemanticProperties.Description="{x:Static strings:AppResources.Close}"
+                    Text="✕"
+                    TextColor="{StaticResource InkMuted}"
+                    VerticalOptions="Start"
+                    WidthRequest="44" />
+                <Grid
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Margin="0,8,8,0"
+                    ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Image
+                    <Button
                         Grid.Column="0"
-                        HeightRequest="18"
-                        Source="filter.png"
-                        VerticalOptions="Center" />
-                    <Label
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding GetCurrentLocationCommand}"
+                        IsVisible="{Binding CanCheckIn}"
+                        Text="{x:Static strings:AppResources.CheckIn}" />
+                    <Button
                         Grid.Column="1"
-                        FontSize="14"
-                        LineBreakMode="TailTruncation"
-                        Text="{Binding FilterSummary}"
-                        VerticalOptions="Center" />
-                    <Label
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource Navy}"
+                        BorderWidth="1"
+                        Command="{Binding OpenDirectionsCommand}"
+                        Text="{x:Static strings:AppResources.Directions}"
+                        TextColor="{StaticResource Navy}" />
+                    <Button
                         Grid.Column="2"
-                        Text="▾"
-                        TextColor="{StaticResource InkMuted}"
-                        VerticalOptions="Center" />
+                        BackgroundColor="Transparent"
+                        Command="{Binding RemoveSelectedPinCommand}"
+                        IsVisible="{Binding CanRemoveSelectedPin}"
+                        Text="{Binding RemoveSelectedPinText}"
+                        TextColor="{StaticResource Stamp}" />
                 </Grid>
-            </Border>
-            <Label
-                Grid.Column="1"
-                FontSize="35"
-                HorizontalOptions="End"
-                Text="+"
-                TextColor="{StaticResource InkMuted}"
-                VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding AddCustomBoardJsonCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-        </Grid>
-        <Button
-            Grid.Row="3"
-            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
-                                              Dark={StaticResource PrimaryDark}}"
-            Command="{Binding GetCurrentLocationCommand}"
-            Text="{x:Static strings:AppResources.GetLocation}">
-            <Button.Triggers>
-                <DataTrigger
-                    Binding="{Binding SelectsCustomLocationPin}"
-                    TargetType="Button"
-                    Value="True">
-                    <Setter Property="Text" Value="{x:Static strings:AppResources.CheckIn}" />
-                    <Setter Property="BackgroundColor" Value="{StaticResource Stamp}" />
-                </DataTrigger>
-            </Button.Triggers>
-        </Button>
+            </Grid>
+        </Border>
+
         <ActivityIndicator
-            Grid.Row="1"
+            Grid.Row="0"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             WidthRequest="50"

@@ -44,11 +44,87 @@ public partial class LocationPageViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
+    [NotifyPropertyChangedFor(nameof(HasPinDetails))]
+    [NotifyPropertyChangedFor(nameof(HasNoPinDetails))]
+    [NotifyPropertyChangedFor(nameof(SelectedPinTitle))]
+    [NotifyPropertyChangedFor(nameof(SelectedPinSubtitle))]
+    [NotifyPropertyChangedFor(nameof(CanCheckIn))]
+    [NotifyPropertyChangedFor(nameof(CanRemoveSelectedPin))]
+    [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
     Pin? _selectedPin;
 
     Pin? _tappedPointPin;
 
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
+
+    // The details panel is shown for saved pins (arrival locations and custom board locations),
+    // not for the temporary pin dropped by a long press.
+    public bool HasPinDetails => SelectedPin is CustomLocationPin or ArrivalLocationPin;
+    public bool HasNoPinDetails => !HasPinDetails;
+
+    public string SelectedPinTitle => SelectedPin?.Label ?? string.Empty;
+
+    public string SelectedPinSubtitle => SelectedPin switch
+    {
+        CustomLocationPin pin => $"{((MapPinTag)pin.Tag).BoardName} · {(pin.IsVisited ? pin.Address : AppResources.NotVisited)}",
+        ArrivalLocationPin pin => $"{AppResources.ArrivalLocation} · {pin.Address}",
+        _ => string.Empty,
+    };
+
+    public bool CanCheckIn => SelectedPin is CustomLocationPin;
+
+    public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
+
+    public string RemoveSelectedPinText => SelectedPin is ArrivalLocationPin ? AppResources.Delete : AppResources.ResetCheckIn;
+
+    [RelayCommand]
+    async Task RemoveSelectedPinAsync()
+    {
+        if (SelectedPin is not null)
+        {
+            await DeleteOrResetPinAsync(SelectedPin);
+        }
+    }
+
+    [RelayCommand]
+    async Task OpenDirectionsAsync()
+    {
+        if (SelectedPin is null) return;
+
+        try
+        {
+            var options = new MapLaunchOptions { Name = SelectedPin.Label };
+            await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(SelectedPin.Position.Latitude, SelectedPin.Position.Longitude, options);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+        }
+    }
+
+    [RelayCommand]
+    void ClosePinDetails()
+    {
+        if (ArrivalMap is not null)
+        {
+            ArrivalMap.SelectedPin = null;
+        }
+    }
+
+    // Pin equality is value-based (label/position), so remove the exact instance.
+    private void RemovePinFromMap(Pin pin)
+    {
+        if (ArrivalMap is null) return;
+
+        for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
+        {
+            if (ReferenceEquals(ArrivalMap.Pins[i], pin))
+            {
+                ArrivalMap.Pins.RemoveAt(i);
+                return;
+            }
+        }
+    }
 
     public Map? ArrivalMap
     {
@@ -61,7 +137,7 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
-            _arrivalMap.InfoWindowLongClicked += async (sender, e) => await OnInfoWindowLongClicked(sender, e);
+            _arrivalMap.InfoWindowLongClicked += async (sender, e) => await DeleteOrResetPinAsync(e.Pin);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
@@ -134,9 +210,8 @@ public partial class LocationPageViewModel : BaseViewModel
         _tappedPointPin = null;
     }
 
-    private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
+    private async Task DeleteOrResetPinAsync(Pin pin)
     {
-        var pin = e.Pin;
 
         if (pin is ArrivalLocationPin arrivalLocationPin)
         {
@@ -154,7 +229,11 @@ public partial class LocationPageViewModel : BaseViewModel
             }
 
             //update pin on map
-            ArrivalMap?.Pins.Remove(pin);
+            if (ArrivalMap is not null && ReferenceEquals(ArrivalMap.SelectedPin, pin))
+            {
+                ArrivalMap.SelectedPin = null;
+            }
+            RemovePinFromMap(pin);
         }
         else if (pin is CustomLocationPin customLocationPin)
         {

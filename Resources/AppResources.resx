@@ -384,4 +384,16 @@
   <data name="ChooseLocation" xml:space="preserve">
     <value>Several pins are here. Choose one</value>
   </data>
+  <data name="NotVisited" xml:space="preserve">
+    <value>Not visited</value>
+  </data>
+  <data name="ResetCheckIn" xml:space="preserve">
+    <value>Reset check-in</value>
+  </data>
+  <data name="Directions" xml:space="preserve">
+    <value>Directions</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>
