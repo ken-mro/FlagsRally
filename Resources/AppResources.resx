@@ -438,4 +438,10 @@
   <data name="StatCheckIns" xml:space="preserve">
     <value>Check-ins</value>
   </data>
+  <data name="Data" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
 </root>
