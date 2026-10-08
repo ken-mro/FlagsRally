@@ -316,7 +316,7 @@
     <value>リセットしますか？</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>現在地</value>
+    <value>記録する場所</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>位置情報の偽装が検出されました。</value>
@@ -503,5 +503,23 @@
   </data>
   <data name="PinStyleDrop" xml:space="preserve">
     <value>しずく</value>
+  </data>
+  <data name="CheckInSpotTitle" xml:space="preserve">
+    <value>このピンの場所で記録</value>
+  </data>
+  <data name="CheckInSpotHint" xml:space="preserve">
+    <value>ピンを長押ししたまま動かすと、場所を変えられます。現在地から{0}以内（地図の円の中）なら、その場所で記録できます。</value>
+  </data>
+  <data name="CheckInSpotInRange" xml:space="preserve">
+    <value>現在地から {0}（円の中なので記録できます）</value>
+  </data>
+  <data name="CheckInSpotOutOfRange" xml:space="preserve">
+    <value>現在地から {0}（円の中に戻してください）</value>
+  </data>
+  <data name="CheckInSpotTooFar" xml:space="preserve">
+    <value>ピンが現在地から {0} 離れています。現在地から{1}以内（円の中）に動かしてから、もう一度お試しください。</value>
+  </data>
+  <data name="CheckInHere" xml:space="preserve">
+    <value>ここで記録</value>
   </data>
 </root>

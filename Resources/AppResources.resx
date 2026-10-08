@@ -316,7 +316,7 @@
     <value>Are you sure to reset?</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>You are here</value>
+    <value>Check-in spot</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>Fake location detected!</value>
@@ -503,5 +503,23 @@
   </data>
   <data name="PinStyleDrop" xml:space="preserve">
     <value>Drop</value>
+  </data>
+  <data name="CheckInSpotTitle" xml:space="preserve">
+    <value>Check in at this pin</value>
+  </data>
+  <data name="CheckInSpotHint" xml:space="preserve">
+    <value>Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are.</value>
+  </data>
+  <data name="CheckInSpotInRange" xml:space="preserve">
+    <value>{0} from you - inside the circle</value>
+  </data>
+  <data name="CheckInSpotOutOfRange" xml:space="preserve">
+    <value>{0} from you - move it back inside the circle</value>
+  </data>
+  <data name="CheckInSpotTooFar" xml:space="preserve">
+    <value>The pin is {0} from where you are. Move it to within {1} of you (inside the circle) and try again.</value>
+  </data>
+  <data name="CheckInHere" xml:space="preserve">
+    <value>Check in here</value>
   </data>
 </root>

@@ -74,13 +74,81 @@
         <Grid
             Grid.Row="1"
             ColumnSpacing="8"
-            IsVisible="{Binding HasNoPinDetails}">
+            IsVisible="{Binding ShowsGetLocationButton}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Button Command="{Binding GetCurrentLocationCommand}" Text="{x:Static strings:AppResources.GetLocation}" />
         </Grid>
+
+        <!--  The check-in spot: how to move it, how far it is from you, and recording it  -->
+        <Border
+            Grid.Row="1"
+            Padding="14,10,6,12"
+            BackgroundColor="{StaticResource PaperCard}"
+            IsVisible="{Binding ShowsCheckInSpotGuide}"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 12">
+            <Grid
+                ColumnDefinitions="Auto,*,Auto"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto,Auto,Auto"
+                RowSpacing="4">
+                <Image
+                    Grid.RowSpan="2"
+                    HeightRequest="34"
+                    Source="{Binding CheckInSpotIcon}"
+                    VerticalOptions="Start"
+                    WidthRequest="25" />
+                <Label
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    FontSize="17"
+                    Text="{x:Static strings:AppResources.CheckInSpotTitle}" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontSize="13"
+                    Text="{Binding CheckInSpotHint}"
+                    TextColor="{StaticResource InkMuted}" />
+                <Button
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding CancelCheckInSpotCommand}"
+                    FontSize="18"
+                    SemanticProperties.Description="{x:Static strings:AppResources.Close}"
+                    Text="✕"
+                    TextColor="{StaticResource InkMuted}"
+                    VerticalOptions="Start"
+                    WidthRequest="44" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    FontAttributes="Bold"
+                    FontSize="13"
+                    Text="{Binding CheckInSpotDistanceText}"
+                    TextColor="{StaticResource Navy}">
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding CheckInSpotIsOutOfRange}"
+                            TargetType="Label"
+                            Value="True">
+                            <Setter Property="TextColor" Value="{StaticResource Stamp}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Button
+                    Grid.Row="3"
+                    Grid.ColumnSpan="3"
+                    Margin="0,6,8,0"
+                    Command="{Binding GetCurrentLocationCommand}"
+                    Text="{x:Static strings:AppResources.CheckInHere}" />
+            </Grid>
+        </Border>
 
         <!--  Details of the selected pin, with its actions as buttons  -->
         <Border

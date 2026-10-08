@@ -358,7 +358,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are here.
+        ///   Looks up a localized string similar to Check-in spot.
         /// </summary>
         internal static string GetLocationHere {
             get {
@@ -1218,6 +1218,60 @@ namespace FlagsRally.Resources {
         internal static string PinStyleDrop {
             get {
                 return ResourceManager.GetString("PinStyleDrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check in at this pin.
+        /// </summary>
+        internal static string CheckInSpotTitle {
+            get {
+                return ResourceManager.GetString("CheckInSpotTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are..
+        /// </summary>
+        internal static string CheckInSpotHint {
+            get {
+                return ResourceManager.GetString("CheckInSpotHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} from you - inside the circle.
+        /// </summary>
+        internal static string CheckInSpotInRange {
+            get {
+                return ResourceManager.GetString("CheckInSpotInRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} from you - move it back inside the circle.
+        /// </summary>
+        internal static string CheckInSpotOutOfRange {
+            get {
+                return ResourceManager.GetString("CheckInSpotOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pin is {0} from where you are. Move it to within {1} of you (inside the circle) and try again..
+        /// </summary>
+        internal static string CheckInSpotTooFar {
+            get {
+                return ResourceManager.GetString("CheckInSpotTooFar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check in here.
+        /// </summary>
+        internal static string CheckInHere {
+            get {
+                return ResourceManager.GetString("CheckInHere", resourceCulture);
             }
         }
     }

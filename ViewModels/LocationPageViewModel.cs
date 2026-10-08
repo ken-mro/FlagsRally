@@ -28,7 +28,6 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
     private const int PAUSE_DURATION_MS = 1000;
-    private const double CLOSE_DISTANCE_THRESHOLD_KM = 0.05;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -51,9 +50,116 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(CanCheckIn))]
     [NotifyPropertyChangedFor(nameof(CanRemoveSelectedPin))]
     [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
+    [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
+    [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
     Pin? _selectedPin;
 
+    // The check-in spot: dropped with a long press (or at your location by Get Location) and
+    // dragged to where you want to record, as long as it stays within CheckInRange of you.
     Pin? _tappedPointPin;
+
+    // Where you were when the spot was placed, and the circle showing the range around it.
+    Location? _checkInOrigin;
+    Circle? _checkInRangeCircle;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
+    [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
+    bool _hasCheckInSpot;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CheckInSpotIsInRange))]
+    [NotifyPropertyChangedFor(nameof(CheckInSpotIsOutOfRange))]
+    [NotifyPropertyChangedFor(nameof(CheckInSpotDistanceText))]
+    double? _checkInSpotDistanceKm;
+
+    public bool ShowsCheckInSpotGuide => HasCheckInSpot && HasNoPinDetails;
+    public bool ShowsGetLocationButton => !HasCheckInSpot && HasNoPinDetails;
+
+    public string CheckInSpotHint => string.Format(AppResources.CheckInSpotHint, CheckInRange.LimitText);
+    public bool CheckInSpotIsInRange => CheckInSpotDistanceKm is double d && CheckInRange.IsWithin(d);
+    public bool CheckInSpotIsOutOfRange => CheckInSpotDistanceKm is double d && !CheckInRange.IsWithin(d);
+    public string CheckInSpotDistanceText => CheckInSpotDistanceKm switch
+    {
+        double d when CheckInRange.IsWithin(d) => string.Format(AppResources.CheckInSpotInRange, CheckInRange.FormatDistance(d)),
+        double d => string.Format(AppResources.CheckInSpotOutOfRange, CheckInRange.FormatDistance(d)),
+        _ => string.Empty,
+    };
+    public string CheckInSpotIcon => $"{PinIcons.FileName(PinKind.CheckInSpot, PinIcons.Style)}.png";
+
+    [RelayCommand]
+    void CancelCheckInSpot() => RemoveCheckInSpot();
+
+    private void PlaceCheckInSpot(Position position, Location? here)
+    {
+        RemoveCheckInSpot();
+        _tappedPointPin = new SelectedLocationPin(position);
+        ArrivalMap?.Pins.Add(_tappedPointPin);
+        HasCheckInSpot = true;
+        _ = ShowCheckInRangeAsync(here);
+    }
+
+    private void RemoveCheckInSpot()
+    {
+        if (_tappedPointPin is not null)
+        {
+            RemovePinFromMap(_tappedPointPin);
+            _tappedPointPin = null;
+        }
+        if (_checkInRangeCircle is not null)
+        {
+            ArrivalMap?.Circles.Remove(_checkInRangeCircle);
+            _checkInRangeCircle = null;
+        }
+        _checkInOrigin = null;
+        HasCheckInSpot = false;
+        CheckInSpotDistanceKm = null;
+    }
+
+    // Circles the area around you where the spot can be put. Without a known location there is
+    // no circle yet; Get Location then fixes the location and draws it.
+    private async Task ShowCheckInRangeAsync(Location? here)
+    {
+        try
+        {
+            here ??= await Geolocation.Default.GetLastKnownLocationAsync();
+        }
+        catch (Exception)
+        {
+            // The hint still explains the range; the circle appears once Get Location finds you.
+        }
+        if (here is null || _tappedPointPin is null || ArrivalMap is null) return;
+
+        _checkInOrigin = here;
+        if (_checkInRangeCircle is not null)
+        {
+            ArrivalMap.Circles.Remove(_checkInRangeCircle);
+        }
+        _checkInRangeCircle = new Circle
+        {
+            Center = new Position(here.Latitude, here.Longitude),
+            Radius = Distance.FromKilometers(CheckInRange.LimitKm),
+            StrokeColor = Color.FromArgb("#182A52"),
+            StrokeWidth = 2f,
+            FillColor = Color.FromArgb("#33182A52"),
+        };
+        ArrivalMap.Circles.Add(_checkInRangeCircle);
+        UpdateCheckInSpotDistance();
+    }
+
+    private static Task ShowCheckInSpotTooFarAsync(double distanceKm)
+    {
+        var message = string.Format(AppResources.CheckInSpotTooFar, CheckInRange.FormatDistance(distanceKm), CheckInRange.LimitText);
+        return Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+    }
+
+    private void UpdateCheckInSpotDistance()
+    {
+        if (_tappedPointPin is null || _checkInOrigin is null) return;
+
+        var spot = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+        CheckInSpotDistanceKm = spot.CalculateDistance(_checkInOrigin, DistanceUnits.Kilometers);
+    }
 
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
 
@@ -154,6 +260,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         var selectedLocationPin = e.Pin as SelectedLocationPin;
         selectedLocationPin?.UpdateLocation(position);
+        UpdateCheckInSpotDistance();
 
         if (ArrivalMap is not null)
         {
@@ -187,15 +294,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)
     {
-        if (_tappedPointPin is not null)
-        {
-            ArrivalMap?.Pins.Remove(_tappedPointPin);
-            _tappedPointPin = null;
-        }
-
-        _tappedPointPin = new SelectedLocationPin(e.Point);
-
-        ArrivalMap?.Pins.Add(_tappedPointPin);
+        PlaceCheckInSpot(e.Point, here: null);
         if (ArrivalMap is not null)
         {
             ArrivalMap.SelectedPin = _tappedPointPin;
@@ -206,8 +305,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         if (_tappedPointPin is null) return;
 
-        ArrivalMap?.Pins.Remove(_tappedPointPin);
-        _tappedPointPin = null;
+        RemoveCheckInSpot();
     }
 
     private async Task DeleteOrResetPinAsync(Pin pin)
@@ -384,6 +482,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 pin.Icon = icon;
             }
         }
+        OnPropertyChanged(nameof(CheckInSpotIcon));
     }
 
     bool _pinsLoaded;
@@ -498,6 +597,13 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
+            // A spot already shown outside the circle cannot be recorded; say so before anything else.
+            if (CheckInSpotDistanceKm is double spotDistance && !CheckInRange.IsWithin(spotDistance))
+            {
+                await ShowCheckInSpotTooFarAsync(spotDistance);
+                return;
+            }
+
             var arrivalLocationCount = (await _arrivalLocationRepository.GetAllArrivalLocations()).Count;
             if (arrivalLocationCount >= 5 && !_settingsPreferences.IsApiKeySet())
             {
@@ -512,21 +618,18 @@ public partial class LocationPageViewModel : BaseViewModel
                 await MoveAndZoomToCurrentLocationAsync();
 
                 var position = new Position(currentLocation.Latitude, currentLocation.Longitude);
-                var currentPin = new SelectedLocationPin(position);
-
-                _tappedPointPin = currentPin;
-                ArrivalMap?.Pins.Add(_tappedPointPin);
+                PlaceCheckInSpot(position, currentLocation);
                 await Task.Delay(PAUSE_DURATION_MS);
             }
             else
             {
                 var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+                await ShowCheckInRangeAsync(currentLocation);
 
                 var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-                var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
-                if (!isNear)
+                if (!CheckInRange.IsWithin(distance))
                 {
-                    await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+                    await ShowCheckInSpotTooFarAsync(distance);
                     return;
                 }
 
@@ -569,10 +672,7 @@ public partial class LocationPageViewModel : BaseViewModel
                     await ShowLocationDiscoveryPopup(arrivalLocation.AdminAreaName, subRegionCode);
                 }
 
-                if (_tappedPointPin is null) return;
-
-                ArrivalMap?.Pins.Remove(_tappedPointPin);
-                _tappedPointPin = null;
+                RemoveCheckInSpot();
 
             }
         }
@@ -619,8 +719,7 @@ public partial class LocationPageViewModel : BaseViewModel
         var currentLocation = await GetCurrentLocation();
 
         var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-        var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
-        if (!isNear)
+        if (!CheckInRange.IsWithin(distance))
         {
             // Say how far away the location is and offer directions to it.
             var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, DistanceFormatter.Format(distance))}";
