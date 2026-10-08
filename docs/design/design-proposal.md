@@ -51,46 +51,31 @@
 
 ## 5. アイコンとスプラッシュ
 
-今のモチーフ（アイコン：赤いパスポート・地球・ピン・金の帯／スプラッシュ：旗を立てた地球・ピン・弧）と構図・色の組み合わせは変えず、描き方を整える。素材は`docs/design/assets/`にある。
+マテリアルデザイン風のシンプルな見た目を優先する。
+
+- **アプリアイコン**：今のフラットな絵柄が方針に合っているので変更しない。
+- **スプラッシュ**：構図（地球に立てた旗と位置情報のピン）は残し、輪郭線と弧をなくしてアイコンと同じ色のフラットな図形に描き直す。素材は`docs/design/assets/splash.svg`。
 
 | 項目 | 現在 | 提案 |
 |---|---|---|
-| 線と形 | ビットマップのトレース。輪郭が波打ち、小さいと潰れる | 図形で描き直し、線幅と角丸を統一 |
-| 背景 | 黒。アイコンは黒い四角が残る | 深い紺のグラデーションとかすかな緯線。アイコンとスプラッシュで共通 |
-| 輪郭線 | スプラッシュは太いグレーの縁取り | 縁取りをやめ、面の色とハイライトで形を見せる |
-| 色 | 原色に近く、2つの画像で少しずつ違う | 同じ色相で彩度をそろえる（赤`#C2414A`、海`#3E9BEA`→`#2878C9`、陸`#46C38C`、金`#E9C46A`） |
-| 奥行き | パスポートが平面 | 背表紙、型押しの枠、上辺の光、落ち影 |
-| 要素の重なり | ピンが地球に埋もれる | ピンを表紙の色で縁取って分離 |
-| 弧 | 太いグレーの線 | 金の点線（旅のルート） |
-| 切り抜きへの対応 | 考慮なし | アイコンは半径33、スプラッシュは半径36の円に収める |
+| 線と形 | ビットマップのトレース。輪郭が波打つ | 円と曲線の図形で描き直す |
+| 輪郭線 | 太いグレーの縁取り | なし（フラット） |
+| 弧 | 地球を囲むグレーの弧 | なし |
+| 位置情報のピン | 青に緑の中心 | アイコンのピンと同じ赤（`#FB5968`、中心`#D8304C`） |
+| 旗と旗竿 | 赤い旗、濃いグレーの竿 | 旗はピンと同じ赤、竿は明るいグレー`#E0E0E0` |
+| 地球の色 | アイコンとわずかに違う | アイコンと同じ海`#2594EF`、陸`#4ED195` |
+| 背景 | 黒 | 黒のまま |
+| 切り抜き | 考慮なし | 中心から半径36の円に収める（Android 12以降） |
 
 | 現在 | 提案 |
 |---|---|
-| ![現在のアプリ一覧](assets/launcher-before.png) | ![提案のアプリ一覧](assets/launcher-after.png) |
 | ![現在のスプラッシュ](assets/splash-before.png) | ![提案のスプラッシュ](assets/splash-after.png) |
 
-上の画像は、提案のSVGを一時的にアプリへ組み込んでエミュレーター（Pixel 7 / Android 16）で撮影したもの。確認後、アプリの素材は元に戻している。iOSは未確認。
+提案のSVGを一時的にアプリへ組み込み、エミュレーター（Pixel 7 / Android 16）で撮影した。確認後、アプリの素材は元に戻している。iOSは未確認。
 
-組み込み方：
+組み込み方：`docs/design/assets/splash.svg`を`Resources/Splash/splash.svg`にコピーするだけ。背景色は黒のままなので`FlagsRally.csproj`の変更は不要。
 
-```text
-docs/design/assets/icon-background.svg → Resources/AppIcon/appicon.svg
-docs/design/assets/icon-foreground.svg → Resources/AppIcon/appiconfg.svg
-docs/design/assets/splash.svg          → Resources/Splash/splash.svg
-```
-
-```xml
-<!-- FlagsRally.csproj：プラットフォーム別の4行を1行にまとめる -->
-<MauiIcon Include="Resources\AppIcon\appicon.svg"
-          ForegroundFile="Resources\AppIcon\appiconfg.svg"
-          Color="#14254A" ForegroundScale="1.0" />
-<MauiSplashScreen Include="Resources\Splash\splash.svg"
-                  Color="#14254A" BaseSize="128,128" />
-```
-
-- スプラッシュの後に一瞬出るアプリ本体の背景（今はテンプレートの紫）も、`Platforms/Android/Resources/values/colors.xml`の`colorPrimary`を紺にそろえる
-- Android 12以降のスプラッシュはOSが拡大するため少し柔らかく見える。気になる場合は`BaseSize`を大きくして比べる
-- ストア用512pxアイコンも同じ2枚のSVGから書き出す。Android 13のテーマアイコンには単色版を追加する
+- スプラッシュ直後に一瞬出るアプリ本体の背景（今はテンプレートの紫）も黒かアプリ本体の背景色にそろえると、起動がひと続きに見える
 
 ## 6. 使いやすさの改善
 
@@ -104,7 +89,7 @@ docs/design/assets/splash.svg          → Resources/Splash/splash.svg
 
 ## 7. 導入ステップ
 
-1. **見た目の土台**：配色・フォントのトークン化、直書き色の除去、ダークモード対応、アイコンとスプラッシュの差し替え（`Colors.xaml`、`Styles.xaml`、`Platforms/Android/Resources/values/colors.xml`、各XAML、`Resources/AppIcon/*.svg`、`Resources/Splash/splash.svg`、`FlagsRally.csproj`）
+1. **見た目の土台**：配色・フォントのトークン化、直書き色の除去、ダークモード対応、スプラッシュの差し替え（`Colors.xaml`、`Styles.xaml`、`Platforms/Android/Resources/values/colors.xml`、各XAML、`Resources/Splash/splash.svg`）
 2. **マップの操作**：ピン詳細ボトムシート、フィルターチップ、「ここを記録」ボタン（`LocationPage.xaml`、`LocationPageViewModel.cs`）
 3. **タブの再編**：コレクションタブ新設、インポートの移動（`AppShell.xaml`、新規`CollectionsPage.xaml`）
 4. **仕上げ**：パスポート画面の統計、演出、空の状態、トースト、設定画面のリスト化
@@ -114,5 +99,5 @@ docs/design/assets/splash.svg          → Resources/Splash/splash.svg
 1. 配色の方向性（紺・赤・紙）でよいか。別案として緑系や御朱印帳寄りの和紙・朱色系も可能
 2. ボトムシートにライブラリ（例：The49.Maui.BottomSheet）を使うか、自前で作るか
 3. タブ再編（段階3）まで進めるか、段階1・2を先に出すか
-4. アイコンとスプラッシュの背景を紺にするか、今の黒を残すか（紺にする場合はアプリ本体の背景色も合わせる）
+4. スプラッシュの差し替え（`splash.svg`の1ファイル）を進めるか。合わせてアプリ本体の背景色（今の紫）も変えるか
 5. スタンプ用フォント（Jerseyclub Grunge、craftmincho）を続投するか（ライセンス確認）

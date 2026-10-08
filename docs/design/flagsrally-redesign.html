@@ -251,7 +251,7 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
 .cur-splash, .new-splash { width: 112px; height: 112px; border-radius: 14px; overflow: hidden; display: grid; place-items: center; }
 .cur-splash { background: #000000; }
 .cur-splash img { width: 74%; }
-.new-splash { background: #14254A; }
+.new-splash { background: #000000; }
 .new-splash img { width: 100%; }
 .sizes-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
@@ -483,25 +483,24 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
   <section id="icon">
     <div class="sec-head">
       <div class="eyebrow">5 · アイコンとスプラッシュ</div>
-      <h2>今のモチーフのまま、描き方を整える</h2>
+      <h2>アイコンは今のまま、スプラッシュはフラットに整える</h2>
     </div>
-    <p class="prose">アイコンの「赤いパスポート・地球・ピン・金の帯」と、スプラッシュの「旗を立てた地球・ピン・弧」は変えません。構図も色の組み合わせもそのままです。変えるのは描き方です。ビットマップをトレースした線を図形で描き直し、背景・色・光の当たり方を2つのあいだでそろえます。</p>
+    <p class="prose">マテリアルデザイン風のシンプルな見た目を優先します。アプリアイコンは今のフラットな絵柄がその方針に合っているので変更しません。スプラッシュは構図（地球に立てた旗と位置情報のピン）を残したまま、太い輪郭線と弧をなくし、アイコンと同じ色のフラットな図形に描き直します。</p>
 
     <div class="ba">
       <div class="panel">
-        <h3>アプリアイコン</h3>
+        <h3>アプリアイコン（変更なし）</h3>
         <div class="pair">
-          <div class="side"><div class="cur-icon"><img src="assets/current-icon.png" alt="現在のアイコン。黒地に赤いパスポート、地球、ピン"></div>現在</div>
-          <div class="arrow" aria-hidden="true">→</div>
-          <div class="side"><div class="ico" style="width: 112px; height: 112px"><img src="assets/icon-background.svg" alt=""><img src="assets/icon-foreground.svg" alt="提案するアイコン。紺地に、背表紙と型押しの枠がある赤いパスポート"></div>提案</div>
+          <div class="side"><div class="cur-icon"><img src="assets/current-icon.png" alt="現在のアイコン。黒地に赤いパスポート、地球、ピン"></div>現在のまま</div>
         </div>
+        <p style="font-size: 13px; color: var(--muted)">スプラッシュの色はこのアイコンから取ります。ピン <code>#FB5968</code>（中心 <code>#D8304C</code>）、海 <code>#2594EF</code>、陸 <code>#4ED195</code>。</p>
       </div>
       <div class="panel">
         <h3>スプラッシュのマーク</h3>
         <div class="pair">
-          <div class="side"><div class="cur-splash"><img src="assets/current-splash.png" alt="現在のスプラッシュ。太いグレーの輪郭の半球と旗とピン"></div>現在</div>
+          <div class="side"><div class="cur-splash"><img src="assets/current-splash.png" alt="現在のスプラッシュ。太いグレーの輪郭の半球と旗と青いピン、グレーの弧"></div>現在</div>
           <div class="arrow" aria-hidden="true">→</div>
-          <div class="side"><div class="new-splash"><img src="assets/splash.svg" alt="提案するスプラッシュ。輪郭線のない半球、白い旗竿と赤い旗、金の点線の弧"></div>提案</div>
+          <div class="side"><div class="new-splash"><img src="assets/splash.svg" alt="提案するスプラッシュ。輪郭線のない半球、明るいグレーの旗竿と赤い旗、赤いピン"></div>提案</div>
         </div>
       </div>
     </div>
@@ -510,57 +509,32 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
       <table>
         <thead><tr><th>項目</th><th>現在</th><th>提案</th></tr></thead>
         <tbody>
-          <tr><td>線と形</td><td>ビットマップをトレースしたSVGで、輪郭が波打つ。小さいと潰れる</td><td>円・角丸の四角・曲線の図形で描き直す。線幅と角丸の大きさを統一</td></tr>
-          <tr><td>背景</td><td>黒。アイコンは黒い四角が残り、円形に切り抜かれると角が欠ける</td><td>深い紺のグラデーションにかすかな緯線。アイコンとスプラッシュで同じ色</td></tr>
-          <tr><td>輪郭線</td><td>スプラッシュは太いグレーの縁取りで、紺や黒の上では重く見える</td><td>縁取りをやめ、面の色とハイライトで形を見せる</td></tr>
-          <tr><td>色</td><td>赤・青・緑が原色に近く、2つの画像で少しずつ違う</td><td>同じ色相のまま彩度をそろえる。赤 <code>#C2414A</code>、海 <code>#3E9BEA</code>→<code>#2878C9</code>、陸 <code>#46C38C</code>、金 <code>#E9C46A</code></td></tr>
-          <tr><td>奥行き</td><td>パスポートが平面で、紙の板のように見える</td><td>背表紙、型押しの枠、上辺の光、落ち影を付けて「手帳」に見せる</td></tr>
-          <tr><td>要素の重なり</td><td>ピンが地球に埋もれる</td><td>ピンを表紙の色で縁取り、地球から浮かせる</td></tr>
-          <tr><td>弧</td><td>太いグレーの線</td><td>金の点線（旅のルート）。旗とピンの位置で途切れる</td></tr>
-          <tr><td>切り抜きへの対応</td><td>考慮なし</td><td>アイコンは中心から半径33、スプラッシュは半径36の円に収め、どの形に切り抜かれても欠けない</td></tr>
+          <tr><td>線と形</td><td>ビットマップをトレースしたSVGで、輪郭が波打つ</td><td>円と曲線の図形で描き直す</td></tr>
+          <tr><td>輪郭線</td><td>太いグレーの縁取り。黒地の上では重く見える</td><td>縁取りなし。面の色だけで形を見せるフラットな描き方</td></tr>
+          <tr><td>弧</td><td>地球を囲むグレーの弧</td><td>なし</td></tr>
+          <tr><td>位置情報のピン</td><td>青に緑の中心。アイコンのピンと色が違う</td><td>アイコンのピンと同じ赤（<code>#FB5968</code>、中心 <code>#D8304C</code>）</td></tr>
+          <tr><td>旗と旗竿</td><td>赤い旗に濃いグレーの竿（黒地では見えにくい）</td><td>旗はピンと同じ赤、竿は明るいグレー <code>#E0E0E0</code></td></tr>
+          <tr><td>地球の色</td><td>アイコンとわずかに違う青と緑</td><td>アイコンと同じ海 <code>#2594EF</code>、陸 <code>#4ED195</code></td></tr>
+          <tr><td>背景</td><td>黒</td><td>黒のまま（アイコンの背景とそろえる）</td></tr>
+          <tr><td>切り抜きへの対応</td><td>考慮なし</td><td>Android 12以降で円形に切り抜かれても欠けないよう、中心から半径36の円に収める</td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="panel">
-      <h3>小さいサイズでの見え方</h3>
-      <div class="sizes-row">
-        <div class="ico" style="width: 96px; height: 96px"><img src="assets/icon-background.svg" alt=""><img src="assets/icon-foreground.svg" alt="提案アイコン 96px"></div>
-        <div class="ico round" style="width: 64px; height: 64px"><img src="assets/icon-background.svg" alt=""><img src="assets/icon-foreground.svg" alt="提案アイコン 64px 円形"></div>
-        <div class="ico" style="width: 40px; height: 40px"><img src="assets/icon-background.svg" alt=""><img src="assets/icon-foreground.svg" alt="提案アイコン 40px"></div>
-        <div class="ico round" style="width: 24px; height: 24px"><img src="assets/icon-background.svg" alt=""><img src="assets/icon-foreground.svg" alt="提案アイコン 24px 円形"></div>
-      </div>
-      <p style="font-size: 13px; color: var(--muted)">通知や設定画面の24pxでも、赤い手帳と地球の形は判別できます。金の細い線は小さいサイズでは見えなくなりますが、形の判別には影響しません。</p>
-    </div>
-
     <h3>エミュレーターでの確認（Pixel 7 / Android 16）</h3>
-    <p class="prose">提案のSVGを一時的にアプリへ組み込み、MAUIのビルドでPNGに変換したうえで実機表示を撮影しました。確認後、アプリの素材は元に戻しています。</p>
-    <div class="shots">
-      <figure class="shot"><img src="assets/launcher-before.png" alt="現在のアイコンをアプリ一覧に表示した画面"><figcaption>アプリ一覧・現在：黒い四角の上にパスポートが小さく載り、隣のアイコンより暗く沈む</figcaption></figure>
-      <figure class="shot"><img src="assets/launcher-after.png" alt="提案アイコンをアプリ一覧に表示した画面"><figcaption>アプリ一覧・提案：円いっぱいに紺が広がり、赤い手帳が中央に立つ</figcaption></figure>
-    </div>
+    <p class="prose">提案のSVGを一時的にアプリへ組み込み、起動時の表示を撮影しました。確認後、アプリの素材は元に戻しています。</p>
     <div class="phones-ba">
-      <figure><img src="assets/splash-before.png" alt="現在のスプラッシュ画面"><figcaption>スプラッシュ・現在</figcaption></figure>
-      <figure><img src="assets/splash-after.png" alt="提案のスプラッシュ画面"><figcaption>スプラッシュ・提案</figcaption></figure>
+      <figure><img src="assets/splash-before.png" alt="現在のスプラッシュ画面"><figcaption>現在</figcaption></figure>
+      <figure><img src="assets/splash-after.png" alt="提案のスプラッシュ画面"><figcaption>提案</figcaption></figure>
     </div>
 
     <div class="spec">
       <h3>組み込み方</h3>
-      <p class="prose">素材は<code>docs/design/assets/</code>にあります。下の3ファイルを<code>Resources</code>へコピーし、<code>FlagsRally.csproj</code>を書き換えるだけで差し替えられます。Androidではこの設定でビルドと表示を確認済みです。iOSは未確認です。</p>
-      <pre>docs/design/assets/icon-background.svg → Resources/AppIcon/appicon.svg
-docs/design/assets/icon-foreground.svg → Resources/AppIcon/appiconfg.svg
-docs/design/assets/splash.svg          → Resources/Splash/splash.svg
-
-&lt;!-- FlagsRally.csproj：プラットフォーム別の4行を1行にまとめる --&gt;
-&lt;MauiIcon Include="Resources\AppIcon\appicon.svg"
-          ForegroundFile="Resources\AppIcon\appiconfg.svg"
-          Color="#14254A" ForegroundScale="1.0" /&gt;
-&lt;MauiSplashScreen Include="Resources\Splash\splash.svg"
-                  Color="#14254A" BaseSize="128,128" /&gt;</pre>
+      <p class="prose">差し替えるのは1ファイルだけです。背景色は今の黒のままなので、<code>FlagsRally.csproj</code>の変更は不要です。Androidではビルドと表示を確認済みで、iOSは未確認です。</p>
+      <pre>docs/design/assets/splash.svg → Resources/Splash/splash.svg</pre>
       <ul class="clean" style="font-size: 14px">
-        <li>スプラッシュの背景色を変えると、その後に一瞬出るアプリ本体の背景（今はテンプレートの紫）との差が目立ちます。<code>Platforms/Android/Resources/values/colors.xml</code>の<code>colorPrimary</code>も紺にそろえると、起動がひと続きに見えます。</li>
-        <li>Android 12以降のスプラッシュはOSが拡大表示するため、わずかに柔らかく見えます。気になる場合は<code>BaseSize</code>を大きくして比べます。</li>
-        <li>ストア用の512pxアイコンも同じ2枚のSVGを重ねて書き出します。Android 13のテーマアイコン（単色）に対応するなら、パスポートの輪郭だけの単色版を追加します。</li>
+        <li>スプラッシュの直後に一瞬出るアプリ本体の背景は、今はテンプレートの紫です。黒（またはアプリ本体の背景色）にそろえると、起動がひと続きに見えます。</li>
+        <li>Android 12以降のスプラッシュはOSが拡大表示するため、わずかに柔らかく見えます。</li>
       </ul>
     </div>
   </section>
@@ -601,8 +575,8 @@ docs/design/assets/splash.svg          → Resources/Splash/splash.svg
       <div class="phase">
         <div class="when">段階1<span>見た目の土台</span></div>
         <div class="what">
-          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。アイコンとスプラッシュも同じマークに差し替える。画面構成は変えないので、リスクがいちばん低い段階です。</p>
-          <div class="files">Resources/Styles/Colors.xaml · Styles.xaml · Platforms/Android/Resources/values/colors.xml · Views/*.xamlの直書き色 · Resources/AppIcon/*.svg · Resources/Splash/splash.svg · FlagsRally.csproj</div>
+          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。スプラッシュをフラットな図形に差し替える（アイコンは変更しない）。画面構成は変えないので、リスクがいちばん低い段階です。</p>
+          <div class="files">Resources/Styles/Colors.xaml · Styles.xaml · Platforms/Android/Resources/values/colors.xml · Views/*.xamlの直書き色 · Resources/Splash/splash.svg</div>
         </div>
       </div>
       <div class="phase">
@@ -638,7 +612,7 @@ docs/design/assets/splash.svg          → Resources/Splash/splash.svg
       <div class="q"><b>配色の方向性はこの「紺・赤・紙」でよいか</b><span>別案として、地図アプリらしい明るい緑系や、御朱印帳に寄せた和紙・朱色系も作れます。</span></div>
       <div class="q"><b>ボトムシートにライブラリを使ってよいか</b><span>MAUIには標準のボトムシートがありません。The49.Maui.BottomSheetなどを使うか、自前のオーバーレイで作るかを選びます。</span></div>
       <div class="q"><b>タブ再編（段階3）まで進めるか</b><span>既存ユーザーにとって場所が変わる変更です。段階1・2だけ先に出して反応を見る方法もあります。</span></div>
-      <div class="q"><b>アイコンとスプラッシュの背景を紺にするか</b><span>今の黒を残すこともできます。紺にする場合は、アプリ本体の背景色（今の紫）も合わせて変えるのがおすすめです。</span></div>
+      <div class="q"><b>スプラッシュの差し替えを進めるか</b><span>アイコンは今のまま、スプラッシュだけを<code>splash.svg</code>の1ファイルで差し替えます。合わせてアプリ本体の背景色（今の紫）も変えるかを決めてください。</span></div>
       <div class="q"><b>スタンプ用フォントを続投するか</b><span>Jerseyclub Grungeとcraftminchoはアプリの個性です。続投する前提で提案していますが、ライセンスの確認だけお願いします。</span></div>
     </div>
   </section>
