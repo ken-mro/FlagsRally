@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.PinFilterPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    Margin="20,1,20,0"
+    x:DataType="viewmodels:PinFilterPopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <Grid
+        Padding="20"
+        BackgroundColor="{AppThemeBinding Light=White,
+                                          Dark={StaticResource Gray900}}"
+        RowSpacing="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label
+            Grid.Row="0"
+            FontSize="18"
+            Style="{StaticResource SubHeadline}"
+            Text="{x:Static strings:AppResources.SelectPinsToShow}" />
+        <ScrollView Grid.Row="1" MaximumHeightRequest="400">
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Options}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:PinFilterOption">
+                        <Grid ColumnSpacing="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnOptionTapped" />
+                            </Grid.GestureRecognizers>
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" />
+                            <Label
+                                Grid.Column="1"
+                                FontSize="16"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding Name}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+        <HorizontalStackLayout
+            Grid.Row="2"
+            HorizontalOptions="End"
+            Spacing="10">
+            <Button
+                Command="{Binding CancelCommand}"
+                Text="{x:Static strings:AppResources.Cancel}"
+                WidthRequest="110" />
+            <Button
+                Command="{Binding ConfirmCommand}"
+                Text="OK"
+                WidthRequest="110" />
+        </HorizontalStackLayout>
+    </Grid>
+</toolkit:Popup>

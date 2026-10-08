@@ -366,4 +366,13 @@
   <data name="MoveDown" xml:space="preserve">
     <value>Move down</value>
   </data>
+  <data name="SelectPinsToShow" xml:space="preserve">
+    <value>Select pins to show</value>
+  </data>
+  <data name="NSelected" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

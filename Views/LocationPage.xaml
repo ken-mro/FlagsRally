@@ -39,14 +39,41 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Picker
-                Title="{x:Static strings:AppResources.FilterPin}"
+            <Border
                 Grid.Column="0"
-                HorizontalOptions="Fill"
-                ItemDisplayBinding="{Binding Name}"
-                ItemsSource="{Binding PinFilterList}"
-                SelectedItem="{Binding FilteredPinItem}"
-                VerticalOptions="Center" />
+                Padding="10,8"
+                SemanticProperties.Description="{x:Static strings:AppResources.FilterPin}"
+                Stroke="Gray"
+                StrokeShape="RoundRectangle 6"
+                StrokeThickness="1"
+                VerticalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenPinFilterCommand}" />
+                </Border.GestureRecognizers>
+                <Grid ColumnSpacing="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        Grid.Column="0"
+                        HeightRequest="18"
+                        Source="filter.png"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="1"
+                        FontSize="14"
+                        LineBreakMode="TailTruncation"
+                        Text="{Binding FilterSummary}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="2"
+                        Text="▾"
+                        TextColor="Gray"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
             <Label
                 Grid.Column="1"
                 FontSize="35"

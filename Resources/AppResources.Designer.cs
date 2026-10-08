@@ -806,5 +806,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("MoveDown", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select pins to show.
+        /// </summary>
+        internal static string SelectPinsToShow {
+            get {
+                return ResourceManager.GetString("SelectPinsToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} selected.
+        /// </summary>
+        internal static string NSelected {
+            get {
+                return ResourceManager.GetString("NSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
     }
 }

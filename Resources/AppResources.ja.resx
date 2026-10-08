@@ -366,4 +366,13 @@
   <data name="MoveDown" xml:space="preserve">
     <value>下へ移動</value>
   </data>
+  <data name="SelectPinsToShow" xml:space="preserve">
+    <value>表示するピンを選択</value>
+  </data>
+  <data name="NSelected" xml:space="preserve">
+    <value>{0}件を選択中</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
 </root>
