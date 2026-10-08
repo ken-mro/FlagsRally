@@ -357,4 +357,13 @@
   <data name="ThankYouForSubscribing" xml:space="preserve">
     <value>Thank you for subscribing! We appreciate your support.</value>
   </data>
+  <data name="ManageBoards" xml:space="preserve">
+    <value>Manage Boards</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Move down</value>
+  </data>
 </root>

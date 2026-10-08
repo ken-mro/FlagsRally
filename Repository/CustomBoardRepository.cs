@@ -21,14 +21,44 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
     {
         await Init();
         var customLocationDataList = await _conn!.Table<CustomBoardData>().ToListAsync();
-        return customLocationDataList.Select(GetCustomBoard).ToList();
+        return customLocationDataList
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name, StringComparer.CurrentCulture)
+            .Select(GetCustomBoard)
+            .ToList();
     }
 
     public async Task<int> InsertOrReplaceAsync(CustomBoard customBoard)
     {
         await Init();
         var customBoardData = GetCustomBoardData(customBoard);
+
+        // Keep the position of a re-imported board; append a new one to the end.
+        var existing = await _conn!.FindAsync<CustomBoardData>(customBoard.Name);
+        if (existing is not null)
+        {
+            customBoardData.SortOrder = existing.SortOrder;
+        }
+        else
+        {
+            var count = await _conn!.Table<CustomBoardData>().CountAsync();
+            var maxSortOrder = count == 0 ? -1 : await _conn!.ExecuteScalarAsync<int>("SELECT MAX(SortOrder) FROM CustomBoard");
+            customBoardData.SortOrder = maxSortOrder + 1;
+        }
+
         return await _conn!.InsertOrReplaceAsync(customBoardData);
+    }
+
+    public async Task UpdateSortOrdersAsync(IReadOnlyList<string> orderedNames)
+    {
+        await Init();
+        await _conn!.RunInTransactionAsync(conn =>
+        {
+            for (int i = 0; i < orderedNames.Count; i++)
+            {
+                conn.Execute("UPDATE CustomBoard SET SortOrder = ? WHERE Name = ?", i, orderedNames[i]);
+            }
+        });
     }
 
     private CustomBoard GetCustomBoard(CustomBoardData customBoardData)
@@ -39,6 +69,7 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
             Width = customBoardData.Width,
             Height = customBoardData.Height,
             Url = customBoardData.Url,
+            SortOrder = customBoardData.SortOrder,
         };
     }
 
@@ -50,6 +81,7 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
             Width = customBoard.Width,
             Height = customBoard.Height,
             Url = customBoard.Url,
+            SortOrder = customBoard.SortOrder,
         };
     }
 

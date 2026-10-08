@@ -89,6 +89,9 @@ namespace FlagsRally
             builder.Services.AddTransient<CustomBoardPage>();
             builder.Services.AddTransient<CustomBoardPageViewModel>();
 
+            builder.Services.AddTransient<ManageCustomBoardsPage>();
+            builder.Services.AddTransient<ManageCustomBoardsPageViewModel>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

@@ -357,4 +357,13 @@
   <data name="ThankYouForSubscribing" xml:space="preserve">
     <value>ご登録いただきありがとうございます! 日頃のご愛顧に感謝申し上げます。</value>
   </data>
+  <data name="ManageBoards" xml:space="preserve">
+    <value>ボードの管理</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>上へ移動</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>下へ移動</value>
+  </data>
 </root>

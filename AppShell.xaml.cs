@@ -1,4 +1,5 @@
 ﻿using FlagsRally.Repository;
+using FlagsRally.Views;
 
 namespace FlagsRally
 {
@@ -11,6 +12,7 @@ namespace FlagsRally
             InitializeComponent();
             _customBoardRepository = customBoardRepository;
             CustomBoardPage = customBoardPage;
+            Routing.RegisterRoute(ManageCustomBoardsPage.Route, typeof(ManageCustomBoardsPage));
             _ = SetCustomBoardPageVisibility();
         }
 

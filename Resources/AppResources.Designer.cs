@@ -779,5 +779,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("YouAreNotNearTheLocation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Boards.
+        /// </summary>
+        internal static string ManageBoards {
+            get {
+                return ResourceManager.GetString("ManageBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        internal static string MoveUp {
+            get {
+                return ResourceManager.GetString("MoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        internal static string MoveDown {
+            get {
+                return ResourceManager.GetString("MoveDown", resourceCulture);
+            }
+        }
     }
 }

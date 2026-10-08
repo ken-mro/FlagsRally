@@ -2,8 +2,10 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FlagsRally.Exceptions;
 using FlagsRally.Helpers;
+using FlagsRally.Messages;
 using FlagsRally.Models;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
@@ -239,6 +241,23 @@ public partial class LocationPageViewModel : BaseViewModel
         _settingsPreferences = settingsPreferences;
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
+
+        WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
+            MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
+    }
+
+    private async Task OnCustomBoardsChanged(CustomBoardsChangedMessage message)
+    {
+        try
+        {
+            await RebuildPinFilterList();
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Console.WriteLine($"Failed to refresh pin filters: {ex.Message}");
+#endif
+        }
     }
 
     private async Task Init()
@@ -576,6 +595,8 @@ public partial class LocationPageViewModel : BaseViewModel
         get => _filteredPinItem;
         set
         {
+            // The Picker pushes null while its ItemsSource is being replaced.
+            if (value is null) return;
             SetProperty(ref _filteredPinItem, value);
             UpdatePinsVisibility();
         }
@@ -615,27 +636,35 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task InitializeMapPins()
     {
-        PinFilterList = new(CustomBoardPinFilterItem.CreateFilterList());
-
         var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
-        var arrivalLocationPin = arrivalLocationPins.FirstOrDefault();
-        var tag = arrivalLocationPin?.Tag as MapPinTag;
-        if (tag is not null)
-        {
-            PinFilterList.Add(new CustomBoardPinFilterItem(tag.PinKey));
-        }
-
         AddPinsToMap(arrivalLocationPins);
 
+        var customLocationList = await _customLocationDataRepository.GetAllCustomLocationPins();
+        AddPinsToMap(customLocationList);
+
+        await RebuildPinFilterList();
+    }
+
+    private async Task RebuildPinFilterList()
+    {
+        var selectedName = FilteredPinItem?.Name;
+        var filterList = new ObservableCollection<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
+
+        var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
+        if (hasArrivalPins)
+        {
+            filterList.Add(new CustomBoardPinFilterItem(AppResources.ArrivalLocation));
+        }
 
         var boardList = await _customBoardRepository.GetAllCustomBoards();
         foreach (var board in boardList)
         {
-            PinFilterList.Add(new CustomBoardPinFilterItem(board.Name));
+            filterList.Add(new CustomBoardPinFilterItem(board.Name));
         }
 
-        var customLocationList = await _customLocationDataRepository.GetAllCustomLocationPins();
-        AddPinsToMap(customLocationList);
+        PinFilterList = filterList;
+        if (selectedName is null) return;
+        FilteredPinItem = filterList.FirstOrDefault(f => f.Name == selectedName) ?? filterList.First();
     }
 
     private void AddPinsToMap(IEnumerable<Pin> customLocationList)
