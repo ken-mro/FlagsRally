@@ -23,8 +23,7 @@
             FontSize="13"
             Text="{x:Static strings:AppResources.DragToReorder}"
             TextColor="{StaticResource InkMuted}" />
-        <!--  No ScrollView: it takes the vertical drag away from the reorder gesture.  -->
-        <Grid Grid.Row="1">
+        <ScrollView x:Name="scrollView" Grid.Row="1">
             <Border
                 Padding="0"
                 BackgroundColor="{StaticResource PaperCard}"
@@ -82,7 +81,7 @@
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
             </Border>
-        </Grid>
+        </ScrollView>
         <Button
             Grid.Row="2"
             BackgroundColor="{StaticResource Stamp}"
