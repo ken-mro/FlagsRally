@@ -3,6 +3,7 @@
     x:Class="FlagsRally.Views.PinFilterPopupView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -21,10 +22,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label
+        <controls:StampLabel
             Grid.Row="0"
             FontSize="18"
-            Style="{StaticResource SubHeadline}"
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource StampHeading}"
             Text="{x:Static strings:AppResources.SelectPinsToShow}" />
         <ScrollView Grid.Row="1" MaximumHeightRequest="400">
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Options}">

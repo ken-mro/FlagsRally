@@ -3,12 +3,16 @@
     x:Class="FlagsRally.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
+    <Shell.TitleView>
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.BannerVisas}" />
+    </Shell.TitleView>
     <ContentPage.Resources>
         <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
         <converters:FontSizeConverter x:Key="FontSizeConverter" />

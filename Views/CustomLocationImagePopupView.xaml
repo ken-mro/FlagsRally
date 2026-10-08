@@ -3,6 +3,7 @@
     x:Class="FlagsRally.Views.CustomLocationImagePopupView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -18,14 +19,14 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label
+        <controls:StampLabel
             Grid.Row="0"
             FontAutoScalingEnabled="True"
             FontSize="Title"
             HorizontalOptions="Center"
-            Style="{StaticResource Headline}"
-            Text="{Binding LocationTitle}"
-            TextColor="Black" />
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource StampHeading}"
+            Text="{Binding LocationTitle}" />
         <Image
             Grid.Row="1"
             Aspect="AspectFit"
