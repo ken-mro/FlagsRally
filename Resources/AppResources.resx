@@ -495,4 +495,13 @@
   <data name="NoBoardsInFolder" xml:space="preserve">
     <value>There are no boards in this folder.</value>
   </data>
+  <data name="MapPins" xml:space="preserve">
+    <value>Map pins</value>
+  </data>
+  <data name="PinStyleClassic" xml:space="preserve">
+    <value>Classic</value>
+  </data>
+  <data name="PinStyleDrop" xml:space="preserve">
+    <value>Drop</value>
+  </data>
 </root>

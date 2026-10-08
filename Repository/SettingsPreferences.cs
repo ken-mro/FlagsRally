@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using FlagsRally.Models;
 using System.Globalization;
 
 namespace FlagsRally.Repository;
@@ -11,6 +12,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _latestCountry = "LatestCountry";
     private string _apiKey = "ApiKey";
     private string _customBoardSort = "CustomBoardSort";
+    private string _pinStyle = "PinStyle";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -77,5 +79,15 @@ public partial class SettingsPreferences : ObservableObject
     public void SetCustomBoardSort(string sort)
     {
         _defaultPreferences.Set(_customBoardSort, sort);
+    }
+
+    public PinStyle GetPinStyle()
+    {
+        return Enum.TryParse<PinStyle>(_defaultPreferences.Get(_pinStyle, nameof(PinStyle.Classic)), out var style) ? style : PinStyle.Classic;
+    }
+
+    public void SetPinStyle(PinStyle style)
+    {
+        _defaultPreferences.Set(_pinStyle, style.ToString());
     }
 }

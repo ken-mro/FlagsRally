@@ -29,9 +29,5 @@ public class ArrivalLocationPin : Pin
 
     public int Id => ((MapPinTag)Tag).ArrivalLocationId;
 
-    private static BitmapDescriptor SetIcon()
-    {
-        var icon = "default_pin";
-        return BitmapDescriptorFactory.FromBundle(icon);
-    }
+    private static BitmapDescriptor SetIcon() => PinIcons.For(PinKind.CheckIn);
 }

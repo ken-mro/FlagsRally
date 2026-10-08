@@ -364,9 +364,26 @@ public partial class LocationPageViewModel : BaseViewModel
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
         _mapFocusRequest = mapFocusRequest;
+        PinIcons.Style = settingsPreferences.GetPinStyle();
 
         WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
             MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
+        WeakReferenceMessenger.Default.Register<PinStyleChangedMessage>(this, (recipient, message) =>
+            MainThread.BeginInvokeOnMainThread(((LocationPageViewModel)recipient).RedrawPins));
+    }
+
+    // Gives every pin already on the map the icon of the newly chosen style.
+    private void RedrawPins()
+    {
+        if (ArrivalMap is null) return;
+
+        foreach (var pin in ArrivalMap.Pins)
+        {
+            if (PinIcons.ForPin(pin) is BitmapDescriptor icon)
+            {
+                pin.Icon = icon;
+            }
+        }
     }
 
     bool _pinsLoaded;

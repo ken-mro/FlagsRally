@@ -4,7 +4,10 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
+using CommunityToolkit.Mvvm.Messaging;
 using FlagsRally.Helpers;
+using FlagsRally.Messages;
+using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using ICSharpCode.SharpZipLib.Zip;
@@ -38,11 +41,33 @@ namespace FlagsRally.ViewModels
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
         public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(UsesClassicPins))]
+        [NotifyPropertyChangedFor(nameof(UsesDropPins))]
+        private PinStyle _pinStyle;
+
+        public bool UsesClassicPins => PinStyle == PinStyle.Classic;
+        public bool UsesDropPins => PinStyle == PinStyle.Drop;
+
+        partial void OnPinStyleChanged(PinStyle value)
+        {
+            _settingPreferences.SetPinStyle(value);
+            PinIcons.Style = value;
+            WeakReferenceMessenger.Default.Send(new PinStyleChangedMessage());
+        }
+
+        [RelayCommand]
+        void SetPinStyle(string style)
+        {
+            PinStyle = Enum.Parse<PinStyle>(style);
+        }
+
         public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper, IRevenueCatBilling revenueCatBilling)
         {
             _settingPreferences = settingPreferences;
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
+            _pinStyle = _settingPreferences.GetPinStyle();
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;

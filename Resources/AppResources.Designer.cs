@@ -1193,5 +1193,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("NoBoardsInFolder", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map pins.
+        /// </summary>
+        internal static string MapPins {
+            get {
+                return ResourceManager.GetString("MapPins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classic.
+        /// </summary>
+        internal static string PinStyleClassic {
+            get {
+                return ResourceManager.GetString("PinStyleClassic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drop.
+        /// </summary>
+        internal static string PinStyleDrop {
+            get {
+                return ResourceManager.GetString("PinStyleDrop", resourceCulture);
+            }
+        }
     }
 }

@@ -15,11 +15,7 @@ public class SelectedLocationPin : Pin
         IsDraggable = true;
     }
 
-    private static BitmapDescriptor SetIcon()
-    {
-        var icon = "selected_location_pin";
-        return BitmapDescriptorFactory.FromBundle(icon);
-    }
+    private static BitmapDescriptor SetIcon() => PinIcons.For(PinKind.CheckInSpot);
 
     private static string SetAddress(Position position)
     {

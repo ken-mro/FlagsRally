@@ -495,4 +495,13 @@
   <data name="NoBoardsInFolder" xml:space="preserve">
     <value>このフォルダにボードはありません。</value>
   </data>
+  <data name="MapPins" xml:space="preserve">
+    <value>マップのピン</value>
+  </data>
+  <data name="PinStyleClassic" xml:space="preserve">
+    <value>クラシック</value>
+  </data>
+  <data name="PinStyleDrop" xml:space="preserve">
+    <value>しずく</value>
+  </data>
 </root>
