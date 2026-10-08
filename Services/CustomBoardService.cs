@@ -70,6 +70,15 @@ public class CustomBoardService
     {
         if (stream is null) return new();
 
+        var customBoardJson = await ReadBoardJsonAsync(stream, fileName);
+        return await SaveBoardAndLocations(customBoardJson);
+    }
+
+    /// <summary>
+    /// Reads a board file (.json, or .json.encrypted which is decrypted first) without saving it.
+    /// </summary>
+    public async Task<CustomBoardJson> ReadBoardJsonAsync(Stream stream, string fileName)
+    {
         string json = string.Empty;
 
         // Check if file is encrypted based on extension
@@ -89,11 +98,10 @@ public class CustomBoardService
             json = await reader.ReadToEndAsync();
         }
 
-        var customBoardJson = JsonSerializer.Deserialize<CustomBoardJson>(json) ?? new();
-        return await SaveBoardAndLocations(customBoardJson);
+        return JsonSerializer.Deserialize<CustomBoardJson>(json) ?? new();
     }
 
-    private async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json)
+    public async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json)
     {
         var customBoard = GetCustomBoard(json);
         await _customBoardRepository.InsertOrReplaceAsync(customBoard);

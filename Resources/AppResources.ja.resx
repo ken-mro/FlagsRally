@@ -468,4 +468,31 @@
   <data name="OtherGroup" xml:space="preserve">
     <value>その他</value>
   </data>
+  <data name="SharedBoards" xml:space="preserve">
+    <value>公開ボード</value>
+  </data>
+  <data name="BoardCatalogHint" xml:space="preserve">
+    <value>追加するボードをタップしてください。ボードを更新しても、チェックインの記録は残ります。</value>
+  </data>
+  <data name="UpOneFolder" xml:space="preserve">
+    <value>ひとつ上のフォルダへ</value>
+  </data>
+  <data name="AddFromDevice" xml:space="preserve">
+    <value>端末のファイルから追加</value>
+  </data>
+  <data name="BoardAdded" xml:space="preserve">
+    <value>「{0}」を追加しました。</value>
+  </data>
+  <data name="ConfirmReplaceBoard" xml:space="preserve">
+    <value>「{0}」はすでに追加されています。このファイルで置き換えますか？チェックインの記録は残ります。</value>
+  </data>
+  <data name="CouldNotLoadBoards" xml:space="preserve">
+    <value>ボードを読み込めませんでした。通信状況を確認して、もう一度お試しください。</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>再試行</value>
+  </data>
+  <data name="NoBoardsInFolder" xml:space="preserve">
+    <value>このフォルダにボードはありません。</value>
+  </data>
 </root>

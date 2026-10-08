@@ -1,6 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using FlagsRally.Messages;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Services;
@@ -42,14 +40,12 @@ public partial class CollectionsPageViewModel : BaseViewModel
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
-    readonly CustomBoardService _customBoardService;
     readonly RegionalFlagsService _regionalFlagsService;
 
-    public CollectionsPageViewModel(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, CustomBoardService customBoardService, RegionalFlagsService regionalFlagsService)
+    public CollectionsPageViewModel(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, RegionalFlagsService regionalFlagsService)
     {
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
-        _customBoardService = customBoardService;
         _regionalFlagsService = regionalFlagsService;
         Sections = [RegionalCards, BoardCards];
     }
@@ -144,32 +140,5 @@ public partial class CollectionsPageViewModel : BaseViewModel
         }
     }
 
-    private async Task AddBoardAsync()
-    {
-        if (IsBusy) return;
-        try
-        {
-            IsBusy = true;
-            var pickedFile = await FilePicker.PickAsync();
-            if (pickedFile is null) return;
-
-            using var stream = await pickedFile.OpenReadAsync();
-            await _customBoardService.SaveBoardAndLocations(stream, pickedFile.FileName);
-
-            WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage());
-            await Init();
-        }
-        catch (OperationCanceledException)
-        {
-            // User cancelled password entry
-        }
-        catch (Exception ex)
-        {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
+    private static Task AddBoardAsync() => Shell.Current.GoToAsync(BoardCatalogPage.Route);
 }

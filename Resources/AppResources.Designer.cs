@@ -1112,5 +1112,86 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("OtherGroup", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared boards.
+        /// </summary>
+        internal static string SharedBoards {
+            get {
+                return ResourceManager.GetString("SharedBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap a board to add it. Your check-ins are kept when a board is updated..
+        /// </summary>
+        internal static string BoardCatalogHint {
+            get {
+                return ResourceManager.GetString("BoardCatalogHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up one folder.
+        /// </summary>
+        internal static string UpOneFolder {
+            get {
+                return ResourceManager.GetString("UpOneFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add from a file on this device.
+        /// </summary>
+        internal static string AddFromDevice {
+            get {
+                return ResourceManager.GetString("AddFromDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added “{0}”..
+        /// </summary>
+        internal static string BoardAdded {
+            get {
+                return ResourceManager.GetString("BoardAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to “{0}” is already added. Replace it with this file? Your check-ins are kept..
+        /// </summary>
+        internal static string ConfirmReplaceBoard {
+            get {
+                return ResourceManager.GetString("ConfirmReplaceBoard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't load the boards. Check your connection and try again..
+        /// </summary>
+        internal static string CouldNotLoadBoards {
+            get {
+                return ResourceManager.GetString("CouldNotLoadBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry.
+        /// </summary>
+        internal static string Retry {
+            get {
+                return ResourceManager.GetString("Retry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no boards in this folder..
+        /// </summary>
+        internal static string NoBoardsInFolder {
+            get {
+                return ResourceManager.GetString("NoBoardsInFolder", resourceCulture);
+            }
+        }
     }
 }

@@ -65,7 +65,7 @@ public class RedesignViewModelTests
     public async Task Collections_cards_show_progress_latest_image_and_an_add_card()
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateService(boards, locations), CreateRegionalFlagsService());
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService());
 
         await vm.Init();
 
@@ -85,7 +85,7 @@ public class RedesignViewModelTests
     public async Task Collections_show_a_card_per_country_with_visited_countries_first()
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateService(boards, locations), CreateRegionalFlagsService());
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService());
 
         await vm.Init();
 
