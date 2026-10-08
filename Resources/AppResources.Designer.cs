@@ -977,5 +977,23 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string AllFilter {
+            get {
+                return ResourceManager.GetString("AllFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visited.
+        /// </summary>
+        internal static string Visited {
+            get {
+                return ResourceManager.GetString("Visited", resourceCulture);
+            }
+        }
     }
 }

@@ -423,4 +423,10 @@
   <data name="Edit" xml:space="preserve">
     <value>編集</value>
   </data>
+  <data name="AllFilter" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="Visited" xml:space="preserve">
+    <value>訪問済み</value>
+  </data>
 </root>

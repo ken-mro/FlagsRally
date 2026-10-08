@@ -40,6 +40,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private Map? _arrivalMap;
     private CustomBoardService _customBoardService;
     private ArrivalLocationService _arrivalLocationService;
+    private readonly MapFocusRequest _mapFocusRequest;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
@@ -332,7 +333,7 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customBoardRepository = customBoardRepository;
@@ -342,9 +343,45 @@ public partial class LocationPageViewModel : BaseViewModel
         _settingsPreferences = settingsPreferences;
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
+        _mapFocusRequest = mapFocusRequest;
 
         WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
             MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
+    }
+
+    bool _pinsLoaded;
+
+    /// <summary>
+    /// Selects the location another page asked to show (see <see cref="MapFocusRequest"/>).
+    /// Called when the page appears and again once the pins have loaded.
+    /// </summary>
+    public async Task ShowRequestedLocationAsync()
+    {
+        if (!_pinsLoaded || ArrivalMap is null) return;
+
+        var key = _mapFocusRequest.Take();
+        if (key is not null)
+        {
+            await ShowCustomLocationAsync(key);
+        }
+    }
+
+    private async Task ShowCustomLocationAsync(string compositeKey)
+    {
+        if (ArrivalMap is null) return;
+
+        var pin = ArrivalMap.Pins.OfType<CustomLocationPin>().FirstOrDefault(p => p.CustomLocationKey == compositeKey);
+        if (pin is null) return;
+
+        // Make sure a filter does not hide the requested pin.
+        if (!pin.IsVisible)
+        {
+            _visiblePinKeys.Clear();
+            OnPinFilterChanged();
+        }
+
+        await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL));
+        ArrivalMap.SelectedPin = pin;
     }
 
     private async Task OnCustomBoardsChanged(CustomBoardsChangedMessage message)
@@ -403,6 +440,9 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = false;
             _isCheckingLocation = false;
         }
+
+        _pinsLoaded = true;
+        await ShowRequestedLocationAsync();
     }
 
     [RelayCommand]

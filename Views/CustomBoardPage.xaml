@@ -12,59 +12,142 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CustomBoardPageViewModel">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.CustomBoard}" />
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{Binding FilteredCustomBoard.Name}" />
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
     </ContentPage.Resources>
-    <Grid Padding="5" RowSpacing="10">
+    <Grid Padding="5" RowSpacing="8">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Picker
-                    HorizontalOptions="Fill"
-                    ItemDisplayBinding="{Binding Name}"
-                    ItemsSource="{Binding CustomBoardList}"
-                    SelectedItem="{Binding FilteredCustomBoard}"
-                    VerticalOptions="Center" />
-                <Image
-                    Grid.Column="1"
-                    Margin="5,0"
-                    HeightRequest="25"
-                    HorizontalOptions="End"
-                    Source="filter.png"
-                    VerticalOptions="Center">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
-                    </Image.GestureRecognizers>
-                </Image>
-            </Grid>
-            <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
-                <Grid>
-                    <Label
-                        Padding="5,0"
-                        FontSize="16"
-                        HorizontalOptions="Start"
-                        Text="{x:Static strings:AppResources.HideDateAndMonth}"
-                        VerticalOptions="Center" />
-                    <Switch
-                        Margin="20,5"
-                        HorizontalOptions="End"
-                        IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="{StaticResource PaperEdge}"
-                        VerticalOptions="Center" />
-                </Grid>
+
+        <!--  Progress  -->
+        <Grid
+            Grid.Row="0"
+            Padding="6,6,6,0"
+            ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    Text="{Binding ProgressText}" />
+                <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
             </VerticalStackLayout>
+            <Image
+                Grid.Column="1"
+                Margin="5,0"
+                HeightRequest="25"
+                SemanticProperties.Description="{x:Static strings:AppResources.HideDateAndMonth}"
+                Source="filter.png"
+                VerticalOptions="Center">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
+                </Image.GestureRecognizers>
+            </Image>
+        </Grid>
+
+        <!--  All / Visited / Not visited, and display options  -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="6,0"
+            Spacing="6">
+            <Border
+                Padding="2"
+                BackgroundColor="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 8"
+                StrokeThickness="0">
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="2">
+                    <Border
+                        Grid.Column="0"
+                        Padding="0,6"
+                        BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 6"
+                        StrokeThickness="0">
+                        <Border.Triggers>
+                            <DataTrigger
+                                Binding="{Binding ShowsAll}"
+                                TargetType="Border"
+                                Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="All" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            FontSize="13"
+                            HorizontalOptions="Center"
+                            Text="{x:Static strings:AppResources.AllFilter}" />
+                    </Border>
+                    <Border
+                        Grid.Column="1"
+                        Padding="0,6"
+                        BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 6"
+                        StrokeThickness="0">
+                        <Border.Triggers>
+                            <DataTrigger
+                                Binding="{Binding ShowsVisited}"
+                                TargetType="Border"
+                                Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Visited" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            FontSize="13"
+                            HorizontalOptions="Center"
+                            Text="{x:Static strings:AppResources.Visited}" />
+                    </Border>
+                    <Border
+                        Grid.Column="2"
+                        Padding="0,6"
+                        BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 6"
+                        StrokeThickness="0">
+                        <Border.Triggers>
+                            <DataTrigger
+                                Binding="{Binding ShowsUnvisited}"
+                                TargetType="Border"
+                                Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Unvisited" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            FontSize="13"
+                            HorizontalOptions="Center"
+                            Text="{x:Static strings:AppResources.NotVisited}" />
+                    </Border>
+                </Grid>
+            </Border>
+            <Grid IsVisible="{Binding IsSettingsVisible}">
+                <Label
+                    Padding="5,0"
+                    FontSize="16"
+                    HorizontalOptions="Start"
+                    Text="{x:Static strings:AppResources.HideDateAndMonth}"
+                    VerticalOptions="Center" />
+                <Switch
+                    Margin="20,5"
+                    HorizontalOptions="End"
+                    IsToggled="{Binding DateIsNotVisible}"
+                    VerticalOptions="Center" />
+            </Grid>
         </VerticalStackLayout>
         <RefreshView
-            Grid.Row="0"
+            Grid.Row="2"
             Command="{Binding RefreshCountriesCommand}"
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
@@ -82,6 +165,9 @@
                             Stroke="{StaticResource Ink}"
                             StrokeShape="Rectangle"
                             StrokeThickness="2">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=ShowOnMapCommand}" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
                             <StackLayout>
                                 <Label
                                     Padding="2"
@@ -156,7 +242,7 @@
         </RefreshView>
 
         <ActivityIndicator
-            Grid.Row="0"
+            Grid.Row="2"
             Grid.ColumnSpan="2"
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
