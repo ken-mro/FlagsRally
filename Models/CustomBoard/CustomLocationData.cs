@@ -26,7 +26,7 @@ public class CustomLocationData
     public DateTime? ArrivalDate { get; set; } = null;
 
     /// <summary>
-    /// 1-based position in the board's JSON; 0 for rows saved before the order was recorded.
+    /// 1-based position in the board's JSON; rows saved before the order was recorded get their rowid.
     /// </summary>
     public int SortIndex { get; set; }
 }

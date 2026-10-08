@@ -17,7 +17,7 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     {
         await _conn!.CreateTableAsync<CustomLocationData>();
         // Rows saved before SortIndex existed were inserted in JSON order, so their rowid keeps that order.
-        await _conn!.ExecuteAsync("UPDATE CustomLocation SET SortIndex = rowid WHERE SortIndex = 0");
+        await _conn!.ExecuteAsync("UPDATE CustomLocation SET SortIndex = rowid WHERE SortIndex IS NULL OR SortIndex = 0");
     }
 
     public async Task<IEnumerable<CustomLocationPin>> GetAllCustomLocationPins()
