@@ -87,17 +87,12 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
         OnPropertyChanged(nameof(DeleteSelectedText));
     }
 
-    [RelayCommand]
-    async Task MoveUpAsync(ManageableBoardItem item) => await MoveAsync(item, -1);
-
-    [RelayCommand]
-    async Task MoveDownAsync(ManageableBoardItem item) => await MoveAsync(item, 1);
-
-    private async Task MoveAsync(ManageableBoardItem item, int offset)
+    /// <summary>
+    /// Moves a board (dragged by its handle on the page) and saves the new order.
+    /// </summary>
+    public async Task MoveBoardAsync(int oldIndex, int newIndex)
     {
-        var oldIndex = Boards.IndexOf(item);
-        var newIndex = oldIndex + offset;
-        if (oldIndex < 0 || newIndex < 0 || newIndex >= Boards.Count) return;
+        if (oldIndex == newIndex || oldIndex < 0 || newIndex < 0 || oldIndex >= Boards.Count || newIndex >= Boards.Count) return;
 
         Boards.Move(oldIndex, newIndex);
 

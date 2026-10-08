@@ -102,20 +102,21 @@ public class RedesignViewModelTests
         var vm = new ManageCustomBoardsPageViewModel(boards.Object, CreateService(boards, locations));
         await vm.Init();
 
-        await vm.MoveDownCommand.ExecuteAsync(vm.Boards[0]);
+        await vm.MoveBoardAsync(0, 1);
 
         Assert.Equal(["Board B", "Board A"], vm.Boards.Select(x => x.Name));
         Assert.Equal(["Board B", "Board A"], saved);
     }
 
     [Fact]
-    public async Task Moving_the_first_board_up_does_nothing()
+    public async Task Moving_outside_the_list_does_nothing()
     {
         var (boards, locations) = CreateRepositories();
         var vm = new ManageCustomBoardsPageViewModel(boards.Object, CreateService(boards, locations));
         await vm.Init();
 
-        await vm.MoveUpCommand.ExecuteAsync(vm.Boards[0]);
+        await vm.MoveBoardAsync(0, -1);
+        await vm.MoveBoardAsync(1, 1);
 
         Assert.Equal(["Board A", "Board B"], vm.Boards.Select(x => x.Name));
         boards.Verify(r => r.UpdateSortOrdersAsync(It.IsAny<IReadOnlyList<string>>()), Times.Never);

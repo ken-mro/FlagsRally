@@ -12,59 +12,79 @@
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.ManageBoards}" />
     </Shell.TitleView>
-    <Grid Padding="10" RowSpacing="10">
+    <Grid Padding="12" RowSpacing="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <CollectionView Grid.Row="0" ItemsSource="{Binding Boards}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="viewmodels:ManageableBoardItem">
-                    <Grid Padding="5,8" ColumnSpacing="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <CheckBox
-                            Grid.Column="0"
-                            IsChecked="{Binding IsSelected}"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Column="1"
-                            FontSize="16"
-                            LineBreakMode="TailTruncation"
-                            Text="{Binding Name}"
-                            VerticalOptions="Center" />
-                        <Button
-                            Grid.Column="2"
-                            Padding="0"
-                            BackgroundColor="Transparent"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCustomBoardsPageViewModel}}, x:DataType=viewmodels:ManageCustomBoardsPageViewModel, Path=MoveUpCommand}"
-                            CommandParameter="{Binding .}"
-                            FontSize="18"
-                            SemanticProperties.Description="{x:Static strings:AppResources.MoveUp}"
-                            Text="▲"
-                            TextColor="{StaticResource InkMuted}"
-                            WidthRequest="44" />
-                        <Button
-                            Grid.Column="3"
-                            Padding="0"
-                            BackgroundColor="Transparent"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCustomBoardsPageViewModel}}, x:DataType=viewmodels:ManageCustomBoardsPageViewModel, Path=MoveDownCommand}"
-                            CommandParameter="{Binding .}"
-                            FontSize="18"
-                            SemanticProperties.Description="{x:Static strings:AppResources.MoveDown}"
-                            Text="▼"
-                            TextColor="{StaticResource InkMuted}"
-                            WidthRequest="44" />
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Label
+            Grid.Row="0"
+            FontSize="13"
+            Text="{x:Static strings:AppResources.DragToReorder}"
+            TextColor="{StaticResource InkMuted}" />
+        <!--  No ScrollView: it takes the vertical drag away from the reorder gesture.  -->
+        <Grid Grid.Row="1">
+            <Border
+                Padding="0"
+                BackgroundColor="{StaticResource PaperCard}"
+                StrokeShape="RoundRectangle 10"
+                VerticalOptions="Start">
+                <!--  Rows are reordered by dragging the handle on the right (see code-behind).  -->
+                <VerticalStackLayout x:Name="boardList" BindableLayout.ItemsSource="{Binding Boards}">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <PointerGestureRecognizer PointerPressed="OnListPointerPressed" />
+                        <PanGestureRecognizer PanUpdated="OnListPanUpdated" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:ManageableBoardItem">
+                            <Grid
+                                Padding="6,4,0,4"
+                                BackgroundColor="{StaticResource PaperCard}"
+                                ColumnSpacing="4"
+                                HeightRequest="60">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    Grid.Column="0"
+                                    IsChecked="{Binding IsSelected}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="16"
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding Name}"
+                                    VerticalOptions="Center" />
+                                <!--  Drag handle (the drag itself is handled by the list, see code-behind)  -->
+                                <Grid
+                                    Grid.Column="2"
+                                    InputTransparent="True"
+                                    SemanticProperties.Description="{x:Static strings:AppResources.DragToReorder}">
+                                    <Label
+                                        FontSize="26"
+                                        HorizontalOptions="Center"
+                                        InputTransparent="True"
+                                        Text="≡"
+                                        TextColor="{StaticResource InkMuted}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                                <BoxView
+                                    Grid.ColumnSpan="3"
+                                    Margin="40,0,0,-4"
+                                    HeightRequest="1"
+                                    VerticalOptions="End"
+                                    Color="{StaticResource PaperEdge}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
         <Button
-            Grid.Row="1"
+            Grid.Row="2"
             BackgroundColor="{StaticResource Stamp}"
             Command="{Binding DeleteSelectedCommand}"
             IsEnabled="{Binding HasSelection}"
@@ -80,7 +100,7 @@
             </Button.Triggers>
         </Button>
         <ActivityIndicator
-            Grid.Row="0"
+            Grid.Row="1"
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"

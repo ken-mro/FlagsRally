@@ -1049,5 +1049,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("DistanceFromHere", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag ≡ to change the order.
+        /// </summary>
+        internal static string DragToReorder {
+            get {
+                return ResourceManager.GetString("DragToReorder", resourceCulture);
+            }
+        }
     }
 }

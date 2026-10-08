@@ -447,4 +447,7 @@
   <data name="DistanceFromHere" xml:space="preserve">
     <value>ここから約{0}です。</value>
   </data>
+  <data name="DragToReorder" xml:space="preserve">
+    <value>≡ をドラッグして並べ替え</value>
+  </data>
 </root>
