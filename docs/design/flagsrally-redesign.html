@@ -236,6 +236,40 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
 .q b { font-family: var(--font-display); }
 .q span { color: var(--muted); font-size: 14px; }
 
+
+/* ===== icon & splash ===== */
+.marks { position: absolute; width: 0; height: 0; overflow: hidden; }
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.opt { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.opt.rec { border: 2px solid var(--accent); }
+.opt .hd { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.opt .sizes { display: flex; align-items: flex-end; gap: 14px; }
+.opt .sizes svg { display: block; }
+.opt .sizes .r { border-radius: 24%; }
+.opt .sizes .c { border-radius: 50%; }
+.opt p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.pc { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; font-size: 13.5px; line-height: 1.6; }
+.pc b { font-weight: 700; }
+.home { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.wall { border-radius: 14px; padding: 18px 14px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 6px; justify-items: center; }
+.wall.light { background: #E6E9F0; color: #1B2233; }
+.wall.dark { background: #161B26; color: #E6EAF2; }
+.app { display: grid; justify-items: center; gap: 5px; font-size: 11px; font-family: var(--font-body); }
+.app i { width: 52px; height: 52px; border-radius: 50%; display: block; }
+.app i.g1 { background: #F3F4F7; } .app i.g2 { background: #4E7CD6; } .app i.g3 { background: #E25B45; }
+.app i.g4 { background: #2B2F38; } .app i.g5 { background: #58A65C; } .app i.g6 { background: #F2C14E; }
+.wall.light .app i.g1 { box-shadow: inset 0 0 0 1px #D3D8E2; }
+.app svg { border-radius: 50%; display: block; }
+.app.ios svg, .app.ios i { border-radius: 24%; }
+.splashes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px 20px; justify-items: center; }
+.splash { height: 100%; border-radius: 26px; overflow: hidden; background: var(--app-navy); display: grid; place-items: center; position: relative; }
+.splash .stack { display: grid; justify-items: center; gap: 14px; }
+.splash .word { font-family: var(--font-display); font-weight: 900; color: var(--app-paper); font-size: 19px; letter-spacing: 0.06em; }
+.splash .disc { width: 104px; height: 104px; border-radius: 50%; background: var(--app-navy-deep); display: grid; place-items: center; }
+.splash .foot { position: absolute; bottom: 26px; left: 0; right: 0; text-align: center; font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.3em; color: #6F82A8; }
+.spec { display: grid; gap: 8px; }
+.spec pre { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; }
+
 @media (max-width: 560px) {
   .phase { grid-template-columns: 1fr; gap: 8px; }
   .tabs li { grid-template-columns: 1fr; gap: 0; }
@@ -452,9 +486,160 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
     </div>
   </section>
 
+  <section id="icon">
+    <div class="sec-head">
+      <div class="eyebrow">5 · アイコンとスプラッシュ</div>
+      <h2>ホーム画面から起動まで、同じマークでつなぐ</h2>
+    </div>
+    <p class="prose">いまはアイコンが「黒地に赤いパスポート」、スプラッシュが「黒地に旗の立った地球」で、起動の瞬間に別のアプリのように見えます。どちらもビットマップをトレースしたSVGで、小さく表示すると線が潰れます。マークを1つに決め、アイコン・スプラッシュ・アプリ内のアプリバーで同じものを使います。</p>
+
+    <svg class="marks" aria-hidden="true" focusable="false">
+      <defs>
+        <!-- A: globe + flag (108-unit adaptive-icon grid, safe zone r=33) -->
+        <symbol id="markA" viewBox="0 0 108 108">
+          <circle cx="54" cy="60" r="19" fill="none" stroke="#FBF8F1" stroke-width="4"/>
+          <ellipse cx="54" cy="60" rx="8.5" ry="19" fill="none" stroke="#FBF8F1" stroke-width="3"/>
+          <line x1="35" y1="60" x2="73" y2="60" stroke="#FBF8F1" stroke-width="3"/>
+          <line x1="54" y1="41" x2="54" y2="26" stroke="#FBF8F1" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M55.5 26 H69 L65.6 30.5 L69 35 H55.5 Z" fill="#C8402F"/>
+        </symbol>
+        <symbol id="iconA" viewBox="0 0 108 108">
+          <rect width="108" height="108" fill="#1F3A68"/>
+          <use href="#markA"/>
+        </symbol>
+        <!-- B: passport cover -->
+        <symbol id="iconB" viewBox="0 0 108 108">
+          <rect width="108" height="108" fill="#FBF8F1"/>
+          <rect x="33" y="24" width="42" height="60" rx="5" fill="#1F3A68"/>
+          <rect x="33" y="24" width="5" height="60" rx="2" fill="#13264A"/>
+          <circle cx="56" cy="50" r="10" fill="none" stroke="#B58A2E" stroke-width="2.6"/>
+          <ellipse cx="56" cy="50" rx="4.4" ry="10" fill="none" stroke="#B58A2E" stroke-width="2"/>
+          <line x1="46" y1="50" x2="66" y2="50" stroke="#B58A2E" stroke-width="2"/>
+          <rect x="46" y="68" width="20" height="3" rx="1.5" fill="#B58A2E"/>
+          <circle cx="72" cy="76" r="11" fill="none" stroke="#C8402F" stroke-width="2.6" stroke-dasharray="3 2"/>
+        </symbol>
+        <!-- C: stamp ring -->
+        <symbol id="iconC" viewBox="0 0 108 108">
+          <rect width="108" height="108" fill="#FBF8F1"/>
+          <g transform="rotate(-12 54 54)">
+            <circle cx="54" cy="54" r="27" fill="none" stroke="#C8402F" stroke-width="4"/>
+            <circle cx="54" cy="54" r="21" fill="none" stroke="#C8402F" stroke-width="1.6" stroke-dasharray="2.5 2"/>
+            <text x="54" y="62" text-anchor="middle" font-family="Rubik Dirt, Impact, sans-serif" font-size="22" fill="#C8402F">FR</text>
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="options">
+      <div class="opt rec">
+        <div class="hd"><h3>案A　地球と旗</h3><span class="tag">推奨</span></div>
+        <div class="sizes">
+          <svg class="r" width="96" height="96" role="img" aria-label="案A 大"><use href="#iconA"/></svg>
+          <svg class="c" width="48" height="48" role="img" aria-label="案A 中"><use href="#iconA"/></svg>
+          <svg class="r" width="24" height="24" role="img" aria-label="案A 小"><use href="#iconA"/></svg>
+        </div>
+        <p>今のスプラッシュの「旗の立った地球」を、線の太さをそろえた2色の記号に描き直します。紺の地に紙色の地球、赤い旗だけが目を引きます。24pxでも旗が判別でき、スプラッシュにもそのまま使えます。</p>
+        <div class="pc"><b>長所</b><span>アプリ名（Flags＋世界）をそのまま表す。単純で小さくても潰れない</span><b>短所</b><span>パスポートの世界観は画面側で伝える必要がある</span></div>
+      </div>
+      <div class="opt">
+        <div class="hd"><h3>案B　パスポート</h3></div>
+        <div class="sizes">
+          <svg class="r" width="96" height="96" role="img" aria-label="案B 大"><use href="#iconB"/></svg>
+          <svg class="c" width="48" height="48" role="img" aria-label="案B 中"><use href="#iconB"/></svg>
+          <svg class="r" width="24" height="24" role="img" aria-label="案B 小"><use href="#iconB"/></svg>
+        </div>
+        <p>今のアイコンの「パスポート」を引き継ぎ、紺の表紙に金の地球、角に赤い消印を重ねます。既存ユーザーが見つけやすい案です。</p>
+        <div class="pc"><b>長所</b><span>現在のアイコンからの連続性が高い</span><b>短所</b><span>要素が多く、24pxでは金の線と消印が見えなくなる</span></div>
+      </div>
+      <div class="opt">
+        <div class="hd"><h3>案C　スタンプ</h3></div>
+        <div class="sizes">
+          <svg class="r" width="96" height="96" role="img" aria-label="案C 大"><use href="#iconC"/></svg>
+          <svg class="c" width="48" height="48" role="img" aria-label="案C 中"><use href="#iconC"/></svg>
+          <svg class="r" width="24" height="24" role="img" aria-label="案C 小"><use href="#iconC"/></svg>
+        </div>
+        <p>赤いインクの丸スタンプに「FR」の頭文字。集める楽しさを一番強く出す案です。</p>
+        <div class="pc"><b>長所</b><span>ホーム画面で目立つ。スタンプ集めの体験と直結する</span><b>短所</b><span>文字入りのアイコンは小さいと読めず、ストアでも何のアプリか伝わりにくい</span></div>
+      </div>
+    </div>
+
+    <h3>ホーム画面での見え方（案A）</h3>
+    <div class="home">
+      <div class="wall light" role="img" aria-label="明るい壁紙のAndroidホーム画面に案Aのアイコンを並べた例">
+        <div class="app"><i class="g1"></i>Calendar</div>
+        <div class="app"><i class="g2"></i>Camera</div>
+        <div class="app"><svg width="52" height="52"><use href="#iconA"/></svg>FlagsRally</div>
+        <div class="app"><i class="g5"></i>Maps</div>
+        <div class="app"><i class="g3"></i>Gmail</div>
+        <div class="app"><i class="g6"></i>Photos</div>
+        <div class="app"><i class="g4"></i>Clock</div>
+        <div class="app"><i class="g2"></i>Files</div>
+      </div>
+      <div class="wall dark" role="img" aria-label="暗い壁紙のiOSホーム画面に案Aのアイコンを並べた例">
+        <div class="app ios"><i class="g2"></i>Mail</div>
+        <div class="app ios"><svg width="52" height="52"><use href="#iconA"/></svg>FlagsRally</div>
+        <div class="app ios"><i class="g5"></i>Maps</div>
+        <div class="app ios"><i class="g1"></i>Notes</div>
+        <div class="app ios"><i class="g3"></i>Music</div>
+        <div class="app ios"><i class="g6"></i>Photos</div>
+        <div class="app ios"><i class="g4"></i>Watch</div>
+        <div class="app ios"><i class="g2"></i>Files</div>
+      </div>
+    </div>
+    <p class="prose" style="font-size: 13px; color: var(--muted)">周りのアイコンは色の目安を示すための仮の図形です。白っぽいアイコンが多いAndroidでも、暗いiOSのダークモードでも、紺地と赤い旗で埋もれません。</p>
+
+    <h3>スプラッシュスクリーン</h3>
+    <div class="splashes">
+      <figure>
+        <div class="phone" role="img" aria-label="Android 12以降のスプラッシュ。紺の地に円で切り抜かれたマークのみ">
+          <div class="splash"><div class="disc"><svg width="104" height="104"><use href="#markA"/></svg></div></div>
+        </div>
+        <figcaption><b>Android 12以降</b>OSの決まりで、円に切り抜いたアイコンと背景色だけを表示します。文字は入れません。背景はアイコンと同じ紺にして、アイコンがそのまま画面に広がるように見せます。</figcaption>
+      </figure>
+      <figure>
+        <div class="phone" role="img" aria-label="iOSのスプラッシュ。紺の地にマークとFlagsRallyの文字">
+          <div class="splash">
+            <div class="stack"><svg width="112" height="112"><use href="#markA"/></svg><div class="word">FlagsRally</div></div>
+            <div class="foot">COLLECT · CHECK IN · STAMP</div>
+          </div>
+        </div>
+        <figcaption><b>iOS</b>同じ紺の地にマークと名前を置きます。起動後の最初の画面（パスポート）も紺のアプリバーから始まるので、色が途切れません。</figcaption>
+      </figure>
+      <figure>
+        <div class="phone" role="img" aria-label="起動直後のパスポート画面で、最新のスタンプが押される演出">
+          <div class="screen">
+            <div class="top"><div class="statusbar"></div><div class="appbar"><span class="t">パスポート</span><span class="ic"></span></div></div>
+            <div class="body pad">
+              <div class="cover"><div class="crest"></div><div class="pt">PASSPORT</div></div>
+              <div class="stamps"><div class="stamp got">水無瀬神宮<span class="d">04 OCT 2026</span></div><div class="stamp">伊勢神宮</div><div class="stamp">鹿島神宮</div></div>
+            </div>
+            <div class="tabbar"><div class="on"><i></i>パスポート</div><div><i></i>マップ</div><div><i></i>コレクション</div><div><i></i>設定</div></div>
+          </div>
+        </div>
+        <figcaption><b>起動直後（任意）</b>スプラッシュ自体は静止画にとどめ、演出は最初の画面で行います。前回以降の新しいスタンプがあれば、それを押す動きを一度だけ見せます。</figcaption>
+      </figure>
+    </div>
+
+    <div class="spec">
+      <h3>実装メモ</h3>
+      <p class="prose">いまは<code>MauiIcon</code>がプラットフォームごとに4行あり、背景色も黒と透明でばらばらです。背景と前景を分けた1組のSVGにまとめます。Androidのアダプティブアイコンでは、前景を108単位の中央、直径66の円の中に収めます（上の案Aはこの範囲で描いています）。</p>
+      <pre>&lt;!-- FlagsRally.csproj --&gt;
+&lt;MauiIcon Include="Resources\AppIcon\appicon.svg"
+          ForegroundFile="Resources\AppIcon\appiconfg.svg"
+          Color="#1F3A68" ForegroundScale="0.65" /&gt;
+&lt;MauiSplashScreen Include="Resources\Splash\splash.svg"
+                  Color="#1F3A68" BaseSize="128,128" /&gt;
+
+appicon.svg   : 紺一色の背景（108×108）
+appiconfg.svg : 案Aのマーク（地球・旗。トレースではなく図形で作成）
+splash.svg    : appiconfg.svg と同じマーク</pre>
+      <p class="prose" style="font-size: 13px; color: var(--muted)">Android 13のテーマアイコン（単色）にも対応する場合は、地球と旗を1色にしたモノクロ版を追加します。ストア用の512pxアイコンとフィーチャーグラフィックも同じマークから書き出します。</p>
+    </div>
+  </section>
+
   <section id="usability">
     <div class="sec-head">
-      <div class="eyebrow">5 · 使いやすさの改善</div>
+      <div class="eyebrow">6 · 使いやすさの改善</div>
       <h2>見た目以外で効く変更</h2>
     </div>
     <div class="two">
@@ -481,15 +666,15 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
 
   <section id="phases">
     <div class="sec-head">
-      <div class="eyebrow">6 · 導入ステップ</div>
+      <div class="eyebrow">7 · 導入ステップ</div>
       <h2>小さく出して確かめられる順に</h2>
     </div>
     <div class="phases">
       <div class="phase">
         <div class="when">段階1<span>見た目の土台</span></div>
         <div class="what">
-          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。画面構成は変えないので、リスクがいちばん低い段階です。</p>
-          <div class="files">Resources/Styles/Colors.xaml · Styles.xaml · Platforms/Android/Resources/values/colors.xml · Views/*.xamlの直書き色</div>
+          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。アイコンとスプラッシュも同じマークに差し替える。画面構成は変えないので、リスクがいちばん低い段階です。</p>
+          <div class="files">Resources/Styles/Colors.xaml · Styles.xaml · Platforms/Android/Resources/values/colors.xml · Views/*.xamlの直書き色 · Resources/AppIcon/*.svg · Resources/Splash/splash.svg · FlagsRally.csproj</div>
         </div>
       </div>
       <div class="phase">
@@ -518,13 +703,14 @@ figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15
 
   <section id="decisions">
     <div class="sec-head">
-      <div class="eyebrow">7 · 決めていただきたいこと</div>
+      <div class="eyebrow">8 · 決めていただきたいこと</div>
       <h2>進める前の確認事項</h2>
     </div>
     <div class="qs">
       <div class="q"><b>配色の方向性はこの「紺・赤・紙」でよいか</b><span>別案として、地図アプリらしい明るい緑系や、御朱印帳に寄せた和紙・朱色系も作れます。</span></div>
       <div class="q"><b>ボトムシートにライブラリを使ってよいか</b><span>MAUIには標準のボトムシートがありません。The49.Maui.BottomSheetなどを使うか、自前のオーバーレイで作るかを選びます。</span></div>
       <div class="q"><b>タブ再編（段階3）まで進めるか</b><span>既存ユーザーにとって場所が変わる変更です。段階1・2だけ先に出して反応を見る方法もあります。</span></div>
+      <div class="q"><b>アイコンはどの案にするか</b><span>推奨は案A（地球と旗）です。既存ユーザーへの連続性を優先するなら案B（パスポート）も選べます。</span></div>
       <div class="q"><b>スタンプ用フォントを続投するか</b><span>Jerseyclub Grungeとcraftminchoはアプリの個性です。続投する前提で提案していますが、ライセンスの確認だけお願いします。</span></div>
     </div>
   </section>
