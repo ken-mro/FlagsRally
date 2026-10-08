@@ -61,6 +61,12 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
         });
     }
 
+    public async Task<int> DeleteAsync(string name)
+    {
+        await Init();
+        return await _conn!.Table<CustomBoardData>().Where(x => x.Name == name).DeleteAsync();
+    }
+
     private CustomBoard GetCustomBoard(CustomBoardData customBoardData)
     {
         return new CustomBoard()

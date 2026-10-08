@@ -833,5 +833,23 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("Cancel", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete selected ({0}).
+        /// </summary>
+        internal static string DeleteSelected {
+            get {
+                return ResourceManager.GetString("DeleteSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the following boards? All of their locations and check-in records will also be deleted..
+        /// </summary>
+        internal static string ConfirmDeleteBoards {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteBoards", resourceCulture);
+            }
+        }
     }
 }

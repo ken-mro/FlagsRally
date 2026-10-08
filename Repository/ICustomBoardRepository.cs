@@ -8,4 +8,5 @@ public interface ICustomBoardRepository
     Task<IEnumerable<CustomBoard>> GetAllCustomBoards();
     Task<bool> GetCustomBoardExists();
     Task UpdateSortOrdersAsync(IReadOnlyList<string> orderedNames);
+    Task<int> DeleteAsync(string name);
 }

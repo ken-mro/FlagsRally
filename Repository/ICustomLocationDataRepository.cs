@@ -9,4 +9,5 @@ public interface ICustomLocationDataRepository
     Task<IEnumerable<CustomLocation>> GetAllCustomLocations();
     Task<IEnumerable<CustomLocationPin>> GetAllCustomLocationPins();
     Task<CustomLocation?> GetCustomLocationByCompositeKey(string compositeKey);
+    Task<int> DeleteByBoardNameAsync(string boardName);
 }

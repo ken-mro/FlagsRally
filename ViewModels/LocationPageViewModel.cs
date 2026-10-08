@@ -250,6 +250,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         try
         {
+            await RemovePinsOfDeletedBoards();
             await RebuildPinFilterList();
         }
         catch (Exception ex)
@@ -643,6 +644,26 @@ public partial class LocationPageViewModel : BaseViewModel
         AddPinsToMap(customLocationList);
 
         await RebuildPinFilterList();
+    }
+
+    private async Task RemovePinsOfDeletedBoards()
+    {
+        if (ArrivalMap is null) return;
+
+        var boardNames = (await _customBoardRepository.GetAllCustomBoards()).Select(b => b.Name).ToHashSet();
+        var orphanPins = ArrivalMap.Pins
+            .Where(p => p.Tag is MapPinTag { IsCustomLocation: true } tag && !boardNames.Contains(tag.BoardName))
+            .ToList();
+
+        if (SelectedPin is not null && orphanPins.Contains(SelectedPin))
+        {
+            ArrivalMap.SelectedPin = null;
+        }
+
+        foreach (var pin in orphanPins)
+        {
+            ArrivalMap.Pins.Remove(pin);
+        }
     }
 
     private async Task RebuildPinFilterList()

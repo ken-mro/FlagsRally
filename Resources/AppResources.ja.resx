@@ -375,4 +375,10 @@
   <data name="Cancel" xml:space="preserve">
     <value>キャンセル</value>
   </data>
+  <data name="DeleteSelected" xml:space="preserve">
+    <value>選択したボードを削除 ({0})</value>
+  </data>
+  <data name="ConfirmDeleteBoards" xml:space="preserve">
+    <value>次のボードを削除しますか？ボード内の地点とチェックイン記録もすべて削除されます。</value>
+  </data>
 </root>

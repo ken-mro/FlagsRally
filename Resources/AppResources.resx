@@ -375,4 +375,10 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="DeleteSelected" xml:space="preserve">
+    <value>Delete selected ({0})</value>
+  </data>
+  <data name="ConfirmDeleteBoards" xml:space="preserve">
+    <value>Delete the following boards? All of their locations and check-in records will also be deleted.</value>
+  </data>
 </root>

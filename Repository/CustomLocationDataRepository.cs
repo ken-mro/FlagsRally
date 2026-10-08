@@ -25,6 +25,12 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
         return customLocationDataList.Select(GetCustomLocationPin).ToList();
     }
 
+    public async Task<int> DeleteByBoardNameAsync(string boardName)
+    {
+        await Init();
+        return await _conn!.Table<CustomLocationData>().Where(x => x.BoardName == boardName).DeleteAsync();
+    }
+
     public async Task<IEnumerable<CustomLocation>> GetAllCustomLocations()
     {
         await Init();
