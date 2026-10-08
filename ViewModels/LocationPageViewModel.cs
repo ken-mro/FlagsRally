@@ -675,18 +675,22 @@ public partial class LocationPageViewModel : BaseViewModel
         if (ArrivalMap is null) return;
 
         var boardNames = (await _customBoardRepository.GetAllCustomBoards()).Select(b => b.Name).ToHashSet();
-        var orphanPins = ArrivalMap.Pins
-            .Where(p => p.Tag is MapPinTag { IsCustomLocation: true } tag && !boardNames.Contains(tag.BoardName))
-            .ToList();
+        static bool IsOrphan(Pin pin, HashSet<string> boardNames) =>
+            pin.Tag is MapPinTag { IsCustomLocation: true } tag && !boardNames.Contains(tag.BoardName);
 
-        if (SelectedPin is not null && orphanPins.Contains(SelectedPin))
+        if (SelectedPin is not null && IsOrphan(SelectedPin, boardNames))
         {
             ArrivalMap.SelectedPin = null;
         }
 
-        foreach (var pin in orphanPins)
+        // Remove by index: Pin equality is value-based (label/position), so Remove(pin)
+        // could take out the same location on another board.
+        for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
         {
-            ArrivalMap.Pins.Remove(pin);
+            if (IsOrphan(ArrivalMap.Pins[i], boardNames))
+            {
+                ArrivalMap.Pins.RemoveAt(i);
+            }
         }
     }
 

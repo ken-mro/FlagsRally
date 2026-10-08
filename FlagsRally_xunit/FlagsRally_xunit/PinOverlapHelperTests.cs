@@ -26,6 +26,19 @@ public class PinOverlapHelperTests
     }
 
     [Fact]
+    public void Same_location_on_two_boards_overlaps_even_though_pins_compare_equal()
+    {
+        var a = CreatePin("Kashima Jingu", 35.969045, 140.631436, "Board A");
+        var b = CreatePin("Kashima Jingu", 35.969045, 140.631436, "Board B");
+
+        var result = PinOverlapHelper.FindOverlapping(a, [a, b]);
+
+        Assert.Equal(2, result.Count);
+        Assert.Same(a, result[0]);
+        Assert.Same(b, result[1]);
+    }
+
+    [Fact]
     public void Nearby_pins_beyond_tolerance_do_not_overlap()
     {
         var a = CreatePin("A", 35.0, 135.0);

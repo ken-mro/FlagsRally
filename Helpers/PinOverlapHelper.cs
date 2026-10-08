@@ -14,7 +14,8 @@ public static class PinOverlapHelper
     public static IReadOnlyList<Pin> FindOverlapping(Pin tappedPin, IEnumerable<Pin> pins, double toleranceMeters = DEFAULT_TOLERANCE_METERS)
     {
         var tappedLocation = ToLocation(tappedPin.Position);
-        var others = pins.Where(p => p != tappedPin && p.IsVisible
+        // Pin equality is value-based (same label and position compare equal), so compare references.
+        var others = pins.Where(p => !ReferenceEquals(p, tappedPin) && p.IsVisible
                                      && tappedLocation.CalculateDistance(ToLocation(p.Position), DistanceUnits.Kilometers) * 1000 <= toleranceMeters);
         return [tappedPin, .. others];
     }
