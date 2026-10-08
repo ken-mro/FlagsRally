@@ -10,7 +10,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:LocationPageViewModel">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.Location}" />
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabMap}" />
     </Shell.TitleView>
     <Grid Padding="10" RowSpacing="10">
         <Grid.RowDefinitions>
@@ -69,7 +69,7 @@
             </HorizontalStackLayout>
         </ScrollView>
 
-        <!--  Default controls: record the current location, import a board  -->
+        <!--  Default controls: record the current location  -->
         <Grid
             Grid.Row="1"
             ColumnSpacing="8"
@@ -79,17 +79,6 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Button Command="{Binding GetCurrentLocationCommand}" Text="{x:Static strings:AppResources.GetLocation}" />
-            <Button
-                Grid.Column="1"
-                BackgroundColor="Transparent"
-                BorderColor="{StaticResource Navy}"
-                BorderWidth="1"
-                Command="{Binding AddCustomBoardJsonCommand}"
-                FontSize="20"
-                SemanticProperties.Description="{x:Static strings:AppResources.AddBoard}"
-                Text="+"
-                TextColor="{StaticResource Navy}"
-                WidthRequest="52" />
         </Grid>
 
         <!--  Details of the selected pin, with its actions as buttons  -->

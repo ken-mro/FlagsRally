@@ -905,5 +905,77 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("AddBoard", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passport.
+        /// </summary>
+        internal static string TabPassport {
+            get {
+                return ResourceManager.GetString("TabPassport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map.
+        /// </summary>
+        internal static string TabMap {
+            get {
+                return ResourceManager.GetString("TabMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collections.
+        /// </summary>
+        internal static string TabCollections {
+            get {
+                return ResourceManager.GetString("TabCollections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries &amp; regions.
+        /// </summary>
+        internal static string CountriesAndRegions {
+            get {
+                return ResourceManager.GetString("CountriesAndRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regional flags.
+        /// </summary>
+        internal static string RegionalFlags {
+            get {
+                return ResourceManager.GetString("RegionalFlags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to States and regions you have visited, by country.
+        /// </summary>
+        internal static string RegionalFlagsSubtitle {
+            get {
+                return ResourceManager.GetString("RegionalFlagsSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom boards.
+        /// </summary>
+        internal static string CustomBoards {
+            get {
+                return ResourceManager.GetString("CustomBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
     }
 }

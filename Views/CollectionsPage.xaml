@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FlagsRally.Views.CollectionsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:CollectionsPageViewModel">
+    <Shell.TitleView>
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabCollections}" />
+    </Shell.TitleView>
+    <CollectionView Margin="8,0" ItemsSource="{Binding BoardCards}">
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout Orientation="Vertical" Span="2" />
+        </CollectionView.ItemsLayout>
+        <CollectionView.Header>
+            <VerticalStackLayout Padding="4,12,4,4" Spacing="12">
+
+            <!--  Built-in boards  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.CountriesAndRegions}" />
+            <Border
+                Padding="12"
+                BackgroundColor="{StaticResource PaperCard}"
+                StrokeShape="RoundRectangle 10">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenRegionalFlagsCommand}" />
+                </Border.GestureRecognizers>
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        HeightRequest="36"
+                        Source="flag.png"
+                        VerticalOptions="Center"
+                        WidthRequest="36" />
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="{x:Static strings:AppResources.RegionalFlags}" />
+                        <Label
+                            FontSize="13"
+                            Text="{x:Static strings:AppResources.RegionalFlagsSubtitle}"
+                            TextColor="{StaticResource InkMuted}" />
+                    </VerticalStackLayout>
+                    <Label
+                        Grid.Column="2"
+                        FontSize="22"
+                        Text="›"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!--  Custom boards  -->
+            <Grid>
+                <controls:StampLabel
+                    Style="{StaticResource StampHeading}"
+                    Text="{x:Static strings:AppResources.CustomBoards}"
+                    VerticalOptions="Center" />
+                <Button
+                    Padding="8,0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding EditBoardsCommand}"
+                    HorizontalOptions="End"
+                    Text="{x:Static strings:AppResources.Edit}"
+                    TextColor="{StaticResource Navy}" />
+            </Grid>
+            </VerticalStackLayout>
+        </CollectionView.Header>
+        <CollectionView.ItemTemplate>
+
+                    <DataTemplate x:DataType="viewmodels:CollectionCard">
+                        <Grid Padding="4">
+                            <Border
+                                Padding="8"
+                                BackgroundColor="{StaticResource PaperCard}"
+                                StrokeShape="RoundRectangle 10">
+                                <Border.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsAddCard}"
+                                        TargetType="Border"
+                                        Value="True">
+                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                        <Setter Property="Stroke" Value="{StaticResource InkMuted}" />
+                                        <Setter Property="StrokeDashArray" Value="4,3" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CollectionsPageViewModel}}, x:DataType=viewmodels:CollectionsPageViewModel, Path=OpenCardCommand}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="6">
+                                    <Grid HeightRequest="96">
+                                        <Border
+                                            Padding="0"
+                                            IsVisible="{Binding HasImage}"
+                                            StrokeShape="RoundRectangle 6"
+                                            StrokeThickness="0">
+                                            <Image Aspect="AspectFill">
+                                                <Image.Source>
+                                                    <UriImageSource
+                                                        CacheValidity="30"
+                                                        CachingEnabled="True"
+                                                        Uri="{Binding ImageUrl}" />
+                                                </Image.Source>
+                                            </Image>
+                                        </Border>
+                                        <Border
+                                            BackgroundColor="{StaticResource Navy}"
+                                            IsVisible="{Binding HasNoImage}"
+                                            StrokeShape="RoundRectangle 6"
+                                            StrokeThickness="0">
+                                            <controls:StampLabel
+                                                FontSize="34"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding Initial}"
+                                                TextColor="{StaticResource PaperCard}"
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                        <Label
+                                            FontSize="40"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding IsAddCard}"
+                                            Text="+"
+                                            TextColor="{StaticResource Navy}"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        LineBreakMode="TailTruncation"
+                                        MaxLines="2"
+                                        Text="{Binding Title}" />
+                                    <ProgressBar
+                                        IsVisible="{Binding IsBoard}"
+                                        Progress="{Binding Progress}"
+                                        ProgressColor="{StaticResource Stamp}" />
+                                    <Label
+                                        FontSize="12"
+                                        IsVisible="{Binding IsBoard}"
+                                        Text="{Binding ProgressText}"
+                                        TextColor="{StaticResource InkMuted}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

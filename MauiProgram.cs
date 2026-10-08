@@ -83,8 +83,11 @@ namespace FlagsRally
             builder.Services.AddSingleton<LocationPage>();
             builder.Services.AddSingleton<LocationPageViewModel>();
 
-            builder.Services.AddSingleton<FlagsBoardPage>();
-            builder.Services.AddSingleton<FlagsBoardPageViewModel>();
+            builder.Services.AddSingleton<CollectionsPage>();
+            builder.Services.AddSingleton<CollectionsPageViewModel>();
+
+            builder.Services.AddTransient<FlagsBoardPage>();
+            builder.Services.AddTransient<FlagsBoardPageViewModel>();
 
             builder.Services.AddTransient<CustomBoardPage>();
             builder.Services.AddTransient<CustomBoardPageViewModel>();

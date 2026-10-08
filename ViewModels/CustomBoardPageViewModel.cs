@@ -10,8 +10,21 @@ using System.Text.Json;
 
 namespace FlagsRally.ViewModels;
 
-public partial class CustomBoardPageViewModel : BaseViewModel
+public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributable
 {
+    public const string BoardQueryKey = "board";
+
+    // Board requested by the Collections page; applied on the next Init().
+    string? _requestedBoardName;
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue(BoardQueryKey, out var board))
+        {
+            _requestedBoardName = board as string;
+        }
+    }
+
 
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -73,7 +86,8 @@ public partial class CustomBoardPageViewModel : BaseViewModel
             CustomBoardList = new ObservableCollection<CustomBoard>(allBoards);
             // Keep the current selection (matched by name, since the order may have changed);
             // otherwise default to the board visited most recently.
-            var selectedBoardName = FilteredCustomBoard?.Name ?? latestCustomLocation?.Board.Name;
+            var selectedBoardName = _requestedBoardName ?? FilteredCustomBoard?.Name ?? latestCustomLocation?.Board.Name;
+            _requestedBoardName = null;
             var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(selectedBoardName));
             FilteredCustomBoard = (matchingBoard ?? allBoards.FirstOrDefault())!;
         }
@@ -100,12 +114,6 @@ public partial class CustomBoardPageViewModel : BaseViewModel
         IsRefreshing = true;
         await Init();
         IsRefreshing = false;
-    }
-
-    [RelayCommand]
-    async Task OpenManageBoardsAsync()
-    {
-        await Shell.Current.GoToAsync(ManageCustomBoardsPage.Route);
     }
 
     [RelayCommand]

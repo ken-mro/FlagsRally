@@ -399,4 +399,28 @@
   <data name="AddBoard" xml:space="preserve">
     <value>Add board</value>
   </data>
+  <data name="TabPassport" xml:space="preserve">
+    <value>Passport</value>
+  </data>
+  <data name="TabMap" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="TabCollections" xml:space="preserve">
+    <value>Collections</value>
+  </data>
+  <data name="CountriesAndRegions" xml:space="preserve">
+    <value>Countries &amp; regions</value>
+  </data>
+  <data name="RegionalFlags" xml:space="preserve">
+    <value>Regional flags</value>
+  </data>
+  <data name="RegionalFlagsSubtitle" xml:space="preserve">
+    <value>States and regions you have visited, by country</value>
+  </data>
+  <data name="CustomBoards" xml:space="preserve">
+    <value>Custom boards</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
 </root>

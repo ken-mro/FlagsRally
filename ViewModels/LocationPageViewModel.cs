@@ -33,7 +33,6 @@ public partial class LocationPageViewModel : BaseViewModel
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
-    private readonly AppShell _appShell;
     private CancellationTokenSource? _cancelTokenSource;
     private bool _isCheckingLocation;
     private IRevenueCatBilling _revenueCat;
@@ -333,9 +332,8 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell, ArrivalLocationService arrivalLocationService)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService)
     {
-        _appShell = appShell;
         _arrivalLocationRepository = arrivalLocationRepository;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
@@ -353,8 +351,16 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         try
         {
-            await RemovePinsOfDeletedBoards();
+            var knownBoards = FilterChips.Select(c => c.Name).ToHashSet();
+            await ReloadCustomLocationPinsAsync();
             await RebuildPinFilterList();
+
+            // When filtering, also show boards that were just added.
+            if (_visiblePinKeys.Count > 0)
+            {
+                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll && !knownBoards.Contains(c.Name)).Select(c => c.Name));
+                OnPinFilterChanged();
+            }
         }
         catch (Exception ex)
         {
@@ -638,48 +644,6 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    [RelayCommand]
-    public async Task AddCustomBoardJsonAsync()
-    {
-        if (IsBusy || _isCheckingLocation)
-            return;
-        try
-        {
-            IsBusy = true;
-            var pickedFile = await FilePicker.PickAsync();
-            if (pickedFile is null) return;
-            using var stream = await pickedFile.OpenReadAsync();
-            (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stream, pickedFile.FileName);
-
-            if (!_appShell.CustomBoardPage.IsVisible)
-            {
-                _appShell.CustomBoardPage.IsVisible = true;
-            }
-
-            AddPinsToMap(pins);
-            await RebuildPinFilterList();
-
-            // When filtering, also show the board just imported.
-            if (_visiblePinKeys.Count > 0)
-            {
-                _visiblePinKeys.Add(customBoard.Name);
-                OnPinFilterChanged();
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // User cancelled password entry, just return without showing error
-        }
-        catch (Exception ex)
-        {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
     public void CancelRequest()
     {
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
@@ -742,28 +706,26 @@ public partial class LocationPageViewModel : BaseViewModel
         await RebuildPinFilterList();
     }
 
-    private async Task RemovePinsOfDeletedBoards()
+    private async Task ReloadCustomLocationPinsAsync()
     {
         if (ArrivalMap is null) return;
 
-        var boardNames = (await _customBoardRepository.GetAllCustomBoards()).Select(b => b.Name).ToHashSet();
-        static bool IsOrphan(Pin pin, HashSet<string> boardNames) =>
-            pin.Tag is MapPinTag { IsCustomLocation: true } tag && !boardNames.Contains(tag.BoardName);
-
-        if (SelectedPin is not null && IsOrphan(SelectedPin, boardNames))
+        if (SelectedPin is CustomLocationPin)
         {
             ArrivalMap.SelectedPin = null;
         }
 
-        // Remove by index: Pin equality is value-based (label/position), so Remove(pin)
-        // could take out the same location on another board.
+        // Remove by index: Pin equality is value-based (label/position).
         for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
         {
-            if (IsOrphan(ArrivalMap.Pins[i], boardNames))
+            if (ArrivalMap.Pins[i] is CustomLocationPin)
             {
                 ArrivalMap.Pins.RemoveAt(i);
             }
         }
+
+        AddPinsToMap(await _customLocationDataRepository.GetAllCustomLocationPins());
+        UpdatePinsVisibility();
     }
 
     private async Task RebuildPinFilterList()

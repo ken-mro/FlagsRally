@@ -11,7 +11,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.BannerVisas}" />
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabPassport}" />
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:FontFamilyConverter x:Key="FontFamilyConverter" />

@@ -27,13 +27,11 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly CustomBoardService _customBoardService;
-    readonly AppShell _appShell;
 
-    public ManageCustomBoardsPageViewModel(ICustomBoardRepository customBoardRepository, CustomBoardService customBoardService, AppShell appShell)
+    public ManageCustomBoardsPageViewModel(ICustomBoardRepository customBoardRepository, CustomBoardService customBoardService)
     {
         _customBoardRepository = customBoardRepository;
         _customBoardService = customBoardService;
-        _appShell = appShell;
         Title = AppResources.ManageBoards;
     }
 
@@ -139,14 +137,6 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
             IsBusy = false;
             // Notify even after a partial failure so other pages drop what was actually removed.
             WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage());
-        }
-
-        if (!await _customBoardRepository.GetCustomBoardExists())
-        {
-            // The Custom Board tab is about to be hidden; leave it before hiding it.
-            await Shell.Current.GoToAsync("//FlagsBoard");
-            await _appShell.SetCustomBoardPageVisibility();
-            return;
         }
 
         await Init();

@@ -27,7 +27,6 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
                     HorizontalOptions="Fill"
@@ -44,18 +43,6 @@
                     VerticalOptions="Center">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
-                    </Image.GestureRecognizers>
-                </Image>
-                <Image
-                    Grid.Column="2"
-                    Margin="5,0"
-                    HeightRequest="25"
-                    HorizontalOptions="End"
-                    SemanticProperties.Description="{x:Static strings:AppResources.ManageBoards}"
-                    Source="settings.png"
-                    VerticalOptions="Center">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenManageBoardsCommand}" />
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>

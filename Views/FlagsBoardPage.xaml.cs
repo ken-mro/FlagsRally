@@ -4,6 +4,8 @@ namespace FlagsRally.Views;
 
 public partial class FlagsBoardPage : ContentPage
 {
+    public const string Route = "FlagsBoard";
+
     private readonly FlagsBoardPageViewModel _flagsBoardPageViewModel;
     public FlagsBoardPage(FlagsBoardPageViewModel vm)
 	{

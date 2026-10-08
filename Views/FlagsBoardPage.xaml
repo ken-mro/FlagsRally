@@ -11,7 +11,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:FlagsBoardPageViewModel">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.Boards}" />
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.RegionalFlags}" />
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
