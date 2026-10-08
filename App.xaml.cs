@@ -11,6 +11,8 @@ public partial class App : Application
     {
         Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Constants.SYNCFUSIOHN_LICENSE_KEY);
         InitializeComponent();
+        // The passport/paper look is designed as a light theme only.
+        UserAppTheme = AppTheme.Light;
         _revenueCat = revenueCatBilling;
         _appShell = appShell;
     }

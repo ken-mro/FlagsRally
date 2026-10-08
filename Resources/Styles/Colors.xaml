@@ -4,12 +4,24 @@
 
     <!--  Note: For Android please see also Platforms\Android\Resources\values\colors.xml  -->
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <!--  Passport & stamp palette. Navy matches the app icon and splash background.  -->
+    <Color x:Key="Navy">#182A52</Color>
+    <Color x:Key="NavyDeep">#0F1C3A</Color>
+    <Color x:Key="NavyMuted">#A3AEC8</Color>
+    <Color x:Key="Stamp">#B94047</Color>
+    <Color x:Key="Paper">#F4EEDF</Color>
+    <Color x:Key="PaperCard">#FBF8F0</Color>
+    <Color x:Key="PaperEdge">#DDD2BA</Color>
+    <Color x:Key="Ink">#22252E</Color>
+    <Color x:Key="InkMuted">#7A7262</Color>
+    <Color x:Key="Gold">#E9C46A</Color>
+
+    <Color x:Key="Primary">#182A52</Color>
+    <Color x:Key="PrimaryDark">#182A52</Color>
+    <Color x:Key="PrimaryDarkText">#22252E</Color>
+    <Color x:Key="Secondary">#DDD2BA</Color>
+    <Color x:Key="SecondaryDarkText">#7A7262</Color>
+    <Color x:Key="Tertiary">#0F1C3A</Color>
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>

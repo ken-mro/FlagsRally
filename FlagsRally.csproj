@@ -53,6 +53,8 @@
 		<MauiImage Update="Resources\Images\settings.png" BaseSize="32, 32" />
 		<MauiImage Update="Resources\Images\flag.png" BaseSize="32, 32" />
 		<MauiImage Update="Resources\Images\board.png" BaseSize="32, 32" />
+		<!-- Page background texture: stretched to fill, so keep one copy instead of per-density sizes -->
+		<MauiImage Update="Resources\Images\paper.jpg" Resize="False" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
