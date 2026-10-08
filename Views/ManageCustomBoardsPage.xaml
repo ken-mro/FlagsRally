@@ -45,7 +45,7 @@
                             FontSize="18"
                             SemanticProperties.Description="{x:Static strings:AppResources.MoveUp}"
                             Text="▲"
-                            TextColor="Gray"
+                            TextColor="{StaticResource InkMuted}"
                             WidthRequest="44" />
                         <Button
                             Grid.Column="3"
@@ -56,7 +56,7 @@
                             FontSize="18"
                             SemanticProperties.Description="{x:Static strings:AppResources.MoveDown}"
                             Text="▼"
-                            TextColor="Gray"
+                            TextColor="{StaticResource InkMuted}"
                             WidthRequest="44" />
                     </Grid>
                 </DataTemplate>
@@ -64,7 +64,7 @@
         </CollectionView>
         <Button
             Grid.Row="1"
-            BackgroundColor="{AppThemeBinding Light='#C62828', Dark='#EF5350'}"
+            BackgroundColor="{StaticResource Stamp}"
             Command="{Binding DeleteSelectedCommand}"
             IsEnabled="{Binding HasSelection}"
             Text="{Binding DeleteSelectedText}"
@@ -83,6 +83,6 @@
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="Gray" />
+            Color="{StaticResource Navy}" />
     </Grid>
 </ContentPage>

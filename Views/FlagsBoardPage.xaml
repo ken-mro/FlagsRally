@@ -70,7 +70,7 @@
                         Margin="20,5"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="Gray"
+                        ThumbColor="{StaticResource PaperEdge}"
                         VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
@@ -81,7 +81,7 @@
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="collectionView"
-                Background="AntiqueWhite"
+                Background="Transparent"
                 ItemsSource="{Binding DisplayFullSubRegionList}"
                 VerticalOptions="Fill">
                 <CollectionView.ItemsLayout>
@@ -91,7 +91,7 @@
                     <DataTemplate x:DataType="{x:Type models:SubRegion}">
                         <Border
                             BackgroundColor="Transparent"
-                            Stroke="Black"
+                            Stroke="{StaticResource Ink}"
                             StrokeShape="RoundRectangle 20,20,20,20"
                             StrokeThickness="4">
                             <StackLayout>
@@ -106,7 +106,7 @@
                                     LineHeight="1"
                                     MaxLines="2"
                                     Text="{Binding Name}"
-                                    TextColor="Gray"
+                                    TextColor="{StaticResource InkMuted}"
                                     VerticalOptions="Center" />
                                 <VerticalStackLayout
                                     IsVisible="{Binding HasBeenVisited}"
@@ -120,7 +120,7 @@
                                         HorizontalOptions="Center"
                                         Source="{Binding FlagSource}"
                                         VerticalOptions="Center" />
-                                    <StackLayout BackgroundColor="Black">
+                                    <StackLayout BackgroundColor="{StaticResource Ink}">
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
@@ -129,7 +129,7 @@
                                             LineHeight="1"
                                             MaxLines="2"
                                             Text="{Binding Name}"
-                                            TextColor="AntiqueWhite"
+                                            TextColor="{StaticResource PaperCard}"
                                             VerticalOptions="Center" />
                                     </StackLayout>
                                     <Label
@@ -141,7 +141,7 @@
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDateString}"
-                                        TextColor="Red"
+                                        TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
                                     <Label
                                         FontAttributes="Bold"
@@ -152,11 +152,11 @@
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
-                                        TextColor="Red"
+                                        TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
                                     <Line
                                         HorizontalOptions="Center"
-                                        Stroke="Black"
+                                        Stroke="{StaticResource Ink}"
                                         StrokeThickness="2"
                                         X1="0"
                                         X2="120"
@@ -170,7 +170,7 @@
                                         HorizontalOptions="Center"
                                         LineBreakMode="NoWrap"
                                         Text="ARRIVAL"
-                                        TextColor="{StaticResource Black}"
+                                        TextColor="{StaticResource Ink}"
                                         VerticalOptions="Center" />
                                 </VerticalStackLayout>
                             </StackLayout>
@@ -181,7 +181,7 @@
         </RefreshView>
         <map:SfMaps
             Grid.Row="1"
-            BackgroundColor="SkyBlue"
+            BackgroundColor="{StaticResource MapSea}"
             IsVisible="{Binding IsMapVisible}">
             <map:SfMaps.Layer>
                 <map:MapShapeLayer
@@ -191,13 +191,13 @@
                     PrimaryValuePath="IsoCode"
                     ShapeColorValuePath="HasBeenVisited"
                     ShapeDataField="code"
-                    ShapeFill="Gray"
-                    ShapeStroke="White"
+                    ShapeFill="{StaticResource MapLand}"
+                    ShapeStroke="{StaticResource PaperCard}"
                     ShapeStrokeThickness="1"
                     ShapesSource="{Binding ShapesSource}"
                     ShowShapeTooltip="True">
                     <map:MapShapeLayer.ColorMappings>
-                        <map:EqualColorMapping Color="LimeGreen" Value="True" />
+                        <map:EqualColorMapping Color="{StaticResource Stamp}" Value="True" />
                     </map:MapShapeLayer.ColorMappings>
                     <map:MapShapeLayer.ShapeTooltipTemplate>
                         <DataTemplate x:DataType="map:MapTooltipInfo">
@@ -222,6 +222,6 @@
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="Gray" />
+            Color="{StaticResource Navy}" />
     </Grid>
 </ContentPage>

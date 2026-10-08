@@ -47,7 +47,7 @@
                 Grid.Column="0"
                 Padding="10,8"
                 SemanticProperties.Description="{x:Static strings:AppResources.FilterPin}"
-                Stroke="Gray"
+                Stroke="{StaticResource InkMuted}"
                 StrokeShape="RoundRectangle 6"
                 StrokeThickness="1"
                 VerticalOptions="Center">
@@ -74,7 +74,7 @@
                     <Label
                         Grid.Column="2"
                         Text="▾"
-                        TextColor="Gray"
+                        TextColor="{StaticResource InkMuted}"
                         VerticalOptions="Center" />
                 </Grid>
             </Border>
@@ -83,7 +83,7 @@
                 FontSize="35"
                 HorizontalOptions="End"
                 Text="+"
-                TextColor="Gray"
+                TextColor="{StaticResource InkMuted}"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding AddCustomBoardJsonCommand}" />
@@ -102,7 +102,7 @@
                     TargetType="Button"
                     Value="True">
                     <Setter Property="Text" Value="{x:Static strings:AppResources.CheckIn}" />
-                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#1E50A2', Dark='DodgerBlue'}" />
+                    <Setter Property="BackgroundColor" Value="{StaticResource Stamp}" />
                 </DataTrigger>
             </Button.Triggers>
         </Button>
@@ -111,6 +111,6 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             WidthRequest="50"
-            Color="Gray" />
+            Color="{StaticResource Navy}" />
     </Grid>
 </ContentPage>

@@ -65,7 +65,7 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
+                Color="{StaticResource PaperEdge}" />
             <controls:StampLabel
                 Padding="5,0"
                 Style="{StaticResource StampHeading}"
@@ -103,7 +103,7 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
+                Color="{StaticResource PaperEdge}" />
             <controls:StampLabel
                 Padding="5,0"
                 Style="{StaticResource StampHeading}"
@@ -139,7 +139,7 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
+                Color="{StaticResource PaperEdge}" />
             <controls:StampLabel
                 Padding="5,0"
                 Style="{StaticResource StampHeading}"
@@ -157,7 +157,7 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
+                Color="{StaticResource PaperEdge}" />
             <controls:StampLabel
                 Padding="5,0"
                 Style="{StaticResource StampHeading}"
@@ -170,7 +170,7 @@
                 FontSize="Small"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.RestoreBeforeUse}"
-                TextColor="Red"
+                TextColor="{StaticResource Stamp}"
                 VerticalOptions="Center" />
             <Button
                 Margin="10,0"
@@ -183,7 +183,7 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
+                Color="{StaticResource PaperEdge}" />
             <controls:StampLabel
                 Padding="5,0"
                 Style="{StaticResource StampHeading}"
@@ -195,8 +195,7 @@
                 FontSize="Body"
                 HorizontalOptions="End"
                 Text="{x:Static strings:AppResources.TermsOfUse}"
-                TextColor="{AppThemeBinding Light=#0000EE,
-                                            Dark=#4A9EFF}"
+                TextColor="{StaticResource Navy}"
                 TextDecorations="Underline"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>
@@ -208,8 +207,7 @@
                 FontSize="Body"
                 HorizontalOptions="End"
                 Text="{x:Static strings:AppResources.PrivacyPolicy}"
-                TextColor="{AppThemeBinding Light=#0000EE,
-                                            Dark=#4A9EFF}"
+                TextColor="{StaticResource Navy}"
                 TextDecorations="Underline"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>

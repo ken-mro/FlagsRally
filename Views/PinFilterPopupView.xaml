@@ -14,8 +14,7 @@
     VerticalOptions="Center">
     <Grid
         Padding="20"
-        BackgroundColor="{AppThemeBinding Light=White,
-                                          Dark={StaticResource Gray900}}"
+        BackgroundColor="{StaticResource PaperCard}"
         RowSpacing="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

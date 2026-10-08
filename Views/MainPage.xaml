@@ -35,7 +35,7 @@
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="collectionView"
-                Background="AntiqueWhite"
+                Background="Transparent"
                 ItemsSource="{Binding DisplayArrivalLocationList}"
                 Scrolled="collectionView_Scrolled"
                 VerticalOptions="Fill">
@@ -47,7 +47,7 @@
                             FontSize="Large"
                             HorizontalOptions="Center"
                             Text="{x:Static strings:AppResources.HowTo}"
-                            TextColor="Black"
+                            TextColor="{StaticResource Ink}"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -55,7 +55,7 @@
                             HorizontalOptions="Start"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton1}"
-                            TextColor="Black"
+                            TextColor="{StaticResource Ink}"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -63,7 +63,7 @@
                             HorizontalOptions="Start"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton2}"
-                            TextColor="Black"
+                            TextColor="{StaticResource Ink}"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -71,7 +71,7 @@
                             HorizontalOptions="Start"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton3}"
-                            TextColor="Black"
+                            TextColor="{StaticResource Ink}"
                             VerticalOptions="Center" />
                         <Label
                             FontFamily="craftmincho"
@@ -79,7 +79,7 @@
                             HorizontalOptions="Center"
                             LineBreakMode="WordWrap"
                             Text="{x:Static strings:AppResources.Instruciton4}"
-                            TextColor="Black"
+                            TextColor="{StaticResource Ink}"
                             VerticalOptions="Center" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
@@ -91,7 +91,7 @@
                         <SwipeView>
                             <SwipeView.LeftItems>
                                 <SwipeItem
-                                    BackgroundColor="Gray"
+                                    BackgroundColor="{StaticResource Stamp}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=DeleteArrivalLocationCommand}"
                                     CommandParameter="{Binding .}"
                                     IconImageSource="eraser.png"
@@ -100,7 +100,7 @@
                             <Border
                                 Margin="2"
                                 BackgroundColor="Transparent"
-                                Stroke="Black"
+                                Stroke="{StaticResource Ink}"
                                 StrokeShape="Rectangle"
                                 StrokeThickness="4">
                                 <Border.GestureRecognizers>
@@ -109,7 +109,7 @@
                                 <Border
                                     Margin="2"
                                     BackgroundColor="Transparent"
-                                    Stroke="Black"
+                                    Stroke="{StaticResource Ink}"
                                     StrokeDashArray="2,2"
                                     StrokeShape="Rectangle"
                                     StrokeThickness="2">
@@ -198,7 +198,7 @@
                                             LineHeight="1"
                                             MaxLines="2"
                                             Text="{Binding CountryName}"
-                                            TextColor="{StaticResource Black}"
+                                            TextColor="{StaticResource Ink}"
                                             VerticalOptions="Center" />
                                         <Label
                                             Padding="2,0"
@@ -212,11 +212,11 @@
                                             LineHeight="1"
                                             MaxLines="2"
                                             Text="{Binding AdminAreaName}"
-                                            TextColor="{StaticResource Black}"
+                                            TextColor="{StaticResource Ink}"
                                             VerticalOptions="Center" />
                                         <Line
                                             HorizontalOptions="Center"
-                                            Stroke="Black"
+                                            Stroke="{StaticResource Ink}"
                                             StrokeDashArray="2,2"
                                             StrokeThickness="2"
                                             X1="0"
@@ -232,7 +232,7 @@
                                             LineBreakMode="TailTruncation"
                                             LineHeight="1"
                                             Text="{Binding ArrivalDateString}"
-                                            TextColor="Red"
+                                            TextColor="{StaticResource Stamp}"
                                             VerticalOptions="Center" />
                                         <Label
                                             FontAttributes="Bold"
@@ -243,11 +243,11 @@
                                             LineBreakMode="TailTruncation"
                                             LineHeight="1"
                                             Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
-                                            TextColor="Red"
+                                            TextColor="{StaticResource Stamp}"
                                             VerticalOptions="Center" />
                                         <Line
                                             HorizontalOptions="Center"
-                                            Stroke="Black"
+                                            Stroke="{StaticResource Ink}"
                                             StrokeDashArray="2,2"
                                             StrokeThickness="2"
                                             X1="0"
@@ -262,7 +262,7 @@
                                             HorizontalOptions="Center"
                                             LineBreakMode="NoWrap"
                                             Text="ARRIVAL"
-                                            TextColor="{StaticResource Black}"
+                                            TextColor="{StaticResource Ink}"
                                             VerticalOptions="Center" />
                                     </VerticalStackLayout>
                                 </Border>
@@ -277,10 +277,10 @@
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="Gray" />
+            Color="{StaticResource Navy}" />
         <map:SfMaps
             Grid.Row="2"
-            BackgroundColor="SkyBlue"
+            BackgroundColor="{StaticResource MapSea}"
             IsVisible="{Binding IsMapVisible}">
             <map:SfMaps.Layer>
                 <map:MapShapeLayer
@@ -289,14 +289,14 @@
                     PrimaryValuePath="CountryCode"
                     ShapeColorValuePath="Id"
                     ShapeDataField="code"
-                    ShapeFill="Gray"
-                    ShapeStroke="White"
+                    ShapeFill="{StaticResource MapLand}"
+                    ShapeStroke="{StaticResource PaperCard}"
                     ShapeStrokeThickness="1"
                     ShapesSource="{Binding ShapesSource}"
                     ShowShapeTooltip="True">
                     <map:MapShapeLayer.ColorMappings>
                         <map:RangeColorMapping
-                            Color="LimeGreen"
+                            Color="{StaticResource Stamp}"
                             From="1"
                             To="2147483647" />
                     </map:MapShapeLayer.ColorMappings>
@@ -366,7 +366,7 @@
                         Margin="20,5"
                         HorizontalOptions="End"
                         IsToggled="{Binding IsUnique}"
-                        ThumbColor="Gray"
+                        ThumbColor="{StaticResource PaperEdge}"
                         VerticalOptions="Center" />
                 </Grid>
                 <BoxView
@@ -374,7 +374,7 @@
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Center"
-                    Color="Gray" />
+                    Color="{StaticResource PaperEdge}" />
                 <Grid>
                     <Label
                         Padding="5,0"
@@ -386,7 +386,7 @@
                         Margin="20,5"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="Gray"
+                        ThumbColor="{StaticResource PaperEdge}"
                         VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
