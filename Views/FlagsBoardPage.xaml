@@ -102,14 +102,14 @@
                         <Border
                             BackgroundColor="Transparent"
                             Stroke="{StaticResource Ink}"
-                            StrokeShape="Rectangle"
-                            StrokeThickness="2">
+                            StrokeShape="RoundRectangle 20,20,20,20"
+                            StrokeThickness="4">
                             <StackLayout>
                                 <Label
                                     Padding="2"
                                     FontFamily="KiwiMaru-Medium"
                                     FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                    HeightRequest="96"
+                                    HeightRequest="134.48"
                                     HorizontalOptions="Center"
                                     IsVisible="{Binding HasNotBeenVisited}"
                                     LineBreakMode="MiddleTruncation"
@@ -117,8 +117,7 @@
                                     MaxLines="2"
                                     Text="{Binding Name}"
                                     TextColor="{StaticResource InkMuted}"
-                                    VerticalOptions="Center"
-                                    VerticalTextAlignment="Center" />
+                                    VerticalOptions="Center" />
                                 <VerticalStackLayout
                                     IsVisible="{Binding HasBeenVisited}"
                                     Spacing="{OnPlatform MacCatalyst=2,
@@ -164,6 +163,24 @@
                                         LineHeight="1"
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
                                         TextColor="{StaticResource Stamp}"
+                                        VerticalOptions="Center" />
+                                    <Line
+                                        HorizontalOptions="Center"
+                                        Stroke="{StaticResource Ink}"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="120"
+                                        Y1="0"
+                                        Y2="0" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontAutoScalingEnabled="True"
+                                        FontFamily="JerseyclubGrungeBold"
+                                        FontSize="35"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="NoWrap"
+                                        Text="ARRIVAL"
+                                        TextColor="{StaticResource Ink}"
                                         VerticalOptions="Center" />
                                 </VerticalStackLayout>
                             </StackLayout>
