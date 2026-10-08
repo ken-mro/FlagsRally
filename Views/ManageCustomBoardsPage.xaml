@@ -7,7 +7,8 @@
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     Title="{Binding Title}"
-    x:DataType="viewmodels:ManageCustomBoardsPageViewModel">
+    x:DataType="viewmodels:ManageCustomBoardsPageViewModel"
+    Style="{StaticResource PaperPage}">
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.ManageBoards}" />
     </Shell.TitleView>

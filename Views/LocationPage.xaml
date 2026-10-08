@@ -8,7 +8,8 @@
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-    x:DataType="viewmodels:LocationPageViewModel">
+    x:DataType="viewmodels:LocationPageViewModel"
+    Style="{StaticResource PaperPage}">
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabMap}" />
     </Shell.TitleView>

@@ -6,7 +6,8 @@
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-    x:DataType="viewmodels:CollectionsPageViewModel">
+    x:DataType="viewmodels:CollectionsPageViewModel"
+    Style="{StaticResource PaperPage}">
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabCollections}" />
     </Shell.TitleView>
