@@ -24,11 +24,55 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Image
+        <!--  Passport and a summary of what has been collected  -->
+        <Grid
             Grid.Row="0"
-            Aspect="AspectFit"
-            HeightRequest="{Binding PassportImageHeight}"
-            Source="{Binding PassportImageSourceString}" />
+            Padding="8,4"
+            ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="{Binding PassportImageHeight}"
+                Source="{Binding PassportImageSourceString}" />
+            <HorizontalStackLayout
+                Grid.Column="1"
+                Spacing="18"
+                VerticalOptions="Center">
+                <VerticalStackLayout Spacing="0">
+                    <controls:StampLabel
+                        FontSize="30"
+                        Text="{Binding VisitedCountryCount}"
+                        TextColor="{StaticResource Navy}" />
+                    <Label
+                        FontSize="12"
+                        Text="{x:Static strings:AppResources.StatCountries}"
+                        TextColor="{StaticResource InkMuted}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="0">
+                    <controls:StampLabel
+                        FontSize="30"
+                        Text="{Binding VisitedRegionCount}"
+                        TextColor="{StaticResource Navy}" />
+                    <Label
+                        FontSize="12"
+                        Text="{x:Static strings:AppResources.StatRegions}"
+                        TextColor="{StaticResource InkMuted}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="0">
+                    <controls:StampLabel
+                        FontSize="30"
+                        Text="{Binding CheckInCount}"
+                        TextColor="{StaticResource Navy}" />
+                    <Label
+                        FontSize="12"
+                        Text="{x:Static strings:AppResources.StatCheckIns}"
+                        TextColor="{StaticResource InkMuted}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+        </Grid>
         <RefreshView
             Grid.Row="1"
             Command="{Binding RefreshCountriesCommand}"

@@ -12,6 +12,13 @@ public partial class MainPage : ContentPage
         BindingContext = _mainPageViewModel = vm;
     }
 
+    // Reload on every visit so new arrivals and check-ins show up without pulling to refresh.
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _mainPageViewModel.Init();
+    }
+
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);

@@ -429,4 +429,13 @@
   <data name="Visited" xml:space="preserve">
     <value>Visited</value>
   </data>
+  <data name="StatCountries" xml:space="preserve">
+    <value>Countries</value>
+  </data>
+  <data name="StatRegions" xml:space="preserve">
+    <value>Regions</value>
+  </data>
+  <data name="StatCheckIns" xml:space="preserve">
+    <value>Check-ins</value>
+  </data>
 </root>

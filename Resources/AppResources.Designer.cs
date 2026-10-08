@@ -995,5 +995,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("Visited", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries.
+        /// </summary>
+        internal static string StatCountries {
+            get {
+                return ResourceManager.GetString("StatCountries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regions.
+        /// </summary>
+        internal static string StatRegions {
+            get {
+                return ResourceManager.GetString("StatRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check-ins.
+        /// </summary>
+        internal static string StatCheckIns {
+            get {
+                return ResourceManager.GetString("StatCheckIns", resourceCulture);
+            }
+        }
     }
 }
