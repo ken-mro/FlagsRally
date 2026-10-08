@@ -66,6 +66,7 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
             _arrivalMap.PinDragEnd += (sender, e) => _arrivalMap_PinDragEnd(sender, e);
+            _arrivalMap.PinClicked += OnPinClicked;
 
             _ = Init();
         }
@@ -83,6 +84,29 @@ public partial class LocationPageViewModel : BaseViewModel
             ArrivalMap.SelectedPin = null;
             ArrivalMap.SelectedPin = e.Pin;
         }
+    }
+
+    // Only the top marker of pins at the same coordinates can be tapped, so let the user choose among them.
+    private void OnPinClicked(object? sender, PinClickedEventArgs e)
+    {
+        if (ArrivalMap is null) return;
+
+        var overlappingPins = PinOverlapHelper.FindOverlapping(e.Pin, ArrivalMap.Pins);
+        if (overlappingPins.Count < 2) return;
+
+        e.Handled = true;
+        MainThread.BeginInvokeOnMainThread(async () => await ChooseOverlappingPinAsync(overlappingPins));
+    }
+
+    private async Task ChooseOverlappingPinAsync(IReadOnlyList<Pin> overlappingPins)
+    {
+        var labels = PinOverlapHelper.GetChoiceLabels(overlappingPins);
+        var choice = await Shell.Current.DisplayActionSheetAsync($"{AppResources.ChooseLocation}", $"{AppResources.Cancel}", null, [.. labels]);
+
+        var index = labels.ToList().IndexOf(choice);
+        if (index < 0 || ArrivalMap is null) return;
+
+        ArrivalMap.SelectedPin = overlappingPins[index];
     }
 
     private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)

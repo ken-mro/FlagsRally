@@ -381,4 +381,7 @@
   <data name="ConfirmDeleteBoards" xml:space="preserve">
     <value>次のボードを削除しますか？ボード内の地点とチェックイン記録もすべて削除されます。</value>
   </data>
+  <data name="ChooseLocation" xml:space="preserve">
+    <value>この場所には複数のピンがあります。選択してください</value>
+  </data>
 </root>

@@ -851,5 +851,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("ConfirmDeleteBoards", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Several pins are here. Choose one.
+        /// </summary>
+        internal static string ChooseLocation {
+            get {
+                return ResourceManager.GetString("ChooseLocation", resourceCulture);
+            }
+        }
     }
 }

@@ -381,4 +381,7 @@
   <data name="ConfirmDeleteBoards" xml:space="preserve">
     <value>Delete the following boards? All of their locations and check-in records will also be deleted.</value>
   </data>
+  <data name="ChooseLocation" xml:space="preserve">
+    <value>Several pins are here. Choose one</value>
+  </data>
 </root>
