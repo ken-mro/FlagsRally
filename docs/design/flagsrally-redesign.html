@@ -1,0 +1,531 @@
+<title>FlagsRally Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Kiwi+Maru:wght@500&family=Rubik+Dirt&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column (proposal text) that opens up to full-width rows for palettes and phone mockups. */
+:root {
+  /* page chrome */
+  --bg: #F4F6F9;
+  --surface: #FFFFFF;
+  --fg: #1B2233;
+  --muted: #5B6476;
+  --line: #DCE1EA;
+  --accent: #1F3A68;          /* passport navy, also the app's proposed primary */
+  --accent-soft: #E3E9F4;
+  --warn: #B4472F;
+  /* proposed app palette (shown in swatches and mockups) */
+  --app-navy: #1F3A68;
+  --app-navy-deep: #13264A;
+  --app-red: #C8402F;
+  --app-gold: #B58A2E;
+  --app-paper: #FBF8F1;
+  --app-ink: #1B2233;
+  --app-stone: #8A8F99;
+  --app-green: #2F7D5B;
+  --map-land: #E8EEE4;
+  --map-park: #CFE3C9;
+  --map-water: #BFD9EE;
+  --map-road: #FFFFFF;
+  --phone-bezel: #0E1320;
+  --font-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", system-ui, sans-serif;
+  --font-tile: "Kiwi Maru", "Noto Sans JP", serif;
+  --font-stamp: "Rubik Dirt", "Impact", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1420; --surface: #171E2D; --fg: #E6EAF2; --muted: #9AA3B5; --line: #2A3347;
+    --accent: #8FB0E8; --accent-soft: #1E2A44; --warn: #F08A72;
+    --map-land: #2A3328; --map-park: #2F4430; --map-water: #22384C; --map-road: #3D4658;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1420; --surface: #171E2D; --fg: #E6EAF2; --muted: #9AA3B5; --line: #2A3347;
+  --accent: #8FB0E8; --accent-soft: #1E2A44; --warn: #F08A72;
+  --map-land: #2A3328; --map-park: #2F4430; --map-water: #22384C; --map-road: #3D4658;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+  padding-inline: 16px;
+  padding-block: 0 64px;
+}
+.wrap { max-width: 1040px; margin-inline: auto; }
+.prose { max-width: 42rem; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 17px; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* header: styled like the data page of a passport (machine-readable zone underneath) */
+.masthead { padding-block: 48px 32px; display: grid; gap: 16px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.lede { font-size: 17px; color: var(--muted); max-width: 40rem; }
+.mrz {
+  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.18em; color: var(--muted);
+  overflow-x: auto; white-space: nowrap; padding-top: 8px;
+}
+.meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--fg); font-weight: 500; }
+
+section { padding-block: 48px 8px; display: grid; gap: 20px; }
+.sec-head { display: grid; gap: 6px; }
+.sec-head .eyebrow { color: var(--accent); }
+
+/* audit table */
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; line-height: 1.6; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--accent-soft); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { width: 22%; font-weight: 500; }
+.sev { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 99px; letter-spacing: 0.04em; white-space: nowrap; }
+.sev.hi { background: var(--warn); color: var(--surface); }
+.sev.md { border: 1px solid var(--muted); color: var(--muted); }
+
+/* palette */
+.palette { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.swatch { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.swatch .chip { height: 72px; }
+.swatch .info { padding: 10px 12px; display: grid; gap: 2px; font-size: 13px; line-height: 1.5; }
+.swatch .info b { font-weight: 700; }
+.swatch .info span { color: var(--muted); }
+
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 12px; min-width: 0; }
+.type-row { display: grid; grid-template-columns: 88px 1fr; gap: 12px; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 10px; }
+.type-row:first-of-type { border-top: 0; padding-top: 0; }
+.type-row .lbl { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+ul.clean { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+/* IA before/after */
+.ia { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.ia .panel h3 { display: flex; gap: 8px; align-items: center; }
+.tabs { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tabs li { display: grid; grid-template-columns: 112px 1fr; gap: 10px; font-size: 14px; line-height: 1.55; }
+.tabs li b { font-family: var(--font-display); font-weight: 700; }
+.tabs li span { color: var(--muted); }
+.tag { font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+
+/* ===== phone mockups (app palette is fixed: the mockups show the light app theme) ===== */
+.phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 28px 20px; justify-items: center; }
+figure { margin: 0; display: grid; gap: 12px; justify-items: center; max-width: 290px; }
+figcaption { font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+figcaption b { color: var(--fg); font-family: var(--font-display); font-size: 15px; display: block; margin-bottom: 2px; }
+.phone {
+  width: 100%; max-width: 270px; aspect-ratio: 9 / 19; background: var(--phone-bezel);
+  border-radius: 34px; padding: 9px; box-shadow: 0 18px 40px -18px rgba(14, 19, 32, 0.55);
+}
+.screen {
+  height: 100%; border-radius: 26px; overflow: hidden; background: var(--app-paper); color: var(--app-ink);
+  display: grid; grid-template-rows: auto 1fr auto; font-family: var(--font-body); font-size: 11px; line-height: 1.45;
+  position: relative;
+}
+.statusbar { height: 22px; background: var(--app-navy-deep); }
+.appbar { background: var(--app-navy); color: #FFFFFF; padding: 8px 14px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.appbar .t { font-family: var(--font-display); font-weight: 700; font-size: 14px; }
+.appbar .ic { width: 18px; height: 18px; border: 1.6px solid rgba(255,255,255,0.85); border-radius: 50%; }
+.top { display: grid; }
+.body { overflow: hidden; position: relative; }
+.tabbar { display: grid; grid-template-columns: repeat(4, 1fr); background: #FFFFFF; border-top: 1px solid #E4E1D8; padding: 6px 4px 10px; }
+.tabbar div { display: grid; justify-items: center; gap: 2px; font-size: 9px; color: var(--app-stone); }
+.tabbar i { width: 16px; height: 16px; border-radius: 4px; border: 1.6px solid currentColor; display: block; }
+.tabbar .on { color: var(--app-navy); font-weight: 700; }
+.tabbar .on i { background: var(--app-navy); }
+
+/* map mock */
+.map {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(115deg, transparent 46%, var(--map-road) 46% 49%, transparent 49%),
+    linear-gradient(20deg, transparent 60%, var(--map-road) 60% 62%, transparent 62%),
+    radial-gradient(circle at 70% 30%, var(--map-park) 0 22%, transparent 23%),
+    linear-gradient(160deg, transparent 72%, var(--map-water) 72% 80%, transparent 80%),
+    #E8EEE4;
+}
+.chips { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; gap: 6px; overflow: hidden; }
+.chip-f { background: #FFFFFF; border: 1px solid #D9D4C7; border-radius: 99px; padding: 3px 9px; font-size: 9.5px; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+.chip-f.on { background: var(--app-navy); color: #FFFFFF; border-color: var(--app-navy); }
+.pin { position: absolute; width: 16px; height: 16px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.pin.red { background: var(--app-red); }
+.pin.navy { background: var(--app-navy); }
+.pin.gold { background: var(--app-gold); }
+.pin .n { position: absolute; inset: 0; transform: rotate(45deg); color: #FFFFFF; font-size: 8px; font-weight: 700; display: grid; place-items: center; }
+.fab { position: absolute; right: 10px; bottom: 148px; background: var(--app-red); color: #FFFFFF; border-radius: 99px; padding: 7px 12px; font-weight: 700; font-size: 10.5px; box-shadow: 0 4px 10px -2px rgba(200,64,47,0.5); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #FFFFFF; border-radius: 16px 16px 0 0; padding: 8px 12px 12px; box-shadow: 0 -6px 16px -8px rgba(0,0,0,0.25); display: grid; gap: 7px; }
+.grab { width: 32px; height: 4px; border-radius: 4px; background: #D9D4C7; justify-self: center; }
+.sheet .h { font-family: var(--font-display); font-weight: 700; font-size: 13px; }
+.sheet .sub { color: var(--app-stone); font-size: 9.5px; }
+.seg { display: grid; gap: 4px; }
+.seg div { display: flex; justify-content: space-between; align-items: center; border: 1px solid #ECE8DE; border-radius: 8px; padding: 5px 8px; font-size: 10px; }
+.seg div.sel { border-color: var(--app-navy); background: #EEF2F9; }
+.badge { font-size: 8.5px; padding: 1px 6px; border-radius: 99px; background: #F1EDE3; color: #6B6457; white-space: nowrap; }
+.badge.ok { background: #E3F1EA; color: var(--app-green); }
+.btn-row { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+.btn { border-radius: 9px; padding: 7px 10px; text-align: center; font-weight: 700; font-size: 10.5px; }
+.btn.primary { background: var(--app-red); color: #FFFFFF; }
+.btn.ghost { border: 1px solid #D9D4C7; color: var(--app-ink); }
+
+/* collections mock */
+.pad { padding: 10px; display: grid; gap: 8px; align-content: start; }
+.sh { font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--app-stone); font-weight: 700; display: flex; justify-content: space-between; }
+.sh span { color: var(--app-navy); letter-spacing: 0; text-transform: none; }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.card { background: #FFFFFF; border: 1px solid #ECE8DE; border-radius: 10px; padding: 7px; display: grid; gap: 4px; }
+.card .art { height: 46px; border-radius: 6px; background: var(--app-navy); position: relative; overflow: hidden; }
+.card .art.red { background: linear-gradient(135deg, #E2836F, var(--app-red)); }
+.card .art.gold { background: linear-gradient(135deg, #D7B76B, var(--app-gold)); }
+.card .art.green { background: linear-gradient(135deg, #6FB394, var(--app-green)); }
+.card .nm { font-weight: 700; font-size: 10px; line-height: 1.3; }
+.bar { height: 4px; border-radius: 4px; background: #ECE8DE; overflow: hidden; }
+.bar b { display: block; height: 100%; background: var(--app-red); }
+.card .ct { font-size: 9px; color: var(--app-stone); font-variant-numeric: tabular-nums; }
+.card.add { border-style: dashed; border-color: #CFC8B8; display: grid; place-items: center; color: var(--app-navy); font-weight: 700; min-height: 96px; text-align: center; }
+
+/* board detail mock */
+.prog { background: #FFFFFF; border: 1px solid #ECE8DE; border-radius: 10px; padding: 9px; display: grid; gap: 6px; }
+.prog .big { font-family: var(--font-display); font-weight: 900; font-size: 20px; font-variant-numeric: tabular-nums; }
+.prog .big small { font-size: 11px; color: var(--app-stone); font-weight: 500; }
+.seg-ctl { display: grid; grid-template-columns: repeat(3, 1fr); background: #F1EDE3; border-radius: 8px; padding: 2px; font-size: 9.5px; text-align: center; }
+.seg-ctl div { padding: 3px 0; border-radius: 6px; }
+.seg-ctl .on { background: #FFFFFF; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.stamps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.stamp { aspect-ratio: 3 / 4; border-radius: 6px; border: 1px dashed #CFC8B8; display: grid; place-items: center; text-align: center; font-family: var(--font-tile); font-size: 10px; color: var(--app-stone); padding: 4px; }
+.stamp.got { border: 2px solid var(--app-red); color: var(--app-red); background: #FFF6F3; align-content: center; gap: 2px; }
+.stamp.got .d { font-family: var(--font-stamp); font-size: 9.5px; letter-spacing: 0.02em; }
+
+/* passport home mock */
+.cover { background: var(--app-navy); color: #E9D9A8; border-radius: 10px; padding: 12px; display: grid; gap: 6px; justify-items: start; }
+.cover .crest { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #E9D9A8; }
+.cover .pt { font-family: var(--font-display); font-weight: 900; letter-spacing: 0.24em; font-size: 12px; }
+.cover .mrz-s { font-family: var(--font-mono); font-size: 7.5px; letter-spacing: 0.12em; color: #9FB0CF; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.stat { background: #FFFFFF; border: 1px solid #ECE8DE; border-radius: 8px; padding: 6px; display: grid; }
+.stat b { font-family: var(--font-display); font-size: 16px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 8.5px; color: var(--app-stone); }
+.recent { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.arr { border: 2px dashed var(--app-ink); border-radius: 4px; padding: 5px 3px; text-align: center; display: grid; gap: 1px; background: #FFFFFF; }
+.arr .c { font-weight: 700; font-size: 8.5px; }
+.arr .d { font-family: var(--font-stamp); color: var(--app-red); font-size: 9px; }
+.arr .a { font-family: var(--font-stamp); font-size: 10px; }
+
+/* phases */
+.phases { display: grid; gap: 12px; }
+.phase { display: grid; grid-template-columns: 116px 1fr; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+.phase .when { font-family: var(--font-display); font-weight: 700; color: var(--accent); display: grid; align-content: start; gap: 2px; }
+.phase .when span { font-family: var(--font-body); font-weight: 400; font-size: 12px; color: var(--muted); }
+.phase .what { display: grid; gap: 6px; min-width: 0; }
+.files { font-family: var(--font-mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+
+.qs { display: grid; gap: 10px; counter-reset: q; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px; }
+.q b { font-family: var(--font-display); }
+.q span { color: var(--muted); font-size: 14px; }
+
+@media (max-width: 560px) {
+  .phase { grid-template-columns: 1fr; gap: 8px; }
+  .tabs li { grid-template-columns: 1fr; gap: 0; }
+  .type-row { grid-template-columns: 1fr; gap: 2px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stamp.got { animation: press 600ms ease-out both; }
+  .stamps .stamp.got:nth-child(4) { animation-delay: 120ms; }
+  @keyframes press { from { transform: scale(1.15) rotate(-4deg); opacity: 0.6; } to { transform: none; opacity: 1; } }
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">FlagsRally · デザイン提案 · 2026-10-08</div>
+    <h1>パスポートとスタンプの<br>アプリに仕立て直す</h1>
+    <p class="lede">FlagsRallyのいちばんの魅力は、訪れた場所が「ARRIVAL」のスタンプや御朱印風の画像として集まっていくことです。いまはその魅力がテンプレートの紫と標準コントロールに埋もれています。この提案では、見た目をパスポートという1つの世界観にそろえ、機能の置き場所を「集める・記録する・眺める」の流れで整理し直します。</p>
+    <div class="meta">
+      <div>対象 <b>Android / iOS（.NET MAUI 10）</b></div>
+      <div>ブランチ <b>feature/custom-board-management</b></div>
+      <div>状態 <b>提案のみ（コード未変更）</b></div>
+    </div>
+    <div class="mrz" aria-hidden="true">P&lt;JPNFLAGSRALLY&lt;&lt;REDESIGN&lt;PROPOSAL&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>FR20261008&lt;&lt;&lt;&lt;&lt;&lt;PASSPORT&lt;STAMP&lt;ARRIVAL&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+  </header>
+
+  <section id="audit">
+    <div class="sec-head">
+      <div class="eyebrow">1 · 現状の課題</div>
+      <h2>プロっぽく見えない理由と、使いにくさの原因</h2>
+    </div>
+    <p class="prose">エミュレーター（Pixel 7 / API 36）で全画面を確認し、XAMLとViewModelを読んだうえでの所見です。「見た目」と「使い勝手」の問題は、多くが同じ原因から来ています。</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>観察したこと</th><th>なぜ問題か</th><th>提案での対応</th><th>重要度</th></tr></thead>
+        <tbody>
+          <tr><td>ステータスバー・ボタン・タブがすべてMAUIテンプレートの紫 <code>#512BD4</code></td><td>どのサンプルアプリとも同じ色で、アプリ固有の印象が残りません。</td><td>パスポートの紺と入国スタンプの赤を軸にした配色トークンに置き換えます。</td><td><span class="sev hi">高</span></td></tr>
+          <tr><td>画面ごとに見た目の言語が違う（スタンプ風、クリーム色のタイル、標準フォーム、地図）</td><td>同じアプリの画面に見えず、つぎはぎの印象になります。</td><td>紙・インク・スタンプという素材で全画面を統一します。</td><td><span class="sev hi">高</span></td></tr>
+          <tr><td>色の直書き（AntiqueWhite / Red / DodgerBlue / <code>#1E50A2</code> など）</td><td>ダークモードで背景と文字がかみ合わず、色の変更も一括でできません。</td><td>色はすべて <code>Colors.xaml</code> のトークン経由にし、ページからは名前で参照します。</td><td><span class="sev hi">高</span></td></tr>
+          <tr><td>「ボード」タブの中に「国旗ボード」と「カスタムボード」が上タブで同居し、カスタムボードはボードが0件だと消える</td><td>何がどこにあるのか予測できません。タブが出たり消えたりするのも混乱の元です。</td><td>「コレクション」タブにまとめ、国・地域・カスタムボードを同じカードの並びで見せます。</td><td><span class="sev hi">高</span></td></tr>
+          <tr><td>ボードのインポートが、地図画面のフィルター横にある「＋」の文字</td><td>機能の存在に気付けません。インポートは地図ではなくコレクションの操作です。</td><td>コレクション画面の「ボードを追加」カードに移します。</td><td><span class="sev hi">高</span></td></tr>
+          <tr><td>削除・リセットは情報ウィンドウの長押し、地点指定は地図の長押し</td><td>見えない操作なので、説明を読まないと使えません。誤操作も起きやすくなります。</td><td>ピンを選ぶと下からシートが出て、「チェックイン」「経路」「削除」をボタンで並べます。</td><td><span class="sev md">中</span></td></tr>
+          <tr><td>画面上部の説明文（「現在地を確認して下のボタンを押してください」）</td><td>UIが自分で説明できていないサインです。画面の一等地を文章が占めています。</td><td>主ボタンのラベルと状態で伝え、説明文はなくします。</td><td><span class="sev md">中</span></td></tr>
+          <tr><td>フォントが4種類（Open Sans、Jerseyclub Grunge、craftmincho、Kiwi Maru）で役割が決まっていない</td><td>文字の強弱に一貫性がなく、日本語は端末任せのフォールバックになります。</td><td>UI用・タイル見出し用・スタンプ用の3役に整理します。</td><td><span class="sev md">中</span></td></tr>
+          <tr><td>設定画面：右寄せの大きな紫ボタン、赤字の注意書き</td><td>すべてが同じ強さで主張し、どれが重要かわかりません。</td><td>リスト形式の設定行にし、危険な操作だけ色を変えます。</td><td><span class="sev md">中</span></td></tr>
+          <tr><td>Android標準の下線付きPicker（国の選択、ボードの選択）</td><td>未完成の画面に見えます。タップできることも伝わりにくいです。</td><td>枠付きのセレクターかチップに置き換えます（今回のピンフィルターと同じ形）。</td><td><span class="sev md">中</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="direction">
+    <div class="sec-head">
+      <div class="eyebrow">2 · デザインの方向性</div>
+      <h2>コンセプト「旅券と入国スタンプ」</h2>
+    </div>
+    <p class="prose">アプリ名どおり、旅先で旗やスタンプを集めるラリーです。そこで、手元のパスポートを模した世界観に統一します。画面の地は紙、構造は表紙の紺、達成の瞬間はスタンプの赤、という役割分担です。赤は「記録する」「チェックインする」ときだけに使い、画面のどこに目を向ければよいかを色で伝えます。</p>
+
+    <div class="palette" role="list" aria-label="提案する配色">
+      <div class="swatch" role="listitem"><div class="chip" style="background: var(--app-navy)"></div><div class="info"><b>Passport Navy</b><span class="mono">#1F3A68</span><span>主要色。アプリバー、選択状態、リンク</span></div></div>
+      <div class="swatch" role="listitem"><div class="chip" style="background: var(--app-red)"></div><div class="info"><b>Stamp Red</b><span class="mono">#C8402F</span><span>行動の色。チェックイン、記録、訪問済み</span></div></div>
+      <div class="swatch" role="listitem"><div class="chip" style="background: var(--app-gold)"></div><div class="info"><b>Crest Gold</b><span class="mono">#B58A2E</span><span>実績・初訪問の演出にだけ使う</span></div></div>
+      <div class="swatch" role="listitem"><div class="chip" style="background: var(--app-paper); border-bottom: 1px solid var(--line)"></div><div class="info"><b>Visa Paper</b><span class="mono">#FBF8F1</span><span>画面の地。現在のAntiqueWhiteを置き換え</span></div></div>
+      <div class="swatch" role="listitem"><div class="chip" style="background: var(--app-ink)"></div><div class="info"><b>Ink</b><span class="mono">#1B2233</span><span>本文と枠線。純粋な黒は使わない</span></div></div>
+      <div class="swatch" role="listitem"><div class="chip" style="background: var(--app-green)"></div><div class="info"><b>Success</b><span class="mono">#2F7D5B</span><span>状態表示専用（達成、同期完了）</span></div></div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <h3>文字の役割を3つに絞る</h3>
+        <div class="type-row"><div class="lbl">UI</div><div style="font-family: var(--font-body); font-size: 15px">Noto Sans JP — 地図・設定・ボタン。英日どちらも同じ字面</div></div>
+        <div class="type-row"><div class="lbl">タイル見出し</div><div style="font-family: var(--font-tile); font-size: 16px">Kiwi Maru — 伊勢神宮・鹿島神宮</div></div>
+        <div class="type-row"><div class="lbl">スタンプ</div><div style="font-family: var(--font-stamp); font-size: 20px; color: var(--app-red)">22 SEP 2026 ARRIVAL</div></div>
+        <p style="font-size: 13px; color: var(--muted)">スタンプは今のJerseyclub Grunge（欧文）とcraftmincho（和文）をそのまま使います。上の見本は代替フォントです。Open Sansは日本語を持たないのでUIからは外します。</p>
+      </div>
+      <div class="panel">
+        <h3>形と余白のルール</h3>
+        <ul class="clean">
+          <li>余白は4 / 8 / 12 / 16 / 24の5段階だけを使う</li>
+          <li>角丸はボタン・入力欄が10、シートとカードが16。スタンプは角を立てたまま</li>
+          <li>影はシートと浮いているボタンだけに付ける。カードは線で区切る</li>
+          <li>タップできる要素は最低44pt。▲▼ボタンもこの大きさを守る</li>
+          <li>ダークモードは紺を地に、紙色を文字色に反転させる</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="ia">
+    <div class="sec-head">
+      <div class="eyebrow">3 · 情報設計</div>
+      <h2>タブを「何をしに開くか」で分ける</h2>
+    </div>
+    <p class="prose">いまのタブは画面の種類で分かれていて、カスタムボードのように同じ目的の機能が2か所に散っています。利用者の目的、つまり「記録を眺める」「現地で記録する」「集めているものを見る」で分け直します。</p>
+    <div class="ia">
+      <div class="panel">
+        <h3>現在 <span class="tag">4タブ＋上タブ</span></h3>
+        <ul class="tabs">
+          <li><b>Banner</b><span>パスポート画像と到着スタンプ一覧。国フィルター</span></li>
+          <li><b>Boards</b><span>上タブで「国旗ボード」と「カスタムボード」。カスタムは0件だと非表示</span></li>
+          <li><b>Location</b><span>地図、ピンフィルター、ボードのインポート（＋）、現在地取得／チェックイン</span></li>
+          <li><b>Settings</b><span>居住国、購読、APIキー、バックアップ、復元</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>提案 <span class="tag">4タブ・常に同じ</span></h3>
+        <ul class="tabs">
+          <li><b>パスポート</b><span>表紙、訪問国数・地域数・チェックイン数、最近のスタンプ。到着スタンプ一覧へ</span></li>
+          <li><b>マップ</b><span>フィルターチップ、「ここを記録」ボタン、選択したピンの詳細シート</span></li>
+          <li><b>コレクション</b><span>国・地域・各カスタムボードを進捗付きカードで。追加・並べ替え・削除もここ</span></li>
+          <li><b>設定</b><span>リスト形式。購読、データ（バックアップ・復元）、詳細設定（APIキー）</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="sec-head">
+      <div class="eyebrow">4 · 画面案</div>
+      <h2>主要4画面のモックアップ</h2>
+    </div>
+    <p class="prose" style="font-size: 13px; color: var(--muted)">ボード名と神社名はエミュレーター上の実データから取っています。件数・日付・統計の数字は配置を示すための例です。</p>
+    <div class="phones">
+      <figure>
+        <div class="phone" role="img" aria-label="マップ画面のモックアップ。フィルターチップ、重なったピン、詳細シート">
+          <div class="screen">
+            <div class="top"><div class="statusbar"></div><div class="appbar"><span class="t">マップ</span><span class="ic"></span></div></div>
+            <div class="body">
+              <div class="map"></div>
+              <div class="chips"><span class="chip-f on">すべて</span><span class="chip-f">到着地</span><span class="chip-f">一の宮</span><span class="chip-f">神宮二十五社</span></div>
+              <div class="pin navy" style="left: 30%; top: 30%"></div>
+              <div class="pin gold" style="left: 62%; top: 22%"></div>
+              <div class="pin red" style="left: 46%; top: 44%"><span class="n">2</span></div>
+              <div class="fab">＋ ここを記録</div>
+              <div class="sheet">
+                <div class="grab"></div>
+                <div><div class="h">鹿島神宮</div><div class="sub">茨城県鹿嶋市 · この場所のピン2件</div></div>
+                <div class="seg">
+                  <div class="sel"><span>全国一の宮巡り</span><span class="badge">未訪問</span></div>
+                  <div><span>全国神宮二十五社巡り</span><span class="badge ok">訪問済10/04</span></div>
+                </div>
+                <div class="btn-row"><div class="btn primary">チェックイン</div><div class="btn ghost">経路</div></div>
+              </div>
+            </div>
+            <div class="tabbar"><div><i></i>パスポート</div><div class="on"><i></i>マップ</div><div><i></i>コレクション</div><div><i></i>設定</div></div>
+          </div>
+        </div>
+        <figcaption><b>マップ</b>重なったピンには件数を表示し、タップするとシート内で選べます。今回のアクションシートを発展させた形です。削除やリセットもシートのボタンで行い、長押しは不要になります。</figcaption>
+      </figure>
+
+      <figure>
+        <div class="phone" role="img" aria-label="コレクション画面のモックアップ。進捗付きのボードカード">
+          <div class="screen">
+            <div class="top"><div class="statusbar"></div><div class="appbar"><span class="t">コレクション</span><span class="ic"></span></div></div>
+            <div class="body pad">
+              <div class="sh">国と地域</div>
+              <div class="cards">
+                <div class="card"><div class="art"></div><div class="nm">国旗</div><div class="bar"><b style="width: 6%"></b></div><div class="ct">12 / 197</div></div>
+                <div class="card"><div class="art green"></div><div class="nm">アメリカの州</div><div class="bar"><b style="width: 4%"></b></div><div class="ct">2 / 51</div></div>
+              </div>
+              <div class="sh">カスタムボード <span>編集</span></div>
+              <div class="cards">
+                <div class="card"><div class="art red"></div><div class="nm">全国一の宮巡り</div><div class="bar"><b style="width: 9%"></b></div><div class="ct">10 / 105</div></div>
+                <div class="card"><div class="art gold"></div><div class="nm">全国神宮二十五社巡り</div><div class="bar"><b style="width: 8%"></b></div><div class="ct">2 / 25</div></div>
+                <div class="card add">＋<br>ボードを追加</div>
+              </div>
+            </div>
+            <div class="tabbar"><div><i></i>パスポート</div><div><i></i>マップ</div><div class="on"><i></i>コレクション</div><div><i></i>設定</div></div>
+          </div>
+        </div>
+        <figcaption><b>コレクション</b>国旗ボードとカスタムボードを同じカードで並べます。「編集」で今回のボード管理画面（並べ替え・複数削除）に入ります。インポートは「ボードを追加」から行います。</figcaption>
+      </figure>
+
+      <figure>
+        <div class="phone" role="img" aria-label="ボード詳細画面のモックアップ。進捗と訪問済みスタンプのグリッド">
+          <div class="screen">
+            <div class="top"><div class="statusbar"></div><div class="appbar"><span class="t">全国神宮二十五社巡り</span><span class="ic"></span></div></div>
+            <div class="body pad">
+              <div class="prog"><div class="big">2 <small>/ 25社</small></div><div class="bar"><b style="width: 8%"></b></div></div>
+              <div class="seg-ctl"><div class="on">すべて</div><div>訪問済</div><div>未訪問</div></div>
+              <div class="stamps">
+                <div class="stamp got">水無瀬神宮<span class="d">04 OCT 2026</span></div>
+                <div class="stamp">伊勢神宮</div>
+                <div class="stamp">鹿島神宮</div>
+                <div class="stamp got">香取神宮<span class="d">21 SEP 2026</span></div>
+                <div class="stamp">熱田神宮</div>
+                <div class="stamp">石上神宮</div>
+              </div>
+            </div>
+            <div class="tabbar"><div><i></i>パスポート</div><div><i></i>マップ</div><div class="on"><i></i>コレクション</div><div><i></i>設定</div></div>
+          </div>
+        </div>
+        <figcaption><b>ボード詳細</b>進捗を最初に見せ、「訪問済」と「未訪問」を切り替えられるようにします。未訪問は点線の枠で「まだ押していないスタンプ欄」に見立てます。未訪問の枠をタップするとマップのその地点へ移動します。</figcaption>
+      </figure>
+
+      <figure>
+        <div class="phone" role="img" aria-label="パスポート画面のモックアップ。表紙、統計、最近のスタンプ">
+          <div class="screen">
+            <div class="top"><div class="statusbar"></div><div class="appbar"><span class="t">パスポート</span><span class="ic"></span></div></div>
+            <div class="body pad">
+              <div class="cover"><div class="crest"></div><div class="pt">PASSPORT</div><div class="mrz-s">P&lt;USA&lt;&lt;FLAGSRALLY&lt;&lt;&lt;&lt;&lt;&lt;</div></div>
+              <div class="stats"><div class="stat"><b>12</b><span>国</span></div><div class="stat"><b>38</b><span>地域</span></div><div class="stat"><b>14</b><span>チェックイン</span></div></div>
+              <div class="sh">最近のスタンプ <span>すべて</span></div>
+              <div class="recent">
+                <div class="arr"><span class="c">UNITED STATES</span><span class="d">22 SEP 2026</span><span class="a">ARRIVAL</span></div>
+                <div class="arr"><span class="c">CALIFORNIA</span><span class="d">22 SEP 2026</span><span class="a">ARRIVAL</span></div>
+                <div class="arr"><span class="c">水無瀬神宮</span><span class="d">04 OCT 2026</span><span class="a">VISIT</span></div>
+              </div>
+            </div>
+            <div class="tabbar"><div class="on"><i></i>パスポート</div><div><i></i>マップ</div><div><i></i>コレクション</div><div><i></i>設定</div></div>
+          </div>
+        </div>
+        <figcaption><b>パスポート</b>起動時に「どこまで集めたか」が一目でわかるホームです。今のBanner画面のスタンプはそのまま活かし、上に数字の要約を加えます。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="usability">
+    <div class="sec-head">
+      <div class="eyebrow">5 · 使いやすさの改善</div>
+      <h2>見た目以外で効く変更</h2>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h3>迷わせない</h3>
+        <ul class="clean">
+          <li>カスタムボードが0件でもタブを消さない。空の状態で「ボードを追加」と説明を出す</li>
+          <li>主ボタンは画面ごとに1つ。マップでは「ここを記録」か「チェックイン」のどちらか</li>
+          <li>隠れたジェスチャー（長押し）は残しつつ、同じ操作を必ずボタンでも用意する</li>
+          <li>フィルターは今回のポップアップを、地図上のチップ（横スクロール）に発展させる</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>結果を伝える</h3>
+        <ul class="clean">
+          <li>チェックイン成功時はスタンプを押す演出と軽い振動。初訪問だけ金色を使う</li>
+          <li>「近くにいません」のエラーには、あと何mかと「経路を表示」ボタンを添える</li>
+          <li>削除後は数秒間「元に戻す」付きのトーストを出し、確認ダイアログを減らす</li>
+          <li>読み込み中はスピナーの代わりに、カードの形をした仮表示（スケルトン）を出す</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="phases">
+    <div class="sec-head">
+      <div class="eyebrow">6 · 導入ステップ</div>
+      <h2>小さく出して確かめられる順に</h2>
+    </div>
+    <div class="phases">
+      <div class="phase">
+        <div class="when">段階1<span>見た目の土台</span></div>
+        <div class="what">
+          <p>配色とフォントのトークン化。色の直書きをなくし、ダークモードを正しく表示する。画面構成は変えないので、リスクがいちばん低い段階です。</p>
+          <div class="files">Resources/Styles/Colors.xaml · Styles.xaml · Platforms/Android/Resources/values/colors.xml · Views/*.xamlの直書き色</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when">段階2<span>マップの操作</span></div>
+        <div class="what">
+          <p>ピン詳細のボトムシート（チェックイン・経路・削除）、フィルターチップ、「ここを記録」ボタン。重なったピンの選択もシートに移します。</p>
+          <div class="files">Views/LocationPage.xaml · ViewModels/LocationPageViewModel.cs · 新規Views/PinDetailSheet.xaml</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when">段階3<span>タブの再編</span></div>
+        <div class="what">
+          <p>「コレクション」タブを新設し、国旗ボードとカスタムボードをカードで並べる。ボード詳細に進捗を出し、インポートをここへ移します。</p>
+          <div class="files">AppShell.xaml(.cs) · 新規Views/CollectionsPage.xaml · FlagsBoardPage / CustomBoardPageの再利用</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when">段階4<span>仕上げ</span></div>
+        <div class="what">
+          <p>パスポート画面の統計、スタンプの演出、空の状態、元に戻すトースト、設定画面のリスト化。</p>
+          <div class="files">Views/MainPage.xaml · Views/SettingPage.xaml · CommunityToolkit.MauiのSnackbar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="decisions">
+    <div class="sec-head">
+      <div class="eyebrow">7 · 決めていただきたいこと</div>
+      <h2>進める前の確認事項</h2>
+    </div>
+    <div class="qs">
+      <div class="q"><b>配色の方向性はこの「紺・赤・紙」でよいか</b><span>別案として、地図アプリらしい明るい緑系や、御朱印帳に寄せた和紙・朱色系も作れます。</span></div>
+      <div class="q"><b>ボトムシートにライブラリを使ってよいか</b><span>MAUIには標準のボトムシートがありません。The49.Maui.BottomSheetなどを使うか、自前のオーバーレイで作るかを選びます。</span></div>
+      <div class="q"><b>タブ再編（段階3）まで進めるか</b><span>既存ユーザーにとって場所が変わる変更です。段階1・2だけ先に出して反応を見る方法もあります。</span></div>
+      <div class="q"><b>スタンプ用フォントを続投するか</b><span>Jerseyclub Grungeとcraftminchoはアプリの個性です。続投する前提で提案していますが、ライセンスの確認だけお願いします。</span></div>
+    </div>
+  </section>
+</div>
