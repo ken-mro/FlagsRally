@@ -24,7 +24,7 @@
                     Grid.Column="0"
                     Aspect="AspectFit"
                     HeightRequest="100"
-                    Source="passport_earth2.png" />
+                    Source="app_logo.png" />
 
                 <controls:StampLabel
                     Grid.Column="1"
