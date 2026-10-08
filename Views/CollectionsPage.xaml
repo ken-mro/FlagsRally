@@ -11,68 +11,31 @@
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabCollections}" />
     </Shell.TitleView>
-    <CollectionView Margin="8,0" ItemsSource="{Binding BoardCards}">
+    <CollectionView
+        Margin="8,0"
+        IsGrouped="True"
+        ItemsSource="{Binding Sections}">
         <CollectionView.ItemsLayout>
             <GridItemsLayout Orientation="Vertical" Span="2" />
         </CollectionView.ItemsLayout>
-        <CollectionView.Header>
-            <VerticalStackLayout Padding="4,12,4,4" Spacing="12">
-
-            <!--  Built-in boards  -->
-            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.CountriesAndRegions}" />
-            <Border
-                Padding="12"
-                BackgroundColor="{StaticResource PaperCard}"
-                StrokeShape="RoundRectangle 10">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OpenRegionalFlagsCommand}" />
-                </Border.GestureRecognizers>
-                <Grid ColumnSpacing="12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Image
-                        HeightRequest="36"
-                        Source="flag.png"
-                        VerticalOptions="Center"
-                        WidthRequest="36" />
-                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="16"
-                            Text="{x:Static strings:AppResources.RegionalFlags}" />
-                        <Label
-                            FontSize="13"
-                            Text="{x:Static strings:AppResources.RegionalFlagsSubtitle}"
-                            TextColor="{StaticResource InkMuted}" />
-                    </VerticalStackLayout>
-                    <Label
-                        Grid.Column="2"
-                        FontSize="22"
-                        Text="›"
-                        TextColor="{StaticResource InkMuted}"
+        <CollectionView.GroupHeaderTemplate>
+            <DataTemplate x:DataType="viewmodels:CollectionSection">
+                <Grid Padding="4,16,4,4">
+                    <controls:StampLabel
+                        Style="{StaticResource StampHeading}"
+                        Text="{Binding Title}"
                         VerticalOptions="Center" />
+                    <Button
+                        Padding="8,0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CollectionsPageViewModel}}, x:DataType=viewmodels:CollectionsPageViewModel, Path=EditBoardsCommand}"
+                        HorizontalOptions="End"
+                        IsVisible="{Binding IsEditable}"
+                        Text="{x:Static strings:AppResources.Edit}"
+                        TextColor="{StaticResource Navy}" />
                 </Grid>
-            </Border>
-
-            <!--  Custom boards  -->
-            <Grid>
-                <controls:StampLabel
-                    Style="{StaticResource StampHeading}"
-                    Text="{x:Static strings:AppResources.CustomBoards}"
-                    VerticalOptions="Center" />
-                <Button
-                    Padding="8,0"
-                    BackgroundColor="Transparent"
-                    Command="{Binding EditBoardsCommand}"
-                    HorizontalOptions="End"
-                    Text="{x:Static strings:AppResources.Edit}"
-                    TextColor="{StaticResource Navy}" />
-            </Grid>
-            </VerticalStackLayout>
-        </CollectionView.Header>
+            </DataTemplate>
+        </CollectionView.GroupHeaderTemplate>
         <CollectionView.ItemTemplate>
 
                     <DataTemplate x:DataType="viewmodels:CollectionCard">
@@ -98,7 +61,7 @@
                                     <Grid HeightRequest="96">
                                         <Border
                                             Padding="0"
-                                            IsVisible="{Binding HasImage}"
+                                            IsVisible="{Binding HasRemoteImage}"
                                             StrokeShape="RoundRectangle 6"
                                             StrokeThickness="0">
                                             <Image Aspect="AspectFill">
@@ -110,15 +73,20 @@
                                                 </Image.Source>
                                             </Image>
                                         </Border>
+                                        <!--  Bundled emblems are drawn whole on the card rather than cropped  -->
+                                        <Image
+                                            Aspect="AspectFit"
+                                            IsVisible="{Binding HasLocalImage}"
+                                            Source="{Binding ImageUrl}" />
                                         <Border
                                             BackgroundColor="{StaticResource Navy}"
                                             IsVisible="{Binding HasNoImage}"
                                             StrokeShape="RoundRectangle 6"
                                             StrokeThickness="0">
                                             <controls:StampLabel
-                                                FontSize="34"
+                                                FontSize="44"
                                                 HorizontalOptions="Center"
-                                                Text="{Binding Initial}"
+                                                Text="{Binding Badge}"
                                                 TextColor="{StaticResource PaperCard}"
                                                 VerticalOptions="Center" />
                                         </Border>

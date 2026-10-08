@@ -1,3 +1,5 @@
+using FlagsRally.Helpers;
+using FlagsRally.Models;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
 using FlagsRally.Services;
@@ -33,13 +35,31 @@ public class RedesignViewModelTests
     private static CustomBoardService CreateService(Mock<ICustomBoardRepository> boards, Mock<ICustomLocationDataRepository> locations) =>
         new(boards.Object, locations.Object, new CryptoService());
 
+    // Regional flags: two Japanese prefectures visited (Tokyo twice), nothing elsewhere.
+    private static RegionalFlagsService CreateRegionalFlagsService()
+    {
+        var arrivals = new Mock<IArrivalLocationDataRepository>();
+        arrivals.Setup(r => r.GetSubRegionsByCountryCode(It.IsAny<string>())).ReturnsAsync([]);
+        arrivals.Setup(r => r.GetSubRegionsByCountryCode("JP")).ReturnsAsync(
+        [
+            new SubRegion { Code = new SubRegionCode("JP", "13"), ArrivalDate = new DateTime(2026, 9, 1) },
+            new SubRegion { Code = new SubRegionCode("JP", "13"), ArrivalDate = new DateTime(2026, 10, 1) },
+            new SubRegion { Code = new SubRegionCode("JP", "01"), ArrivalDate = new DateTime(2026, 8, 1) },
+        ]);
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                   .Returns((string _, string defaultValue, string? _) => defaultValue);
+        var countryHelper = new CustomCountryHelper();
+        return new RegionalFlagsService(arrivals.Object, new SubRegionHelper(countryHelper), countryHelper, new SettingsPreferences(preferences.Object));
+    }
+
     // ---------- Collections ----------
 
     [Fact]
     public async Task Collections_cards_show_progress_latest_image_and_an_add_card()
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateService(boards, locations));
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateService(boards, locations), CreateRegionalFlagsService());
 
         await vm.Init();
 
@@ -53,6 +73,24 @@ public class RedesignViewModelTests
         Assert.Equal("0 / 1", b.ProgressText);
         Assert.True(b.HasNoImage);
         Assert.True(vm.BoardCards[2].IsAddCard);
+    }
+
+    [Fact]
+    public async Task Collections_show_a_card_per_country_with_visited_countries_first()
+    {
+        var (boards, locations) = CreateRepositories();
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateService(boards, locations), CreateRegionalFlagsService());
+
+        await vm.Init();
+
+        Assert.Equal(Constants.SupportedSubRegionCountryCodeList.Count, vm.RegionalCards.Count);
+        var japan = vm.RegionalCards[0];
+        Assert.Equal(CollectionCardKind.Regional, japan.Kind);
+        Assert.Equal("JP", japan.Key);
+        Assert.Equal("2 / 47", japan.ProgressText); // Tokyo counted once
+        Assert.True(japan.HasLocalImage);           // the latest region's bundled emblem
+        Assert.All(vm.RegionalCards.Skip(1), c => Assert.Equal(0, c.Visited));
+        Assert.Equal([vm.RegionalCards, vm.BoardCards], vm.Sections);
     }
 
     // ---------- Board details ----------
