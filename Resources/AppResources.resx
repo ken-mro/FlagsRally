@@ -522,4 +522,7 @@
   <data name="CheckInHere" xml:space="preserve">
     <value>Check in here</value>
   </data>
+  <data name="PinStyleCritter" xml:space="preserve">
+    <value>Critters</value>
+  </data>
 </root>

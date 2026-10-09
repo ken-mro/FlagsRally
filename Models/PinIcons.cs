@@ -12,6 +12,8 @@ public enum PinStyle
     Classic,
     /// <summary>Teardrop pins like the one in the app icon.</summary>
     Drop,
+    /// <summary>A round character with a face, standing on the spot.</summary>
+    Critter,
 }
 
 public enum PinKind { Unvisited, Visited, CheckIn, CheckInSpot }
@@ -35,7 +37,12 @@ public static class PinIcons
             PinKind.CheckInSpot => "selected_location_pin",
             _ => "pin",
         };
-        return style == PinStyle.Classic ? $"classic_{name}" : name;
+        return style switch
+        {
+            PinStyle.Classic => $"classic_{name}",
+            PinStyle.Critter => $"critter_{name}",
+            _ => name,
+        };
     }
 
     public static BitmapDescriptor For(PinKind kind) => BitmapDescriptorFactory.FromBundle(FileName(kind, Style));

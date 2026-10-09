@@ -1274,5 +1274,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("CheckInHere", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Critters.
+        /// </summary>
+        internal static string PinStyleCritter {
+            get {
+                return ResourceManager.GetString("PinStyleCritter", resourceCulture);
+            }
+        }
     }
 }

@@ -45,10 +45,12 @@ namespace FlagsRally.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(UsesClassicPins))]
         [NotifyPropertyChangedFor(nameof(UsesDropPins))]
+        [NotifyPropertyChangedFor(nameof(UsesCritterPins))]
         private PinStyle _pinStyle;
 
         public bool UsesClassicPins => PinStyle == PinStyle.Classic;
         public bool UsesDropPins => PinStyle == PinStyle.Drop;
+        public bool UsesCritterPins => PinStyle == PinStyle.Critter;
 
         partial void OnPinStyleChanged(PinStyle value)
         {
