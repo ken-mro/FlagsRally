@@ -24,7 +24,9 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     {
         await Init();
         var customLocationDataList = await _conn!.Table<CustomLocationData>().ToListAsync();
-        return customLocationDataList.Select(GetCustomLocationPin).ToList();
+        // Only places of boards that still exist: with no boards there are no custom pins.
+        var boardNames = (await _customBoardRepository.GetAllCustomBoards()).Select(b => b.Name).ToHashSet();
+        return customLocationDataList.Where(l => boardNames.Contains(l.BoardName)).Select(GetCustomLocationPin).ToList();
     }
 
     public async Task<int> DeleteByBoardNameAsync(string boardName)
