@@ -17,6 +17,18 @@ public class CustomBoardService
         _cryptoService = cryptoService;
     }
 
+    /// <summary>
+    /// Deletes the boards together with their locations (including check-in records).
+    /// </summary>
+    public async Task DeleteBoardsAsync(IEnumerable<string> boardNames)
+    {
+        foreach (var boardName in boardNames)
+        {
+            await _customLocationDataRepository.DeleteByBoardNameAsync(boardName);
+            await _customBoardRepository.DeleteAsync(boardName);
+        }
+    }
+
     public CustomBoard GetCustomBoard(CustomBoardJson json)
     {
         return new CustomBoard()

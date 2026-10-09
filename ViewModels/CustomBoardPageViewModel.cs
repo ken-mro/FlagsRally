@@ -4,6 +4,7 @@ using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Services;
+using FlagsRally.Views;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
@@ -18,8 +19,6 @@ public partial class CustomBoardPageViewModel : BaseViewModel
     {
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
-
-        _ = Init();
     }
 
     [ObservableProperty]
@@ -60,7 +59,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel
     [ObservableProperty]
     bool _isRefreshing = false;
 
-    private async Task Init()
+    public async Task Init()
     {
         try
         {
@@ -72,11 +71,11 @@ public partial class CustomBoardPageViewModel : BaseViewModel
 
             var allBoards = await _customBoardRepository.GetAllCustomBoards();
             CustomBoardList = new ObservableCollection<CustomBoard>(allBoards);
-            if (FilteredCustomBoard is null)
-            {
-                var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(latestCustomLocation?.Board.Name));
-                FilteredCustomBoard = (matchingBoard ?? allBoards.FirstOrDefault())!;
-            }
+            // Keep the current selection (matched by name, since the order may have changed);
+            // otherwise default to the board visited most recently.
+            var selectedBoardName = FilteredCustomBoard?.Name ?? latestCustomLocation?.Board.Name;
+            var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(selectedBoardName));
+            FilteredCustomBoard = (matchingBoard ?? allBoards.FirstOrDefault())!;
         }
         catch (Exception ex)
         {
@@ -90,7 +89,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel
 
     private ObservableCollection<CustomLocation> GetFilteredList()
     {
-        var filteredList = SourceCustomLocationList.Where(x => x.Board == FilteredCustomBoard)
+        var filteredList = SourceCustomLocationList.Where(x => x.Board.Name == FilteredCustomBoard?.Name)
                             .OrderByDescending(x => x.ArrivalDate).ToList();
         return new ObservableCollection<CustomLocation>(filteredList);
     }
@@ -101,6 +100,12 @@ public partial class CustomBoardPageViewModel : BaseViewModel
         IsRefreshing = true;
         await Init();
         IsRefreshing = false;
+    }
+
+    [RelayCommand]
+    async Task OpenManageBoardsAsync()
+    {
+        await Shell.Current.GoToAsync(ManageCustomBoardsPage.Route);
     }
 
     [RelayCommand]

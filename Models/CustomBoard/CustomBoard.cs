@@ -6,4 +6,5 @@ public record CustomBoard
     public string Url { get; init; } = string.Empty;
     public int Width { get; init; } = 0;
     public int Height { get; init; } = 0;
+    public int SortOrder { get; init; } = 0;
 }

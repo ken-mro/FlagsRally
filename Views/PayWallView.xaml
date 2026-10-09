@@ -3,6 +3,7 @@
     x:Class="FlagsRally.Views.PayWallView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -25,13 +26,13 @@
                     HeightRequest="100"
                     Source="passport_earth2.png" />
 
-                <Label
+                <controls:StampLabel
                     Grid.Column="1"
                     LineBreakMode="WordWrap"
                     SemanticProperties.HeadingLevel="Level1"
-                    Style="{StaticResource Headline}"
-                    Text="{x:Static strings:AppResources.PayWallTitle}"
-                    TextColor="Black" />
+                    HorizontalTextAlignment="Center"
+                    Style="{StaticResource StampHeading}"
+                    Text="{x:Static strings:AppResources.PayWallTitle}" />
             </Grid>
 
             <Label
@@ -40,14 +41,14 @@
                 LineBreakMode="WordWrap"
                 Style="{StaticResource SubHeadline}"
                 Text="{x:Static strings:AppResources.PayWallDescription}"
-                TextColor="Black" />
+                TextColor="{StaticResource Ink}" />
 
             <Label
                 HorizontalOptions="Center"
                 IsVisible="{Binding AreOfferingsLoaded}"
                 Style="{StaticResource SubHeadline}"
                 Text="{x:Static strings:AppResources.PayWallSubTitle}"
-                TextColor="Black" />
+                TextColor="{StaticResource Ink}" />
             <Button
                 Command="{Binding LoadOfferingsCommand}"
                 HorizontalOptions="Fill"
@@ -60,7 +61,7 @@
                 IsVisible="{Binding AreOfferingsLoaded}"
                 Style="{StaticResource SubHeadline}"
                 Text="{x:Static strings:AppResources.Subscription}"
-                TextColor="Black" />
+                TextColor="{StaticResource Ink}" />
 
             <Button
                 Command="{Binding BuyItemCommand}"

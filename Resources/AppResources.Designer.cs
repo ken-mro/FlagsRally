@@ -779,5 +779,86 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("YouAreNotNearTheLocation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Boards.
+        /// </summary>
+        internal static string ManageBoards {
+            get {
+                return ResourceManager.GetString("ManageBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        internal static string MoveUp {
+            get {
+                return ResourceManager.GetString("MoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        internal static string MoveDown {
+            get {
+                return ResourceManager.GetString("MoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select pins to show.
+        /// </summary>
+        internal static string SelectPinsToShow {
+            get {
+                return ResourceManager.GetString("SelectPinsToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} selected.
+        /// </summary>
+        internal static string NSelected {
+            get {
+                return ResourceManager.GetString("NSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete selected ({0}).
+        /// </summary>
+        internal static string DeleteSelected {
+            get {
+                return ResourceManager.GetString("DeleteSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the following boards? All of their locations and check-in records will also be deleted..
+        /// </summary>
+        internal static string ConfirmDeleteBoards {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Several pins are here. Choose one.
+        /// </summary>
+        internal static string ChooseLocation {
+            get {
+                return ResourceManager.GetString("ChooseLocation", resourceCulture);
+            }
+        }
     }
 }

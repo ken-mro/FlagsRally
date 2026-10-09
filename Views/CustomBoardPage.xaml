@@ -3,6 +3,7 @@
     x:Class="FlagsRally.Views.CustomBoardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:customboard="clr-namespace:FlagsRally.Models.CustomBoard"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
@@ -10,6 +11,9 @@
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CustomBoardPageViewModel">
+    <Shell.TitleView>
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.CustomBoard}" />
+    </Shell.TitleView>
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
     </ContentPage.Resources>
@@ -22,6 +26,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Picker
@@ -41,6 +46,18 @@
                         <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
                     </Image.GestureRecognizers>
                 </Image>
+                <Image
+                    Grid.Column="2"
+                    Margin="5,0"
+                    HeightRequest="25"
+                    HorizontalOptions="End"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ManageBoards}"
+                    Source="settings.png"
+                    VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenManageBoardsCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
             </Grid>
             <VerticalStackLayout Grid.ColumnSpan="2" IsVisible="{Binding IsSettingsVisible}">
                 <Grid>
@@ -54,7 +71,7 @@
                         Margin="20,5"
                         HorizontalOptions="End"
                         IsToggled="{Binding DateIsNotVisible}"
-                        ThumbColor="Gray"
+                        ThumbColor="{StaticResource PaperEdge}"
                         VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
@@ -65,7 +82,7 @@
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="collectionView"
-                Background="AntiqueWhite"
+                Background="Transparent"
                 ItemsSource="{Binding DisplayCustomLocationList}"
                 VerticalOptions="Fill">
                 <CollectionView.ItemsLayout>
@@ -75,7 +92,7 @@
                     <DataTemplate x:DataType="{x:Type customboard:CustomLocation}">
                         <Border
                             BackgroundColor="Transparent"
-                            Stroke="Black"
+                            Stroke="{StaticResource Ink}"
                             StrokeShape="Rectangle"
                             StrokeThickness="2">
                             <StackLayout>
@@ -90,7 +107,7 @@
                                     LineHeight="1"
                                     MaxLines="2"
                                     Text="{Binding Title}"
-                                    TextColor="Gray"
+                                    TextColor="{StaticResource InkMuted}"
                                     VerticalOptions="Center" />
                                 <VerticalStackLayout
                                     IsVisible="{Binding HasBeenVisited}"
@@ -109,7 +126,7 @@
                                                 Uri="{Binding ImageUrl}" />
                                         </Image.Source>
                                     </Image>
-                                    <StackLayout BackgroundColor="Black">
+                                    <StackLayout BackgroundColor="{StaticResource Ink}">
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
@@ -118,7 +135,7 @@
                                             LineHeight="1"
                                             MaxLines="2"
                                             Text="{Binding Title}"
-                                            TextColor="AntiqueWhite"
+                                            TextColor="{StaticResource PaperCard}"
                                             VerticalOptions="Center" />
                                     </StackLayout>
                                     <Label
@@ -130,7 +147,7 @@
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDateString}"
-                                        TextColor="Red"
+                                        TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
                                     <Label
                                         FontAttributes="Bold"
@@ -141,7 +158,7 @@
                                         LineBreakMode="TailTruncation"
                                         LineHeight="1"
                                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
-                                        TextColor="Red"
+                                        TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
                                 </VerticalStackLayout>
                             </StackLayout>
@@ -157,6 +174,6 @@
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="Gray" />
+            Color="{StaticResource Navy}" />
     </Grid>
 </ContentPage>

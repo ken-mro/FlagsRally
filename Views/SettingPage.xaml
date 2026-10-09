@@ -3,15 +3,18 @@
     x:Class="FlagsRally.Views.SettingPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel">
+    <Shell.TitleView>
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.Settings}" />
+    </Shell.TitleView>
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="10">
-            <Label
+            <controls:StampLabel
                 Padding="5,0"
-                FontAttributes="Bold"
-                FontSize="Body"
+                Style="{StaticResource StampHeading}"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.CountryOfResidence}"
                 VerticalOptions="Center" />
@@ -62,11 +65,10 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
-            <Label
+                Color="{StaticResource PaperEdge}" />
+            <controls:StampLabel
                 Padding="5,0"
-                FontAttributes="Bold"
-                FontSize="Body"
+                Style="{StaticResource StampHeading}"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.SubscriptionStatus}"
                 VerticalOptions="Center" />
@@ -101,11 +103,10 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
-            <Label
+                Color="{StaticResource PaperEdge}" />
+            <controls:StampLabel
                 Padding="5,0"
-                FontAttributes="Bold"
-                FontSize="Body"
+                Style="{StaticResource StampHeading}"
                 HorizontalOptions="Start"
                 Text="Google Maps API Key"
                 VerticalOptions="Center" />
@@ -138,11 +139,10 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
-            <Label
+                Color="{StaticResource PaperEdge}" />
+            <controls:StampLabel
                 Padding="5,0"
-                FontAttributes="Bold"
-                FontSize="Body"
+                Style="{StaticResource StampHeading}"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.Backup}"
                 VerticalOptions="Center" />
@@ -157,11 +157,10 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
-            <Label
+                Color="{StaticResource PaperEdge}" />
+            <controls:StampLabel
                 Padding="5,0"
-                FontAttributes="Bold"
-                FontSize="Body"
+                Style="{StaticResource StampHeading}"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.Restore}"
                 VerticalOptions="Center" />
@@ -171,7 +170,7 @@
                 FontSize="Small"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.RestoreBeforeUse}"
-                TextColor="Red"
+                TextColor="{StaticResource Stamp}"
                 VerticalOptions="Center" />
             <Button
                 Margin="10,0"
@@ -184,11 +183,10 @@
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Color="Gray" />
-            <Label
+                Color="{StaticResource PaperEdge}" />
+            <controls:StampLabel
                 Padding="5,0"
-                FontAttributes="Bold"
-                FontSize="Body"
+                Style="{StaticResource StampHeading}"
                 HorizontalOptions="Start"
                 Text="{x:Static strings:AppResources.Information}"
                 VerticalOptions="Center" />
@@ -197,8 +195,7 @@
                 FontSize="Body"
                 HorizontalOptions="End"
                 Text="{x:Static strings:AppResources.TermsOfUse}"
-                TextColor="{AppThemeBinding Light=#0000EE,
-                                            Dark=#4A9EFF}"
+                TextColor="{StaticResource Navy}"
                 TextDecorations="Underline"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>
@@ -210,8 +207,7 @@
                 FontSize="Body"
                 HorizontalOptions="End"
                 Text="{x:Static strings:AppResources.PrivacyPolicy}"
-                TextColor="{AppThemeBinding Light=#0000EE,
-                                            Dark=#4A9EFF}"
+                TextColor="{StaticResource Navy}"
                 TextDecorations="Underline"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>

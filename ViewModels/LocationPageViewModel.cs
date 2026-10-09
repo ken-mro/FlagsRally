@@ -2,8 +2,10 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FlagsRally.Exceptions;
 using FlagsRally.Helpers;
+using FlagsRally.Messages;
 using FlagsRally.Models;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
@@ -64,6 +66,7 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
             _arrivalMap.PinDragEnd += (sender, e) => _arrivalMap_PinDragEnd(sender, e);
+            _arrivalMap.PinClicked += OnPinClicked;
 
             _ = Init();
         }
@@ -81,6 +84,29 @@ public partial class LocationPageViewModel : BaseViewModel
             ArrivalMap.SelectedPin = null;
             ArrivalMap.SelectedPin = e.Pin;
         }
+    }
+
+    // Only the top marker of pins at the same coordinates can be tapped, so let the user choose among them.
+    private void OnPinClicked(object? sender, PinClickedEventArgs e)
+    {
+        if (ArrivalMap is null) return;
+
+        var overlappingPins = PinOverlapHelper.FindOverlapping(e.Pin, ArrivalMap.Pins);
+        if (overlappingPins.Count < 2) return;
+
+        e.Handled = true;
+        MainThread.BeginInvokeOnMainThread(async () => await ChooseOverlappingPinAsync(overlappingPins));
+    }
+
+    private async Task ChooseOverlappingPinAsync(IReadOnlyList<Pin> overlappingPins)
+    {
+        var labels = PinOverlapHelper.GetChoiceLabels(overlappingPins);
+        var choice = await Shell.Current.DisplayActionSheetAsync($"{AppResources.ChooseLocation}", $"{AppResources.Cancel}", null, [.. labels]);
+
+        var index = labels.ToList().IndexOf(choice);
+        if (index < 0 || ArrivalMap is null) return;
+
+        ArrivalMap.SelectedPin = overlappingPins[index];
     }
 
     private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)
@@ -239,6 +265,24 @@ public partial class LocationPageViewModel : BaseViewModel
         _settingsPreferences = settingsPreferences;
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
+
+        WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
+            MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
+    }
+
+    private async Task OnCustomBoardsChanged(CustomBoardsChangedMessage message)
+    {
+        try
+        {
+            await RemovePinsOfDeletedBoards();
+            await RebuildPinFilterList();
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Console.WriteLine($"Failed to refresh pin filters: {ex.Message}");
+#endif
+        }
     }
 
     private async Task Init()
@@ -533,18 +577,15 @@ public partial class LocationPageViewModel : BaseViewModel
                 _appShell.CustomBoardPage.IsVisible = true;
             }
 
-            var filterItem = new CustomBoardPinFilterItem(customBoard);
-            if (!PinFilterList.Where(f => f.Name.Equals(filterItem.Name)).Any())
-            {
-                PinFilterList.Add(filterItem);
-                FilteredPinItem = filterItem;
-            }
-            else
-            {
-                FilteredPinItem = PinFilterList.Where(f => f.Name.Equals(filterItem.Name)).FirstOrDefault() ?? FilteredPinItem;
-            }
-
             AddPinsToMap(pins);
+            await RebuildPinFilterList();
+
+            // When filtering, also show the board just imported.
+            if (_visiblePinKeys.Count > 0)
+            {
+                _visiblePinKeys.Add(customBoard.Name);
+                OnPinFilterChanged();
+            }
         }
         catch (OperationCanceledException)
         {
@@ -569,16 +610,32 @@ public partial class LocationPageViewModel : BaseViewModel
     [ObservableProperty]
     ObservableCollection<CustomBoardPinFilterItem> _pinFilterList = default!;
 
-    CustomBoardPinFilterItem _filteredPinItem = default!;
+    // Pin keys (board names / arrival location) currently shown. Empty means all pins are shown.
+    readonly HashSet<string> _visiblePinKeys = [];
 
-    public CustomBoardPinFilterItem FilteredPinItem
+    public string FilterSummary => _visiblePinKeys.Count switch
     {
-        get => _filteredPinItem;
-        set
-        {
-            SetProperty(ref _filteredPinItem, value);
-            UpdatePinsVisibility();
-        }
+        0 => AppResources.AllPins,
+        1 => _visiblePinKeys.First(),
+        _ => string.Format(AppResources.NSelected, _visiblePinKeys.Count),
+    };
+
+    [RelayCommand]
+    async Task OpenPinFilterAsync()
+    {
+        var popupViewModel = new PinFilterPopupViewModel(PinFilterList, _visiblePinKeys);
+        await Shell.Current.CurrentPage.ShowPopupAsync(new PinFilterPopupView(popupViewModel));
+        if (popupViewModel.Result is null) return;
+
+        _visiblePinKeys.Clear();
+        _visiblePinKeys.UnionWith(popupViewModel.Result);
+        OnPinFilterChanged();
+    }
+
+    private void OnPinFilterChanged()
+    {
+        OnPropertyChanged(nameof(FilterSummary));
+        UpdatePinsVisibility();
     }
 
     private void UpdatePinsVisibility()
@@ -586,20 +643,9 @@ public partial class LocationPageViewModel : BaseViewModel
         if (ArrivalMap?.Pins is null) return;
         foreach (var pin in ArrivalMap.Pins)
         {
-            if (FilteredPinItem.IsAll)
-            {
-                pin.IsVisible = true;
-                continue;
-            }
-
-            if (FilteredPinItem.Name ==(pin.Tag as MapPinTag)?.PinKey)
-            {
-                pin.IsVisible = true;
-            }
-            else
-            {
-                pin.IsVisible = false;
-            }
+            // Pins without a tag (e.g. the tapped point) are never filtered out.
+            var pinKey = (pin.Tag as MapPinTag)?.PinKey;
+            pin.IsVisible = _visiblePinKeys.Count == 0 || pinKey is null || _visiblePinKeys.Contains(pinKey);
         }
     }
 
@@ -615,27 +661,62 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task InitializeMapPins()
     {
-        PinFilterList = new(CustomBoardPinFilterItem.CreateFilterList());
-
         var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
-        var arrivalLocationPin = arrivalLocationPins.FirstOrDefault();
-        var tag = arrivalLocationPin?.Tag as MapPinTag;
-        if (tag is not null)
-        {
-            PinFilterList.Add(new CustomBoardPinFilterItem(tag.PinKey));
-        }
-
         AddPinsToMap(arrivalLocationPins);
 
+        var customLocationList = await _customLocationDataRepository.GetAllCustomLocationPins();
+        AddPinsToMap(customLocationList);
+
+        await RebuildPinFilterList();
+    }
+
+    private async Task RemovePinsOfDeletedBoards()
+    {
+        if (ArrivalMap is null) return;
+
+        var boardNames = (await _customBoardRepository.GetAllCustomBoards()).Select(b => b.Name).ToHashSet();
+        static bool IsOrphan(Pin pin, HashSet<string> boardNames) =>
+            pin.Tag is MapPinTag { IsCustomLocation: true } tag && !boardNames.Contains(tag.BoardName);
+
+        if (SelectedPin is not null && IsOrphan(SelectedPin, boardNames))
+        {
+            ArrivalMap.SelectedPin = null;
+        }
+
+        // Remove by index: Pin equality is value-based (label/position), so Remove(pin)
+        // could take out the same location on another board.
+        for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
+        {
+            if (IsOrphan(ArrivalMap.Pins[i], boardNames))
+            {
+                ArrivalMap.Pins.RemoveAt(i);
+            }
+        }
+    }
+
+    private async Task RebuildPinFilterList()
+    {
+        var filterList = new ObservableCollection<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
+
+        var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
+        if (hasArrivalPins)
+        {
+            filterList.Add(new CustomBoardPinFilterItem(AppResources.ArrivalLocation));
+        }
 
         var boardList = await _customBoardRepository.GetAllCustomBoards();
         foreach (var board in boardList)
         {
-            PinFilterList.Add(new CustomBoardPinFilterItem(board.Name));
+            filterList.Add(new CustomBoardPinFilterItem(board.Name));
         }
 
-        var customLocationList = await _customLocationDataRepository.GetAllCustomLocationPins();
-        AddPinsToMap(customLocationList);
+        PinFilterList = filterList;
+
+        // Drop keys of filters that no longer exist (e.g. deleted boards).
+        if (_visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0)
+        {
+            OnPinFilterChanged();
+        }
     }
 
     private void AddPinsToMap(IEnumerable<Pin> customLocationList)

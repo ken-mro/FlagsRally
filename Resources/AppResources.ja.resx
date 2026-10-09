@@ -357,4 +357,31 @@
   <data name="ThankYouForSubscribing" xml:space="preserve">
     <value>ご登録いただきありがとうございます! 日頃のご愛顧に感謝申し上げます。</value>
   </data>
+  <data name="ManageBoards" xml:space="preserve">
+    <value>ボードの管理</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>上へ移動</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>下へ移動</value>
+  </data>
+  <data name="SelectPinsToShow" xml:space="preserve">
+    <value>表示するピンを選択</value>
+  </data>
+  <data name="NSelected" xml:space="preserve">
+    <value>{0}件を選択中</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="DeleteSelected" xml:space="preserve">
+    <value>選択したボードを削除 ({0})</value>
+  </data>
+  <data name="ConfirmDeleteBoards" xml:space="preserve">
+    <value>次のボードを削除しますか？ボード内の地点とチェックイン記録もすべて削除されます。</value>
+  </data>
+  <data name="ChooseLocation" xml:space="preserve">
+    <value>この場所には複数のピンがあります。選択してください</value>
+  </data>
 </root>

@@ -357,4 +357,31 @@
   <data name="ThankYouForSubscribing" xml:space="preserve">
     <value>Thank you for subscribing! We appreciate your support.</value>
   </data>
+  <data name="ManageBoards" xml:space="preserve">
+    <value>Manage Boards</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="SelectPinsToShow" xml:space="preserve">
+    <value>Select pins to show</value>
+  </data>
+  <data name="NSelected" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DeleteSelected" xml:space="preserve">
+    <value>Delete selected ({0})</value>
+  </data>
+  <data name="ConfirmDeleteBoards" xml:space="preserve">
+    <value>Delete the following boards? All of their locations and check-in records will also be deleted.</value>
+  </data>
+  <data name="ChooseLocation" xml:space="preserve">
+    <value>Several pins are here. Choose one</value>
+  </data>
 </root>
