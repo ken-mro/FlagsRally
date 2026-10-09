@@ -146,7 +146,11 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
             IsBusy = true;
 
             var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
-            SourceCustomLocationList = new ObservableCollection<CustomLocation>(allCustomLocations);
+            // Set the field and let the FilteredCustomBoard assignment below raise every change once,
+            // so the grouped list is built a single time per visit.
+#pragma warning disable MVVMTK0034
+            _sourceCustomLocationList = new ObservableCollection<CustomLocation>(allCustomLocations);
+#pragma warning restore MVVMTK0034
             var latestCustomLocation = allCustomLocations.MaxBy(x => x.ArrivalDate);
 
             var allBoards = await _customBoardRepository.GetAllCustomBoards();

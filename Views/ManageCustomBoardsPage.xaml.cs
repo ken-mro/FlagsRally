@@ -35,6 +35,12 @@ public partial class ManageCustomBoardsPage : ContentPage
         await _viewModel.Init();
     }
 
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        StopAutoScroll();
+    }
+
     // Rows are dragged by their handle (the right-hand column). The gestures sit on the list
     // itself, which does not move, so the touch is not lost while a row follows the finger.
     private void OnListPointerPressed(object? sender, PointerEventArgs e)

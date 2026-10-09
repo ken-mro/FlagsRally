@@ -39,8 +39,8 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     {
         await Init();
         var customLocationDataList = await _conn!.Table<CustomLocationData>().OrderBy(x => x.SortIndex).ToListAsync();
-        var customBoardList = await _customBoardRepository.GetAllCustomBoards();
-        return customLocationDataList.Select(l => GetCustomLocation(customBoardList.Where(b => b.Name == l.BoardName).FirstOrDefault() ?? new(), l)).ToList();
+        var boardsByName = (await _customBoardRepository.GetAllCustomBoards()).ToDictionary(b => b.Name);
+        return customLocationDataList.Select(l => GetCustomLocation(boardsByName.GetValueOrDefault(l.BoardName) ?? new(), l)).ToList();
     }
 
     public async Task<CustomLocation?> GetCustomLocationByCompositeKey(string compositeKey)
@@ -59,17 +59,46 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
         return GetCustomLocation(customBoard, customLocationData);
     }
 
+    /// <summary>
+    /// Saves a board's places in one transaction, keeping the check-in date of places already saved.
+    /// </summary>
     public async Task<IEnumerable<CustomLocationPin>> InsertOrReplace(IEnumerable<CustomLocation> customLocationList)
     {
         await Init();
-        var resultLocationList = new List<CustomLocationPin>();
-        foreach (var customLocation in customLocationList)
+        var rows = customLocationList.Select(GetCustomLocationData).ToList();
+
+        var boardNames = rows.Select(r => r.BoardName).Distinct().ToList();
+        var existingDates = new Dictionary<string, DateTime?>();
+        foreach (var boardName in boardNames)
         {
-            await InsertOrReplace(customLocation);
-            var customLoationData = GetCustomLocationData(customLocation);
-            resultLocationList.Add(GetCustomLocationPin(customLoationData));
+            foreach (var existing in await _conn!.Table<CustomLocationData>().Where(x => x.BoardName == boardName).ToListAsync())
+            {
+                existingDates[existing.CompositeKey] = existing.ArrivalDate;
+            }
         }
-        return resultLocationList;
+        foreach (var row in rows)
+        {
+            if (existingDates.TryGetValue(row.CompositeKey, out var arrivalDate))
+            {
+                row.ArrivalDate = arrivalDate;
+            }
+        }
+
+        await _conn!.RunInTransactionAsync(connection =>
+        {
+            foreach (var row in rows)
+            {
+                connection.InsertOrReplace(row);
+            }
+        });
+        return rows.Select(GetCustomLocationPin).ToList();
+    }
+
+    public async Task<int> CountVisitedAsync()
+    {
+        await Init();
+        return await _conn!.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM CustomLocation WHERE ArrivalDate IS NOT NULL AND BoardName IN (SELECT Name FROM CustomBoard)");
     }
 
     public async Task<int> UpdateCustomLocation(string key, DateTime? now)
@@ -82,14 +111,6 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     private CustomLocationPin GetCustomLocationPin(CustomLocationData data)
     {
         return new CustomLocationPin(data);
-    }
-
-    private async Task<CustomLocationData> GetCustomLocation(string compositeKey)
-    {
-        await Init();
-        return await _conn!.Table<CustomLocationData>()
-                           .Where(x => x.CompositeKey.Equals(compositeKey))
-                           .FirstOrDefaultAsync();
     }
 
     private CustomLocationData GetCustomLocationData(CustomLocation customLocation)
@@ -130,17 +151,5 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
         };
     }
 
-    private async Task<int> InsertOrReplace(CustomLocation customLocation)
-    {
-        await Init();
-        var customLocationData = GetCustomLocationData(customLocation);
-        var existingCustomLocationData = await GetCustomLocation(customLocation.CompositeKey);
-        if (existingCustomLocationData is not null)
-        {
-            customLocationData.ArrivalDate = existingCustomLocationData.ArrivalDate;
-            return await _conn!.InsertOrReplaceAsync(customLocationData);
-        }
-        
-        return await _conn!.InsertOrReplaceAsync(customLocationData);
-    }
+
 }

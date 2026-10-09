@@ -39,13 +39,15 @@ public class RedesignViewModelTests
     private static RegionalFlagsService CreateRegionalFlagsService()
     {
         var arrivals = new Mock<IArrivalLocationDataRepository>();
-        arrivals.Setup(r => r.GetSubRegionsByCountryCode(It.IsAny<string>())).ReturnsAsync([]);
-        arrivals.Setup(r => r.GetSubRegionsByCountryCode("JP")).ReturnsAsync(
+        List<SubRegion> japan =
         [
             new SubRegion { Code = new SubRegionCode("JP", "13"), ArrivalDate = new DateTime(2026, 9, 1) },
             new SubRegion { Code = new SubRegionCode("JP", "13"), ArrivalDate = new DateTime(2026, 10, 1) },
             new SubRegion { Code = new SubRegionCode("JP", "01"), ArrivalDate = new DateTime(2026, 8, 1) },
-        ]);
+        ];
+        arrivals.Setup(r => r.GetSubRegionsByCountryCode(It.IsAny<string>())).ReturnsAsync([]);
+        arrivals.Setup(r => r.GetSubRegionsByCountryCode("JP")).ReturnsAsync(japan);
+        arrivals.Setup(r => r.GetSubRegionsOfSupportedCountries()).ReturnsAsync(japan);
         var countryHelper = new CustomCountryHelper();
         return new RegionalFlagsService(arrivals.Object, new SubRegionHelper(countryHelper), countryHelper, CreateSettings());
     }

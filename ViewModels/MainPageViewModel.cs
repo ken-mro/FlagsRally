@@ -29,8 +29,7 @@ namespace FlagsRally.ViewModels
             _countryHelper = countryHelper;
             _arrivalLocationService = arrivalLocationService;
             _customLocationDataRepository = customLocationDataRepository;
-
-            _ = Init();
+            // Loaded by the page's OnAppearing.
         }
 
         readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -142,7 +141,7 @@ namespace FlagsRally.ViewModels
                     .Select(x => (x.CountryCode, x.AdminAreaName))
                     .Distinct()
                     .Count();
-                CheckInCount = (await _customLocationDataRepository.GetAllCustomLocations()).Count(x => x.HasBeenVisited);
+                CheckInCount = await _customLocationDataRepository.CountVisitedAsync();
 
                 var distinctArrivalLocationList = sourceArrivalLocationList.GroupBy(x => x.CountryCode).Select(x => x.FirstOrDefault()).ToList();
                 var arrivalCountryList = distinctArrivalLocationList.ConvertAll(x => new Country()

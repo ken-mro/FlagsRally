@@ -525,7 +525,10 @@ public partial class LocationPageViewModel : BaseViewModel
         try
         {
             var knownBoards = FilterChips.Select(c => c.Name).ToHashSet();
-            await ReloadCustomLocationPinsAsync();
+            if (message.PlacesChanged)
+            {
+                await ReloadCustomLocationPinsAsync();
+            }
             await RebuildPinFilterList();
 
             // When filtering, also show boards that were just added.

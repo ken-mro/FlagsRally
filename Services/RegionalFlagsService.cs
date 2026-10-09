@@ -53,7 +53,28 @@ public class RegionalFlagsService
     public async Task<List<SubRegion>> GetRegionsAsync(Country country)
     {
         var arrivals = await _arrivalLocationDataRepository.GetSubRegionsByCountryCode(country.CountryShortCode);
-        var regions = _subRegionHelper.GetBlankAllRegionList(country, _settingsPreferences.GetCountryOfResidence());
+        return MergeArrivals(country, arrivals, _settingsPreferences.GetCountryOfResidence());
+    }
+
+    /// <summary>
+    /// The regions of every supported country (in <see cref="GetCountries"/> order), read with one query.
+    /// </summary>
+    public async Task<List<(Country Country, List<SubRegion> Regions)>> GetAllRegionsAsync()
+    {
+        var arrivalsByCountry = (await _arrivalLocationDataRepository.GetSubRegionsOfSupportedCountries())
+            .ToLookup(x => x.Code.CountryCode, StringComparer.OrdinalIgnoreCase);
+        var residence = _settingsPreferences.GetCountryOfResidence();
+
+        return GetCountries()
+            .Select(country => (country, MergeArrivals(country, arrivalsByCountry[country.CountryShortCode], residence)))
+            .ToList();
+    }
+
+    // Every region of the country with the latest arrival in it, most recent first.
+    private List<SubRegion> MergeArrivals(Country country, IEnumerable<SubRegion> arrivals, string residence)
+    {
+        var regions = _subRegionHelper.GetBlankAllRegionList(country, residence);
+        var regionsByKey = regions.ToDictionary(x => x.Code.lowerCountryCodeHyphenRegionCode);
 
         foreach (var arrival in arrivals)
         {
@@ -65,10 +86,9 @@ public class RegionalFlagsService
                 if (string.IsNullOrEmpty(acquiredSubRegionCodeString)) continue;
             }
 
-            var region = regions.Find(x => x.Code.lowerCountryCodeHyphenRegionCode == subRegionCode?.lowerCountryCodeHyphenRegionCode);
-            if (region is null) continue;
+            if (subRegionCode is null || !regionsByKey.TryGetValue(subRegionCode.lowerCountryCodeHyphenRegionCode, out var region)) continue;
 
-            if (region.ArrivalDate < arrival?.ArrivalDate)
+            if (region.ArrivalDate < arrival!.ArrivalDate)
             {
                 region.ArrivalDate = arrival.ArrivalDate;
             }

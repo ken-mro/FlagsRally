@@ -75,9 +75,16 @@ public class CollectionSection(string title, bool isEditable, bool isCollapsible
         }
     }
 
+    /// <summary>
+    /// Replaces the cards; does nothing when they are the same, so returning to the page
+    /// does not rebuild (and reload the images of) an unchanged list.
+    /// </summary>
     public void SetCards(IEnumerable<CollectionCard> cards)
     {
-        _cards = cards.ToList();
+        var newCards = cards.ToList();
+        if (newCards.SequenceEqual(_cards) && Count == (IsExpanded ? newCards.Count : 0)) return;
+
+        _cards = newCards;
         ShowCards();
     }
 
@@ -127,12 +134,12 @@ public partial class CollectionsPageViewModel : BaseViewModel
 
             await LoadRegionalCardsAsync();
 
-            BoardCards.Clear();
+            var boardCards = new List<CollectionCard>();
             foreach (var board in boards)
             {
                 var locations = locationsByBoard.GetValueOrDefault(board.Name) ?? [];
                 var latestVisit = locations.Where(l => l.HasBeenVisited).MaxBy(l => l.ArrivalDate);
-                BoardCards.Add(new CollectionCard(
+                boardCards.Add(new CollectionCard(
                     CollectionCardKind.Custom,
                     board.Name,
                     board.Name,
@@ -141,7 +148,8 @@ public partial class CollectionsPageViewModel : BaseViewModel
                     latestVisit?.ImageUrl ?? string.Empty,
                     string.IsNullOrEmpty(board.Name) ? string.Empty : board.Name[..1]));
             }
-            BoardCards.Add(new CollectionCard(CollectionCardKind.Add, string.Empty, AppResources.AddBoard, 0, 0, string.Empty, string.Empty));
+            boardCards.Add(new CollectionCard(CollectionCardKind.Add, string.Empty, AppResources.AddBoard, 0, 0, string.Empty, string.Empty));
+            BoardCards.SetCards(boardCards);
         }
         catch (Exception ex)
         {
@@ -153,9 +161,8 @@ public partial class CollectionsPageViewModel : BaseViewModel
     private async Task LoadRegionalCardsAsync()
     {
         var cards = new List<CollectionCard>();
-        foreach (var country in _regionalFlagsService.GetCountries())
+        foreach (var (country, regions) in await _regionalFlagsService.GetAllRegionsAsync())
         {
-            var regions = await _regionalFlagsService.GetRegionsAsync(country);
             var latestVisit = regions.Where(r => r.HasBeenVisited).MaxBy(r => r.ArrivalDate);
             cards.Add(new CollectionCard(
                 CollectionCardKind.Regional,

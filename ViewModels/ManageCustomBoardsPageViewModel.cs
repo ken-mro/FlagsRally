@@ -99,7 +99,7 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
         try
         {
             await _customBoardRepository.UpdateSortOrdersAsync(Boards.Select(x => x.Name).ToList());
-            WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage());
+            WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage(PlacesChanged: false));
         }
         catch (Exception ex)
         {
