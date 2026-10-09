@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  Country / region switch, country filter, display options and the map toggle of the Passport tab,
+      shown in a floating toolbar at the bottom of the page.  -->
+<ContentView
+    x:Class="FlagsRally.Controls.PassportFilterBar"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:MainPageViewModel">
+    <Grid
+        Padding="8"
+        ColumnDefinitions="Auto,*,Auto,Auto"
+        ColumnSpacing="6">
+
+        <!--  Countries / regions  -->
+        <Border
+            Padding="2"
+            BackgroundColor="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 18"
+            StrokeThickness="0"
+            VerticalOptions="Center">
+            <HorizontalStackLayout>
+                <Border
+                    Padding="12,6"
+                    BackgroundColor="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    StrokeThickness="0">
+                    <Border.Triggers>
+                        <DataTrigger
+                            Binding="{Binding IsCountry}"
+                            TargetType="Border"
+                            Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SetRegionCommand}" CommandParameter="Country" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="12"
+                        Text="{x:Static strings:AppResources.StatCountries}"
+                        TextColor="{StaticResource Ink}">
+                        <Label.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsCountry}"
+                                TargetType="Label"
+                                Value="True">
+                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+                <Border
+                    Padding="12,6"
+                    BackgroundColor="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    StrokeThickness="0">
+                    <Border.Triggers>
+                        <DataTrigger
+                            Binding="{Binding IsAdminArea}"
+                            TargetType="Border"
+                            Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SetRegionCommand}" CommandParameter="AdminArea" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="12"
+                        Text="{x:Static strings:AppResources.StatRegions}"
+                        TextColor="{StaticResource Ink}">
+                        <Label.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsAdminArea}"
+                                TargetType="Label"
+                                Value="True">
+                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+            </HorizontalStackLayout>
+        </Border>
+
+        <!--  Country filter  -->
+        <Border
+            Grid.Column="1"
+            Padding="10,7"
+            HorizontalOptions="Start"
+            BackgroundColor="{StaticResource PaperCard}"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 18"
+            VerticalOptions="Center">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ChooseCountryCommand}" />
+            </Border.GestureRecognizers>
+            <Label
+                FontSize="12"
+                LineBreakMode="TailTruncation"
+                Text="{Binding FilteredCountry.CountryName, StringFormat='{0}  ▾'}"
+                TextColor="{StaticResource Ink}" />
+        </Border>
+
+        <!--  Display options and map  -->
+        <ImageButton
+            Grid.Column="2"
+            Padding="11"
+            BackgroundColor="Transparent"
+            Command="{Binding ChooseDisplayOptionsCommand}"
+            HeightRequest="44"
+            SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
+            Source="filter.png"
+            WidthRequest="44" />
+        <Border
+            Grid.Column="3"
+            BackgroundColor="{StaticResource Navy}"
+            HeightRequest="44"
+            StrokeShape="RoundRectangle 22"
+            StrokeThickness="0"
+            WidthRequest="44">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
+            </Border.GestureRecognizers>
+            <Grid>
+                <Image
+                    HeightRequest="22"
+                    IsVisible="{Binding IsListVisible}"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ShowMap}"
+                    Source="earth.png">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
+                    </Image.Behaviors>
+                </Image>
+                <Image
+                    HeightRequest="22"
+                    IsVisible="{Binding IsMapVisible}"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ShowStamps}"
+                    Source="board.png">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
+                    </Image.Behaviors>
+                </Image>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentView>

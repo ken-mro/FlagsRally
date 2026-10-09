@@ -80,10 +80,10 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
     Country? _filteredCountry;
 
     [ObservableProperty]
-    bool _isSettingsVisible;
-
-    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsListVisible))]
     bool _isMapVisible;
+
+    public bool IsListVisible => !IsMapVisible;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DateIsVisible))]
@@ -126,10 +126,16 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
         IsRefreshing = false;
     }
 
+    // "Hide date and month" as a small menu, ticked when on.
     [RelayCommand]
-    void ChangeSettingsVisibility()
+    async Task ChooseDisplayOptionsAsync()
     {
-        IsSettingsVisible = !IsSettingsVisible;
+        var hideDate = DateIsNotVisible ? $"✓ {AppResources.HideDateAndMonth}" : AppResources.HideDateAndMonth;
+        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideDate);
+        if (choice == hideDate)
+        {
+            DateIsNotVisible = !DateIsNotVisible;
+        }
     }
 
     [RelayCommand]
