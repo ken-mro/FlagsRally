@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Shell scripts must keep LF or bash fails on the carriage returns
+*.sh text eol=lf
