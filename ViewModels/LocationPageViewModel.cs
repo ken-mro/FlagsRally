@@ -57,6 +57,7 @@ public partial class LocationPageViewModel : BaseViewModel
     // The check-in spot: dropped with a long press (or at your location by Get Location) and
     // dragged to where you want to record, as long as it stays within CheckInRange of you.
     Pin? _tappedPointPin;
+    bool _isDraggingPin;
 
     // Where you were when the spot was placed, and the circle showing the range around it.
     Location? _checkInOrigin;
@@ -247,6 +248,7 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
+            _arrivalMap.PinDragStart += (sender, e) => _isDraggingPin = true;
             _arrivalMap.PinDragEnd += (sender, e) => _arrivalMap_PinDragEnd(sender, e);
             _arrivalMap.PinClicked += OnPinClicked;
 
@@ -256,6 +258,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private void _arrivalMap_PinDragEnd(object? sender, PinDragEventArgs e)
     {
+        _isDraggingPin = false;
         var position = e.Pin.Position;
 
         var selectedLocationPin = e.Pin as SelectedLocationPin;
@@ -294,6 +297,10 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)
     {
+        // On iOS the long press that starts dragging a pin is also reported as a map long press.
+        // Replacing the spot then would take the pin being dragged off the map.
+        if (_isDraggingPin) return;
+
         PlaceCheckInSpot(e.Point, here: null);
         if (ArrivalMap is not null)
         {
