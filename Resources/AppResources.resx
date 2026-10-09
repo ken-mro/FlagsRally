@@ -546,4 +546,7 @@
   <data name="StampFirstOnMap" xml:space="preserve">
     <value>Get your first stamp on the Map</value>
   </data>
+  <data name="RestoreSucceeded" xml:space="preserve">
+    <value>Backup restored successfully!</value>
+  </data>
 </root>
