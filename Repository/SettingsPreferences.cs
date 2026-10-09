@@ -13,6 +13,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _apiKey = "ApiKey";
     private string _customBoardSort = "CustomBoardSort";
     private string _pinStyle = "PinStyle";
+    private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -89,5 +90,15 @@ public partial class SettingsPreferences : ObservableObject
     public void SetPinStyle(PinStyle style)
     {
         _defaultPreferences.Set(_pinStyle, style.ToString());
+    }
+
+    public bool GetRegionalFlagsExpanded()
+    {
+        return bool.Parse(_defaultPreferences.Get(_regionalFlagsExpanded, true.ToString()));
+    }
+
+    public void SetRegionalFlagsExpanded(bool isExpanded)
+    {
+        _defaultPreferences.Set(_regionalFlagsExpanded, isExpanded.ToString());
     }
 }

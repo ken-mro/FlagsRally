@@ -20,12 +20,34 @@
         </CollectionView.ItemsLayout>
         <CollectionView.GroupHeaderTemplate>
             <DataTemplate x:DataType="viewmodels:CollectionSection">
-                <Grid Padding="4,16,4,4">
+                <!--  Tapping a collapsible heading folds its cards away  -->
+                <Grid
+                    Padding="4,16,4,4"
+                    ColumnDefinitions="Auto,*,Auto,Auto"
+                    ColumnSpacing="6">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CollectionsPageViewModel}}, x:DataType=viewmodels:CollectionsPageViewModel, Path=ToggleSectionCommand}" CommandParameter="{Binding .}" />
+                    </Grid.GestureRecognizers>
+                    <Label
+                        FontSize="20"
+                        IsVisible="{Binding IsCollapsible}"
+                        Text="{Binding Chevron}"
+                        TextColor="{StaticResource Navy}"
+                        VerticalOptions="Center"
+                        WidthRequest="18" />
                     <controls:StampLabel
+                        Grid.Column="1"
                         Style="{StaticResource StampHeading}"
                         Text="{Binding Title}"
                         VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="2"
+                        FontSize="13"
+                        Text="{Binding Summary}"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center" />
                     <Button
+                        Grid.Column="3"
                         Padding="8,0"
                         BackgroundColor="Transparent"
                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CollectionsPageViewModel}}, x:DataType=viewmodels:CollectionsPageViewModel, Path=EditBoardsCommand}"
@@ -69,7 +91,7 @@
                                                     <UriImageSource
                                                         CacheValidity="30"
                                                         CachingEnabled="True"
-                                                        Uri="{Binding ImageUrl}" />
+                                                        Uri="{Binding RemoteImageUrl}" />
                                                 </Image.Source>
                                             </Image>
                                         </Border>
@@ -77,7 +99,7 @@
                                         <Image
                                             Aspect="AspectFit"
                                             IsVisible="{Binding HasLocalImage}"
-                                            Source="{Binding ImageUrl}" />
+                                            Source="{Binding LocalImageFile}" />
                                         <Border
                                             BackgroundColor="{StaticResource Navy}"
                                             IsVisible="{Binding HasNoImage}"

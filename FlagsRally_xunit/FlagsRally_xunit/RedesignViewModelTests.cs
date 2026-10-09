@@ -65,7 +65,7 @@ public class RedesignViewModelTests
     public async Task Collections_cards_show_progress_latest_image_and_an_add_card()
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService());
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService(), CreateSettings());
 
         await vm.Init();
 
@@ -85,7 +85,7 @@ public class RedesignViewModelTests
     public async Task Collections_show_a_card_per_country_with_visited_countries_first()
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService());
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService(), CreateSettings());
 
         await vm.Init();
 
@@ -97,6 +97,29 @@ public class RedesignViewModelTests
         Assert.True(japan.HasLocalImage);           // the latest region's bundled emblem
         Assert.All(vm.RegionalCards.Skip(1), c => Assert.Equal(0, c.Visited));
         Assert.Equal([vm.RegionalCards, vm.BoardCards], vm.Sections);
+    }
+
+    [Fact]
+    public async Task Countries_can_be_folded_away_and_the_choice_is_remembered()
+    {
+        var (boards, locations) = CreateRepositories();
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                   .Returns((string _, string defaultValue, string? _) => defaultValue);
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService(), new SettingsPreferences(preferences.Object));
+        await vm.Init();
+        var countries = vm.RegionalCards.Count;
+
+        vm.ToggleSectionCommand.Execute(vm.RegionalCards);
+
+        Assert.False(vm.RegionalCards.IsExpanded);
+        Assert.Empty(vm.RegionalCards);                        // only the heading is left
+        Assert.Equal(countries, vm.RegionalCards.Cards.Count); // the cards come back when unfolded
+        Assert.Equal("1 / " + countries, vm.RegionalCards.Summary);
+        preferences.Verify(p => p.Set("RegionalFlagsExpanded", "False", It.IsAny<string>()));
+
+        vm.ToggleSectionCommand.Execute(vm.BoardCards);        // custom boards stay open
+        Assert.True(vm.BoardCards.IsExpanded);
     }
 
     // ---------- Regional flags board ----------

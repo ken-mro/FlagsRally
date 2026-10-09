@@ -4,6 +4,7 @@ using FlagsRally.Resources;
 using FlagsRally.Services;
 using FlagsRally.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace FlagsRally.ViewModels;
 
@@ -23,17 +24,72 @@ public record CollectionCard(CollectionCardKind Kind, string Key, string Title, 
     public bool HasRemoteImage => HasImage && ImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase);
     public bool HasLocalImage => HasImage && !HasRemoteImage;
     public bool HasNoImage => IsBoard && !HasImage;
+    // Each image view gets only its own kind of source, so a recycled card never shows another card's picture.
+    public string? RemoteImageUrl => HasRemoteImage ? ImageUrl : null;
+    public string? LocalImageFile => HasLocalImage ? ImageUrl : null;
     public double Progress => Total == 0 ? 0 : (double)Visited / Total;
     public string ProgressText => $"{Visited} / {Total}";
 }
 
 /// <summary>
-/// A titled group of cards; only the custom boards can be edited.
+/// A titled group of cards; only the custom boards can be edited. A collapsible group can be
+/// folded down to its heading: it then holds no items, while <see cref="Cards"/> keeps them all.
 /// </summary>
-public class CollectionSection(string title, bool isEditable) : ObservableCollection<CollectionCard>
+public class CollectionSection(string title, bool isEditable, bool isCollapsible = false) : ObservableCollection<CollectionCard>
 {
+    List<CollectionCard> _cards = [];
+    bool _isExpanded = true;
+    string _summary = string.Empty;
+
     public string Title { get; } = title;
     public bool IsEditable { get; } = isEditable;
+    public bool IsCollapsible { get; } = isCollapsible;
+
+    public IReadOnlyList<CollectionCard> Cards => _cards;
+
+    public bool IsExpanded
+    {
+        get => _isExpanded;
+        set
+        {
+            if (_isExpanded == value) return;
+            _isExpanded = value;
+            ShowCards();
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsExpanded)));
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Chevron)));
+        }
+    }
+
+    public string Chevron => IsExpanded ? "▾" : "▸";
+
+    /// <summary>
+    /// Shown beside the heading, e.g. how many countries have stamps.
+    /// </summary>
+    public string Summary
+    {
+        get => _summary;
+        set
+        {
+            _summary = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Summary)));
+        }
+    }
+
+    public void SetCards(IEnumerable<CollectionCard> cards)
+    {
+        _cards = cards.ToList();
+        ShowCards();
+    }
+
+    void ShowCards()
+    {
+        Clear();
+        if (!IsExpanded) return;
+        foreach (var card in _cards)
+        {
+            Add(card);
+        }
+    }
 }
 
 public partial class CollectionsPageViewModel : BaseViewModel
@@ -41,16 +97,20 @@ public partial class CollectionsPageViewModel : BaseViewModel
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
     readonly RegionalFlagsService _regionalFlagsService;
+    readonly SettingsPreferences _settingsPreferences;
 
-    public CollectionsPageViewModel(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, RegionalFlagsService regionalFlagsService)
+    public CollectionsPageViewModel(ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, RegionalFlagsService regionalFlagsService, SettingsPreferences settingsPreferences)
     {
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
         _regionalFlagsService = regionalFlagsService;
+        _settingsPreferences = settingsPreferences;
+        RegionalCards.IsExpanded = settingsPreferences.GetRegionalFlagsExpanded();
         Sections = [RegionalCards, BoardCards];
     }
 
-    public CollectionSection RegionalCards { get; } = new(AppResources.CountriesAndRegions, isEditable: false);
+    // The long list of countries can be folded away to get to the custom boards.
+    public CollectionSection RegionalCards { get; } = new(AppResources.CountriesAndRegions, isEditable: false, isCollapsible: true);
 
     public CollectionSection BoardCards { get; } = new(AppResources.CustomBoards, isEditable: true);
 
@@ -107,10 +167,19 @@ public partial class CollectionsPageViewModel : BaseViewModel
                 country.CountryFlag));
         }
 
-        RegionalCards.Clear();
-        foreach (var card in cards.OrderBy(c => c.Visited == 0))
+        RegionalCards.SetCards(cards.OrderBy(c => c.Visited == 0));
+        RegionalCards.Summary = $"{cards.Count(c => c.Visited > 0)} / {cards.Count}";
+    }
+
+    [RelayCommand]
+    void ToggleSection(CollectionSection section)
+    {
+        if (!section.IsCollapsible) return;
+
+        section.IsExpanded = !section.IsExpanded;
+        if (section == RegionalCards)
         {
-            RegionalCards.Add(card);
+            _settingsPreferences.SetRegionalFlagsExpanded(section.IsExpanded);
         }
     }
 
