@@ -10,74 +10,108 @@
     <Border
         Padding="2"
         BackgroundColor="{StaticResource PaperEdge}"
-        StrokeShape="RoundRectangle 8"
-        StrokeThickness="0">
+        StrokeShape="RoundRectangle 18"
+        StrokeThickness="0"
+        VerticalOptions="Center">
         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="2">
             <Border
                 Grid.Column="0"
-                Padding="0,6"
+                Padding="0,7"
                 BackgroundColor="Transparent"
-                StrokeShape="RoundRectangle 6"
+                StrokeShape="RoundRectangle 16"
                 StrokeThickness="0">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowsAll}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                        <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
                     </DataTrigger>
                 </Border.Triggers>
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="All" />
                 </Border.GestureRecognizers>
                 <Label
-                    FontSize="13"
+                    FontSize="12"
                     HorizontalOptions="Center"
-                    Text="{x:Static strings:AppResources.AllFilter}" />
+                    LineBreakMode="TailTruncation"
+                    Text="{x:Static strings:AppResources.AllFilter}"
+                    TextColor="{StaticResource Ink}">
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding ShowsAll}"
+                            TargetType="Label"
+                            Value="True">
+                            <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
             </Border>
             <Border
                 Grid.Column="1"
-                Padding="0,6"
+                Padding="0,7"
                 BackgroundColor="Transparent"
-                StrokeShape="RoundRectangle 6"
+                StrokeShape="RoundRectangle 16"
                 StrokeThickness="0">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowsVisited}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                        <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
                     </DataTrigger>
                 </Border.Triggers>
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Visited" />
                 </Border.GestureRecognizers>
                 <Label
-                    FontSize="13"
+                    FontSize="12"
                     HorizontalOptions="Center"
-                    Text="{x:Static strings:AppResources.Visited}" />
+                    LineBreakMode="TailTruncation"
+                    Text="{x:Static strings:AppResources.Visited}"
+                    TextColor="{StaticResource Ink}">
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding ShowsVisited}"
+                            TargetType="Label"
+                            Value="True">
+                            <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
             </Border>
             <Border
                 Grid.Column="2"
-                Padding="0,6"
+                Padding="0,7"
                 BackgroundColor="Transparent"
-                StrokeShape="RoundRectangle 6"
+                StrokeShape="RoundRectangle 16"
                 StrokeThickness="0">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowsUnvisited}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+                        <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
                     </DataTrigger>
                 </Border.Triggers>
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Unvisited" />
                 </Border.GestureRecognizers>
                 <Label
-                    FontSize="13"
+                    FontSize="12"
                     HorizontalOptions="Center"
-                    Text="{x:Static strings:AppResources.NotVisited}" />
+                    LineBreakMode="TailTruncation"
+                    Text="{x:Static strings:AppResources.NotVisited}"
+                    TextColor="{StaticResource Ink}">
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding ShowsUnvisited}"
+                            TargetType="Label"
+                            Value="True">
+                            <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
             </Border>
         </Grid>
     </Border>

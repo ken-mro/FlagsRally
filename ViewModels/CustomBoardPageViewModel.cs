@@ -89,9 +89,11 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [RelayCommand]
     async Task ChooseSortAsync()
     {
+        // The sort in use carries a tick, since the toolbar only shows an icon.
         var sorts = Enum.GetValues<LocationSort>();
-        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.SortBy, AppResources.Cancel, null, sorts.Select(x => x.DisplayName()).ToArray());
-        SelectedSort = sorts.FirstOrDefault(x => x.DisplayName() == choice, SelectedSort);
+        string Label(LocationSort sort) => sort == SelectedSort ? $"✓ {sort.DisplayName()}" : sort.DisplayName();
+        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.SortBy, AppResources.Cancel, null, sorts.Select(Label).ToArray());
+        SelectedSort = sorts.FirstOrDefault(x => Label(x) == choice, SelectedSort);
     }
 
     [RelayCommand]
@@ -120,9 +122,6 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
             OnPropertyChanged(nameof(ProgressText));
         }
     }
-
-    [ObservableProperty]
-    bool _isSettingsVisible;
 
 
     [ObservableProperty]
@@ -182,9 +181,15 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         IsRefreshing = false;
     }
 
+    // "Hide date and month" as a small menu, ticked when on.
     [RelayCommand]
-    void ChangeSettingsVisibility()
+    async Task ChooseDisplayOptionsAsync()
     {
-        IsSettingsVisible = !IsSettingsVisible;
+        var hideDate = DateIsNotVisible ? $"✓ {AppResources.HideDateAndMonth}" : AppResources.HideDateAndMonth;
+        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideDate);
+        if (choice == hideDate)
+        {
+            DateIsNotVisible = !DateIsNotVisible;
+        }
     }
 }

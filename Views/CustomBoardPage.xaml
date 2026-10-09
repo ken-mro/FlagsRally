@@ -21,20 +21,13 @@
     <Grid Padding="5" RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!--  Progress  -->
         <Grid
             Grid.Row="0"
-            Padding="6,6,6,0"
-            ColumnSpacing="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            Padding="6,6,6,0">
             <VerticalStackLayout Spacing="4" VerticalOptions="Center">
                 <Label
                     FontAttributes="Bold"
@@ -42,58 +35,10 @@
                     Text="{Binding ProgressText}" />
                 <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
             </VerticalStackLayout>
-            <!--  Sort order  -->
-            <Border
-                Grid.Column="1"
-                Padding="10,6"
-                BackgroundColor="{StaticResource PaperCard}"
-                SemanticProperties.Description="{x:Static strings:AppResources.SortBy}"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 16"
-                VerticalOptions="Center">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ChooseSortCommand}" />
-                </Border.GestureRecognizers>
-                <Label
-                    FontSize="13"
-                    Text="{Binding SortText, StringFormat='⇅  {0}'}"
-                    TextColor="{StaticResource Navy}" />
-            </Border>
-            <Image
-                Grid.Column="2"
-                Margin="5,0"
-                HeightRequest="25"
-                SemanticProperties.Description="{x:Static strings:AppResources.HideDateAndMonth}"
-                Source="filter.png"
-                VerticalOptions="Center">
-                <Image.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ChangeSettingsVisibilityCommand}" />
-                </Image.GestureRecognizers>
-            </Image>
         </Grid>
 
-        <!--  All / Visited / Not visited, and display options  -->
-        <VerticalStackLayout
-            Grid.Row="1"
-            Padding="6,0"
-            Spacing="6">
-            <controls:VisitFilterBar />
-            <Grid IsVisible="{Binding IsSettingsVisible}">
-                <Label
-                    Padding="5,0"
-                    FontSize="16"
-                    HorizontalOptions="Start"
-                    Text="{x:Static strings:AppResources.HideDateAndMonth}"
-                    VerticalOptions="Center" />
-                <Switch
-                    Margin="20,5"
-                    HorizontalOptions="End"
-                    IsToggled="{Binding DateIsNotVisible}"
-                    VerticalOptions="Center" />
-            </Grid>
-        </VerticalStackLayout>
         <RefreshView
-            Grid.Row="2"
+            Grid.Row="1"
             Command="{Binding RefreshCountriesCommand}"
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
@@ -130,6 +75,10 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.GroupHeaderTemplate>
+                <!--  Room for the floating toolbar so the last tiles can scroll above it  -->
+                <CollectionView.Footer>
+                    <BoxView HeightRequest="84" Color="Transparent" />
+                </CollectionView.Footer>
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>
@@ -218,11 +167,60 @@
         </RefreshView>
 
         <ActivityIndicator
-            Grid.Row="2"
+            Grid.Row="1"
             Grid.ColumnSpan="2"
             HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             Color="{StaticResource Navy}" />
+        <!--  Controls float just above the tab bar, within thumb reach, over the tiles  -->
+        <Border
+            Grid.RowSpan="2"
+            Margin="7,0,7,7"
+            Padding="8"
+            BackgroundColor="{StaticResource PaperCard}"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 30"
+            StrokeThickness="1"
+            VerticalOptions="End">
+            <Border.Shadow>
+                <Shadow
+                    Brush="{StaticResource NavyDeep}"
+                    Opacity="0.18"
+                    Radius="14"
+                    Offset="0,4" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+                <controls:VisitFilterBar />
+                <Border
+                    Grid.Column="1"
+                    BackgroundColor="Transparent"
+                    HeightRequest="44"
+                    SemanticProperties.Description="{x:Static strings:AppResources.SortBy}"
+                    StrokeShape="RoundRectangle 22"
+                    StrokeThickness="0"
+                    WidthRequest="44">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChooseSortCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="22"
+                        HorizontalOptions="Center"
+                        Text="⇅"
+                        TextColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Border>
+                <ImageButton
+                    Grid.Column="2"
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ChooseDisplayOptionsCommand}"
+                    HeightRequest="44"
+                    SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
+                    Source="filter.png"
+                    WidthRequest="44" />
+            </Grid>
+        </Border>
     </Grid>
 </ContentPage>
