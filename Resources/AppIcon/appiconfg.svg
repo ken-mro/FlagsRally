@@ -1,25 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108">
-  <!-- FlagsRally app icon foreground.
-       Vector redraw of the existing icon (red passport, globe, pin, band), same colours,
-       flat style. Fits the adaptive-icon safe zone (circle r=33 around 54,54). -->
+  <!-- FlagsRally app icon foreground: the red passport with the original blue/green globe
+       in a gold ring, the original coral-red location pin and a gold title band. -->
   <defs>
-    <clipPath id="globe">
-      <circle cx="53.83" cy="48.11" r="12.36"/>
-    </clipPath>
+    <clipPath id="globe"><circle cx="54.0" cy="49.0" r="11.0"/></clipPath>
   </defs>
-
-  <!-- passport cover: dark edge + lighter face -->
-  <rect x="33.3" y="28.0" width="41.4" height="52.0" rx="3.84" fill="#7C030C"/>
-  <rect x="35.46" y="30.16" width="37.08" height="47.68" rx="1.4" fill="#B94047"/>
+  <rect x="33.3" y="28" width="41.4" height="52" rx="4" fill="#B94047"/>
+  <rect x="33.3" y="28" width="3.2" height="52" rx="1.6" fill="#8E2F36"/>
 
   <!-- globe -->
-  <circle cx="53.83" cy="48.11" r="12.36" fill="#4ED195"/>
-  <path clip-path="url(#globe)" d="M40.84 45.66 L47.68 50.13 L51.45 49.01 L53.55 46.64 L57.74 46.22 L58.29 41.89 L62.06 39.24 L67.37 37.42 L67.37 43.01 L65.0 43.43 L60.04 46.5 L58.85 51.04 L60.39 52.64 L61.09 58.37 L62.48 62.56 L56.2 62.56 L56.2 60.46 L54.66 54.18 L48.52 53.13 L43.07 54.32 L40.49 54.88 Z" fill="#2594EF"/>
+  <circle cx="54.0" cy="49.0" r="11.0" fill="#2594EF"/>
+  <g clip-path="url(#globe)" fill="#4ED195">
+    <path d="M42 46 Q46 41.5 50.5 43.2 Q52.6 45 51 48 Q49.5 50.3 46.6 50.6 Q44.6 51.2 43.6 55 L42 55 Z"/>
+    <path d="M53.6 53.4 Q57 50 61 51.4 Q63.4 52.4 66 50.6 L66 56 Q62 61.2 57.2 62 Q55.2 59.8 56 57.6 Q54.6 55.6 53.6 53.4 Z"/>
+  </g>
+  <circle cx="54.0" cy="49.0" r="11.9" fill="none" stroke="#E9C46A" stroke-width="1.8"/>
 
   <!-- location pin -->
-  <path d="M49.99 43.36 L46.62 39.63 A4.54 4.54 0 1 1 53.36 39.63 Z" fill="#FB5968"/>
-  <circle cx="49.99" cy="36.59" r="1.75" fill="#D8304C"/>
+  <path d="M49.5 47.5 L45.9 43.5 A4.9 4.9 0 1 1 53.1 43.5 Z" fill="#FB5968" stroke="#B94047" stroke-width="1.2" stroke-linejoin="round"/>
+  <circle cx="49.5" cy="40.2" r="1.9" fill="#D8304C"/>
 
-  <!-- band -->
-  <rect x="39.93" y="68.28" width="28.21" height="2.09" rx="1.04" fill="#FFEEA3"/>
+  <!-- title band -->
+  <rect x="45" y="68" width="18" height="2.6" rx="1.3" fill="#E9C46A"/>
+  <rect x="48" y="72.6" width="12" height="1.4" rx="0.7" fill="#E9C46A" fill-opacity="0.7"/>
 </svg>

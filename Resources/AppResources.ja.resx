@@ -316,7 +316,7 @@
     <value>リセットしますか？</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>ここにいます!</value>
+    <value>記録する場所</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>位置情報の偽装が検出されました。</value>
@@ -383,5 +383,143 @@
   </data>
   <data name="ChooseLocation" xml:space="preserve">
     <value>この場所には複数のピンがあります。選択してください</value>
+  </data>
+  <data name="NotVisited" xml:space="preserve">
+    <value>未訪問</value>
+  </data>
+  <data name="ResetCheckIn" xml:space="preserve">
+    <value>チェックインを取り消す</value>
+  </data>
+  <data name="Directions" xml:space="preserve">
+    <value>経路</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="AddBoard" xml:space="preserve">
+    <value>ボードを追加</value>
+  </data>
+  <data name="TabPassport" xml:space="preserve">
+    <value>パスポート</value>
+  </data>
+  <data name="TabMap" xml:space="preserve">
+    <value>マップ</value>
+  </data>
+  <data name="TabCollections" xml:space="preserve">
+    <value>コレクション</value>
+  </data>
+  <data name="CountriesAndRegions" xml:space="preserve">
+    <value>国と地域</value>
+  </data>
+  <data name="RegionalFlags" xml:space="preserve">
+    <value>地域の旗</value>
+  </data>
+  <data name="RegionalFlagsSubtitle" xml:space="preserve">
+    <value>訪れた州や地域を国ごとに表示</value>
+  </data>
+  <data name="CustomBoards" xml:space="preserve">
+    <value>カスタムボード</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="AllFilter" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="Visited" xml:space="preserve">
+    <value>訪問済み</value>
+  </data>
+  <data name="StatCountries" xml:space="preserve">
+    <value>国</value>
+  </data>
+  <data name="StatRegions" xml:space="preserve">
+    <value>地域</value>
+  </data>
+  <data name="StatCheckIns" xml:space="preserve">
+    <value>チェックイン</value>
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value>データ</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>詳細設定</value>
+  </data>
+  <data name="DistanceFromHere" xml:space="preserve">
+    <value>ここから約{0}です。</value>
+  </data>
+  <data name="DragToReorder" xml:space="preserve">
+    <value>≡ をドラッグして並べ替え</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>並び順</value>
+  </data>
+  <data name="SortGroup" xml:space="preserve">
+    <value>グループごと</value>
+  </data>
+  <data name="SortJsonOrder" xml:space="preserve">
+    <value>登録順</value>
+  </data>
+  <data name="SortNewest" xml:space="preserve">
+    <value>取得が新しい順</value>
+  </data>
+  <data name="SortOldest" xml:space="preserve">
+    <value>取得が古い順</value>
+  </data>
+  <data name="OtherGroup" xml:space="preserve">
+    <value>その他</value>
+  </data>
+  <data name="SharedBoards" xml:space="preserve">
+    <value>公開ボード</value>
+  </data>
+  <data name="BoardCatalogHint" xml:space="preserve">
+    <value>追加するボードをタップしてください。ボードを更新しても、チェックインの記録は残ります。</value>
+  </data>
+  <data name="UpOneFolder" xml:space="preserve">
+    <value>ひとつ上のフォルダへ</value>
+  </data>
+  <data name="AddFromDevice" xml:space="preserve">
+    <value>端末のファイルから追加</value>
+  </data>
+  <data name="BoardAdded" xml:space="preserve">
+    <value>「{0}」を追加しました。</value>
+  </data>
+  <data name="ConfirmReplaceBoard" xml:space="preserve">
+    <value>「{0}」はすでに追加されています。このファイルで置き換えますか？チェックインの記録は残ります。</value>
+  </data>
+  <data name="CouldNotLoadBoards" xml:space="preserve">
+    <value>ボードを読み込めませんでした。通信状況を確認して、もう一度お試しください。</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>再試行</value>
+  </data>
+  <data name="NoBoardsInFolder" xml:space="preserve">
+    <value>このフォルダにボードはありません。</value>
+  </data>
+  <data name="MapPins" xml:space="preserve">
+    <value>マップのピン</value>
+  </data>
+  <data name="PinStyleClassic" xml:space="preserve">
+    <value>クラシック</value>
+  </data>
+  <data name="PinStyleDrop" xml:space="preserve">
+    <value>しずく</value>
+  </data>
+  <data name="CheckInSpotTitle" xml:space="preserve">
+    <value>このピンの場所で記録</value>
+  </data>
+  <data name="CheckInSpotHint" xml:space="preserve">
+    <value>ピンを長押ししたまま動かすと、場所を変えられます。現在地から{0}以内（地図の円の中）なら、その場所で記録できます。</value>
+  </data>
+  <data name="CheckInSpotInRange" xml:space="preserve">
+    <value>現在地から {0}（円の中なので記録できます）</value>
+  </data>
+  <data name="CheckInSpotOutOfRange" xml:space="preserve">
+    <value>現在地から {0}（円の中に戻してください）</value>
+  </data>
+  <data name="CheckInSpotTooFar" xml:space="preserve">
+    <value>ピンが現在地から {0} 離れています。現在地から{1}以内（円の中）に動かしてから、もう一度お試しください。</value>
+  </data>
+  <data name="CheckInHere" xml:space="preserve">
+    <value>ここで記録</value>
   </data>
 </root>

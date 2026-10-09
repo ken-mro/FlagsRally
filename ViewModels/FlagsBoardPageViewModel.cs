@@ -3,52 +3,33 @@ using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Models;
 using FlagsRally.Repository;
-using FlagsRally.Helpers;
+using FlagsRally.Services;
 using System.Collections.ObjectModel;
 using FlagsRally.Resources;
-using System.Diagnostics;
-using System.Linq;
 
 namespace FlagsRally.ViewModels;
 
-public partial class FlagsBoardPageViewModel : BaseViewModel
+public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable, IVisitFilterable
 {
-    private readonly SubRegionHelper _subRegionHelper;
-    private readonly IArrivalLocationDataRepository _arrivalLocationDataRepository;
-    private readonly SettingsPreferences _settingsPreferences;
-    private readonly CustomCountryHelper _customCountryHelper;
+    public const string CountryQueryKey = "country";
 
+    private readonly RegionalFlagsService _regionalFlagsService;
 
-    public FlagsBoardPageViewModel(IArrivalLocationDataRepository arrivalLocationDataRepository, SubRegionHelper arrivalInfoService, SettingsPreferences settingsPreferences, CustomCountryHelper customCountryHelper)
+    public FlagsBoardPageViewModel(RegionalFlagsService regionalFlagsService)
     {
         Title = "Flags Board";
 
-        _arrivalLocationDataRepository = arrivalLocationDataRepository;
-        _subRegionHelper = arrivalInfoService;
-        _settingsPreferences = settingsPreferences;
-        _customCountryHelper = customCountryHelper;
+        _regionalFlagsService = regionalFlagsService;
+        FilteredCountry = _regionalFlagsService.GetCountries().First();
+    }
 
-        var countryList = new List<Country>();
-        foreach (var country in Constants.SupportedSubRegionCountryCodeList)
+    // Opened from a country card on the Collections page; loaded by the next Init().
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue(CountryQueryKey, out var code) && code is string countryCode)
         {
-            countryList.Add(customCountryHelper.GetCountryByCode(country.ToUpper()));
+            FilteredCountry = _regionalFlagsService.GetCountry(countryCode);
         }
-
-        CountryList = new ObservableCollection<Country>(countryList.OrderBy(x => x.CountryName).ToList());
-
-        var latestCountryCode = _settingsPreferences.GetLatestCountry();
-        var countryCodeOfResidence = _settingsPreferences.GetCountryOfResidence();
-        Country? matchingCountry = CountryList.FirstOrDefault(c => c.CountryShortCode == latestCountryCode)
-                            ?? CountryList.FirstOrDefault(c => c.CountryShortCode == countryCodeOfResidence);
-        if (matchingCountry != null)
-        {
-            CountryList.Remove(matchingCountry);
-            CountryList.Insert(0, matchingCountry);
-        }
-
-        FilteredCountry = CountryList.First();
-
-        _ = Init();
     }
 
     [ObservableProperty]
@@ -56,10 +37,33 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
+    [NotifyPropertyChangedFor(nameof(VisitedCount))]
+    [NotifyPropertyChangedFor(nameof(TotalCount))]
+    [NotifyPropertyChangedFor(nameof(Progress))]
+    [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<SubRegion> _sourceArrivalSubRegionList = [];
 
     [ObservableProperty]
-    ObservableCollection<Country> _countryList;
+    [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
+    [NotifyPropertyChangedFor(nameof(ShowsAll))]
+    [NotifyPropertyChangedFor(nameof(ShowsVisited))]
+    [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
+    VisitFilter _selectedVisitFilter = VisitFilter.All;
+
+    public bool ShowsAll => SelectedVisitFilter == VisitFilter.All;
+    public bool ShowsVisited => SelectedVisitFilter == VisitFilter.Visited;
+    public bool ShowsUnvisited => SelectedVisitFilter == VisitFilter.Unvisited;
+
+    public int VisitedCount => SourceArrivalSubRegionList.Count(x => x.HasBeenVisited);
+    public int TotalCount => SourceArrivalSubRegionList.Count;
+    public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
+    public string ProgressText => $"{VisitedCount} / {TotalCount}";
+
+    [RelayCommand]
+    void SetVisitFilter(string filter)
+    {
+        SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
+    }
 
     private bool _isLoaded = false;
     public string ShapesSource => GetShapesSource();
@@ -72,22 +76,8 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
         return $"{Constants.GEOJSON_RESOURCE_BASE_URL}/{_mapCountryShortCode}.json";
     }
 
-    Country? _filteredCountry ;
-    public Country? FilteredCountry
-    {
-        get => _filteredCountry;
-        set
-        {
-            SetProperty(ref _filteredCountry, value);
-
-            if (IsMapVisible)
-            {
-                OnPropertyChanged(nameof(ShapesSource));
-            }
-
-            _ = Init();
-        }
-    }
+    [ObservableProperty]
+    Country? _filteredCountry;
 
     [ObservableProperty]
     bool _isSettingsVisible;
@@ -101,21 +91,21 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
 
     public bool DateIsVisible => !DateIsNotVisible;
 
-    public ObservableCollection<SubRegion> DisplayFullSubRegionList => GetFilteredList();
-    
+    public ObservableCollection<SubRegion> DisplayFullSubRegionList =>
+        new(SourceArrivalSubRegionList.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited)));
 
     [ObservableProperty]
     bool _isRefreshing = false;
 
-    private async Task Init()
+    public async Task Init()
     {
         try
         {
             IsBusy = true;
             if (FilteredCountry == null) return;
 
-            var subRegionList = await _arrivalLocationDataRepository.GetSubRegionsByCountryCode(FilteredCountry.CountryShortCode);
-            SourceArrivalSubRegionList = new ObservableCollection<SubRegion>(subRegionList);
+            var regions = await _regionalFlagsService.GetRegionsAsync(FilteredCountry);
+            SourceArrivalSubRegionList = new ObservableCollection<SubRegion>(regions);
         }
         catch (Exception ex)
         {
@@ -126,35 +116,6 @@ public partial class FlagsBoardPageViewModel : BaseViewModel
             if (!_isLoaded) _isLoaded = true;
             IsBusy = false;
         }
-    }
-
-    private ObservableCollection<SubRegion> GetFilteredList()
-    {
-        var countryInfo = CountryList.First(x => x.CountryShortCode == FilteredCountry?.CountryShortCode);
-        var twoLetterRegionName = _settingsPreferences.GetCountryOfResidence();
-        List<SubRegion> blankAllSubregionList = _subRegionHelper.GetBlankAllRegionList(countryInfo, twoLetterRegionName);
-
-        //Assign the arrival data to the blankAllSubregionList.
-        foreach (var SourceArrivalSubRegion in SourceArrivalSubRegionList)
-        {
-            var subRegionCode = SourceArrivalSubRegion?.Code;
-
-            if (string.IsNullOrEmpty(subRegionCode?.RegionCode))
-            {
-                var acquiredSubRegionCodeString = _customCountryHelper.GetAdminAreaCode(countryInfo.CountryShortCode, SourceArrivalSubRegion?.EnAdminAreaName ?? string.Empty);
-                if (string.IsNullOrEmpty(acquiredSubRegionCodeString)) continue;
-            }
-
-            var blankInstance = blankAllSubregionList.Find(x => x.Code.lowerCountryCodeHyphenRegionCode == subRegionCode?.lowerCountryCodeHyphenRegionCode);
-            if (blankInstance is null) continue;
-
-            if (blankInstance.ArrivalDate < SourceArrivalSubRegion?.ArrivalDate)
-            {
-                blankInstance.ArrivalDate = SourceArrivalSubRegion.ArrivalDate;
-            }
-        }
-
-        return new ObservableCollection<SubRegion>(blankAllSubregionList.OrderByDescending(x => x.ArrivalDate).ToList());
     }
 
     [RelayCommand]

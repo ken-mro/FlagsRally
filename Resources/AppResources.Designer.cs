@@ -358,7 +358,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m here!.
+        ///   Looks up a localized string similar to Check-in spot.
         /// </summary>
         internal static string GetLocationHere {
             get {
@@ -858,6 +858,420 @@ namespace FlagsRally.Resources {
         internal static string ChooseLocation {
             get {
                 return ResourceManager.GetString("ChooseLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not visited.
+        /// </summary>
+        internal static string NotVisited {
+            get {
+                return ResourceManager.GetString("NotVisited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset check-in.
+        /// </summary>
+        internal static string ResetCheckIn {
+            get {
+                return ResourceManager.GetString("ResetCheckIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directions.
+        /// </summary>
+        internal static string Directions {
+            get {
+                return ResourceManager.GetString("Directions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        internal static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add board.
+        /// </summary>
+        internal static string AddBoard {
+            get {
+                return ResourceManager.GetString("AddBoard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passport.
+        /// </summary>
+        internal static string TabPassport {
+            get {
+                return ResourceManager.GetString("TabPassport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map.
+        /// </summary>
+        internal static string TabMap {
+            get {
+                return ResourceManager.GetString("TabMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collections.
+        /// </summary>
+        internal static string TabCollections {
+            get {
+                return ResourceManager.GetString("TabCollections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries &amp; regions.
+        /// </summary>
+        internal static string CountriesAndRegions {
+            get {
+                return ResourceManager.GetString("CountriesAndRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regional flags.
+        /// </summary>
+        internal static string RegionalFlags {
+            get {
+                return ResourceManager.GetString("RegionalFlags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to States and regions you have visited, by country.
+        /// </summary>
+        internal static string RegionalFlagsSubtitle {
+            get {
+                return ResourceManager.GetString("RegionalFlagsSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom boards.
+        /// </summary>
+        internal static string CustomBoards {
+            get {
+                return ResourceManager.GetString("CustomBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string AllFilter {
+            get {
+                return ResourceManager.GetString("AllFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visited.
+        /// </summary>
+        internal static string Visited {
+            get {
+                return ResourceManager.GetString("Visited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries.
+        /// </summary>
+        internal static string StatCountries {
+            get {
+                return ResourceManager.GetString("StatCountries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regions.
+        /// </summary>
+        internal static string StatRegions {
+            get {
+                return ResourceManager.GetString("StatRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check-ins.
+        /// </summary>
+        internal static string StatCheckIns {
+            get {
+                return ResourceManager.GetString("StatCheckIns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        internal static string Data {
+            get {
+                return ResourceManager.GetString("Data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        internal static string Advanced {
+            get {
+                return ResourceManager.GetString("Advanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is about {0} from here..
+        /// </summary>
+        internal static string DistanceFromHere {
+            get {
+                return ResourceManager.GetString("DistanceFromHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag ≡ to change the order.
+        /// </summary>
+        internal static string DragToReorder {
+            get {
+                return ResourceManager.GetString("DragToReorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by.
+        /// </summary>
+        internal static string SortBy {
+            get {
+                return ResourceManager.GetString("SortBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        internal static string SortGroup {
+            get {
+                return ResourceManager.GetString("SortGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Board order.
+        /// </summary>
+        internal static string SortJsonOrder {
+            get {
+                return ResourceManager.GetString("SortJsonOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Newest check-in.
+        /// </summary>
+        internal static string SortNewest {
+            get {
+                return ResourceManager.GetString("SortNewest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oldest check-in.
+        /// </summary>
+        internal static string SortOldest {
+            get {
+                return ResourceManager.GetString("SortOldest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string OtherGroup {
+            get {
+                return ResourceManager.GetString("OtherGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared boards.
+        /// </summary>
+        internal static string SharedBoards {
+            get {
+                return ResourceManager.GetString("SharedBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap a board to add it. Your check-ins are kept when a board is updated..
+        /// </summary>
+        internal static string BoardCatalogHint {
+            get {
+                return ResourceManager.GetString("BoardCatalogHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up one folder.
+        /// </summary>
+        internal static string UpOneFolder {
+            get {
+                return ResourceManager.GetString("UpOneFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add from a file on this device.
+        /// </summary>
+        internal static string AddFromDevice {
+            get {
+                return ResourceManager.GetString("AddFromDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added “{0}”..
+        /// </summary>
+        internal static string BoardAdded {
+            get {
+                return ResourceManager.GetString("BoardAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to “{0}” is already added. Replace it with this file? Your check-ins are kept..
+        /// </summary>
+        internal static string ConfirmReplaceBoard {
+            get {
+                return ResourceManager.GetString("ConfirmReplaceBoard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't load the boards. Check your connection and try again..
+        /// </summary>
+        internal static string CouldNotLoadBoards {
+            get {
+                return ResourceManager.GetString("CouldNotLoadBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry.
+        /// </summary>
+        internal static string Retry {
+            get {
+                return ResourceManager.GetString("Retry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no boards in this folder..
+        /// </summary>
+        internal static string NoBoardsInFolder {
+            get {
+                return ResourceManager.GetString("NoBoardsInFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map pins.
+        /// </summary>
+        internal static string MapPins {
+            get {
+                return ResourceManager.GetString("MapPins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classic.
+        /// </summary>
+        internal static string PinStyleClassic {
+            get {
+                return ResourceManager.GetString("PinStyleClassic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drop.
+        /// </summary>
+        internal static string PinStyleDrop {
+            get {
+                return ResourceManager.GetString("PinStyleDrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check in at this pin.
+        /// </summary>
+        internal static string CheckInSpotTitle {
+            get {
+                return ResourceManager.GetString("CheckInSpotTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are..
+        /// </summary>
+        internal static string CheckInSpotHint {
+            get {
+                return ResourceManager.GetString("CheckInSpotHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} from you - inside the circle.
+        /// </summary>
+        internal static string CheckInSpotInRange {
+            get {
+                return ResourceManager.GetString("CheckInSpotInRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} from you - move it back inside the circle.
+        /// </summary>
+        internal static string CheckInSpotOutOfRange {
+            get {
+                return ResourceManager.GetString("CheckInSpotOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pin is {0} from where you are. Move it to within {1} of you (inside the circle) and try again..
+        /// </summary>
+        internal static string CheckInSpotTooFar {
+            get {
+                return ResourceManager.GetString("CheckInSpotTooFar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check in here.
+        /// </summary>
+        internal static string CheckInHere {
+            get {
+                return ResourceManager.GetString("CheckInHere", resourceCulture);
             }
         }
     }

@@ -316,7 +316,7 @@
     <value>Are you sure to reset?</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>I'm here!</value>
+    <value>Check-in spot</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>Fake location detected!</value>
@@ -383,5 +383,143 @@
   </data>
   <data name="ChooseLocation" xml:space="preserve">
     <value>Several pins are here. Choose one</value>
+  </data>
+  <data name="NotVisited" xml:space="preserve">
+    <value>Not visited</value>
+  </data>
+  <data name="ResetCheckIn" xml:space="preserve">
+    <value>Reset check-in</value>
+  </data>
+  <data name="Directions" xml:space="preserve">
+    <value>Directions</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="AddBoard" xml:space="preserve">
+    <value>Add board</value>
+  </data>
+  <data name="TabPassport" xml:space="preserve">
+    <value>Passport</value>
+  </data>
+  <data name="TabMap" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="TabCollections" xml:space="preserve">
+    <value>Collections</value>
+  </data>
+  <data name="CountriesAndRegions" xml:space="preserve">
+    <value>Countries &amp; regions</value>
+  </data>
+  <data name="RegionalFlags" xml:space="preserve">
+    <value>Regional flags</value>
+  </data>
+  <data name="RegionalFlagsSubtitle" xml:space="preserve">
+    <value>States and regions you have visited, by country</value>
+  </data>
+  <data name="CustomBoards" xml:space="preserve">
+    <value>Custom boards</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AllFilter" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Visited" xml:space="preserve">
+    <value>Visited</value>
+  </data>
+  <data name="StatCountries" xml:space="preserve">
+    <value>Countries</value>
+  </data>
+  <data name="StatRegions" xml:space="preserve">
+    <value>Regions</value>
+  </data>
+  <data name="StatCheckIns" xml:space="preserve">
+    <value>Check-ins</value>
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="DistanceFromHere" xml:space="preserve">
+    <value>It is about {0} from here.</value>
+  </data>
+  <data name="DragToReorder" xml:space="preserve">
+    <value>Drag ≡ to change the order</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Sort by</value>
+  </data>
+  <data name="SortGroup" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="SortJsonOrder" xml:space="preserve">
+    <value>Board order</value>
+  </data>
+  <data name="SortNewest" xml:space="preserve">
+    <value>Newest check-in</value>
+  </data>
+  <data name="SortOldest" xml:space="preserve">
+    <value>Oldest check-in</value>
+  </data>
+  <data name="OtherGroup" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="SharedBoards" xml:space="preserve">
+    <value>Shared boards</value>
+  </data>
+  <data name="BoardCatalogHint" xml:space="preserve">
+    <value>Tap a board to add it. Your check-ins are kept when a board is updated.</value>
+  </data>
+  <data name="UpOneFolder" xml:space="preserve">
+    <value>Up one folder</value>
+  </data>
+  <data name="AddFromDevice" xml:space="preserve">
+    <value>Add from a file on this device</value>
+  </data>
+  <data name="BoardAdded" xml:space="preserve">
+    <value>Added “{0}”.</value>
+  </data>
+  <data name="ConfirmReplaceBoard" xml:space="preserve">
+    <value>“{0}” is already added. Replace it with this file? Your check-ins are kept.</value>
+  </data>
+  <data name="CouldNotLoadBoards" xml:space="preserve">
+    <value>Couldn't load the boards. Check your connection and try again.</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="NoBoardsInFolder" xml:space="preserve">
+    <value>There are no boards in this folder.</value>
+  </data>
+  <data name="MapPins" xml:space="preserve">
+    <value>Map pins</value>
+  </data>
+  <data name="PinStyleClassic" xml:space="preserve">
+    <value>Classic</value>
+  </data>
+  <data name="PinStyleDrop" xml:space="preserve">
+    <value>Drop</value>
+  </data>
+  <data name="CheckInSpotTitle" xml:space="preserve">
+    <value>Check in at this pin</value>
+  </data>
+  <data name="CheckInSpotHint" xml:space="preserve">
+    <value>Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are.</value>
+  </data>
+  <data name="CheckInSpotInRange" xml:space="preserve">
+    <value>{0} from you - inside the circle</value>
+  </data>
+  <data name="CheckInSpotOutOfRange" xml:space="preserve">
+    <value>{0} from you - move it back inside the circle</value>
+  </data>
+  <data name="CheckInSpotTooFar" xml:space="preserve">
+    <value>The pin is {0} from where you are. Move it to within {1} of you (inside the circle) and try again.</value>
+  </data>
+  <data name="CheckInHere" xml:space="preserve">
+    <value>Check in here</value>
   </data>
 </root>

@@ -169,6 +169,15 @@ public class ArrivalLocationDataRepository : BaseRepository, IArrivalLocationDat
         return [.. arrivalLocationList.Select(GetArrivalLocationByLocation)];
     }
 
+    public async Task<List<SubRegion>> GetSubRegionsOfSupportedCountries()
+    {
+        await Init();
+        var arrivalLocationList = await _conn!.Table<ArrivalLocationData>().ToListAsync();
+        return [.. arrivalLocationList
+            .Where(x => !string.IsNullOrEmpty(x.CountryCode) && Constants.SupportedSubRegionCountryCodeList.Contains(x.CountryCode.ToLowerInvariant()))
+            .Select(GetArrivalLocationByLocation)];
+    }
+
     private SubRegion GetArrivalLocationByLocation(ArrivalLocationData ArrivalLocationData)
     {
         return new SubRegion

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="44" viewBox="0 0 32 44">
+  <!-- Classic map pin: where you are about to check in. The original figure, drawn flat. -->
+  <ellipse cx="16" cy="42" rx="4.5" ry="1.4" fill="#000" fill-opacity="0.22"/>
+  <circle cx="16" cy="6.4" r="6" fill="#FFFFFF"/>
+  <path d="M7.5 5 L12.5 15 L16 15.5 L19.5 15 L24.5 5" fill="none" stroke="#FFFFFF" stroke-width="7.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 15 L16 27" fill="none" stroke="#FFFFFF" stroke-width="7.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27 L16 41" fill="none" stroke="#FFFFFF" stroke-width="7.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27 L24 30.5 L17 35" fill="none" stroke="#FFFFFF" stroke-width="7.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7.5 5 L12.5 15 L16 15.5 L19.5 15 L24.5 5" fill="none" stroke="#F28C28" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 15 L16 27" fill="none" stroke="#F28C28" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27 L16 41" fill="none" stroke="#F28C28" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27 L24 30.5 L17 35" fill="none" stroke="#F28C28" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="16" cy="6.4" r="4.4" fill="#F28C28"/>
+</svg>

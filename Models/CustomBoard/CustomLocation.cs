@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace FlagsRally.Models.CustomBoard;
@@ -14,24 +14,30 @@ public class CustomLocation
     public string ImageUrl { get; init; } = string.Empty;
     public Location Location { get; init; } = new ();
     public DateTime? ArrivalDate { get; init; } = null;
+    /// <summary>
+    /// 1-based position in the board's JSON.
+    /// </summary>
+    public int SortIndex { get; init; }
     public bool HasBeenVisited => ArrivalDate is not null;
     public bool HasNotBeenVisited => !HasBeenVisited;
     public string ArrivalDateString => ArrivalDate?.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US")) ?? string.Empty;
 
+    // Boards come from other people, so their image URL may only use the place's own descriptive
+    // fields; anything else (visit dates in particular) must never reach the image server.
     private string GetImageUrl()
     {
-        var matches = Regex.Matches(Board.Url, @"\{(\w+)\}");
-        var url = Board.Url;
-        foreach (Match match in matches)
+        return Regex.Replace(Board.Url, @"\{(\w+)\}", match =>
         {
-            var propertyName = match.Groups[1].Value;
-            var pascalCasePropertyName = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
-            var property = this.GetType().GetProperty(pascalCasePropertyName);
-            var value = property?.GetValue(this)?.ToString();
-
-            url = url.Replace($"{{{propertyName}}}", value);
-        }
-        return url;
+            string? value = match.Groups[1].Value.ToLowerInvariant() switch
+            {
+                "code" => Code,
+                "title" => Title,
+                "subtitle" => Subtitle,
+                "group" => Group,
+                _ => null,
+            };
+            return value is null ? string.Empty : Uri.EscapeDataString(value);
+        });
     }
     public CustomLocation(CustomBoard board, string code, string title, string subtitle, string group, Location location, DateTime? arrivalDate)
     {

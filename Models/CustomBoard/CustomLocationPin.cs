@@ -34,10 +34,5 @@ public class CustomLocationPin : Pin
 
     public bool IsVisited => ((MapPinTag)Tag).IsVisited;
 
-    private static BitmapDescriptor SetIcon(bool isVisited)
-    {
-        var icon = isVisited ? "pin_arrived" : "pin";
-
-        return BitmapDescriptorFactory.FromBundle(icon);
-    }
+    private static BitmapDescriptor SetIcon(bool isVisited) => PinIcons.For(isVisited ? PinKind.Visited : PinKind.Unvisited);
 }

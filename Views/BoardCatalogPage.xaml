@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FlagsRally.Views.BoardCatalogPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:services="clr-namespace:FlagsRally.Services"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:BoardCatalogPageViewModel"
+    Style="{StaticResource PaperPage}">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding NavigateBackCommand}" />
+    </Shell.BackButtonBehavior>
+    <Shell.TitleView>
+        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.AddBoard}" />
+    </Shell.TitleView>
+    <Grid Padding="12" RowSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Where we are in the shared folder  -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label
+                FontSize="13"
+                Text="{x:Static strings:AppResources.BoardCatalogHint}"
+                TextColor="{StaticResource InkMuted}" />
+            <!--  In a subfolder, "‹ folder" takes you up one level  -->
+            <HorizontalStackLayout Spacing="8">
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateBackCommand}" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <Label
+                    FontSize="26"
+                    IsVisible="{Binding IsInSubfolder}"
+                    SemanticProperties.Description="{x:Static strings:AppResources.UpOneFolder}"
+                    Text="‹"
+                    TextColor="{StaticResource Navy}"
+                    VerticalOptions="Center" />
+                <controls:StampLabel
+                    FontSize="20"
+                    LineBreakMode="TailTruncation"
+                    Text="{Binding FolderTitle}"
+                    TextColor="{StaticResource Navy}"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <Border
+            Grid.Row="1"
+            Padding="0"
+            BackgroundColor="{StaticResource PaperCard}"
+            StrokeShape="RoundRectangle 10"
+            StrokeThickness="0">
+            <CollectionView ItemsSource="{Binding Entries}">
+                <CollectionView.EmptyView>
+                    <Grid>
+                        <VerticalStackLayout
+                            Padding="24"
+                            IsVisible="{Binding HasLoadError}"
+                            Spacing="12"
+                            VerticalOptions="Center">
+                            <Label
+                                HorizontalTextAlignment="Center"
+                                Text="{x:Static strings:AppResources.CouldNotLoadBoards}"
+                                TextColor="{StaticResource InkMuted}" />
+                            <Button
+                                BackgroundColor="{StaticResource Navy}"
+                                Command="{Binding RetryCommand}"
+                                HorizontalOptions="Center"
+                                Text="{x:Static strings:AppResources.Retry}"
+                                TextColor="White" />
+                        </VerticalStackLayout>
+                        <Label
+                            Padding="24"
+                            HorizontalTextAlignment="Center"
+                            IsVisible="{Binding ShowsEmptyFolder}"
+                            Text="{x:Static strings:AppResources.NoBoardsInFolder}"
+                            TextColor="{StaticResource InkMuted}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:DriveEntry">
+                        <Grid
+                            Padding="14,0"
+                            ColumnDefinitions="36,*,Auto"
+                            HeightRequest="60">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BoardCatalogPageViewModel}}, x:DataType=viewmodels:BoardCatalogPageViewModel, Path=OpenEntryCommand}" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <!--  Folder or board  -->
+                            <Label
+                                FontSize="20"
+                                IsVisible="{Binding IsFolder}"
+                                Text="📁"
+                                VerticalOptions="Center" />
+                            <Image
+                                HeightRequest="24"
+                                HorizontalOptions="Start"
+                                IsVisible="{Binding IsBoardFile}"
+                                Source="board.png"
+                                VerticalOptions="Center"
+                                WidthRequest="24" />
+                            <Label
+                                Grid.Column="1"
+                                FontSize="16"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding DisplayName}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="2"
+                                FontSize="22"
+                                IsVisible="{Binding IsFolder}"
+                                Text="›"
+                                TextColor="{StaticResource InkMuted}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="2"
+                                FontSize="22"
+                                IsVisible="{Binding IsBoardFile}"
+                                Text="＋"
+                                TextColor="{StaticResource Stamp}"
+                                VerticalOptions="Center" />
+                            <BoxView
+                                Grid.ColumnSpan="3"
+                                Margin="36,0,0,0"
+                                HeightRequest="1"
+                                VerticalOptions="End"
+                                Color="{StaticResource PaperEdge}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <Button
+            Grid.Row="2"
+            BackgroundColor="Transparent"
+            BorderColor="{StaticResource Navy}"
+            BorderWidth="1"
+            Command="{Binding AddFromDeviceCommand}"
+            Text="{x:Static strings:AppResources.AddFromDevice}"
+            TextColor="{StaticResource Navy}" />
+
+        <ActivityIndicator
+            Grid.Row="1"
+            HeightRequest="50"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            Color="{StaticResource Navy}" />
+        <!--  Downloading and saving a board  -->
+        <Grid
+            Grid.RowSpan="3"
+            Margin="-12"
+            BackgroundColor="#66000000"
+            IsVisible="{Binding IsBusy}">
+            <ActivityIndicator
+                HeightRequest="50"
+                IsRunning="{Binding IsBusy}"
+                Color="White" />
+        </Grid>
+    </Grid>
+</ContentPage>

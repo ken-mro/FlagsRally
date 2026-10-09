@@ -62,10 +62,12 @@ namespace FlagsRally
 
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationDataRepository>();
             builder.Services.AddSingleton<SubRegionHelper>();
+            builder.Services.AddSingleton<RegionalFlagsService>();
             builder.Services.AddSingleton(Preferences.Default);
             builder.Services.AddSingleton<CustomCountryHelper>();
             builder.Services.AddSingleton<ArrivalLocationService>();
             builder.Services.AddSingleton<CustomBoardService>();
+            builder.Services.AddSingleton<MapFocusRequest>();
             builder.Services.AddSingleton<CryptoService>();
 
             builder.Services.AddSingleton<ICustomLocationDataRepository, CustomLocationDataRepository>();
@@ -83,14 +85,20 @@ namespace FlagsRally
             builder.Services.AddSingleton<LocationPage>();
             builder.Services.AddSingleton<LocationPageViewModel>();
 
-            builder.Services.AddSingleton<FlagsBoardPage>();
-            builder.Services.AddSingleton<FlagsBoardPageViewModel>();
+            builder.Services.AddSingleton<CollectionsPage>();
+            builder.Services.AddSingleton<CollectionsPageViewModel>();
+
+            builder.Services.AddTransient<FlagsBoardPage>();
+            builder.Services.AddTransient<FlagsBoardPageViewModel>();
 
             builder.Services.AddTransient<CustomBoardPage>();
             builder.Services.AddTransient<CustomBoardPageViewModel>();
 
             builder.Services.AddTransient<ManageCustomBoardsPage>();
             builder.Services.AddTransient<ManageCustomBoardsPageViewModel>();
+            builder.Services.AddTransient<BoardCatalogPage>();
+            builder.Services.AddTransient<BoardCatalogPageViewModel>();
+            builder.Services.AddSingleton<DriveBoardCatalog>();
 
 #if DEBUG
             builder.Logging.AddDebug();

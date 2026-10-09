@@ -4,7 +4,10 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
+using CommunityToolkit.Mvvm.Messaging;
 using FlagsRally.Helpers;
+using FlagsRally.Messages;
+using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using ICSharpCode.SharpZipLib.Zip;
@@ -19,6 +22,7 @@ namespace FlagsRally.ViewModels
         private CustomCountryHelper _countryHelper;
         private SettingsPreferences _settingPreferences;
         private IRevenueCatBilling _revenueCatBilling;
+        private ICustomBoardRepository _customBoardRepository;
         private CancellationTokenSource cancellationSource = new CancellationTokenSource();
 
         [ObservableProperty]
@@ -38,11 +42,50 @@ namespace FlagsRally.ViewModels
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
         public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
 
-        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper, IRevenueCatBilling revenueCatBilling)
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(UsesClassicPins))]
+        [NotifyPropertyChangedFor(nameof(UsesDropPins))]
+        private PinStyle _pinStyle;
+
+        public bool UsesClassicPins => PinStyle == PinStyle.Classic;
+        public bool UsesDropPins => PinStyle == PinStyle.Drop;
+
+        partial void OnPinStyleChanged(PinStyle value)
+        {
+            _settingPreferences.SetPinStyle(value);
+            PinIcons.Style = value;
+            WeakReferenceMessenger.Default.Send(new PinStyleChangedMessage());
+        }
+
+        [RelayCommand]
+        void SetPinStyle(string style)
+        {
+            PinStyle = Enum.Parse<PinStyle>(style);
+        }
+
+        // The pin previews leave out custom board pins while there are no custom boards.
+        [ObservableProperty]
+        private bool _hasCustomBoards;
+
+        public async Task RefreshCustomBoardsAsync()
+        {
+            try
+            {
+                HasCustomBoards = (await _customBoardRepository.GetAllCustomBoards()).Any();
+            }
+            catch (Exception)
+            {
+                // Keep the previous state; the preview is only an illustration.
+            }
+        }
+
+        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper, IRevenueCatBilling revenueCatBilling, ICustomBoardRepository customBoardRepository)
         {
             _settingPreferences = settingPreferences;
+            _customBoardRepository = customBoardRepository;
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
+            _pinStyle = _settingPreferences.GetPinStyle();
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;

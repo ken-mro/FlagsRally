@@ -429,7 +429,12 @@
 
     <Style ApplyToDerivedTypes="True" TargetType="Page">
         <Setter Property="Padding" Value="0" />
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Paper}, Dark={StaticResource OffBlack}}" />
+    </Style>
+
+    <!--  Paper background for the app's own screens. Not applied to every Page, because the
+          CommunityToolkit popup host is a page too and would lose its dimmed backdrop.  -->
+    <Style x:Key="PaperPage" TargetType="ContentPage">
+        <Setter Property="BackgroundColor" Value="{StaticResource Paper}" />
         <Setter Property="BackgroundImageSource" Value="paper.jpg" />
     </Style>
 

@@ -27,13 +27,11 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly CustomBoardService _customBoardService;
-    readonly AppShell _appShell;
 
-    public ManageCustomBoardsPageViewModel(ICustomBoardRepository customBoardRepository, CustomBoardService customBoardService, AppShell appShell)
+    public ManageCustomBoardsPageViewModel(ICustomBoardRepository customBoardRepository, CustomBoardService customBoardService)
     {
         _customBoardRepository = customBoardRepository;
         _customBoardService = customBoardService;
-        _appShell = appShell;
         Title = AppResources.ManageBoards;
     }
 
@@ -89,24 +87,19 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
         OnPropertyChanged(nameof(DeleteSelectedText));
     }
 
-    [RelayCommand]
-    async Task MoveUpAsync(ManageableBoardItem item) => await MoveAsync(item, -1);
-
-    [RelayCommand]
-    async Task MoveDownAsync(ManageableBoardItem item) => await MoveAsync(item, 1);
-
-    private async Task MoveAsync(ManageableBoardItem item, int offset)
+    /// <summary>
+    /// Moves a board (dragged by its handle on the page) and saves the new order.
+    /// </summary>
+    public async Task MoveBoardAsync(int oldIndex, int newIndex)
     {
-        var oldIndex = Boards.IndexOf(item);
-        var newIndex = oldIndex + offset;
-        if (oldIndex < 0 || newIndex < 0 || newIndex >= Boards.Count) return;
+        if (oldIndex == newIndex || oldIndex < 0 || newIndex < 0 || oldIndex >= Boards.Count || newIndex >= Boards.Count) return;
 
         Boards.Move(oldIndex, newIndex);
 
         try
         {
             await _customBoardRepository.UpdateSortOrdersAsync(Boards.Select(x => x.Name).ToList());
-            WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage());
+            WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage(PlacesChanged: false));
         }
         catch (Exception ex)
         {
@@ -139,14 +132,6 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
             IsBusy = false;
             // Notify even after a partial failure so other pages drop what was actually removed.
             WeakReferenceMessenger.Default.Send(new CustomBoardsChangedMessage());
-        }
-
-        if (!await _customBoardRepository.GetCustomBoardExists())
-        {
-            // The Custom Board tab is about to be hidden; leave it before hiding it.
-            await Shell.Current.GoToAsync("//FlagsBoard");
-            await _appShell.SetCustomBoardPageVisibility();
-            return;
         }
 
         await Init();

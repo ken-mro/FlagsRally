@@ -10,4 +10,8 @@ public interface ICustomLocationDataRepository
     Task<IEnumerable<CustomLocationPin>> GetAllCustomLocationPins();
     Task<CustomLocation?> GetCustomLocationByCompositeKey(string compositeKey);
     Task<int> DeleteByBoardNameAsync(string boardName);
+    /// <summary>
+    /// Places checked in on boards that still exist.
+    /// </summary>
+    Task<int> CountVisitedAsync();
 }

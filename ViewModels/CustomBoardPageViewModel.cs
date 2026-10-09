@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
@@ -10,13 +10,31 @@ using System.Text.Json;
 
 namespace FlagsRally.ViewModels;
 
-public partial class CustomBoardPageViewModel : BaseViewModel
+public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributable, IVisitFilterable
 {
+    public const string BoardQueryKey = "board";
+
+    // Board requested by the Collections page; applied on the next Init().
+    string? _requestedBoardName;
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue(BoardQueryKey, out var board))
+        {
+            _requestedBoardName = board as string;
+        }
+    }
+
 
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
-    public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository)
+    readonly MapFocusRequest _mapFocusRequest;
+    readonly SettingsPreferences _settingsPreferences;
+    public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, MapFocusRequest mapFocusRequest, SettingsPreferences settingsPreferences)
     {
+        _mapFocusRequest = mapFocusRequest;
+        _settingsPreferences = settingsPreferences;
+        _selectedSort = Enum.TryParse<LocationSort>(settingsPreferences.GetCustomBoardSort(nameof(LocationSort.NewestFirst)), out var sort) ? sort : LocationSort.NewestFirst;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
     }
@@ -26,7 +44,62 @@ public partial class CustomBoardPageViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
+    [NotifyPropertyChangedFor(nameof(VisitedCount))]
+    [NotifyPropertyChangedFor(nameof(TotalCount))]
+    [NotifyPropertyChangedFor(nameof(Progress))]
+    [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<CustomLocation> _sourceCustomLocationList = [];
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
+    [NotifyPropertyChangedFor(nameof(ShowsAll))]
+    [NotifyPropertyChangedFor(nameof(ShowsVisited))]
+    [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
+    VisitFilter _selectedVisitFilter = VisitFilter.All;
+
+    public bool ShowsAll => SelectedVisitFilter == VisitFilter.All;
+    public bool ShowsVisited => SelectedVisitFilter == VisitFilter.Visited;
+    public bool ShowsUnvisited => SelectedVisitFilter == VisitFilter.Unvisited;
+
+    IEnumerable<CustomLocation> BoardLocations => SourceCustomLocationList.Where(x => x.Board.Name == FilteredCustomBoard?.Name);
+
+    public int VisitedCount => BoardLocations.Count(x => x.HasBeenVisited);
+    public int TotalCount => BoardLocations.Count();
+    public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
+    public string ProgressText => $"{VisitedCount} / {TotalCount}";
+
+    [RelayCommand]
+    void SetVisitFilter(string filter)
+    {
+        SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
+    }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
+    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
+    [NotifyPropertyChangedFor(nameof(SortText))]
+    LocationSort _selectedSort;
+
+    partial void OnSelectedSortChanged(LocationSort value) => _settingsPreferences.SetCustomBoardSort(value.ToString());
+
+    public string SortText => SelectedSort.DisplayName();
+
+    [RelayCommand]
+    async Task ChooseSortAsync()
+    {
+        var sorts = Enum.GetValues<LocationSort>();
+        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.SortBy, AppResources.Cancel, null, sorts.Select(x => x.DisplayName()).ToArray());
+        SelectedSort = sorts.FirstOrDefault(x => x.DisplayName() == choice, SelectedSort);
+    }
+
+    [RelayCommand]
+    async Task ShowOnMapAsync(CustomLocation location)
+    {
+        _mapFocusRequest.Request(location.CompositeKey);
+        await Shell.Current.GoToAsync("//Map");
+    }
 
     [ObservableProperty]
     ObservableCollection<CustomBoard> _customBoardList = default!;
@@ -40,6 +113,11 @@ public partial class CustomBoardPageViewModel : BaseViewModel
         {
             SetProperty(ref _filteredCustomBoard, value);
             OnPropertyChanged(nameof(DisplayCustomLocationList));
+            OnPropertyChanged(nameof(DisplayCustomLocationGroups));
+            OnPropertyChanged(nameof(VisitedCount));
+            OnPropertyChanged(nameof(TotalCount));
+            OnPropertyChanged(nameof(Progress));
+            OnPropertyChanged(nameof(ProgressText));
         }
     }
 
@@ -53,7 +131,9 @@ public partial class CustomBoardPageViewModel : BaseViewModel
 
     public bool DateIsVisible => !DateIsNotVisible;
 
-    public ObservableCollection<CustomLocation> DisplayCustomLocationList => GetFilteredList();
+    public ObservableCollection<CustomLocation> DisplayCustomLocationList => new(LocationSorter.Sort(FilteredLocations, SelectedSort));
+
+    public List<CustomLocationGroup> DisplayCustomLocationGroups => LocationSorter.Group(FilteredLocations, SelectedSort);
 
 
     [ObservableProperty]
@@ -66,14 +146,19 @@ public partial class CustomBoardPageViewModel : BaseViewModel
             IsBusy = true;
 
             var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
-            SourceCustomLocationList = new ObservableCollection<CustomLocation>(allCustomLocations);
+            // Set the field and let the FilteredCustomBoard assignment below raise every change once,
+            // so the grouped list is built a single time per visit.
+#pragma warning disable MVVMTK0034
+            _sourceCustomLocationList = new ObservableCollection<CustomLocation>(allCustomLocations);
+#pragma warning restore MVVMTK0034
             var latestCustomLocation = allCustomLocations.MaxBy(x => x.ArrivalDate);
 
             var allBoards = await _customBoardRepository.GetAllCustomBoards();
             CustomBoardList = new ObservableCollection<CustomBoard>(allBoards);
             // Keep the current selection (matched by name, since the order may have changed);
             // otherwise default to the board visited most recently.
-            var selectedBoardName = FilteredCustomBoard?.Name ?? latestCustomLocation?.Board.Name;
+            var selectedBoardName = _requestedBoardName ?? FilteredCustomBoard?.Name ?? latestCustomLocation?.Board.Name;
+            _requestedBoardName = null;
             var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(selectedBoardName));
             FilteredCustomBoard = (matchingBoard ?? allBoards.FirstOrDefault())!;
         }
@@ -87,12 +172,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel
         }
     }
 
-    private ObservableCollection<CustomLocation> GetFilteredList()
-    {
-        var filteredList = SourceCustomLocationList.Where(x => x.Board.Name == FilteredCustomBoard?.Name)
-                            .OrderByDescending(x => x.ArrivalDate).ToList();
-        return new ObservableCollection<CustomLocation>(filteredList);
-    }
+    IEnumerable<CustomLocation> FilteredLocations => BoardLocations.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited));
 
     [RelayCommand]
     public async Task RefreshCountriesAsync()
@@ -100,12 +180,6 @@ public partial class CustomBoardPageViewModel : BaseViewModel
         IsRefreshing = true;
         await Init();
         IsRefreshing = false;
-    }
-
-    [RelayCommand]
-    async Task OpenManageBoardsAsync()
-    {
-        await Shell.Current.GoToAsync(ManageCustomBoardsPage.Route);
     }
 
     [RelayCommand]

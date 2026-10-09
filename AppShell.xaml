@@ -9,36 +9,28 @@
     Title="FlagsRally"
     Shell.FlyoutBehavior="Disabled">
 
+    <!--  Tabs by purpose: look back (Passport), record (Map), collect (Collections), configure (Settings)  -->
     <TabBar>
-        <Tab Title="{x:Static strings:AppResources.Banner}" Icon="flag.png">
-            <ShellContent
-                Title="{x:Static strings:AppResources.BannerVisas}"
-                ContentTemplate="{DataTemplate views:MainPage}"
-                Route="MainPage" />
-        </Tab>
-        <Tab Title="{x:Static strings:AppResources.Boards}" Icon="board.png">
-            <ShellContent
-                Title="{x:Static strings:AppResources.Boards}"
-                ContentTemplate="{DataTemplate views:FlagsBoardPage}"
-                Route="FlagsBoard" />
-            <ShellContent
-                x:Name="customBoardPage"
-                Title="{x:Static strings:AppResources.CustomBoard}"
-                ContentTemplate="{DataTemplate views:CustomBoardPage}"
-                Route="CustomBoard" />
-        </Tab>
-        <Tab Title="{x:Static strings:AppResources.Location}" Icon="location.png">
-            <ShellContent
-                Title="{x:Static strings:AppResources.Location}"
-                ContentTemplate="{DataTemplate views:LocationPage}"
-                Route="Location" />
-        </Tab>
-        <Tab Title="{x:Static strings:AppResources.Settings}" Icon="settings.png">
-            <ShellContent
-                Title="{x:Static strings:AppResources.Settings}"
-                ContentTemplate="{DataTemplate views:SettingPage}"
-                Route="Settings" />
-        </Tab>
+        <ShellContent
+            Title="{x:Static strings:AppResources.TabPassport}"
+            ContentTemplate="{DataTemplate views:MainPage}"
+            Icon="flag.png"
+            Route="Passport" />
+        <ShellContent
+            Title="{x:Static strings:AppResources.TabMap}"
+            ContentTemplate="{DataTemplate views:LocationPage}"
+            Icon="location.png"
+            Route="Map" />
+        <ShellContent
+            Title="{x:Static strings:AppResources.TabCollections}"
+            ContentTemplate="{DataTemplate views:CollectionsPage}"
+            Icon="board.png"
+            Route="Collections" />
+        <ShellContent
+            Title="{x:Static strings:AppResources.Settings}"
+            ContentTemplate="{DataTemplate views:SettingPage}"
+            Icon="settings.png"
+            Route="Settings" />
     </TabBar>
 
 </Shell>

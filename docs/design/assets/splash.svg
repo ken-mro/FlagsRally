@@ -1,29 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108">
-  <!-- FlagsRally splash mark (proposal, flat Material style).
-       Same composition as the current splash: a flag planted on top of the world
-       and a location pin on its surface. Colours match the app icon
-       (ocean #2594EF, land #4ED195, pin #FB5968 / #D8304C).
+  <!-- FlagsRally splash mark (shown on the navy splash background).
+       A flag planted on top of the world and a location pin: the globe keeps the original
+       blue and green with a gold rim like the icon emblem, the flag and pin keep the original coral red.
        Kept inside a circle of r=36 around 54,54 so Android 12+ can crop it. -->
   <defs>
-    <clipPath id="dome">
-      <path d="M26 74 A28 28 0 0 1 82 74 Z"/>
-    </clipPath>
+    <clipPath id="dome"><path d="M26 74 A28 28 0 0 1 82 74 Z"/></clipPath>
   </defs>
 
-  <!-- globe dome -->
+  <!-- globe -->
   <path d="M26 74 A28 28 0 0 1 82 74 Z" fill="#2594EF"/>
   <g clip-path="url(#dome)" fill="#4ED195">
     <path d="M26 58 Q33 55 37 60 Q39.5 64 36 67 Q33 69 32.5 74 L26 74 Z"/>
     <path d="M46 74 Q44 69 47.5 66.5 Q51 64.5 50 61 Q53 57 59 59 Q64 61 63.5 56.5 Q69 54 74 58 Q71 62 74.5 66 Q78 70 74 74 Z"/>
     <path d="M52 47 Q56 45.5 60 47.5 Q58.5 51 55 50.5 Q52.5 50 52 47 Z"/>
   </g>
+  <path d="M26 74 A28 28 0 0 1 82 74 Z" fill="none" stroke="#E9C46A" stroke-width="2" stroke-linejoin="round"/>
 
   <!-- flag -->
-  <line x1="50" y1="46.6" x2="50" y2="22" stroke="#E0E0E0" stroke-width="2.4" stroke-linecap="round"/>
+  <line x1="50" y1="45.5" x2="50" y2="22" stroke="#F4EEDF" stroke-width="2.4" stroke-linecap="round"/>
   <path d="M51.2 22.4 H66.5 L63.6 27.2 L66.5 32 H51.2 Z" fill="#FB5968"/>
 
-  <!-- location pin, same colours as the pin on the app icon.
-       Outlined in the splash background colour (#182A52) so it separates from the globe. -->
+  <!-- location pin -->
   <path d="M72 57.5 C72 57.5 66.2 52 66.2 47.8 A5.8 5.8 0 1 1 77.8 47.8 C77.8 52 72 57.5 72 57.5 Z" fill="#FB5968" stroke="#182A52" stroke-width="1.6" stroke-linejoin="round"/>
-  <circle cx="72" cy="47.7" r="2.3" fill="#D8304C"/>
+  <circle cx="72" cy="47.7" r="2.2" fill="#D8304C"/>
 </svg>

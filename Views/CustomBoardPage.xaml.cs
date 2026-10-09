@@ -4,6 +4,8 @@ namespace FlagsRally.Views;
 
 public partial class CustomBoardPage : ContentPage
 {
+    public const string Route = "CustomBoard";
+
     readonly CustomBoardPageViewModel _customBoardPageViewModel;
     public CustomBoardPage(CustomBoardPageViewModel vm)
 	{

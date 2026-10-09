@@ -6,214 +6,279 @@
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
-    x:DataType="viewmodels:SettingPageViewModel">
+    x:DataType="viewmodels:SettingPageViewModel"
+    Style="{StaticResource PaperPage}">
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.Settings}" />
     </Shell.TitleView>
+    <ContentPage.Resources>
+        <!--  Grouped list: a heading, then a card of rows separated by thin lines  -->
+        <Style x:Key="SettingsCard" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style x:Key="SettingsRow" TargetType="Grid">
+            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="ColumnSpacing" Value="10" />
+        </Style>
+        <Style x:Key="RowDivider" TargetType="BoxView">
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Margin" Value="14,0" />
+            <Setter Property="Color" Value="{StaticResource PaperEdge}" />
+        </Style>
+        <Style x:Key="Chevron" TargetType="Label">
+            <Setter Property="Text" Value="›" />
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
     <ScrollView>
-        <VerticalStackLayout Padding="15" Spacing="10">
-            <controls:StampLabel
-                Padding="5,0"
-                Style="{StaticResource StampHeading}"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.CountryOfResidence}"
-                VerticalOptions="Center" />
-            <Grid ColumnSpacing="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Image
-                    Aspect="AspectFit"
-                    HeightRequest="50"
-                    HorizontalOptions="Start"
-                    Source="{Binding ImageSourceString}">
-                    <Image.IsVisible>
-                        <OnPlatform x:TypeArguments="x:Boolean">
-                            <On Platform="iOS">False</On>
-                            <On Platform="MacCatalyst">False</On>
-                            <On Platform="WinUI">True</On>
-                            <On Platform="Android">False</On>
-                        </OnPlatform>
-                    </Image.IsVisible>
-                </Image>
-                <Label
-                    FontSize="50"
-                    HorizontalOptions="Start"
-                    Text="{Binding SelectedCountry.CountryFlag}">
-                    <Label.IsVisible>
-                        <OnPlatform x:TypeArguments="x:Boolean">
-                            <On Platform="iOS">True</On>
-                            <On Platform="MacCatalyst">True</On>
-                            <On Platform="Android">True</On>
-                            <On Platform="WinUI">False</On>
-                        </OnPlatform>
-                    </Label.IsVisible>
-                </Label>
-                <Picker
-                    Title="{x:Static strings:AppResources.CountryOfResidence}"
-                    Grid.Column="1"
-                    FontAttributes="Bold"
-                    FontSize="Medium"
-                    ItemDisplayBinding="{Binding CountryName}"
-                    ItemsSource="{Binding CountryList}"
-                    SelectedItem="{Binding SelectedCountry}"
-                    VerticalOptions="Center" />
-            </Grid>
-            <BoxView
-                Margin="5"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center"
-                Color="{StaticResource PaperEdge}" />
-            <controls:StampLabel
-                Padding="5,0"
-                Style="{StaticResource StampHeading}"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.SubscriptionStatus}"
-                VerticalOptions="Center" />
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Label
-                    Grid.Row="0"
+        <VerticalStackLayout Padding="12" Spacing="10">
+
+            <!--  Country of residence  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.CountryOfResidence}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <Grid Style="{StaticResource SettingsRow}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        Aspect="AspectFit"
+                        HeightRequest="36"
+                        Source="{Binding ImageSourceString}"
+                        VerticalOptions="Center">
+                        <Image.IsVisible>
+                            <OnPlatform x:TypeArguments="x:Boolean">
+                                <On Platform="iOS">False</On>
+                                <On Platform="MacCatalyst">False</On>
+                                <On Platform="WinUI">True</On>
+                                <On Platform="Android">False</On>
+                            </OnPlatform>
+                        </Image.IsVisible>
+                    </Image>
+                    <Label
+                        FontSize="32"
+                        Text="{Binding SelectedCountry.CountryFlag}"
+                        VerticalOptions="Center">
+                        <Label.IsVisible>
+                            <OnPlatform x:TypeArguments="x:Boolean">
+                                <On Platform="iOS">True</On>
+                                <On Platform="MacCatalyst">True</On>
+                                <On Platform="Android">True</On>
+                                <On Platform="WinUI">False</On>
+                            </OnPlatform>
+                        </Label.IsVisible>
+                    </Label>
+                    <Picker
+                        Title="{x:Static strings:AppResources.CountryOfResidence}"
+                        Grid.Column="1"
+                        FontSize="16"
+                        ItemDisplayBinding="{Binding CountryName}"
+                        ItemsSource="{Binding CountryList}"
+                        SelectedItem="{Binding SelectedCountry}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!--  Map pin style  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.MapPins}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Border
                     Grid.Column="0"
-                    Padding="10,0"
-                    FontSize="Medium"
-                    HorizontalOptions="Start"
-                    Text="{Binding SubscriptionStatusText}"
-                    VerticalOptions="Center" />
-                <Button
-                    Grid.Row="1"
+                    Padding="8,10"
+                    BackgroundColor="Transparent"
+                    Stroke="{StaticResource PaperEdge}"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1.5">
+                    <Border.Triggers>
+                        <DataTrigger
+                            Binding="{Binding UsesClassicPins}"
+                            TargetType="Border"
+                            Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource Navy}" />
+                            <Setter Property="StrokeThickness" Value="2.5" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SetPinStyleCommand}" CommandParameter="Classic" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6">
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="classic_pin.png" WidthRequest="29" />
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="classic_pin_arrived.png" WidthRequest="29" />
+                            <Image HeightRequest="40" Source="classic_default_pin.png" WidthRequest="29" />
+                            <Image HeightRequest="40" Source="classic_selected_location_pin.png" WidthRequest="29" />
+                        </HorizontalStackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="{x:Static strings:AppResources.PinStyleClassic}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border
                     Grid.Column="1"
-                    Margin="10,0"
-                    Command="{Binding ManageSubscriptionCommand}"
-                    HorizontalOptions="End"
-                    Text="{x:Static strings:AppResources.Subscribe}"
-                    VerticalOptions="Center" />
+                    Padding="8,10"
+                    BackgroundColor="Transparent"
+                    Stroke="{StaticResource PaperEdge}"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1.5">
+                    <Border.Triggers>
+                        <DataTrigger
+                            Binding="{Binding UsesDropPins}"
+                            TargetType="Border"
+                            Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource Navy}" />
+                            <Setter Property="StrokeThickness" Value="2.5" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SetPinStyleCommand}" CommandParameter="Drop" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6">
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="pin.png" WidthRequest="29" />
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="pin_arrived.png" WidthRequest="29" />
+                            <Image HeightRequest="40" Source="default_pin.png" WidthRequest="29" />
+                            <Image HeightRequest="40" Source="selected_location_pin.png" WidthRequest="29" />
+                        </HorizontalStackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="{x:Static strings:AppResources.PinStyleDrop}" />
+                    </VerticalStackLayout>
+                </Border>
             </Grid>
-            <BoxView
-                Margin="5"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center"
-                Color="{StaticResource PaperEdge}" />
-            <controls:StampLabel
-                Padding="5,0"
-                Style="{StaticResource StampHeading}"
-                HorizontalOptions="Start"
-                Text="Google Maps API Key"
-                VerticalOptions="Center" />
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Entry
-                    HorizontalOptions="Fill"
-                    IsPassword="True"
-                    Placeholder="{x:Static strings:AppResources.SpecifyAPI}"
-                    Text="{Binding ApiKey}"
-                    VerticalOptions="Center" />
-                <Button
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="10,0"
-                    Command="{Binding EnableApiKeyCommand}"
-                    HorizontalOptions="End"
-                    Text="{x:Static strings:AppResources.Enable}"
-                    VerticalOptions="Center" />
-            </Grid>
-            <BoxView
-                Margin="5"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center"
-                Color="{StaticResource PaperEdge}" />
-            <controls:StampLabel
-                Padding="5,0"
-                Style="{StaticResource StampHeading}"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.Backup}"
-                VerticalOptions="Center" />
-            <Button
-                Margin="10,0"
-                Command="{Binding CreateBackUpCommand}"
-                HorizontalOptions="End"
-                Text="{x:Static strings:AppResources.CreateBackup}"
-                VerticalOptions="Center" />
-            <BoxView
-                Margin="5"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center"
-                Color="{StaticResource PaperEdge}" />
-            <controls:StampLabel
-                Padding="5,0"
-                Style="{StaticResource StampHeading}"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.Restore}"
-                VerticalOptions="Center" />
-            <Label
-                Padding="10,0"
-                FontAttributes="Bold"
-                FontSize="Small"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.RestoreBeforeUse}"
-                TextColor="{StaticResource Stamp}"
-                VerticalOptions="Center" />
-            <Button
-                Margin="10,0"
-                Command="{Binding RestoreBackUpCommand}"
-                HorizontalOptions="End"
-                Text="{x:Static strings:AppResources.RestoreBackup}"
-                VerticalOptions="Center" />
-            <BoxView
-                Margin="5"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center"
-                Color="{StaticResource PaperEdge}" />
-            <controls:StampLabel
-                Padding="5,0"
-                Style="{StaticResource StampHeading}"
-                HorizontalOptions="Start"
-                Text="{x:Static strings:AppResources.Information}"
-                VerticalOptions="Center" />
-            <Label
-                Padding="20,0"
-                FontSize="Body"
-                HorizontalOptions="End"
-                Text="{x:Static strings:AppResources.TermsOfUse}"
-                TextColor="{StaticResource Navy}"
-                TextDecorations="Underline"
-                VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OpenTermsOfUseCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-            <Label
-                Padding="20,0"
-                FontSize="Body"
-                HorizontalOptions="End"
-                Text="{x:Static strings:AppResources.PrivacyPolicy}"
-                TextColor="{StaticResource Navy}"
-                TextDecorations="Underline"
-                VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OpenPrivacyPolicyCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
+
+            <!--  Subscription  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.SubscriptionStatus}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <Grid Style="{StaticResource SettingsRow}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        FontSize="16"
+                        Text="{Binding SubscriptionStatusText}"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding ManageSubscriptionCommand}"
+                        Text="{x:Static strings:AppResources.Subscribe}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!--  Backup and restore  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.Data}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <VerticalStackLayout>
+                    <Grid Style="{StaticResource SettingsRow}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CreateBackUpCommand}" />
+                        </Grid.GestureRecognizers>
+                        <Label
+                            FontSize="16"
+                            Text="{x:Static strings:AppResources.CreateBackup}"
+                            VerticalOptions="Center" />
+                        <Label Grid.Column="1" Style="{StaticResource Chevron}" />
+                    </Grid>
+                    <BoxView Style="{StaticResource RowDivider}" />
+                    <Grid Style="{StaticResource SettingsRow}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding RestoreBackUpCommand}" />
+                        </Grid.GestureRecognizers>
+                        <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                            <Label
+                                FontSize="16"
+                                Text="{x:Static strings:AppResources.RestoreBackup}"
+                                TextColor="{StaticResource Stamp}" />
+                            <Label
+                                FontSize="12"
+                                Text="{x:Static strings:AppResources.RestoreBeforeUse}"
+                                TextColor="{StaticResource InkMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="1" Style="{StaticResource Chevron}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!--  Advanced: own Google Maps API key  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.Advanced}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <VerticalStackLayout Padding="14,12" Spacing="6">
+                    <Label
+                        FontSize="16"
+                        Text="Google Maps API Key" />
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Entry
+                            IsPassword="True"
+                            Placeholder="{x:Static strings:AppResources.SpecifyAPI}"
+                            Text="{Binding ApiKey}"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{StaticResource Navy}"
+                            BorderWidth="1"
+                            Command="{Binding EnableApiKeyCommand}"
+                            Text="{x:Static strings:AppResources.Enable}"
+                            TextColor="{StaticResource Navy}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!--  Information  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.Information}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <VerticalStackLayout>
+                    <Grid Style="{StaticResource SettingsRow}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenTermsOfUseCommand}" />
+                        </Grid.GestureRecognizers>
+                        <Label
+                            FontSize="16"
+                            Text="{x:Static strings:AppResources.TermsOfUse}"
+                            VerticalOptions="Center" />
+                        <Label Grid.Column="1" Style="{StaticResource Chevron}" />
+                    </Grid>
+                    <BoxView Style="{StaticResource RowDivider}" />
+                    <Grid Style="{StaticResource SettingsRow}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenPrivacyPolicyCommand}" />
+                        </Grid.GestureRecognizers>
+                        <Label
+                            FontSize="16"
+                            Text="{x:Static strings:AppResources.PrivacyPolicy}"
+                            VerticalOptions="Center" />
+                        <Label Grid.Column="1" Style="{StaticResource Chevron}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

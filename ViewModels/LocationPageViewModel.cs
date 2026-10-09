@@ -28,12 +28,10 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
     private const int PAUSE_DURATION_MS = 1000;
-    private const double CLOSE_DISTANCE_THRESHOLD_KM = 0.05;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
-    private readonly AppShell _appShell;
     private CancellationTokenSource? _cancelTokenSource;
     private bool _isCheckingLocation;
     private IRevenueCatBilling _revenueCat;
@@ -41,14 +39,198 @@ public partial class LocationPageViewModel : BaseViewModel
     private Map? _arrivalMap;
     private CustomBoardService _customBoardService;
     private ArrivalLocationService _arrivalLocationService;
+    private readonly MapFocusRequest _mapFocusRequest;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
+    [NotifyPropertyChangedFor(nameof(HasPinDetails))]
+    [NotifyPropertyChangedFor(nameof(HasNoPinDetails))]
+    [NotifyPropertyChangedFor(nameof(SelectedPinTitle))]
+    [NotifyPropertyChangedFor(nameof(SelectedPinSubtitle))]
+    [NotifyPropertyChangedFor(nameof(CanCheckIn))]
+    [NotifyPropertyChangedFor(nameof(CanRemoveSelectedPin))]
+    [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
+    [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
+    [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
     Pin? _selectedPin;
 
+    // The check-in spot: dropped with a long press (or at your location by Get Location) and
+    // dragged to where you want to record, as long as it stays within CheckInRange of you.
     Pin? _tappedPointPin;
 
+    // Where you were when the spot was placed, and the circle showing the range around it.
+    Location? _checkInOrigin;
+    Circle? _checkInRangeCircle;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
+    [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
+    bool _hasCheckInSpot;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CheckInSpotIsInRange))]
+    [NotifyPropertyChangedFor(nameof(CheckInSpotIsOutOfRange))]
+    [NotifyPropertyChangedFor(nameof(CheckInSpotDistanceText))]
+    double? _checkInSpotDistanceKm;
+
+    public bool ShowsCheckInSpotGuide => HasCheckInSpot && HasNoPinDetails;
+    public bool ShowsGetLocationButton => !HasCheckInSpot && HasNoPinDetails;
+
+    public string CheckInSpotHint => string.Format(AppResources.CheckInSpotHint, CheckInRange.LimitText);
+    public bool CheckInSpotIsInRange => CheckInSpotDistanceKm is double d && CheckInRange.IsWithin(d);
+    public bool CheckInSpotIsOutOfRange => CheckInSpotDistanceKm is double d && !CheckInRange.IsWithin(d);
+    public string CheckInSpotDistanceText => CheckInSpotDistanceKm switch
+    {
+        double d when CheckInRange.IsWithin(d) => string.Format(AppResources.CheckInSpotInRange, CheckInRange.FormatDistance(d)),
+        double d => string.Format(AppResources.CheckInSpotOutOfRange, CheckInRange.FormatDistance(d)),
+        _ => string.Empty,
+    };
+    public string CheckInSpotIcon => $"{PinIcons.FileName(PinKind.CheckInSpot, PinIcons.Style)}.png";
+
+    [RelayCommand]
+    void CancelCheckInSpot() => RemoveCheckInSpot();
+
+    private void PlaceCheckInSpot(Position position, Location? here)
+    {
+        RemoveCheckInSpot();
+        _tappedPointPin = new SelectedLocationPin(position);
+        ArrivalMap?.Pins.Add(_tappedPointPin);
+        HasCheckInSpot = true;
+        _ = ShowCheckInRangeAsync(here);
+    }
+
+    private void RemoveCheckInSpot()
+    {
+        if (_tappedPointPin is not null)
+        {
+            RemovePinFromMap(_tappedPointPin);
+            _tappedPointPin = null;
+        }
+        if (_checkInRangeCircle is not null)
+        {
+            ArrivalMap?.Circles.Remove(_checkInRangeCircle);
+            _checkInRangeCircle = null;
+        }
+        _checkInOrigin = null;
+        HasCheckInSpot = false;
+        CheckInSpotDistanceKm = null;
+    }
+
+    // Circles the area around you where the spot can be put. Without a known location there is
+    // no circle yet; Get Location then fixes the location and draws it.
+    private async Task ShowCheckInRangeAsync(Location? here)
+    {
+        try
+        {
+            here ??= await Geolocation.Default.GetLastKnownLocationAsync();
+        }
+        catch (Exception)
+        {
+            // The hint still explains the range; the circle appears once Get Location finds you.
+        }
+        if (here is null || _tappedPointPin is null || ArrivalMap is null) return;
+
+        _checkInOrigin = here;
+        if (_checkInRangeCircle is not null)
+        {
+            ArrivalMap.Circles.Remove(_checkInRangeCircle);
+        }
+        _checkInRangeCircle = new Circle
+        {
+            Center = new Position(here.Latitude, here.Longitude),
+            Radius = Distance.FromKilometers(CheckInRange.LimitKm),
+            StrokeColor = Color.FromArgb("#182A52"),
+            StrokeWidth = 2f,
+            FillColor = Color.FromArgb("#33182A52"),
+        };
+        ArrivalMap.Circles.Add(_checkInRangeCircle);
+        UpdateCheckInSpotDistance();
+    }
+
+    private static Task ShowCheckInSpotTooFarAsync(double distanceKm)
+    {
+        var message = string.Format(AppResources.CheckInSpotTooFar, CheckInRange.FormatDistance(distanceKm), CheckInRange.LimitText);
+        return Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+    }
+
+    private void UpdateCheckInSpotDistance()
+    {
+        if (_tappedPointPin is null || _checkInOrigin is null) return;
+
+        var spot = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+        CheckInSpotDistanceKm = spot.CalculateDistance(_checkInOrigin, DistanceUnits.Kilometers);
+    }
+
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
+
+    // The details panel is shown for saved pins (arrival locations and custom board locations),
+    // not for the temporary pin dropped by a long press.
+    public bool HasPinDetails => SelectedPin is CustomLocationPin or ArrivalLocationPin;
+    public bool HasNoPinDetails => !HasPinDetails;
+
+    public string SelectedPinTitle => SelectedPin?.Label ?? string.Empty;
+
+    public string SelectedPinSubtitle => SelectedPin switch
+    {
+        CustomLocationPin pin => $"{((MapPinTag)pin.Tag).BoardName} · {(pin.IsVisited ? pin.Address : AppResources.NotVisited)}",
+        ArrivalLocationPin pin => $"{AppResources.ArrivalLocation} · {pin.Address}",
+        _ => string.Empty,
+    };
+
+    public bool CanCheckIn => SelectedPin is CustomLocationPin;
+
+    public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
+
+    public string RemoveSelectedPinText => SelectedPin is ArrivalLocationPin ? AppResources.Delete : AppResources.ResetCheckIn;
+
+    [RelayCommand]
+    async Task RemoveSelectedPinAsync()
+    {
+        if (SelectedPin is not null)
+        {
+            await DeleteOrResetPinAsync(SelectedPin);
+        }
+    }
+
+    [RelayCommand]
+    async Task OpenDirectionsAsync()
+    {
+        if (SelectedPin is null) return;
+
+        try
+        {
+            var options = new MapLaunchOptions { Name = SelectedPin.Label };
+            await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(SelectedPin.Position.Latitude, SelectedPin.Position.Longitude, options);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+        }
+    }
+
+    [RelayCommand]
+    void ClosePinDetails()
+    {
+        if (ArrivalMap is not null)
+        {
+            ArrivalMap.SelectedPin = null;
+        }
+    }
+
+    // Pin equality is value-based (label/position), so remove the exact instance.
+    private void RemovePinFromMap(Pin pin)
+    {
+        if (ArrivalMap is null) return;
+
+        for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
+        {
+            if (ReferenceEquals(ArrivalMap.Pins[i], pin))
+            {
+                ArrivalMap.Pins.RemoveAt(i);
+                return;
+            }
+        }
+    }
 
     public Map? ArrivalMap
     {
@@ -61,7 +243,7 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
-            _arrivalMap.InfoWindowLongClicked += async (sender, e) => await OnInfoWindowLongClicked(sender, e);
+            _arrivalMap.InfoWindowLongClicked += async (sender, e) => await DeleteOrResetPinAsync(e.Pin);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
@@ -78,6 +260,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         var selectedLocationPin = e.Pin as SelectedLocationPin;
         selectedLocationPin?.UpdateLocation(position);
+        UpdateCheckInSpotDistance();
 
         if (ArrivalMap is not null)
         {
@@ -111,15 +294,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private void ShowPinOnTappedPoint(object? sender, MapLongClickedEventArgs e)
     {
-        if (_tappedPointPin is not null)
-        {
-            ArrivalMap?.Pins.Remove(_tappedPointPin);
-            _tappedPointPin = null;
-        }
-
-        _tappedPointPin = new SelectedLocationPin(e.Point);
-
-        ArrivalMap?.Pins.Add(_tappedPointPin);
+        PlaceCheckInSpot(e.Point, here: null);
         if (ArrivalMap is not null)
         {
             ArrivalMap.SelectedPin = _tappedPointPin;
@@ -130,13 +305,11 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         if (_tappedPointPin is null) return;
 
-        ArrivalMap?.Pins.Remove(_tappedPointPin);
-        _tappedPointPin = null;
+        RemoveCheckInSpot();
     }
 
-    private async Task OnInfoWindowLongClicked(object? sender, InfoWindowLongClickedEventArgs e)
+    private async Task DeleteOrResetPinAsync(Pin pin)
     {
-        var pin = e.Pin;
 
         if (pin is ArrivalLocationPin arrivalLocationPin)
         {
@@ -154,7 +327,11 @@ public partial class LocationPageViewModel : BaseViewModel
             }
 
             //update pin on map
-            ArrivalMap?.Pins.Remove(pin);
+            if (ArrivalMap is not null && ReferenceEquals(ArrivalMap.SelectedPin, pin))
+            {
+                ArrivalMap.SelectedPin = null;
+            }
+            RemovePinFromMap(pin);
         }
         else if (pin is CustomLocationPin customLocationPin)
         {
@@ -201,7 +378,27 @@ public partial class LocationPageViewModel : BaseViewModel
         if (ArrivalMap is not null)
         {
             var position = new Position(userLocation.Latitude, userLocation.Longitude);
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel));
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel), animate: true);
+        }
+    }
+
+    private static readonly TimeSpan CameraMoveTimeout = TimeSpan.FromSeconds(3);
+
+    // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
+    // which would leave IsBusy set and block Get Location. Wait a short time at most.
+    private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
+    {
+        if (ArrivalMap is null) return;
+        try
+        {
+            var move = animate ? ArrivalMap.AnimateCamera(update) : ArrivalMap.MoveCamera(update);
+            await move.WaitAsync(CameraMoveTimeout);
+        }
+        catch (TimeoutException)
+        {
+#if DEBUG
+            Console.WriteLine("Camera move did not complete in time; continuing.");
+#endif
         }
     }
 
@@ -221,7 +418,7 @@ public partial class LocationPageViewModel : BaseViewModel
         await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
         if (ArrivalMap is not null)
         {
-            await ArrivalMap.AnimateCamera(CameraUpdateFactory.NewPositionZoom(position, zoomLevel));
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, zoomLevel), animate: true);
         }
     }
 
@@ -254,9 +451,8 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, AppShell appShell, ArrivalLocationService arrivalLocationService)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest)
     {
-        _appShell = appShell;
         _arrivalLocationRepository = arrivalLocationRepository;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
@@ -265,17 +461,82 @@ public partial class LocationPageViewModel : BaseViewModel
         _settingsPreferences = settingsPreferences;
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
+        _mapFocusRequest = mapFocusRequest;
+        PinIcons.Style = settingsPreferences.GetPinStyle();
 
         WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
             MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
+        WeakReferenceMessenger.Default.Register<PinStyleChangedMessage>(this, (recipient, message) =>
+            MainThread.BeginInvokeOnMainThread(((LocationPageViewModel)recipient).RedrawPins));
+    }
+
+    // Gives every pin already on the map the icon of the newly chosen style.
+    private void RedrawPins()
+    {
+        if (ArrivalMap is null) return;
+
+        foreach (var pin in ArrivalMap.Pins)
+        {
+            if (PinIcons.ForPin(pin) is BitmapDescriptor icon)
+            {
+                pin.Icon = icon;
+            }
+        }
+        OnPropertyChanged(nameof(CheckInSpotIcon));
+    }
+
+    bool _pinsLoaded;
+
+    /// <summary>
+    /// Selects the location another page asked to show (see <see cref="MapFocusRequest"/>).
+    /// Called when the page appears and again once the pins have loaded.
+    /// </summary>
+    public async Task ShowRequestedLocationAsync()
+    {
+        if (!_pinsLoaded || ArrivalMap is null) return;
+
+        var key = _mapFocusRequest.Take();
+        if (key is not null)
+        {
+            await ShowCustomLocationAsync(key);
+        }
+    }
+
+    private async Task ShowCustomLocationAsync(string compositeKey)
+    {
+        if (ArrivalMap is null) return;
+
+        var pin = ArrivalMap.Pins.OfType<CustomLocationPin>().FirstOrDefault(p => p.CustomLocationKey == compositeKey);
+        if (pin is null) return;
+
+        // Make sure a filter does not hide the requested pin.
+        if (!pin.IsVisible)
+        {
+            _visiblePinKeys.Clear();
+            OnPinFilterChanged();
+        }
+
+        await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
+        ArrivalMap.SelectedPin = pin;
     }
 
     private async Task OnCustomBoardsChanged(CustomBoardsChangedMessage message)
     {
         try
         {
-            await RemovePinsOfDeletedBoards();
+            var knownBoards = FilterChips.Select(c => c.Name).ToHashSet();
+            if (message.PlacesChanged)
+            {
+                await ReloadCustomLocationPinsAsync();
+            }
             await RebuildPinFilterList();
+
+            // When filtering, also show boards that were just added.
+            if (_visiblePinKeys.Count > 0)
+            {
+                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll && !knownBoards.Contains(c.Name)).Select(c => c.Name));
+                OnPinFilterChanged();
+            }
         }
         catch (Exception ex)
         {
@@ -298,7 +559,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {
-                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
+                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
             }
         }
         catch (Exception ex)
@@ -310,7 +571,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             if (ArrivalMap is not null)
             {
-                await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL));
+                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
             }
         }
         finally
@@ -318,6 +579,9 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = false;
             _isCheckingLocation = false;
         }
+
+        _pinsLoaded = true;
+        await ShowRequestedLocationAsync();
     }
 
     [RelayCommand]
@@ -336,6 +600,13 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
+            // A spot already shown outside the circle cannot be recorded; say so before anything else.
+            if (CheckInSpotDistanceKm is double spotDistance && !CheckInRange.IsWithin(spotDistance))
+            {
+                await ShowCheckInSpotTooFarAsync(spotDistance);
+                return;
+            }
+
             var arrivalLocationCount = (await _arrivalLocationRepository.GetAllArrivalLocations()).Count;
             if (arrivalLocationCount >= 5 && !_settingsPreferences.IsApiKeySet())
             {
@@ -350,21 +621,18 @@ public partial class LocationPageViewModel : BaseViewModel
                 await MoveAndZoomToCurrentLocationAsync();
 
                 var position = new Position(currentLocation.Latitude, currentLocation.Longitude);
-                var currentPin = new SelectedLocationPin(position);
-
-                _tappedPointPin = currentPin;
-                ArrivalMap?.Pins.Add(_tappedPointPin);
+                PlaceCheckInSpot(position, currentLocation);
                 await Task.Delay(PAUSE_DURATION_MS);
             }
             else
             {
                 var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+                await ShowCheckInRangeAsync(currentLocation);
 
                 var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-                var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
-                if (!isNear)
+                if (!CheckInRange.IsWithin(distance))
                 {
-                    await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+                    await ShowCheckInSpotTooFarAsync(distance);
                     return;
                 }
 
@@ -407,10 +675,7 @@ public partial class LocationPageViewModel : BaseViewModel
                     await ShowLocationDiscoveryPopup(arrivalLocation.AdminAreaName, subRegionCode);
                 }
 
-                if (_tappedPointPin is null) return;
-
-                ArrivalMap?.Pins.Remove(_tappedPointPin);
-                _tappedPointPin = null;
+                RemoveCheckInSpot();
 
             }
         }
@@ -457,10 +722,15 @@ public partial class LocationPageViewModel : BaseViewModel
         var currentLocation = await GetCurrentLocation();
 
         var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-        var isNear = distance <= CLOSE_DISTANCE_THRESHOLD_KM;
-        if (!isNear)
+        if (!CheckInRange.IsWithin(distance))
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.YouAreNotNearTheLocation}", "OK");
+            // Say how far away the location is and offer directions to it.
+            var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, DistanceFormatter.Format(distance))}";
+            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", "OK");
+            if (wantsDirections)
+            {
+                await OpenDirectionsAsync();
+            }
             return;
         }
 
@@ -559,48 +829,6 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    [RelayCommand]
-    public async Task AddCustomBoardJsonAsync()
-    {
-        if (IsBusy || _isCheckingLocation)
-            return;
-        try
-        {
-            IsBusy = true;
-            var pickedFile = await FilePicker.PickAsync();
-            if (pickedFile is null) return;
-            using var stream = await pickedFile.OpenReadAsync();
-            (var customBoard, var pins) = await _customBoardService.SaveBoardAndLocations(stream, pickedFile.FileName);
-
-            if (!_appShell.CustomBoardPage.IsVisible)
-            {
-                _appShell.CustomBoardPage.IsVisible = true;
-            }
-
-            AddPinsToMap(pins);
-            await RebuildPinFilterList();
-
-            // When filtering, also show the board just imported.
-            if (_visiblePinKeys.Count > 0)
-            {
-                _visiblePinKeys.Add(customBoard.Name);
-                OnPinFilterChanged();
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // User cancelled password entry, just return without showing error
-        }
-        catch (Exception ex)
-        {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
     public void CancelRequest()
     {
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
@@ -608,33 +836,26 @@ public partial class LocationPageViewModel : BaseViewModel
     }
 
     [ObservableProperty]
-    ObservableCollection<CustomBoardPinFilterItem> _pinFilterList = default!;
+    ObservableCollection<PinFilterChip> _filterChips = [];
 
     // Pin keys (board names / arrival location) currently shown. Empty means all pins are shown.
     readonly HashSet<string> _visiblePinKeys = [];
 
-    public string FilterSummary => _visiblePinKeys.Count switch
-    {
-        0 => AppResources.AllPins,
-        1 => _visiblePinKeys.First(),
-        _ => string.Format(AppResources.NSelected, _visiblePinKeys.Count),
-    };
-
     [RelayCommand]
-    async Task OpenPinFilterAsync()
+    void ToggleFilterChip(PinFilterChip chip)
     {
-        var popupViewModel = new PinFilterPopupViewModel(PinFilterList, _visiblePinKeys);
-        await Shell.Current.CurrentPage.ShowPopupAsync(new PinFilterPopupView(popupViewModel));
-        if (popupViewModel.Result is null) return;
-
+        var keys = PinFilterRules.Toggle(FilterChips, chip);
         _visiblePinKeys.Clear();
-        _visiblePinKeys.UnionWith(popupViewModel.Result);
-        OnPinFilterChanged();
+        _visiblePinKeys.UnionWith(keys);
+        UpdatePinsVisibility();
     }
 
     private void OnPinFilterChanged()
     {
-        OnPropertyChanged(nameof(FilterSummary));
+        foreach (var chip in FilterChips)
+        {
+            chip.IsSelected = chip.IsAll ? _visiblePinKeys.Count == 0 : _visiblePinKeys.Contains(chip.Name);
+        }
         UpdatePinsVisibility();
     }
 
@@ -670,33 +891,31 @@ public partial class LocationPageViewModel : BaseViewModel
         await RebuildPinFilterList();
     }
 
-    private async Task RemovePinsOfDeletedBoards()
+    private async Task ReloadCustomLocationPinsAsync()
     {
         if (ArrivalMap is null) return;
 
-        var boardNames = (await _customBoardRepository.GetAllCustomBoards()).Select(b => b.Name).ToHashSet();
-        static bool IsOrphan(Pin pin, HashSet<string> boardNames) =>
-            pin.Tag is MapPinTag { IsCustomLocation: true } tag && !boardNames.Contains(tag.BoardName);
-
-        if (SelectedPin is not null && IsOrphan(SelectedPin, boardNames))
+        if (SelectedPin is CustomLocationPin)
         {
             ArrivalMap.SelectedPin = null;
         }
 
-        // Remove by index: Pin equality is value-based (label/position), so Remove(pin)
-        // could take out the same location on another board.
+        // Remove by index: Pin equality is value-based (label/position).
         for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
         {
-            if (IsOrphan(ArrivalMap.Pins[i], boardNames))
+            if (ArrivalMap.Pins[i] is CustomLocationPin)
             {
                 ArrivalMap.Pins.RemoveAt(i);
             }
         }
+
+        AddPinsToMap(await _customLocationDataRepository.GetAllCustomLocationPins());
+        UpdatePinsVisibility();
     }
 
     private async Task RebuildPinFilterList()
     {
-        var filterList = new ObservableCollection<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
+        var filterList = new List<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
 
         var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
         if (hasArrivalPins)
@@ -710,12 +929,14 @@ public partial class LocationPageViewModel : BaseViewModel
             filterList.Add(new CustomBoardPinFilterItem(board.Name));
         }
 
-        PinFilterList = filterList;
-
         // Drop keys of filters that no longer exist (e.g. deleted boards).
-        if (_visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0)
+        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0;
+
+        FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _visiblePinKeys));
+
+        if (removed)
         {
-            OnPinFilterChanged();
+            UpdatePinsVisibility();
         }
     }
 
