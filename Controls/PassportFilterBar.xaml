@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--  Country / region switch, country filter, display options and the map toggle of the Passport tab.
-      Shown in the list header, and pinned at the top once the header has scrolled away.  -->
+<!--  Country / region switch, country filter, display options and the map toggle of the Passport tab,
+      shown in a floating toolbar at the bottom of the page.  -->
 <ContentView
     x:Class="FlagsRally.Controls.PassportFilterBar"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -10,9 +10,9 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
     <Grid
-        Padding="16,6,8,10"
-        ColumnDefinitions="Auto,Auto,*,Auto,Auto"
-        ColumnSpacing="8">
+        Padding="8"
+        ColumnDefinitions="Auto,*,Auto,Auto"
+        ColumnSpacing="6">
 
         <!--  Countries / regions  -->
         <Border
@@ -23,7 +23,7 @@
             VerticalOptions="Center">
             <HorizontalStackLayout>
                 <Border
-                    Padding="14,6"
+                    Padding="12,6"
                     BackgroundColor="Transparent"
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="0">
@@ -39,7 +39,7 @@
                         <TapGestureRecognizer Command="{Binding SetRegionCommand}" CommandParameter="Country" />
                     </Border.GestureRecognizers>
                     <Label
-                        FontSize="13"
+                        FontSize="12"
                         Text="{x:Static strings:AppResources.StatCountries}"
                         TextColor="{StaticResource Ink}">
                         <Label.Triggers>
@@ -53,7 +53,7 @@
                     </Label>
                 </Border>
                 <Border
-                    Padding="14,6"
+                    Padding="12,6"
                     BackgroundColor="Transparent"
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="0">
@@ -69,7 +69,7 @@
                         <TapGestureRecognizer Command="{Binding SetRegionCommand}" CommandParameter="AdminArea" />
                     </Border.GestureRecognizers>
                     <Label
-                        FontSize="13"
+                        FontSize="12"
                         Text="{x:Static strings:AppResources.StatRegions}"
                         TextColor="{StaticResource Ink}">
                         <Label.Triggers>
@@ -88,7 +88,8 @@
         <!--  Country filter  -->
         <Border
             Grid.Column="1"
-            Padding="12,7"
+            Padding="10,7"
+            HorizontalOptions="Start"
             BackgroundColor="{StaticResource PaperCard}"
             Stroke="{StaticResource PaperEdge}"
             StrokeShape="RoundRectangle 18"
@@ -97,16 +98,15 @@
                 <TapGestureRecognizer Command="{Binding ChooseCountryCommand}" />
             </Border.GestureRecognizers>
             <Label
-                FontSize="13"
+                FontSize="12"
                 LineBreakMode="TailTruncation"
-                MaximumWidthRequest="120"
                 Text="{Binding FilteredCountry.CountryName, StringFormat='{0}  ▾'}"
                 TextColor="{StaticResource Ink}" />
         </Border>
 
         <!--  Display options and map  -->
         <ImageButton
-            Grid.Column="3"
+            Grid.Column="2"
             Padding="11"
             BackgroundColor="Transparent"
             Command="{Binding ChooseDisplayOptionsCommand}"
@@ -115,7 +115,7 @@
             Source="filter.png"
             WidthRequest="44" />
         <Border
-            Grid.Column="4"
+            Grid.Column="3"
             BackgroundColor="{StaticResource Navy}"
             HeightRequest="44"
             StrokeShape="RoundRectangle 22"

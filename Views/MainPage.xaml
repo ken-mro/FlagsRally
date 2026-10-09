@@ -106,9 +106,13 @@
                             </VerticalStackLayout>
                         </Grid>
                     </Grid>
-                    <controls:PassportFilterBar />
                 </VerticalStackLayout>
             </CollectionView.Header>
+
+            <!--  Room for the floating toolbar so the last stamps can scroll above it  -->
+            <CollectionView.Footer>
+                <BoxView HeightRequest="92" Color="Transparent" />
+            </CollectionView.Footer>
 
             <!--  A blank passport page until the first arrival is recorded  -->
             <CollectionView.EmptyView>
@@ -348,21 +352,6 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!--  The filter bar pinned at the top after the header has scrolled away, and over the map  -->
-        <Border
-            Grid.Row="0"
-            BackgroundColor="{StaticResource Paper}"
-            IsVisible="{Binding ShowsPinnedFilterBar}"
-            StrokeThickness="0">
-            <Border.Shadow>
-                <Shadow
-                    Brush="{StaticResource Navy}"
-                    Opacity="0.12"
-                    Radius="6"
-                    Offset="0,2" />
-            </Border.Shadow>
-            <controls:PassportFilterBar Padding="0,6,0,0" />
-        </Border>
 
         <!--  The visited countries on a world map, in place of the stamps  -->
         <map:SfMaps
@@ -411,5 +400,25 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             Color="{StaticResource Navy}" />
+
+        <!--  Controls float just above the tab bar, within thumb reach, over the stamps or the map  -->
+        <Border
+            Grid.RowSpan="2"
+            Margin="12,0,12,12"
+            Padding="0"
+            BackgroundColor="{StaticResource PaperCard}"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 30"
+            StrokeThickness="1"
+            VerticalOptions="End">
+            <Border.Shadow>
+                <Shadow
+                    Brush="{StaticResource NavyDeep}"
+                    Opacity="0.18"
+                    Radius="14"
+                    Offset="0,4" />
+            </Border.Shadow>
+            <controls:PassportFilterBar />
+        </Border>
     </Grid>
 </ContentPage>

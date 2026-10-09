@@ -25,9 +25,8 @@ public partial class MainPage : ContentPage
         _mainPageViewModel.GridItemSpan = Math.Max((int)width / 196, 2);
     }
 
-    // The passport header scrolls away with the stamps; once it has, the filter bar is pinned
-    // at the top and the numbers move up beside the title. Only visibility changes, so the
-    // list never has to lay itself out again while scrolling.
+    // The passport header scrolls away with the stamps; once it has, the numbers move up beside
+    // the title. Only visibility changes, so the list never lays itself out again while scrolling.
     private void OnStampsScrolled(object? sender, ItemsViewScrolledEventArgs e)
     {
         _mainPageViewModel.IsHeaderScrolledAway = e.VerticalOffset > passportHeader.Height;

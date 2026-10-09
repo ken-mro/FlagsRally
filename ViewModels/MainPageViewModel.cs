@@ -52,18 +52,15 @@ namespace FlagsRally.ViewModels
         // Set by the page while scrolling: the passport header is out of sight.
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ShowsSummaryInTitle))]
-        [NotifyPropertyChangedFor(nameof(ShowsPinnedFilterBar))]
         bool _isHeaderScrolledAway;
 
         public bool ShowsSummaryInTitle => IsHeaderScrolledAway || IsMapVisible;
-        public bool ShowsPinnedFilterBar => IsHeaderScrolledAway || IsMapVisible;
         public bool IsListVisible => !IsMapVisible;
         public bool HasNoArrivals => SourceArrivalLocationList.Count == 0;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsListVisible))]
         [NotifyPropertyChangedFor(nameof(ShowsSummaryInTitle))]
-        [NotifyPropertyChangedFor(nameof(ShowsPinnedFilterBar))]
         bool _isMapVisible;
 
         [ObservableProperty]
