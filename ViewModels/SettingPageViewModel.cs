@@ -22,6 +22,7 @@ namespace FlagsRally.ViewModels
         private CustomCountryHelper _countryHelper;
         private SettingsPreferences _settingPreferences;
         private IRevenueCatBilling _revenueCatBilling;
+        private ICustomBoardRepository _customBoardRepository;
         private CancellationTokenSource cancellationSource = new CancellationTokenSource();
 
         [ObservableProperty]
@@ -62,9 +63,26 @@ namespace FlagsRally.ViewModels
             PinStyle = Enum.Parse<PinStyle>(style);
         }
 
-        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper, IRevenueCatBilling revenueCatBilling)
+        // The pin previews leave out custom board pins while there are no custom boards.
+        [ObservableProperty]
+        private bool _hasCustomBoards;
+
+        public async Task RefreshCustomBoardsAsync()
+        {
+            try
+            {
+                HasCustomBoards = (await _customBoardRepository.GetAllCustomBoards()).Any();
+            }
+            catch (Exception)
+            {
+                // Keep the previous state; the preview is only an illustration.
+            }
+        }
+
+        public SettingPageViewModel(SettingsPreferences settingPreferences, CustomCountryHelper countryHelper, IRevenueCatBilling revenueCatBilling, ICustomBoardRepository customBoardRepository)
         {
             _settingPreferences = settingPreferences;
+            _customBoardRepository = customBoardRepository;
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
             _pinStyle = _settingPreferences.GetPinStyle();

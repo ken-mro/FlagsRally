@@ -107,8 +107,8 @@
                     </Border.GestureRecognizers>
                     <VerticalStackLayout Spacing="6">
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
-                            <Image HeightRequest="40" Source="classic_pin.png" WidthRequest="29" />
-                            <Image HeightRequest="40" Source="classic_pin_arrived.png" WidthRequest="29" />
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="classic_pin.png" WidthRequest="29" />
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="classic_pin_arrived.png" WidthRequest="29" />
                             <Image HeightRequest="40" Source="classic_default_pin.png" WidthRequest="29" />
                             <Image HeightRequest="40" Source="classic_selected_location_pin.png" WidthRequest="29" />
                         </HorizontalStackLayout>
@@ -139,8 +139,8 @@
                     </Border.GestureRecognizers>
                     <VerticalStackLayout Spacing="6">
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
-                            <Image HeightRequest="40" Source="pin.png" WidthRequest="29" />
-                            <Image HeightRequest="40" Source="pin_arrived.png" WidthRequest="29" />
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="pin.png" WidthRequest="29" />
+                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="pin_arrived.png" WidthRequest="29" />
                             <Image HeightRequest="40" Source="default_pin.png" WidthRequest="29" />
                             <Image HeightRequest="40" Source="selected_location_pin.png" WidthRequest="29" />
                         </HorizontalStackLayout>
