@@ -20,6 +20,12 @@ public static class CustomBoardFile
 {
     static readonly string[] Extensions = [".json.encrypted", ".json"];
 
+    /// <summary>
+    /// Far above any real board (the largest sample is about 20 KB), low enough that a wrong or
+    /// hostile file cannot exhaust a phone's memory.
+    /// </summary>
+    public const int MaxBytes = 5 * 1024 * 1024;
+
     public static bool IsBoardFile(string fileName) => Extensions.Any(x => fileName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
 
     public static string StripExtension(string fileName) =>
@@ -39,7 +45,11 @@ public partial class DriveBoardCatalog
     /// </summary>
     public const string RootFolderId = "1wclZZ_udWOVLWwIcbX8CsgPIMdWAJ-Rg";
 
-    static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(30) };
+    static readonly HttpClient Http = new()
+    {
+        Timeout = TimeSpan.FromSeconds(30),
+        MaxResponseContentBufferSize = CustomBoardFile.MaxBytes,
+    };
 
     public async Task<List<DriveEntry>> ListAsync(string folderId, CancellationToken cancellationToken = default)
     {

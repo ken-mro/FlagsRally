@@ -155,10 +155,6 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
     async Task ImportAsync(Stream stream, string fileName)
     {
         var board = await _customBoardService.ReadBoardJsonAsync(stream, fileName);
-        if (string.IsNullOrWhiteSpace(board.name) || board.locations.Length == 0)
-        {
-            throw new InvalidOperationException(AppResources.InvalidOrCorruptedFile);
-        }
 
         var existingBoards = await _customBoardRepository.GetAllCustomBoards();
         if (existingBoards.Any(x => x.Name == board.name))

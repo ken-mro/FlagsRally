@@ -1,5 +1,7 @@
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
+using FlagsRally.Resources;
+using System.Text;
 using System.Text.Json;
 
 namespace FlagsRally.Services;
@@ -79,26 +81,65 @@ public class CustomBoardService
     /// </summary>
     public async Task<CustomBoardJson> ReadBoardJsonAsync(Stream stream, string fileName)
     {
-        string json = string.Empty;
+        var data = await ReadLimitedAsync(stream, CustomBoardFile.MaxBytes);
 
         // Check if file is encrypted based on extension
-        if (CryptoService.IsEncryptedFile(fileName))
-        {
-            // Read encrypted data
-            using var memoryStream = new MemoryStream();
-            await stream.CopyToAsync(memoryStream);
-            var encryptedData = memoryStream.ToArray();
+        var json = CryptoService.IsEncryptedFile(fileName)
+            ? _cryptoService.DecryptJson(data)
+            : Encoding.UTF8.GetString(data);
 
-            json = _cryptoService.DecryptJson(encryptedData);
-        }
-        else
+        CustomBoardJson? board;
+        try
         {
-            // Read plain text JSON
-            using var reader = new StreamReader(stream);
-            json = await reader.ReadToEndAsync();
+            board = JsonSerializer.Deserialize<CustomBoardJson>(json);
+        }
+        catch (JsonException)
+        {
+            board = null;
         }
 
-        return JsonSerializer.Deserialize<CustomBoardJson>(json) ?? new();
+        if (board is null || !IsValid(board))
+        {
+            throw new InvalidOperationException(AppResources.InvalidOrCorruptedFile);
+        }
+        board.width = Math.Clamp(board.width, 0, MaxTileSize);
+        board.height = Math.Clamp(board.height, 0, MaxTileSize);
+        return board;
+    }
+
+    const int MaxTileSize = 4096;
+    const int MaxLocations = 10_000;
+
+    /// <summary>
+    /// Boards are shared between people, so only accept what the app can show safely: a name, an
+    /// http(s) image template (or none), and places with a unique, non-empty code.
+    /// </summary>
+    public static bool IsValid(CustomBoardJson board)
+    {
+        if (string.IsNullOrWhiteSpace(board.name)) return false;
+        if (board.locations is null || board.locations.Length == 0 || board.locations.Length > MaxLocations) return false;
+        if (board.locations.Any(l => l is null || string.IsNullOrWhiteSpace(l.code))) return false;
+        if (board.locations.Select(l => l.code).Distinct().Count() != board.locations.Length) return false;
+
+        if (string.IsNullOrEmpty(board.url)) return true;
+        return Uri.TryCreate(board.url, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp);
+    }
+
+    // Reads at most maxBytes, so an oversized file fails fast instead of filling memory.
+    static async Task<byte[]> ReadLimitedAsync(Stream stream, int maxBytes)
+    {
+        using var buffer = new MemoryStream();
+        var chunk = new byte[81920];
+        int read;
+        while ((read = await stream.ReadAsync(chunk)) > 0)
+        {
+            if (buffer.Length + read > maxBytes)
+            {
+                throw new InvalidOperationException(AppResources.InvalidOrCorruptedFile);
+            }
+            buffer.Write(chunk, 0, read);
+        }
+        return buffer.ToArray();
     }
 
     public async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json)
