@@ -85,72 +85,129 @@
 
             <!--  Map pin style  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.MapPins}" />
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <Border
-                    Grid.Column="0"
-                    Padding="8,10"
-                    BackgroundColor="Transparent"
-                    Stroke="{StaticResource PaperEdge}"
-                    StrokeShape="RoundRectangle 8"
-                    StrokeThickness="1.5">
-                    <Border.Triggers>
-                        <DataTrigger
-                            Binding="{Binding UsesClassicPins}"
-                            TargetType="Border"
-                            Value="True">
-                            <Setter Property="Stroke" Value="{StaticResource Navy}" />
-                            <Setter Property="StrokeThickness" Value="2.5" />
-                        </DataTrigger>
-                    </Border.Triggers>
-                    <Border.GestureRecognizers>
+            <Border Style="{StaticResource SettingsCard}">
+              <VerticalStackLayout>
+                <Grid Style="{StaticResource SettingsRow}" ColumnDefinitions="Auto,*,Auto">
+                    <Grid.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetPinStyleCommand}" CommandParameter="Classic" />
-                    </Border.GestureRecognizers>
-                    <VerticalStackLayout Spacing="6">
-                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
-                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="classic_pin.png" WidthRequest="29" />
-                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="classic_pin_arrived.png" WidthRequest="29" />
-                            <Image HeightRequest="40" Source="classic_default_pin.png" WidthRequest="29" />
-                            <Image HeightRequest="40" Source="classic_selected_location_pin.png" WidthRequest="29" />
-                        </HorizontalStackLayout>
-                        <Label
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            Text="{x:Static strings:AppResources.PinStyleClassic}" />
-                    </VerticalStackLayout>
-                </Border>
-                <Border
-                    Grid.Column="1"
-                    Padding="8,10"
-                    BackgroundColor="Transparent"
-                    Stroke="{StaticResource PaperEdge}"
-                    StrokeShape="RoundRectangle 8"
-                    StrokeThickness="1.5">
-                    <Border.Triggers>
-                        <DataTrigger
-                            Binding="{Binding UsesDropPins}"
-                            TargetType="Border"
-                            Value="True">
-                            <Setter Property="Stroke" Value="{StaticResource Navy}" />
-                            <Setter Property="StrokeThickness" Value="2.5" />
-                        </DataTrigger>
-                    </Border.Triggers>
-                    <Border.GestureRecognizers>
+                    </Grid.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="2">
+                        <Image
+                            HeightRequest="40"
+                            IsVisible="{Binding HasCustomBoards}"
+                            Source="classic_pin.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            IsVisible="{Binding HasCustomBoards}"
+                            Source="classic_pin_arrived.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            Source="classic_default_pin.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            Source="classic_selected_location_pin.png"
+                            WidthRequest="29" />
+                    </HorizontalStackLayout>
+                    <Label
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        FontSize="16"
+                        Text="{x:Static strings:AppResources.PinStyleClassic}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="2"
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        IsVisible="{Binding UsesClassicPins}"
+                        Text="✓"
+                        TextColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Grid>
+                <BoxView Style="{StaticResource RowDivider}" />
+                <Grid Style="{StaticResource SettingsRow}" ColumnDefinitions="Auto,*,Auto">
+                    <Grid.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetPinStyleCommand}" CommandParameter="Drop" />
-                    </Border.GestureRecognizers>
-                    <VerticalStackLayout Spacing="6">
-                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
-                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="pin.png" WidthRequest="29" />
-                            <Image HeightRequest="40" IsVisible="{Binding HasCustomBoards}" Source="pin_arrived.png" WidthRequest="29" />
-                            <Image HeightRequest="40" Source="default_pin.png" WidthRequest="29" />
-                            <Image HeightRequest="40" Source="selected_location_pin.png" WidthRequest="29" />
-                        </HorizontalStackLayout>
-                        <Label
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            Text="{x:Static strings:AppResources.PinStyleDrop}" />
-                    </VerticalStackLayout>
-                </Border>
-            </Grid>
+                    </Grid.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="2">
+                        <Image
+                            HeightRequest="40"
+                            IsVisible="{Binding HasCustomBoards}"
+                            Source="pin.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            IsVisible="{Binding HasCustomBoards}"
+                            Source="pin_arrived.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            Source="default_pin.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            Source="selected_location_pin.png"
+                            WidthRequest="29" />
+                    </HorizontalStackLayout>
+                    <Label
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        FontSize="16"
+                        Text="{x:Static strings:AppResources.PinStyleDrop}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="2"
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        IsVisible="{Binding UsesDropPins}"
+                        Text="✓"
+                        TextColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Grid>
+                <BoxView Style="{StaticResource RowDivider}" />
+                <Grid Style="{StaticResource SettingsRow}" ColumnDefinitions="Auto,*,Auto">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SetPinStyleCommand}" CommandParameter="Critter" />
+                    </Grid.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="2">
+                        <Image
+                            HeightRequest="40"
+                            IsVisible="{Binding HasCustomBoards}"
+                            Source="critter_pin.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            IsVisible="{Binding HasCustomBoards}"
+                            Source="critter_pin_arrived.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            Source="critter_default_pin.png"
+                            WidthRequest="29" />
+                        <Image
+                            HeightRequest="40"
+                            Source="critter_selected_location_pin.png"
+                            WidthRequest="29" />
+                    </HorizontalStackLayout>
+                    <Label
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        FontSize="16"
+                        Text="{x:Static strings:AppResources.PinStyleCritter}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="2"
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        IsVisible="{Binding UsesCritterPins}"
+                        Text="✓"
+                        TextColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Grid>
+              </VerticalStackLayout>
+            </Border>
 
             <!--  Subscription  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.SubscriptionStatus}" />
