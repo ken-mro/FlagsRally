@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="44" viewBox="0 0 32 44">
-  <!-- Critter map pin: a custom board place not visited yet. An original round character with a pair of eyes, standing on the spot. -->
+  <!-- Critter map pin: a custom board place not visited yet (looking around). An original round character with one eye, standing on the spot. -->
   <ellipse cx="16" cy="41.4" rx="4.6" ry="1.4" fill="#000" fill-opacity="0.22"/>
   <path d="M16 5.6 C24.2 5.6 30 11 30 18 C30 24.4 25.2 28.6 19.6 29.4 L16 41 L12.4 29.4 C6.8 28.6 2 24.4 2 18 C2 11 7.8 5.6 16 5.6 Z" fill="#182A52" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/>
-  <ellipse cx="11.2" cy="17" rx="3.6" ry="4.1" fill="#FFFFFF"/><ellipse cx="20.8" cy="17" rx="3.6" ry="4.1" fill="#FFFFFF"/><circle cx="11.8" cy="17.7" r="2.1" fill="#2594EF"/><circle cx="21.4" cy="17.7" r="2.1" fill="#2594EF"/>
+  <ellipse cx="16" cy="17.4" rx="6.6" ry="7" fill="#FFFFFF"/><circle cx="13.4" cy="17.8" r="3.3" fill="#2594EF"/>
 </svg>
