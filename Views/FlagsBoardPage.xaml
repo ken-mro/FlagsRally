@@ -49,7 +49,7 @@
                 VerticalOptions="Fill">
                 <!--  Room for the floating toolbar so the last tiles can scroll above it  -->
                 <CollectionView.Footer>
-                    <BoxView HeightRequest="84" Color="Transparent" />
+                    <BoxView BackgroundColor="Transparent" HeightRequest="84" />
                 </CollectionView.Footer>
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />

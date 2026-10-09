@@ -1346,5 +1346,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StampFirstOnMap", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup restored successfully!.
+        /// </summary>
+        internal static string RestoreSucceeded {
+            get {
+                return ResourceManager.GetString("RestoreSucceeded", resourceCulture);
+            }
+        }
     }
 }

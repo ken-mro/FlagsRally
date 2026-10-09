@@ -71,7 +71,10 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - **`MoveCamera`/`AnimateCamera` の Task が返ってこないことがある** → `MoveCameraSafelyAsync`（3 秒タイムアウト）経由で呼ぶ。
 - **CollectionView のセル再利用で別カードの画像が出る** → 1 つの Image に URL とローカル画像を両方流さない（`RemoteImageUrl` / `LocalImageFile` のように分ける）。
 - **`Xamarin.AndroidX.Lifecycle.LiveData`** は MAUI が固定している版に合わせる。上げると NU1608。
-- iOS ではボード並べ替えのドラッグとスクロールの競合を未対処（Android は `RequestDisallowInterceptTouchEvent`）。
+- ボード並べ替えのドラッグとスクロールの競合: Android は `RequestDisallowInterceptTouchEvent`、iOS は PanGesture の `ShouldReceiveTouch` をハンドル上だけに絞る（`LimitDragToHandles`）。
+- **iOS の grouped CollectionView は Reset 直後の Add で落ちる**（NSInternalInconsistencyException）→ 中身の入れ替えは Reset 1 回で通知する（`CollectionSection.ShowCards`）。
+- **iOS ではピンのドラッグ開始の長押しが `MapLongClicked` にもなる** → ドラッグ中は長押しで地点を置き直さない。
+- iOS シミュレーター: Xcode が SDK の想定より新しいと `-p:ValidateXcodeVersion=false` が必要。
 
 ## ドメインのメモ
 

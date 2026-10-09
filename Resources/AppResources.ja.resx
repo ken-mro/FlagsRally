@@ -546,4 +546,7 @@
   <data name="StampFirstOnMap" xml:space="preserve">
     <value>マップで最初のスタンプを押す</value>
   </data>
+  <data name="RestoreSucceeded" xml:space="preserve">
+    <value>バックアップを復元しました。</value>
+  </data>
 </root>

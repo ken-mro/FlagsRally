@@ -111,7 +111,7 @@
 
             <!--  Room for the floating toolbar so the last stamps can scroll above it  -->
             <CollectionView.Footer>
-                <BoxView HeightRequest="92" Color="Transparent" />
+                <BoxView BackgroundColor="Transparent" HeightRequest="92" />
             </CollectionView.Footer>
 
             <!--  A blank passport page until the first arrival is recorded  -->

@@ -4,6 +4,7 @@ using FlagsRally.Resources;
 using FlagsRally.Services;
 using FlagsRally.Views;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace FlagsRally.ViewModels;
@@ -88,14 +89,22 @@ public class CollectionSection(string title, bool isEditable, bool isCollapsible
         ShowCards();
     }
 
+    // Swaps the items and reports it as one Reset. iOS's grouped CollectionView throws
+    // NSInternalInconsistencyException when a Reset (Clear) is followed at once by inserts.
     void ShowCards()
     {
-        Clear();
-        if (!IsExpanded) return;
-        foreach (var card in _cards)
+        CheckReentrancy();
+        Items.Clear();
+        if (IsExpanded)
         {
-            Add(card);
+            foreach (var card in _cards)
+            {
+                Items.Add(card);
+            }
         }
+        OnPropertyChanged(new PropertyChangedEventArgs(nameof(Count)));
+        OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
 }
 

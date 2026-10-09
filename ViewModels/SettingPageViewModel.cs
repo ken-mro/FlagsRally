@@ -288,7 +288,7 @@ namespace FlagsRally.ViewModels
                     }
                 }
 
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}\n" +
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.RestoreSucceeded}\n" +
                 $"{AppResources.RelaunchToEnable}", "OK");
             }
             catch (ZipException)

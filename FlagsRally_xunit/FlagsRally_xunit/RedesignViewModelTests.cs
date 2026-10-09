@@ -124,6 +124,30 @@ public class RedesignViewModelTests
         Assert.True(vm.BoardCards.IsExpanded);
     }
 
+    // iOS's grouped CollectionView throws when a Reset is followed at once by item inserts.
+    [Fact]
+    public void Replacing_or_folding_cards_raises_a_single_reset()
+    {
+        var section = new CollectionSection("Boards", isEditable: true, isCollapsible: true);
+        var changes = new List<System.Collections.Specialized.NotifyCollectionChangedAction>();
+        section.CollectionChanged += (_, e) => changes.Add(e.Action);
+        CollectionCard Card(string key) => new(CollectionCardKind.Custom, key, key, 0, 1, string.Empty, key);
+
+        section.SetCards([Card("a"), Card("b"), Card("c")]);
+        Assert.Equal([System.Collections.Specialized.NotifyCollectionChangedAction.Reset], changes);
+        Assert.Equal(["a", "b", "c"], section.Select(c => c.Key));
+
+        changes.Clear();
+        section.IsExpanded = false;
+        Assert.Equal([System.Collections.Specialized.NotifyCollectionChangedAction.Reset], changes);
+        Assert.Empty(section);
+
+        changes.Clear();
+        section.IsExpanded = true;
+        Assert.Equal([System.Collections.Specialized.NotifyCollectionChangedAction.Reset], changes);
+        Assert.Equal(3, section.Count);
+    }
+
     // ---------- Regional flags board ----------
 
     [Theory]

@@ -27,6 +27,7 @@ public partial class ManageCustomBoardsPage : ContentPage
     {
         InitializeComponent();
         BindingContext = _viewModel = vm;
+        boardList.Loaded += (_, _) => LimitDragToHandles();
     }
 
     protected override async void OnAppearing()
@@ -53,6 +54,31 @@ public partial class ManageCustomBoardsPage : ContentPage
     }
 
     bool IsOnHandle(Point p) => p.X >= boardList.Width - HandleWidth;
+
+    // On iOS the list's pan gesture would take every touch, so the list could not be scrolled.
+    // Let it see only touches that start on a handle; the scroll view gets the rest.
+    void LimitDragToHandles()
+    {
+#if IOS
+        if (boardList.Handler?.PlatformView is not UIKit.UIView view) return;
+
+        foreach (var pan in view.GestureRecognizers?.OfType<UIKit.UIPanGestureRecognizer>() ?? [])
+        {
+            if (!_handleOnlyPans.Add(pan)) continue;
+
+            var mauiCheck = pan.ShouldReceiveTouch;
+            pan.ShouldReceiveTouch = (recognizer, touch) =>
+            {
+                var p = touch.LocationInView(view);
+                return IsOnHandle(new Point(p.X, p.Y)) && (mauiCheck?.Invoke(recognizer, touch) ?? true);
+            };
+        }
+#endif
+    }
+
+#if IOS
+    readonly HashSet<UIKit.UIGestureRecognizer> _handleOnlyPans = [];
+#endif
 
     // A touch that starts on a handle reorders; anywhere else the list scrolls as usual.
     // Android resets this flag when the finger is lifted.
