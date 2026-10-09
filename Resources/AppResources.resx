@@ -525,4 +525,25 @@
   <data name="PinStyleCritter" xml:space="preserve">
     <value>Critters</value>
   </data>
+  <data name="PassportSummary" xml:space="preserve">
+    <value>{0} countries · {1} regions · {2} check-ins</value>
+  </data>
+  <data name="DisplayOptions" xml:space="preserve">
+    <value>Display options</value>
+  </data>
+  <data name="ShowMap" xml:space="preserve">
+    <value>Show on a map</value>
+  </data>
+  <data name="ShowStamps" xml:space="preserve">
+    <value>Show stamps</value>
+  </data>
+  <data name="NoStampsYet" xml:space="preserve">
+    <value>No stamps yet</value>
+  </data>
+  <data name="NoStampsHint" xml:space="preserve">
+    <value>When you are somewhere new, tap Get Location on the Map and the country and region are stamped here.</value>
+  </data>
+  <data name="StampFirstOnMap" xml:space="preserve">
+    <value>Get your first stamp on the Map</value>
+  </data>
 </root>

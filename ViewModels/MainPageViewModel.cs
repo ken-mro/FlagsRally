@@ -36,18 +36,34 @@ namespace FlagsRally.ViewModels
 
         // Summary shown next to the passport
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SummaryText))]
         int _visitedCountryCount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SummaryText))]
         int _visitedRegionCount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SummaryText))]
         int _checkInCount;
 
+        public string SummaryText => string.Format(AppResources.PassportSummary, VisitedCountryCount, VisitedRegionCount, CheckInCount);
+
+        // Set by the page while scrolling: the passport header is out of sight.
         [ObservableProperty]
-        bool _isSettingsVisible;
+        [NotifyPropertyChangedFor(nameof(ShowsSummaryInTitle))]
+        [NotifyPropertyChangedFor(nameof(ShowsPinnedFilterBar))]
+        bool _isHeaderScrolledAway;
+
+        public bool ShowsSummaryInTitle => IsHeaderScrolledAway || IsMapVisible;
+        public bool ShowsPinnedFilterBar => IsHeaderScrolledAway || IsMapVisible;
+        public bool IsListVisible => !IsMapVisible;
+        public bool HasNoArrivals => SourceArrivalLocationList.Count == 0;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsListVisible))]
+        [NotifyPropertyChangedFor(nameof(ShowsSummaryInTitle))]
+        [NotifyPropertyChangedFor(nameof(ShowsPinnedFilterBar))]
         bool _isMapVisible;
 
         [ObservableProperty]
@@ -59,9 +75,6 @@ namespace FlagsRally.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
         bool _isUnique;
-
-        [ObservableProperty]
-        double _passportImageHeight;
 
         [ObservableProperty]
         int _gridItemSpan = 2;
@@ -104,6 +117,7 @@ namespace FlagsRally.ViewModels
         }
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasNoArrivals))]
         ObservableCollection<ArrivalLocation> _sourceArrivalLocationList = [];
 
         [ObservableProperty]
@@ -211,10 +225,44 @@ namespace FlagsRally.ViewModels
         }
 
         [RelayCommand]
-        void ChangeSettingsVisibility()
+        void SetRegion(string region)
         {
-            IsSettingsVisible = !IsSettingsVisible;
+            SelectedRegion = region == nameof(AppResources.AdminArea) ? AppResources.AdminArea : AppResources.Country;
         }
+
+        [RelayCommand]
+        async Task ChooseCountryAsync()
+        {
+            var names = CountryList.Select(x => x.CountryName).ToArray();
+            var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.FilterByCountry, AppResources.Cancel, null, names);
+            var country = CountryList.FirstOrDefault(x => x.CountryName == choice);
+            if (country is not null)
+            {
+                FilteredCountry = country;
+            }
+        }
+
+        // The two display options as a small menu; a tick marks the ones that are on.
+        [RelayCommand]
+        async Task ChooseDisplayOptionsAsync()
+        {
+            string Label(bool on, string text) => on ? $"✓ {text}" : text;
+            var unique = Label(IsUnique, AppResources.NoDuplicateCountries);
+            var hideDate = Label(DateIsNotVisible, AppResources.HideDateAndMonth);
+
+            var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, unique, hideDate);
+            if (choice == unique)
+            {
+                IsUnique = !IsUnique;
+            }
+            else if (choice == hideDate)
+            {
+                DateIsNotVisible = !DateIsNotVisible;
+            }
+        }
+
+        [RelayCommand]
+        Task GoToMapAsync() => Shell.Current.GoToAsync("//Map");
 
         [RelayCommand]
         public async Task RefreshCountriesAsync()
@@ -264,11 +312,18 @@ namespace FlagsRally.ViewModels
             var latitude = arrivalLocation.Location.Latitude;
             var roundedLatitude = Math.Round(latitude, 6);
 
-            await Shell.Current.DisplayAlertAsync($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
+            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
                                                                     $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
                                                                     $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
                                                                     $"{AppResources.Locality}: {arrivalLocation.LocalityName}\n" +
-                                                                    $"{AppResources.Location}: {roundedLatitude}, {roundedLongitude}","OK");
+                                                                    $"{AppResources.Location}: {roundedLatitude}, {roundedLongitude}", $"{AppResources.Delete}", "OK");
+            if (!deletes) return;
+
+            var confirmed = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (confirmed)
+            {
+                await DeleteArrivalLocationAsync(arrivalLocation);
+            }
         }
 
         [RelayCommand]

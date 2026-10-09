@@ -1,10 +1,9 @@
-﻿using FlagsRally.ViewModels;
+using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
 public partial class MainPage : ContentPage
 {
-    private const double DEFAULT_PASSPORT_IMAGE_HEIGHT = 150;
     private readonly MainPageViewModel _mainPageViewModel;
     public MainPage(MainPageViewModel vm)
     {
@@ -23,14 +22,14 @@ public partial class MainPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
 
-        _mainPageViewModel.PassportImageHeight = DEFAULT_PASSPORT_IMAGE_HEIGHT;
-        _mainPageViewModel.GridItemSpan = Math.Max((int)width / 196, 2);   
+        _mainPageViewModel.GridItemSpan = Math.Max((int)width / 196, 2);
     }
 
-    private void collectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+    // The passport header scrolls away with the stamps; once it has, the filter bar is pinned
+    // at the top and the numbers move up beside the title. Only visibility changes, so the
+    // list never has to lay itself out again while scrolling.
+    private void OnStampsScrolled(object? sender, ItemsViewScrolledEventArgs e)
     {
-        double scale = 1 - (e.VerticalOffset / 1000);
-        scale = Math.Max(scale, 0.5);
-        _mainPageViewModel.PassportImageHeight = DEFAULT_PASSPORT_IMAGE_HEIGHT * scale;
+        _mainPageViewModel.IsHeaderScrolledAway = e.VerticalOffset > passportHeader.Height;
     }
 }

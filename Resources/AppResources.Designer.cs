@@ -1283,5 +1283,68 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("PinStyleCritter", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} countries · {1} regions · {2} check-ins.
+        /// </summary>
+        internal static string PassportSummary {
+            get {
+                return ResourceManager.GetString("PassportSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display options.
+        /// </summary>
+        internal static string DisplayOptions {
+            get {
+                return ResourceManager.GetString("DisplayOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show on a map.
+        /// </summary>
+        internal static string ShowMap {
+            get {
+                return ResourceManager.GetString("ShowMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show stamps.
+        /// </summary>
+        internal static string ShowStamps {
+            get {
+                return ResourceManager.GetString("ShowStamps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No stamps yet.
+        /// </summary>
+        internal static string NoStampsYet {
+            get {
+                return ResourceManager.GetString("NoStampsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you are somewhere new, tap Get Location on the Map and the country and region are stamped here..
+        /// </summary>
+        internal static string NoStampsHint {
+            get {
+                return ResourceManager.GetString("NoStampsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get your first stamp on the Map.
+        /// </summary>
+        internal static string StampFirstOnMap {
+            get {
+                return ResourceManager.GetString("StampFirstOnMap", resourceCulture);
+            }
+        }
     }
 }

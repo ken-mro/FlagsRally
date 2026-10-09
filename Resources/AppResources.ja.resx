@@ -525,4 +525,25 @@
   <data name="PinStyleCritter" xml:space="preserve">
     <value>いきもの</value>
   </data>
+  <data name="PassportSummary" xml:space="preserve">
+    <value>{0}か国 · {1}地域 · {2}記録</value>
+  </data>
+  <data name="DisplayOptions" xml:space="preserve">
+    <value>表示の設定</value>
+  </data>
+  <data name="ShowMap" xml:space="preserve">
+    <value>地図で見る</value>
+  </data>
+  <data name="ShowStamps" xml:space="preserve">
+    <value>スタンプの一覧に戻る</value>
+  </data>
+  <data name="NoStampsYet" xml:space="preserve">
+    <value>まだスタンプがありません</value>
+  </data>
+  <data name="NoStampsHint" xml:space="preserve">
+    <value>訪れた場所でマップの「位置情報を取得」を押すと、ここに国と地域のスタンプが押されます。</value>
+  </data>
+  <data name="StampFirstOnMap" xml:space="preserve">
+    <value>マップで最初のスタンプを押す</value>
+  </data>
 </root>
