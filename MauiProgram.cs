@@ -40,6 +40,10 @@ namespace FlagsRally
 #if ANDROID
             builder.UseGoogleMaps();
 
+            // Tab labels shrink instead of being cut on narrow screens (foldable cover screens).
+            builder.ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler(typeof(Shell), typeof(FlagsRally.Platforms.Android.FittingTabBarShellRenderer)));
+
             // Workaround for a .NET MAUI 10 Android issue where an ActivityIndicator
             // hidden around the time its handler is created (IsBusy set back to false
             // during startup) keeps its native view visible. Re-sync the native
