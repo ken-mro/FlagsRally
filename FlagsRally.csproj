@@ -40,6 +40,12 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidSkipGradleRestore>true</AndroidSkipGradleRestore>
 	</PropertyGroup>
+
+	<!-- Shrink the Java/Kotlin (DEX) code with R8 in Release. Google Play scores DEX optimization;
+	     the SDK still passes -dontobfuscate to R8, so this removes unused code but renames nothing. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' And '$(Configuration)' == 'Release'">
+		<AndroidLinkTool>r8</AndroidLinkTool>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<!-- The foreground leaves room for Android's adaptive-icon mask; iOS shows the whole canvas, so draw it larger there. -->
