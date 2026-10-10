@@ -88,7 +88,7 @@
                         <Grid
                             Padding="14,0"
                             ColumnDefinitions="36,*,Auto"
-                            HeightRequest="60">
+                            MinimumHeightRequest="60">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BoardCatalogPageViewModel}}, x:DataType=viewmodels:BoardCatalogPageViewModel, Path=OpenEntryCommand}" CommandParameter="{Binding .}" />
                             </Grid.GestureRecognizers>
@@ -107,8 +107,9 @@
                                 WidthRequest="24" />
                             <Label
                                 Grid.Column="1"
+                                Margin="0,8"
                                 FontSize="16"
-                                LineBreakMode="TailTruncation"
+                                LineBreakMode="WordWrap"
                                 Text="{Binding DisplayName}"
                                 VerticalOptions="Center" />
                             <Label
