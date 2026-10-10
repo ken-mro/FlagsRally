@@ -5,6 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [1.1.17] - Unreleased
 
+### Changed
+- **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
+
 ### Fixed
 - **Custom board tiles leaving empty space on some devices.** A visited tile's image took whatever height the device measured for the downloaded picture (it depends on screen width and density), so visited and unvisited tiles in a row could differ in height and leave a gap below, for example on 全国神宮二十五社巡り. The image height now comes from the column width and the board's image shape. Devices that never showed the gap look the same as before.
 - **The map moving when a card appeared.** Showing the check-in spot guide or the pin details shrank the map and shifted what was on screen. The map now keeps its size and the cards float over its lower edge.
