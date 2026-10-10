@@ -27,7 +27,6 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double DEFAULT_ZOOM_LEVEL = 14d;
     private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
-    private const int PAUSE_DURATION_MS = 1000;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -52,6 +51,7 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
     [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
     [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
+    [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
     Pin? _selectedPin;
 
     // The check-in spot: dropped with a long press (or at your location by Get Location) and
@@ -66,6 +66,7 @@ public partial class LocationPageViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
     [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
+    [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
     bool _hasCheckInSpot;
 
     [ObservableProperty]
@@ -76,6 +77,9 @@ public partial class LocationPageViewModel : BaseViewModel
 
     public bool ShowsCheckInSpotGuide => HasCheckInSpot && HasNoPinDetails;
     public bool ShowsGetLocationButton => !HasCheckInSpot && HasNoPinDetails;
+
+    // Directions and open-in-Maps float over the map, like Google's own toolbar, while a card shows a place.
+    public bool ShowsMapActions => HasPinDetails || ShowsCheckInSpotGuide;
 
     public string CheckInSpotHint => string.Format(AppResources.CheckInSpotHint, CheckInRange.LimitText);
     public bool CheckInSpotIsInRange => CheckInSpotDistanceKm is double d && CheckInRange.IsWithin(d);
@@ -633,6 +637,20 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
+            // Get Location does what a long press does, at where you are: it puts the check-in spot
+            // there and shows its card. Recording is then always "Check in here" on that card.
+            if (_tappedPointPin is null)
+            {
+                var here = await GetCurrentLocation();
+                await MoveAndZoomToCurrentLocationAsync();
+                PlaceCheckInSpot(new Position(here.Latitude, here.Longitude), here);
+                if (ArrivalMap is not null)
+                {
+                    ArrivalMap.SelectedPin = _tappedPointPin;
+                }
+                return;
+            }
+
             // A spot already shown outside the circle cannot be recorded; say so before anything else.
             if (CheckInSpotDistanceKm is double spotDistance && !CheckInRange.IsWithin(spotDistance))
             {
@@ -648,29 +666,17 @@ public partial class LocationPageViewModel : BaseViewModel
             }
 
             var currentLocation = await GetCurrentLocation();
+            var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
+            await ShowCheckInRangeAsync(currentLocation);
 
-            if (_tappedPointPin is null)
+            var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+            if (!CheckInRange.IsWithin(distance))
             {
-                await MoveAndZoomToCurrentLocationAsync();
-
-                var position = new Position(currentLocation.Latitude, currentLocation.Longitude);
-                PlaceCheckInSpot(position, currentLocation);
-                await Task.Delay(PAUSE_DURATION_MS);
+                await ShowCheckInSpotTooFarAsync(distance);
+                return;
             }
-            else
-            {
-                var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
-                await ShowCheckInRangeAsync(currentLocation);
 
-                var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
-                if (!CheckInRange.IsWithin(distance))
-                {
-                    await ShowCheckInSpotTooFarAsync(distance);
-                    return;
-                }
-
-                currentLocation = tappedPinLocation;
-            }
+            currentLocation = tappedPinLocation;
 
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var rawArrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);

@@ -36,7 +36,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Install
 dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 ```
 
-エミュレーターでの確認手順は `/android-verify` スキル、補助スクリプトは `tools/emu.sh`。
+エミュレーターでの確認手順は `/android-verify` スキル、補助スクリプトは `tools/emu.sh`。iOS シミュレーターは `/ios-verify` スキル。
 
 ## 守ること
 
@@ -58,6 +58,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - 改行コードは既存ファイルに合わせる（多くは CRLF、一部 BOM 付き）。スクリプトで置換するときは CRLF を考慮する。
 - 文字列は `Resources/AppResources.resx`（英）・`AppResources.ja.resx`（日）・`AppResources.Designer.cs` の 3 つを揃えて追加する。`tools/add_strings.py` を使う（`/add-strings`）。
 - 色は `Resources/Styles/Colors.xaml` のトークン（Navy `#182A52`、Stamp `#B94047`、Paper / PaperCard / PaperEdge、Ink / InkMuted、Gold `#E9C46A`）。ライトテーマ固定。
+- アプリ自身の文言（`AppResources`）は英語・日本語どちらでも全文が見えること。ラベルに `TailTruncation` / `MaxLines` を付けて隠さない。日付や「All Countries」のようにバインドで出す文言も同じ。`Entry` の `Placeholder` は 1 行で切れるので、説明はラベルにする（どれも `XamlTextTruncationTests` が止める。切ってよいバインドはテストの許可リストだけ）。横にアイコンやボタンを足すときは、折り返すか段を分ける。ボタンが並ぶ行は日本語や大きい文字で入りきらないので、`Grid` で詰めずに `FlexLayout Wrap="Wrap"` にする（ボタンは縮むと文字が切れる）。切ってよいのはボード名など外から来る名前だけ。
 - ページは `Style="{StaticResource PaperPage}"`（紙の背景）。暗黙の Page スタイルにすると CommunityToolkit の `PopupPage` にも効いてしまうのでキー付きスタイルにしてある。
 - 見出しは `controls:StampLabel`（英字は JerseyclubGrunge、日本語は craftmincho に自動切り替え）。
 - 画像は `Resources/Images/` に SVG/PNG を置けば `MauiImage` ワイルドカードで取り込まれる（参照は `.png`）。
@@ -76,6 +77,8 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - **iOS の grouped CollectionView は Reset 直後の Add で落ちる**（NSInternalInconsistencyException）→ 中身の入れ替えは Reset 1 回で通知する（`CollectionSection.ShowCards`）。
 - **iOS ではピンのドラッグ開始の長押しが `MapLongClicked` にもなる** → ドラッグ中は長押しで地点を置き直さない。
 - iOS シミュレーター: Xcode が SDK の想定より新しいと `-p:ValidateXcodeVersion=false` が必要。
+- iOS は同じ文字サイズでも Android より横幅を取る。Android で入った行が iOS で切れる（パスポートの「All Countries」）ので、両方で見る。
+- Android のタブバーは選択中のラベルだけ大きく描かれ、日本語＋大きい文字で「コレクシ…」になる。`Platforms/Android/Resources/values/dimens.xml` で 12sp に揃えてある。
 
 ## ドメインのメモ
 
@@ -92,3 +95,4 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - 見た目に関わる変更は、エミュレーターでスクリーンショットを撮って自分で確認してから報告する。必要なら動画（`adb shell screenrecord`）を共有する。
 - DB を壊しうる確認（全ボード削除、再インポートなど）の前は必ずバックアップし、終わったら戻してハッシュで一致を確認する（`tools/emu.sh db-backup` / `db-restore`）。
 - 日本語表示の確認は `tools/emu.sh locale ja-JP`、終わったら `tools/emu.sh locale ""` で戻す。
+- 見た目に関わる変更は **Android と iOS の両方**で、英語と日本語それぞれ大きい文字でも撮って、文字が切れていないか見る。Android は `tools/emu.sh fontscale 1.3`（終わったら `1.0`）、iOS は `xcrun simctl ui booted content_size extra-extra-large`（終わったら `large`）。片方を直したらもう片方を撮り直し、両方で直すところがなくなるまで繰り返す。

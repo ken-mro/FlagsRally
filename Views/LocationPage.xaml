@@ -28,52 +28,99 @@
             Padding="0,0,0,64"
             SelectedPin="{Binding SelectedPin}" />
 
-        <!--  Zoom buttons at the bottom right, lifted above whichever panel is showing (see code-behind)  -->
-        <Border
-            x:Name="zoomButtons"
+        <!--  Map buttons at the bottom right, lifted above whichever panel is showing (see code-behind):
+              directions and open-in-Maps for the place on the card, like Google's own toolbar, then zoom.  -->
+        <VerticalStackLayout
+            x:Name="mapButtons"
             Grid.Row="0"
             Grid.RowSpan="2"
             Margin="0,0,8,0"
-            Padding="0"
-            BackgroundColor="{StaticResource PaperCard}"
             HorizontalOptions="End"
-            Stroke="{StaticResource PaperEdge}"
-            StrokeShape="RoundRectangle 22"
-            StrokeThickness="1"
+            Spacing="10"
             VerticalOptions="End"
-            WidthRequest="44">
-            <Border.Shadow>
-                <Shadow
-                    Brush="{StaticResource NavyDeep}"
-                    Opacity="0.18"
-                    Radius="8"
-                    Offset="0,2" />
-            </Border.Shadow>
-            <VerticalStackLayout>
-                <Button
-                    Padding="0"
-                    BackgroundColor="Transparent"
-                    Command="{Binding ZoomInCommand}"
-                    FontSize="24"
+            WidthRequest="48">
+            <VerticalStackLayout IsVisible="{Binding ShowsMapActions}" Spacing="10">
+                <Border
+                    BackgroundColor="{StaticResource Navy}"
                     HeightRequest="48"
-                    SemanticProperties.Description="{x:Static strings:AppResources.ZoomIn}"
-                    Text="＋"
-                    TextColor="{StaticResource Navy}" />
-                <BoxView
-                    Margin="10,0"
-                    HeightRequest="1"
-                    Color="{StaticResource PaperEdge}" />
-                <Button
-                    Padding="0"
-                    BackgroundColor="Transparent"
-                    Command="{Binding ZoomOutCommand}"
-                    FontSize="24"
+                    StrokeShape="RoundRectangle 24"
+                    StrokeThickness="0"
+                    WidthRequest="48">
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="{StaticResource NavyDeep}"
+                            Opacity="0.3"
+                            Radius="8"
+                            Offset="0,2" />
+                    </Border.Shadow>
+                    <ImageButton
+                        Padding="12"
+                        BackgroundColor="Transparent"
+                        Command="{Binding OpenDirectionsCommand}"
+                        SemanticProperties.Description="{x:Static strings:AppResources.Directions}"
+                        Source="directions.png" />
+                </Border>
+                <Border
+                    BackgroundColor="{StaticResource PaperCard}"
                     HeightRequest="48"
-                    SemanticProperties.Description="{x:Static strings:AppResources.ZoomOut}"
-                    Text="−"
-                    TextColor="{StaticResource Navy}" />
+                    Stroke="{StaticResource PaperEdge}"
+                    StrokeShape="RoundRectangle 24"
+                    StrokeThickness="1"
+                    WidthRequest="48">
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="{StaticResource NavyDeep}"
+                            Opacity="0.18"
+                            Radius="8"
+                            Offset="0,2" />
+                    </Border.Shadow>
+                    <ImageButton
+                        Padding="12"
+                        BackgroundColor="Transparent"
+                        Command="{Binding OpenInMapsCommand}"
+                        SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
+                        Source="open_in_maps.png" />
+                </Border>
             </VerticalStackLayout>
-        </Border>
+            <Border
+                Padding="0"
+                BackgroundColor="{StaticResource PaperCard}"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 24"
+                StrokeThickness="1">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="{StaticResource NavyDeep}"
+                        Opacity="0.18"
+                        Radius="8"
+                        Offset="0,2" />
+                </Border.Shadow>
+                <VerticalStackLayout>
+                    <Button
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding ZoomInCommand}"
+                        FontSize="24"
+                        HeightRequest="48"
+                        SemanticProperties.Description="{x:Static strings:AppResources.ZoomIn}"
+                        Text="＋"
+                        TextColor="{StaticResource Navy}" />
+                    <BoxView
+                        Margin="10,0"
+                        HeightRequest="1"
+                        Color="{StaticResource PaperEdge}" />
+                    <Button
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding ZoomOutCommand}"
+                        FontSize="24"
+                        HeightRequest="48"
+                        SemanticProperties.Description="{x:Static strings:AppResources.ZoomOut}"
+                        Text="−"
+                        TextColor="{StaticResource Navy}" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
 
         <!--  Filter chips over the map (right margin keeps the my-location button free)  -->
         <ScrollView
@@ -145,7 +192,7 @@
             Stroke="{StaticResource PaperEdge}"
             StrokeShape="RoundRectangle 12">
             <Grid
-                ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+                ColumnDefinitions="Auto,*,Auto"
                 ColumnSpacing="10"
                 RowDefinitions="Auto,Auto,Auto,Auto"
                 RowSpacing="4">
@@ -159,40 +206,18 @@
                     Grid.Column="1"
                     FontAttributes="Bold"
                     FontSize="17"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     VerticalOptions="Center"
                     Text="{x:Static strings:AppResources.CheckInSpotTitle}" />
                 <Label
                     Grid.Row="1"
                     Grid.Column="1"
-                    Grid.ColumnSpan="4"
+                    Grid.ColumnSpan="2"
                     FontSize="13"
                     Text="{Binding CheckInSpotHint}"
                     TextColor="{StaticResource InkMuted}" />
-                <ImageButton
-                    Grid.Column="2"
-                    Margin="0,0,-10,0"
-                    Padding="11"
-                    BackgroundColor="Transparent"
-                    Command="{Binding OpenDirectionsCommand}"
-                    HeightRequest="44"
-                    SemanticProperties.Description="{x:Static strings:AppResources.Directions}"
-                    Source="directions.png"
-                    VerticalOptions="Start"
-                    WidthRequest="44" />
-                <ImageButton
-                    Grid.Column="3"
-                    Margin="0,0,-10,0"
-                    Padding="11"
-                    BackgroundColor="Transparent"
-                    Command="{Binding OpenInMapsCommand}"
-                    HeightRequest="44"
-                    SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
-                    Source="open_in_maps.png"
-                    VerticalOptions="Start"
-                    WidthRequest="44" />
                 <Button
-                    Grid.Column="4"
+                    Grid.Column="2"
                     Padding="0"
                     BackgroundColor="Transparent"
                     Command="{Binding CancelCheckInSpotCommand}"
@@ -205,7 +230,7 @@
                 <Label
                     Grid.Row="2"
                     Grid.Column="1"
-                    Grid.ColumnSpan="4"
+                    Grid.ColumnSpan="2"
                     FontAttributes="Bold"
                     FontSize="13"
                     Text="{Binding CheckInSpotDistanceText}"
@@ -221,7 +246,7 @@
                 </Label>
                 <Button
                     Grid.Row="3"
-                    Grid.ColumnSpan="5"
+                    Grid.ColumnSpan="3"
                     Margin="0,6,8,0"
                     Command="{Binding GetCurrentLocationCommand}"
                     Text="{x:Static strings:AppResources.CheckInHere}" />
@@ -246,36 +271,23 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Label
                     Grid.Row="0"
                     FontAttributes="Bold"
                     FontSize="18"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     Text="{Binding SelectedPinTitle}" />
                 <Label
                     Grid.Row="1"
                     FontSize="13"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     Text="{Binding SelectedPinSubtitle}"
                     TextColor="{StaticResource InkMuted}" />
-                <ImageButton
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Padding="11"
-                    BackgroundColor="Transparent"
-                    Command="{Binding OpenInMapsCommand}"
-                    HeightRequest="44"
-                    SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
-                    Source="open_in_maps.png"
-                    VerticalOptions="Start"
-                    WidthRequest="44" />
                 <Button
                     Grid.Row="0"
                     Grid.RowSpan="2"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     Padding="0"
                     BackgroundColor="Transparent"
                     Command="{Binding ClosePinDetailsCommand}"
@@ -285,38 +297,29 @@
                     TextColor="{StaticResource InkMuted}"
                     VerticalOptions="Start"
                     WidthRequest="44" />
-                <Grid
+                <!--  Wraps instead of squeezing: in Japanese or with large text the
+                      buttons do not fit on one line, and a squeezed button cuts its text.  -->
+                <FlexLayout
                     Grid.Row="2"
-                    Grid.ColumnSpan="3"
-                    Margin="0,8,8,0"
-                    ColumnSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    Grid.ColumnSpan="2"
+                    Margin="0,4,8,0"
+                    AlignItems="Center"
+                    Wrap="Wrap">
                     <Button
-                        Grid.Column="0"
+                        Margin="0,4,8,0"
                         BackgroundColor="{StaticResource Stamp}"
                         Command="{Binding GetCurrentLocationCommand}"
+                        FlexLayout.Grow="1"
                         IsVisible="{Binding CanCheckIn}"
                         Text="{x:Static strings:AppResources.CheckIn}" />
                     <Button
-                        Grid.Column="1"
-                        BackgroundColor="Transparent"
-                        BorderColor="{StaticResource Navy}"
-                        BorderWidth="1"
-                        Command="{Binding OpenDirectionsCommand}"
-                        Text="{x:Static strings:AppResources.Directions}"
-                        TextColor="{StaticResource Navy}" />
-                    <Button
-                        Grid.Column="2"
+                        Margin="0,4,0,0"
                         BackgroundColor="Transparent"
                         Command="{Binding RemoveSelectedPinCommand}"
                         IsVisible="{Binding CanRemoveSelectedPin}"
                         Text="{Binding RemoveSelectedPinText}"
                         TextColor="{StaticResource Stamp}" />
-                </Grid>
+                </FlexLayout>
             </Grid>
         </Border>
 

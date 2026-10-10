@@ -51,10 +51,12 @@
                                     Grid.Column="0"
                                     IsChecked="{Binding IsSelected}"
                                     VerticalOptions="Center" />
+                                <!--  Two lines fit in the row; the rows keep one height because dragging steps by it  -->
                                 <Label
                                     Grid.Column="1"
                                     FontSize="16"
                                     LineBreakMode="TailTruncation"
+                                    MaxLines="2"
                                     Text="{Binding Name}"
                                     VerticalOptions="Center" />
                                 <!--  Drag handle (the drag itself is handled by the list, see code-behind)  -->

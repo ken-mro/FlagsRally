@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The selected tab's label is 14sp by default, larger than the others (12sp), and with
+         Japanese or a large system font it no longer fits ("コレクシ…"). Keep it at 12sp. -->
+    <dimen name="design_bottom_navigation_active_text_size">12sp</dimen>
+</resources>

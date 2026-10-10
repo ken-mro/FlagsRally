@@ -8,6 +8,7 @@
 #   bash tools/emu.sh shot <file.png>    save a screenshot
 #   bash tools/emu.sh record <file.mp4> <seconds>
 #   bash tools/emu.sh locale ja-JP|""    app language (empty = follow the system)
+#   bash tools/emu.sh fontscale 1.3|1.0  system text size (restarts the app; set it back to 1.0)
 #   bash tools/emu.sh db-backup          copy the app database aside (before destructive checks)
 #   bash tools/emu.sh db-restore         put it back and print its hash
 #   bash tools/emu.sh crash              show the last fatal exception in logcat
@@ -19,7 +20,8 @@ export MSYS_NO_PATHCONV=1   # keep Git Bash from rewriting /sdcard and similar p
 PKG=com.companyname.flagsrally
 DB=files/FlagsRally.db3
 BACKUP=files/FlagsRally.db3.emu-backup
-ROOT=$(cd "$(dirname "$0")/.." && pwd)
+# A Windows path: MSYS_NO_PATHCONV keeps /d/... from being converted, and dotnet reads it as a switch.
+ROOT=$(cd "$(dirname "$0")/.." && pwd -W 2>/dev/null || pwd)
 
 in_front() { adb shell dumpsys window | grep -q "mCurrentFocus.*$PKG"; }
 
@@ -41,7 +43,8 @@ case "${1:-}" in
     # A failed Visual Studio debug session can leave this set and make every launch hang.
     adb shell setprop debug.mono.extra "''"
     adb shell am force-stop $PKG
-    adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    # Not monkey: on API 36 images it stops with "SYS_KEYS has no physical keys" before launching.
+    adb shell am start -n "$(adb shell cmd package resolve-activity --brief -c android.intent.category.LAUNCHER $PKG | tail -1 | tr -d '\r')" >/dev/null
     for _ in $(seq 1 12); do sleep 5; in_front && break; done
     sleep 5
     in_front && echo "running" || { echo "not in front - try: bash tools/emu.sh crash"; exit 1; } ;;
@@ -59,6 +62,8 @@ case "${1:-}" in
     adb shell rm /sdcard/emu-record.mp4 ;;
   locale)
     adb shell cmd locale set-app-locales $PKG --locales "${2:-}" ;;
+  fontscale)
+    adb shell settings put system font_scale "${2:?1.3 or 1.0}" ;;
   db-backup)
     adb shell am force-stop $PKG
     adb shell run-as $PKG cp $DB $BACKUP
@@ -71,5 +76,5 @@ case "${1:-}" in
   crash)
     adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime: (java|Caused)|MonoDroid: [A-Z]" | tail -10 || echo "no crash in the log" ;;
   *)
-    sed -n '2,15p' "$0" ;;
+    sed -n '2,16p' "$0" ;;
 esac
