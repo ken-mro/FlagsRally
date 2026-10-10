@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - **Leaner Android build.** The Android app now leaves out unused code from the libraries it includes.
 - **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
+- **Development:** The emulator helper script now installs only to the emulator, even when a phone is plugged in too.
+
+### Fixed
+- **Custom board tiles still leaving empty space on narrow screens.** On narrow screens such as the Galaxy Z Fold cover screen, a visited tile was shorter than the unvisited tiles next to it, leaving a gap under it, for example on 全国神宮二十五社巡り. Unvisited tiles are now exactly as tall as visited ones on every screen width.
 
 ## [1.1.17] - 2026-10-10
 

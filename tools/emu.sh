@@ -23,12 +23,20 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 
 in_front() { adb shell dumpsys window | grep -q "mCurrentFocus.*$PKG"; }
 
+# Talk to the emulator only. With a phone plugged in as well, dotnet's Install would pick a device
+# on its own, and over a Play install it uninstalls the app first, wiping the phone's data.
+if [ -z "${ANDROID_SERIAL:-}" ]; then
+  ANDROID_SERIAL=$(adb devices | awk '/^emulator-[0-9]+	device$/ { print $1; exit }')
+  [ -n "$ANDROID_SERIAL" ] || { echo "no emulator running (set ANDROID_SERIAL to use another device)"; exit 1; }
+fi
+export ANDROID_SERIAL
+
 case "${1:-}" in
   install)
-    dotnet build "$ROOT/FlagsRally.csproj" -f net10.0-android -t:Install | grep -E " error |Build succeeded" | sort -u ;;
+    dotnet build "$ROOT/FlagsRally.csproj" -f net10.0-android -t:Install "-p:AdbTarget=-s $ANDROID_SERIAL" | grep -E " error |Build succeeded" | sort -u ;;
   rebuild)
-    dotnet build "$ROOT/FlagsRally.csproj" -f net10.0-android -t:Rebuild | grep -E " error |Build succeeded" | sort -u
-    dotnet build "$ROOT/FlagsRally.csproj" -f net10.0-android -t:Install | grep -E " error |Build succeeded" | sort -u ;;
+    dotnet build "$ROOT/FlagsRally.csproj" -f net10.0-android -t:Rebuild "-p:AdbTarget=-s $ANDROID_SERIAL" | grep -E " error |Build succeeded" | sort -u
+    dotnet build "$ROOT/FlagsRally.csproj" -f net10.0-android -t:Install "-p:AdbTarget=-s $ANDROID_SERIAL" | grep -E " error |Build succeeded" | sort -u ;;
   launch)
     # A failed Visual Studio debug session can leave this set and make every launch hang.
     adb shell setprop debug.mono.extra "''"
