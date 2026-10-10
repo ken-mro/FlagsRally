@@ -7,6 +7,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
+- **Development:** A test now fails when the app's own text is set to be cut off, and layout changes are checked with large text in English and Japanese.
+
+### Fixed
+- **Map card text cut off after the directions and open-in-Maps icons were added.** The check-in spot guide's title ("Check in at this pin" / このピンの場所で記録) and the pin details card's title and subtitle now wrap instead of ending in "…". The pin card's buttons move to a second line when they do not fit, instead of squeezing Check In down to "チ" in Japanese with large text.
+- **Long board names cut off in Add Board and Manage Boards.** Add Board shows the whole name, and Manage Boards shows up to two lines.
 
 ## [1.1.17] - 2026-10-10
 
