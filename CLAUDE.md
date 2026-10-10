@@ -52,6 +52,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - 変更は 1 つの関心ごとに 1 コミット（追跡できるように）。push・PR 作成・マージはユーザーに頼まれてから。
 - コミット末尾に `Co-Authored-By: Claude <noreply@anthropic.com>` 形式の署名、PR 本文末尾に `🤖 Generated with [Claude Code](https://claude.com/claude-code)`。
 - PR はベース `master`、マージは `gh pr merge --merge`。CI はない。手順は `/ship-pr` スキル。
+- PR には必ず `CHANGELOG.md` の更新を含める（`/update-changelog`）。`.claude/hooks/guard_changelog.py` が更新のないブランチの `gh pr create` を止める。載せないとユーザーが言った PR だけ `--label no-changelog`。
 
 ### コードの書き方
 - 改行コードは既存ファイルに合わせる（多くは CRLF、一部 BOM 付き）。スクリプトで置換するときは CRLF を考慮する。
