@@ -58,6 +58,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - 改行コードは既存ファイルに合わせる（多くは CRLF、一部 BOM 付き）。スクリプトで置換するときは CRLF を考慮する。
 - 文字列は `Resources/AppResources.resx`（英）・`AppResources.ja.resx`（日）・`AppResources.Designer.cs` の 3 つを揃えて追加する。`tools/add_strings.py` を使う（`/add-strings`）。
 - 色は `Resources/Styles/Colors.xaml` のトークン（Navy `#182A52`、Stamp `#B94047`、Paper / PaperCard / PaperEdge、Ink / InkMuted、Gold `#E9C46A`）。ライトテーマ固定。
+- アプリ自身の文言（`AppResources`）は英語・日本語どちらでも全文が見えること。ラベルに `TailTruncation` / `MaxLines` を付けて隠さない（`XamlTextTruncationTests` が止める）。横にアイコンやボタンを足すときは、折り返すか段を分ける。ボタンが並ぶ行は日本語や大きい文字で入りきらないので、`Grid` で詰めずに `FlexLayout Wrap="Wrap"` にする（ボタンは縮むと文字が切れる）。切ってよいのはボード名など外から来る名前だけ。
 - ページは `Style="{StaticResource PaperPage}"`（紙の背景）。暗黙の Page スタイルにすると CommunityToolkit の `PopupPage` にも効いてしまうのでキー付きスタイルにしてある。
 - 見出しは `controls:StampLabel`（英字は JerseyclubGrunge、日本語は craftmincho に自動切り替え）。
 - 画像は `Resources/Images/` に SVG/PNG を置けば `MauiImage` ワイルドカードで取り込まれる（参照は `.png`）。
@@ -92,3 +93,4 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - 見た目に関わる変更は、エミュレーターでスクリーンショットを撮って自分で確認してから報告する。必要なら動画（`adb shell screenrecord`）を共有する。
 - DB を壊しうる確認（全ボード削除、再インポートなど）の前は必ずバックアップし、終わったら戻してハッシュで一致を確認する（`tools/emu.sh db-backup` / `db-restore`）。
 - 日本語表示の確認は `tools/emu.sh locale ja-JP`、終わったら `tools/emu.sh locale ""` で戻す。
+- 文字の横に何かを足す・動かす変更は、英語と日本語それぞれ `tools/emu.sh fontscale 1.3` でも撮って、文字が切れていないか見る（終わったら `fontscale 1.0`）。

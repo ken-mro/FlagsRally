@@ -18,6 +18,7 @@ Run from the repository root in Git Bash. `tools/emu.sh` wraps the adb details (
    - Long press: `adb shell input swipe x y x y 1200`.
    - Taps sent in quick succession can be dropped; leave 2–3 s between taps that change the page.
 5. **Japanese:** `bash tools/emu.sh locale ja-JP`, relaunch, check, then `bash tools/emu.sh locale ""`.
+   - **Any change that adds or moves something next to text** (icons, buttons, chips on a card or row): also check with large text, `bash tools/emu.sh fontscale 1.3` then `launch`, in English and Japanese. Every word of the app's own text must be visible: no `…`, no button squeezed to one character. Fix the layout (wrap, move to another row, `FlexLayout Wrap`), never by truncating. Set it back with `fontscale 1.0`.
 6. **Video for the user:** `bash tools/emu.sh record <scratch>/clip.mp4 60` in the background while you drive the app, or write a small script of taps (see `tools/emu.sh` for the pattern) and send the file.
 7. **Put things back:** `bash tools/emu.sh db-restore` (it prints the hash; it must match the backup), locale back to default, and any setting you changed (pin style, folded sections) back to how it was.
 
