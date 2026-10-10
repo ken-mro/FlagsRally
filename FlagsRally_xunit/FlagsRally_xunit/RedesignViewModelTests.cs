@@ -246,6 +246,17 @@ public class RedesignViewModelTests
         Assert.Equal(5, only.Count);
     }
 
+    // ---------- Tile size ----------
+
+    [Theory]
+    [InlineData(411, 2, 240, 240, 196)] // square stamps fill the column
+    [InlineData(411, 2, 192, 270, 276)] // manhole cards keep their portrait shape
+    [InlineData(800, 4, 0, 0, 194)]     // no size in the board: square
+    public void Tiles_are_sized_from_the_page_width_and_the_board_image_shape(double pageWidth, int span, double w, double h, double expected)
+    {
+        Assert.Equal(expected, CustomBoardPageViewModel.TileImageHeightFor(pageWidth, span, w, h));
+    }
+
     // ---------- Manage boards ----------
 
     [Fact]

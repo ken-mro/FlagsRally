@@ -42,6 +42,38 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [ObservableProperty]
     int _gridItemSpan = 2;
 
+    // Tiles are sized from the page width and the board's image shape, so every device lays them out
+    // the same way (an image left to size itself depends on the bitmap and the screen density).
+    public const double TileCaptionHeight = 34;
+    public const double TileDateHeight = 26;
+    const double PagePadding = 5;
+
+    double _pageWidth;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TileHeight))]
+    double _tileImageHeight = 180;
+
+    public double TileHeight => TileImageHeight + TileCaptionHeight + TileDateHeight;
+
+    public void UpdateTileSize(double pageWidth)
+    {
+        if (pageWidth <= 0) return;
+        _pageWidth = pageWidth;
+        GridItemSpan = Math.Max((int)pageWidth / 196, 2);
+        TileImageHeight = TileImageHeightFor(pageWidth, GridItemSpan, FilteredCustomBoard?.Width ?? 0, FilteredCustomBoard?.Height ?? 0);
+    }
+
+    /// <summary>
+    /// The height of a tile's image: its column width scaled by the board's image shape (square when unknown).
+    /// </summary>
+    public static double TileImageHeightFor(double pageWidth, int span, double boardWidth, double boardHeight)
+    {
+        var columnWidth = (pageWidth - PagePadding * 2) / Math.Max(span, 1) - 4; // minus the tile border
+        var ratio = boardWidth > 0 && boardHeight > 0 ? boardHeight / boardWidth : 1;
+        return Math.Round(Math.Max(columnWidth, 40) * ratio);
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
@@ -114,6 +146,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         set
         {
             SetProperty(ref _filteredCustomBoard, value);
+            UpdateTileSize(_pageWidth);
             OnPropertyChanged(nameof(DisplayCustomLocationList));
             OnPropertyChanged(nameof(DisplayCustomLocationGroups));
             OnPropertyChanged(nameof(VisitedCount));

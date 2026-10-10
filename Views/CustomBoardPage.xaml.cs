@@ -23,6 +23,6 @@ public partial class CustomBoardPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
           
-        _customBoardPageViewModel.GridItemSpan = Math.Max((int)width / 196, 2);
+        _customBoardPageViewModel.UpdateTileSize(width);
     }
 }
