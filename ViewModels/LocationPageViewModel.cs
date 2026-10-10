@@ -52,6 +52,7 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
     [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
     [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
+    [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
     Pin? _selectedPin;
 
     // The check-in spot: dropped with a long press (or at your location by Get Location) and
@@ -66,6 +67,7 @@ public partial class LocationPageViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
     [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
+    [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
     bool _hasCheckInSpot;
 
     [ObservableProperty]
@@ -76,6 +78,9 @@ public partial class LocationPageViewModel : BaseViewModel
 
     public bool ShowsCheckInSpotGuide => HasCheckInSpot && HasNoPinDetails;
     public bool ShowsGetLocationButton => !HasCheckInSpot && HasNoPinDetails;
+
+    // Directions and open-in-Maps float over the map, like Google's own toolbar, while a card shows a place.
+    public bool ShowsMapActions => HasPinDetails || ShowsCheckInSpotGuide;
 
     public string CheckInSpotHint => string.Format(AppResources.CheckInSpotHint, CheckInRange.LimitText);
     public bool CheckInSpotIsInRange => CheckInSpotDistanceKm is double d && CheckInRange.IsWithin(d);

@@ -4,9 +4,9 @@ namespace FlagsRally.Views;
 
 public partial class LocationPage : ContentPage
 {
-    // Space between the zoom buttons and the panel below them.
-    const double ZoomButtonsGap = 12;
-    const uint ZoomButtonsMoveMs = 150;
+    // Space between the map buttons and the panel below them.
+    const double MapButtonsGap = 12;
+    const uint MapButtonsMoveMs = 150;
 
     readonly LocationPageViewModel _viewModel;
 
@@ -25,10 +25,10 @@ public partial class LocationPage : ContentPage
 
         foreach (var panel in new View[] { getLocationPanel, checkInSpotPanel, pinDetailsPanel })
         {
-            panel.SizeChanged += (_, _) => PlaceZoomButtons();
+            panel.SizeChanged += (_, _) => PlaceMapButtons();
             panel.PropertyChanged += (_, e) =>
             {
-                if (e.PropertyName == nameof(IsVisible)) PlaceZoomButtons();
+                if (e.PropertyName == nameof(IsVisible)) PlaceMapButtons();
             };
         }
     }
@@ -46,10 +46,10 @@ public partial class LocationPage : ContentPage
         Dispatcher.Dispatch(() => map.MoveCamera(Maui.GoogleMaps.CameraUpdateFactory.NewCameraPosition(camera)));
     }
 
-    // The zoom buttons sit at the bottom right like Google's own, just above whichever panel is
-    // showing (the Get Location button, the check-in spot guide or the pin details), so a taller
-    // panel never covers them. Only the buttons move; the map stays where it is.
-    void PlaceZoomButtons()
+    // The map buttons (directions, open in Maps, zoom) sit at the bottom right like Google's own,
+    // just above whichever panel is showing (the Get Location button, the check-in spot guide or
+    // the pin details), so a taller panel never covers them. Only the buttons move; the map stays where it is.
+    void PlaceMapButtons()
     {
         var panelHeight = new View[] { getLocationPanel, checkInSpotPanel, pinDetailsPanel }
             .Where(p => p.IsVisible && p.Height > 0)
@@ -57,7 +57,7 @@ public partial class LocationPage : ContentPage
             .DefaultIfEmpty(0)
             .Max();
 
-        zoomButtons.CancelAnimations();
-        _ = zoomButtons.TranslateToAsync(0, -(panelHeight + ZoomButtonsGap), ZoomButtonsMoveMs, Easing.CubicOut);
+        mapButtons.CancelAnimations();
+        _ = mapButtons.TranslateToAsync(0, -(panelHeight + MapButtonsGap), MapButtonsMoveMs, Easing.CubicOut);
     }
 }
