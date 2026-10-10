@@ -34,7 +34,6 @@
                 <Label
                     FontSize="12"
                     HorizontalOptions="Center"
-                    LineBreakMode="TailTruncation"
                     Text="{x:Static strings:AppResources.AllFilter}"
                     TextColor="{StaticResource Ink}">
                     <Label.Triggers>
@@ -67,7 +66,6 @@
                 <Label
                     FontSize="12"
                     HorizontalOptions="Center"
-                    LineBreakMode="TailTruncation"
                     Text="{x:Static strings:AppResources.Visited}"
                     TextColor="{StaticResource Ink}">
                     <Label.Triggers>
@@ -100,7 +98,6 @@
                 <Label
                     FontSize="12"
                     HorizontalOptions="Center"
-                    LineBreakMode="TailTruncation"
                     Text="{x:Static strings:AppResources.NotVisited}"
                     TextColor="{StaticResource Ink}">
                     <Label.Triggers>
