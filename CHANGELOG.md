@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.1.18] - Unreleased
 
 ### Changed
+- **Leaner Android build.** The Android app now leaves out unused code from the libraries it includes.
 - **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
 
 ## [1.1.17] - 2026-10-10
