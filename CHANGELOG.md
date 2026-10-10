@@ -9,8 +9,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Get Location works like a long press.** It puts the check-in spot at where you are and shows its card, just as a long press does at the place you pressed. Recording is then always "Check in here" on that card, instead of Get Location going straight to the confirmation.
 - **The pin card's Directions button is gone.** It did the same as the directions button on the map.
 - **Directions and open-in-Maps are back on the map.** They are round buttons above the zoom buttons, shown while a card shows a place, like Google's own toolbar, instead of small icons squeezed into the cards' title rows. The cards have room for their titles again on narrow phones.
+- **Leaner Android build.** The Android app now leaves out unused code from the libraries it includes.
 - **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
 - **Development:** A test now fails when any text other than a board, country or region name is set to be cut off, or when the app's own text is used as a placeholder. Layout changes are checked on both Android and iOS, with large text in English and Japanese.
+- **Development:** The emulator helper script now installs only to the emulator, even when a phone is plugged in too.
 
 ### Fixed
 - **Map card text cut off after the directions and open-in-Maps icons were added.** The check-in spot guide's title ("Check in at this pin" / このピンの場所で記録) and the pin details card's title and subtitle now wrap instead of ending in "…". The pin card's buttons move to a second line when they do not fit, instead of squeezing Check In down to "チ" in Japanese with large text.
@@ -19,6 +21,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Stamp and tile dates cut off with large text.** The arrival date on passport stamps and board tiles ("09 Oct 20…") wraps instead.
 - **The Google Maps API key hint cut off in Settings.** The hint ("使用する場合は入力してくだ…") is now shown in full above the box instead of inside it.
 - **The selected tab's name cut off on Android** ("コレクシ…" with Japanese and large text). It is now the same size as the other tabs.
+- **Custom board tiles still leaving empty space on narrow screens.** On narrow screens such as the Galaxy Z Fold cover screen, a visited tile was shorter than the unvisited tiles next to it, leaving a gap under it, for example on 全国神宮二十五社巡り. Unvisited tiles are now exactly as tall as visited ones on every screen width.
 
 ## [1.1.17] - 2026-10-10
 

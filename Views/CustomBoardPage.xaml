@@ -92,27 +92,21 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=ShowOnMapCommand}" CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
-                            <StackLayout>
-                                <Label
-                                    Padding="2"
-                                    FontFamily="KiwiMaru-Medium"
-                                    FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
-                                    HeightRequest="{Binding Board.Height}"
-                                    HorizontalOptions="Center"
-                                    IsVisible="{Binding HasNotBeenVisited}"
-                                    LineBreakMode="MiddleTruncation"
-                                    LineHeight="1"
-                                    MaxLines="2"
-                                    Text="{Binding Title}"
-                                    TextColor="{StaticResource InkMuted}"
-                                    VerticalOptions="Center"
-                                    VerticalTextAlignment="Center" />
+                            <!--  An unvisited tile lays out the visited content too, unseen, so both are as tall as each other on every screen width  -->
+                            <Grid>
                                 <VerticalStackLayout
-                                    IsVisible="{Binding HasBeenVisited}"
                                     Spacing="{OnPlatform MacCatalyst=2,
                                                          iOS=2,
                                                          Default=0}"
                                     VerticalOptions="Center">
+                                    <VerticalStackLayout.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding HasNotBeenVisited}"
+                                            TargetType="VerticalStackLayout"
+                                            Value="True">
+                                            <Setter Property="Opacity" Value="0" />
+                                        </DataTrigger>
+                                    </VerticalStackLayout.Triggers>
                                     <Image
                                         Aspect="AspectFit"
                                         HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=TileImageHeight}"
@@ -162,7 +156,20 @@
                                         TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
                                 </VerticalStackLayout>
-                            </StackLayout>
+                                <Label
+                                    Padding="2"
+                                    FontFamily="KiwiMaru-Medium"
+                                    FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding HasNotBeenVisited}"
+                                    LineBreakMode="MiddleTruncation"
+                                    LineHeight="1"
+                                    MaxLines="2"
+                                    Text="{Binding Title}"
+                                    TextColor="{StaticResource InkMuted}"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
