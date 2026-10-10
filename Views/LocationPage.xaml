@@ -297,7 +297,7 @@
                     TextColor="{StaticResource InkMuted}"
                     VerticalOptions="Start"
                     WidthRequest="44" />
-                <!--  Wraps instead of squeezing: in Japanese or with large text the three
+                <!--  Wraps instead of squeezing: in Japanese or with large text the
                       buttons do not fit on one line, and a squeezed button cuts its text.  -->
                 <FlexLayout
                     Grid.Row="2"
@@ -312,14 +312,6 @@
                         FlexLayout.Grow="1"
                         IsVisible="{Binding CanCheckIn}"
                         Text="{x:Static strings:AppResources.CheckIn}" />
-                    <Button
-                        Margin="0,4,8,0"
-                        BackgroundColor="Transparent"
-                        BorderColor="{StaticResource Navy}"
-                        BorderWidth="1"
-                        Command="{Binding OpenDirectionsCommand}"
-                        Text="{x:Static strings:AppResources.Directions}"
-                        TextColor="{StaticResource Navy}" />
                     <Button
                         Margin="0,4,0,0"
                         BackgroundColor="Transparent"
