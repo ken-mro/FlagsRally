@@ -1382,5 +1382,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("OpenInMaps", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my location.
+        /// </summary>
+        internal static string ShowMyLocation {
+            get {
+                return ResourceManager.GetString("ShowMyLocation", resourceCulture);
+            }
+        }
     }
 }

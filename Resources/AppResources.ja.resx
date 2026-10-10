@@ -558,4 +558,7 @@
   <data name="OpenInMaps" xml:space="preserve">
     <value>地図アプリで見る</value>
   </data>
+  <data name="ShowMyLocation" xml:space="preserve">
+    <value>現在地を表示</value>
+  </data>
 </root>

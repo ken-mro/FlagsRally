@@ -558,4 +558,7 @@
   <data name="OpenInMaps" xml:space="preserve">
     <value>Open in Maps</value>
   </data>
+  <data name="ShowMyLocation" xml:space="preserve">
+    <value>Show my location</value>
+  </data>
 </root>
