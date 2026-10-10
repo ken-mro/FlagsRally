@@ -115,6 +115,7 @@
                                     VerticalOptions="Center">
                                     <Image
                                         Aspect="AspectFit"
+                                        HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=TileImageHeight}"
                                         HorizontalOptions="Center"
                                         VerticalOptions="Center">
                                         <Image.Source>

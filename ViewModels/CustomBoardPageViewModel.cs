@@ -42,6 +42,33 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [ObservableProperty]
     int _gridItemSpan = 2;
 
+    // A visited tile's image is sized from the page width and the board's image shape: left to size
+    // itself, its height depended on the bitmap and the screen density and differed between devices.
+    const double PagePadding = 5;
+
+    double _pageWidth;
+
+    [ObservableProperty]
+    double _tileImageHeight = 180;
+
+    public void UpdateTileSize(double pageWidth)
+    {
+        if (pageWidth <= 0) return;
+        _pageWidth = pageWidth;
+        GridItemSpan = Math.Max((int)pageWidth / 196, 2);
+        TileImageHeight = TileImageHeightFor(pageWidth, GridItemSpan, FilteredCustomBoard?.Width ?? 0, FilteredCustomBoard?.Height ?? 0);
+    }
+
+    /// <summary>
+    /// The height of a tile's image: its column width scaled by the board's image shape (square when unknown).
+    /// </summary>
+    public static double TileImageHeightFor(double pageWidth, int span, double boardWidth, double boardHeight)
+    {
+        var columnWidth = (pageWidth - PagePadding * 2) / Math.Max(span, 1) - 4; // minus the tile border
+        var ratio = boardWidth > 0 && boardHeight > 0 ? boardHeight / boardWidth : 1;
+        return Math.Round(Math.Max(columnWidth, 40) * ratio);
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
@@ -114,6 +141,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         set
         {
             SetProperty(ref _filteredCustomBoard, value);
+            UpdateTileSize(_pageWidth);
             OnPropertyChanged(nameof(DisplayCustomLocationList));
             OnPropertyChanged(nameof(DisplayCustomLocationGroups));
             OnPropertyChanged(nameof(VisitedCount));

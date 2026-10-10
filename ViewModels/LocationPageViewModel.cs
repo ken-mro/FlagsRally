@@ -193,15 +193,23 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
+    // Driving directions to the selected pin (or the check-in spot) in the device's maps app.
     [RelayCommand]
-    async Task OpenDirectionsAsync()
+    Task OpenDirectionsAsync() => OpenInMapsAppAsync(NavigationMode.Driving);
+
+    // The selected pin (or the check-in spot) shown in the device's maps app.
+    [RelayCommand]
+    Task OpenInMapsAsync() => OpenInMapsAppAsync(NavigationMode.None);
+
+    private async Task OpenInMapsAppAsync(NavigationMode mode)
     {
-        if (SelectedPin is null) return;
+        var pin = SelectedPin ?? _tappedPointPin;
+        if (pin is null) return;
 
         try
         {
-            var options = new MapLaunchOptions { Name = SelectedPin.Label };
-            await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(SelectedPin.Position.Latitude, SelectedPin.Position.Longitude, options);
+            var options = new MapLaunchOptions { Name = pin.Label, NavigationMode = mode };
+            await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(pin.Position.Latitude, pin.Position.Longitude, options);
         }
         catch (Exception ex)
         {
@@ -243,7 +251,12 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.MyLocationButtonEnabled = true;
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
-            _arrivalMap.UiSettings.MapToolbarEnabled = true;
+            // Google's directions / open-in-Maps buttons would also be hidden under the panels; the
+            // pin details and check-in spot cards carry the same two actions instead.
+            _arrivalMap.UiSettings.MapToolbarEnabled = false;
+            // The built-in zoom buttons would be hidden by the panels that float over the map; the page
+            // has its own, which move up above whichever panel is showing.
+            _arrivalMap.UiSettings.ZoomControlsEnabled = false;
             _arrivalMap.InfoWindowLongClicked += async (sender, e) => await DeleteOrResetPinAsync(e.Pin);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
@@ -393,6 +406,19 @@ public partial class LocationPageViewModel : BaseViewModel
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
+    [RelayCommand]
+    Task ZoomIn() => ZoomByAsync(1);
+
+    [RelayCommand]
+    Task ZoomOut() => ZoomByAsync(-1);
+
+    private Task ZoomByAsync(double step)
+    {
+        if (ArrivalMap is null) return Task.CompletedTask;
+        var camera = ArrivalMap.CameraPosition;
+        return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(camera.Target, Math.Clamp(camera.Zoom + step, 2, 21)), animate: true);
+    }
+
     private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
     {
         if (ArrivalMap is null) return;
