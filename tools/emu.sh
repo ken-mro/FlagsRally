@@ -35,7 +35,8 @@ case "${1:-}" in
     # A failed Visual Studio debug session can leave this set and make every launch hang.
     adb shell setprop debug.mono.extra "''"
     adb shell am force-stop $PKG
-    adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    # Not monkey: on API 36 images it stops with "SYS_KEYS has no physical keys" before launching.
+    adb shell am start -n "$(adb shell cmd package resolve-activity --brief -c android.intent.category.LAUNCHER $PKG | tail -1 | tr -d '\r')" >/dev/null
     for _ in $(seq 1 12); do sleep 5; in_front && break; done
     sleep 5
     in_front && echo "running" || { echo "not in front - try: bash tools/emu.sh crash"; exit 1; } ;;
