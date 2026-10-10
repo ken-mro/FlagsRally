@@ -18,9 +18,14 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <!--  The map keeps one size: the panels below float over its lower edge instead of taking
+              rows from it, so showing or hiding them never moves the map. The padding keeps the
+              Google logo and zoom buttons above the Get Location button.  -->
         <maps:Map
             x:Name="map"
             Grid.Row="0"
+            Grid.RowSpan="2"
+            Padding="0,0,0,64"
             SelectedPin="{Binding SelectedPin}" />
 
         <!--  Filter chips over the map (right margin keeps the my-location button free)  -->
