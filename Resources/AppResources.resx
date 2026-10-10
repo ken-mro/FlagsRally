@@ -555,4 +555,7 @@
   <data name="ZoomOut" xml:space="preserve">
     <value>Zoom out</value>
   </data>
+  <data name="OpenInMaps" xml:space="preserve">
+    <value>Open in Maps</value>
+  </data>
 </root>

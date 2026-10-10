@@ -1373,5 +1373,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("ZoomOut", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open in Maps.
+        /// </summary>
+        internal static string OpenInMaps {
+            get {
+                return ResourceManager.GetString("OpenInMaps", resourceCulture);
+            }
+        }
     }
 }

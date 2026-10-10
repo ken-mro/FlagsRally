@@ -555,4 +555,7 @@
   <data name="ZoomOut" xml:space="preserve">
     <value>縮小</value>
   </data>
+  <data name="OpenInMaps" xml:space="preserve">
+    <value>地図アプリで見る</value>
+  </data>
 </root>

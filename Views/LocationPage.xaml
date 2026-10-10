@@ -145,7 +145,7 @@
             Stroke="{StaticResource PaperEdge}"
             StrokeShape="RoundRectangle 12">
             <Grid
-                ColumnDefinitions="Auto,*,Auto"
+                ColumnDefinitions="Auto,*,Auto,Auto,Auto"
                 ColumnSpacing="10"
                 RowDefinitions="Auto,Auto,Auto,Auto"
                 RowSpacing="4">
@@ -159,16 +159,40 @@
                     Grid.Column="1"
                     FontAttributes="Bold"
                     FontSize="17"
+                    LineBreakMode="TailTruncation"
+                    VerticalOptions="Center"
                     Text="{x:Static strings:AppResources.CheckInSpotTitle}" />
                 <Label
                     Grid.Row="1"
                     Grid.Column="1"
+                    Grid.ColumnSpan="4"
                     FontSize="13"
                     Text="{Binding CheckInSpotHint}"
                     TextColor="{StaticResource InkMuted}" />
-                <Button
-                    Grid.RowSpan="2"
+                <ImageButton
                     Grid.Column="2"
+                    Margin="0,0,-10,0"
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    Command="{Binding OpenDirectionsCommand}"
+                    HeightRequest="44"
+                    SemanticProperties.Description="{x:Static strings:AppResources.Directions}"
+                    Source="directions.png"
+                    VerticalOptions="Start"
+                    WidthRequest="44" />
+                <ImageButton
+                    Grid.Column="3"
+                    Margin="0,0,-10,0"
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    Command="{Binding OpenInMapsCommand}"
+                    HeightRequest="44"
+                    SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
+                    Source="open_in_maps.png"
+                    VerticalOptions="Start"
+                    WidthRequest="44" />
+                <Button
+                    Grid.Column="4"
                     Padding="0"
                     BackgroundColor="Transparent"
                     Command="{Binding CancelCheckInSpotCommand}"
@@ -181,7 +205,7 @@
                 <Label
                     Grid.Row="2"
                     Grid.Column="1"
-                    Grid.ColumnSpan="2"
+                    Grid.ColumnSpan="4"
                     FontAttributes="Bold"
                     FontSize="13"
                     Text="{Binding CheckInSpotDistanceText}"
@@ -197,7 +221,7 @@
                 </Label>
                 <Button
                     Grid.Row="3"
-                    Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="5"
                     Margin="0,6,8,0"
                     Command="{Binding GetCurrentLocationCommand}"
                     Text="{x:Static strings:AppResources.CheckInHere}" />
@@ -222,6 +246,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Label
                     Grid.Row="0"
@@ -235,10 +260,22 @@
                     LineBreakMode="TailTruncation"
                     Text="{Binding SelectedPinSubtitle}"
                     TextColor="{StaticResource InkMuted}" />
-                <Button
+                <ImageButton
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="1"
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    Command="{Binding OpenInMapsCommand}"
+                    HeightRequest="44"
+                    SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
+                    Source="open_in_maps.png"
+                    VerticalOptions="Start"
+                    WidthRequest="44" />
+                <Button
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
                     Padding="0"
                     BackgroundColor="Transparent"
                     Command="{Binding ClosePinDetailsCommand}"
@@ -250,7 +287,7 @@
                     WidthRequest="44" />
                 <Grid
                     Grid.Row="2"
-                    Grid.ColumnSpan="2"
+                    Grid.ColumnSpan="3"
                     Margin="0,8,8,0"
                     ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
