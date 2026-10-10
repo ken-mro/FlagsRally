@@ -13,7 +13,11 @@
     x:DataType="viewmodels:FlagsBoardPageViewModel"
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{Binding FilteredCountry.CountryName}" />
+        <!--  The full name, made smaller to fit the bar when it is long  -->
+        <controls:FittingStampLabel
+            LineBreakMode="WordWrap"
+            Style="{StaticResource StampTitle}"
+            Text="{Binding FilteredCountry.CountryName}" />
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
