@@ -278,6 +278,11 @@
                     <Label
                         FontSize="16"
                         Text="Google Maps API Key" />
+                    <!--  A label, not the entry's placeholder: a placeholder is one line and gets cut  -->
+                    <Label
+                        FontSize="12"
+                        Text="{x:Static strings:AppResources.SpecifyAPI}"
+                        TextColor="{StaticResource InkMuted}" />
                     <Grid ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -285,7 +290,6 @@
                         </Grid.ColumnDefinitions>
                         <Entry
                             IsPassword="True"
-                            Placeholder="{x:Static strings:AppResources.SpecifyAPI}"
                             Text="{Binding ApiKey}"
                             VerticalOptions="Center" />
                         <Button
