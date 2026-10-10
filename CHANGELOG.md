@@ -3,10 +3,12 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.1.17] - Unreleased
+## [1.1.18] - Unreleased
 
 ### Changed
 - **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
+
+## [1.1.17] - 2026-10-10
 
 ### Fixed
 - **Custom board tiles leaving empty space on some devices.** A visited tile's image took whatever height the device measured for the downloaded picture (it depends on screen width and density), so visited and unvisited tiles in a row could differ in height and leave a gap below, for example on 全国神宮二十五社巡り. The image height now comes from the column width and the board's image shape. Devices that never showed the gap look the same as before.
