@@ -9,13 +9,19 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
+    <!--  On a narrow screen (a foldable's cover screen) with large text, the country filter moves
+          to a second row instead of being squeezed to a letter per line (see code-behind).  -->
     <Grid
+        x:Name="bar"
         Padding="8"
         ColumnDefinitions="Auto,*,Auto,Auto"
-        ColumnSpacing="4">
+        ColumnSpacing="4"
+        RowDefinitions="Auto,Auto"
+        RowSpacing="6">
 
         <!--  Countries / regions  -->
         <Border
+            x:Name="regionSwitch"
             Padding="2"
             BackgroundColor="{StaticResource PaperEdge}"
             StrokeShape="RoundRectangle 18"
@@ -87,6 +93,7 @@
 
         <!--  Country filter  -->
         <Border
+            x:Name="countryFilter"
             Grid.Column="1"
             Padding="8,7"
             HorizontalOptions="Start"
@@ -100,6 +107,7 @@
             <!--  Wraps rather than cuts: the text is often the app's own "All Countries".
                   The no-break spaces keep the ▾ with the last word.  -->
             <Label
+                x:Name="countryFilterLabel"
                 FontSize="12"
                 LineBreakMode="WordWrap"
                 Text="{Binding FilteredCountry.CountryName, StringFormat='{0}&#160;&#160;▾'}"

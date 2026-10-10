@@ -9,6 +9,7 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         BindingContext = _mainPageViewModel = vm;
+        toolbar.SizeChanged += (_, _) => toolbarSpace.HeightRequest = toolbar.Height + toolbar.Margin.Bottom + 8;
     }
 
     // Reload on every visit so new arrivals and check-ins show up without pulling to refresh.

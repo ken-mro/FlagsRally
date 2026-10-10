@@ -11,13 +11,18 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel"
     Style="{StaticResource PaperPage}">
-    <!--  Once the passport has scrolled away, its numbers move up beside the title  -->
+    <!--  Once the passport has scrolled away, its numbers move up beside the title. They get only
+          the room the title leaves and wrap there, so they never run over it (large text, Japanese).  -->
     <Shell.TitleView>
-        <Grid Padding="0,0,12,0" ColumnDefinitions="Auto,*,Auto">
+        <Grid
+            Padding="0,0,12,0"
+            ColumnDefinitions="Auto,*"
+            ColumnSpacing="10">
             <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabPassport}" />
             <Border
-                Grid.Column="2"
+                Grid.Column="1"
                 Padding="12,4"
+                HorizontalOptions="End"
                 BackgroundColor="{StaticResource NavyDeep}"
                 IsVisible="{Binding ShowsSummaryInTitle}"
                 StrokeShape="RoundRectangle 14"
@@ -25,7 +30,9 @@
                 VerticalOptions="Center">
                 <Label
                     FontSize="12"
-                    Text="{Binding SummaryText}"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding SummaryTitleText}"
                     TextColor="{StaticResource Gold}" />
             </Border>
         </Grid>
@@ -109,9 +116,13 @@
                 </VerticalStackLayout>
             </CollectionView.Header>
 
-            <!--  Room for the floating toolbar so the last stamps can scroll above it  -->
+            <!--  Room for the floating toolbar so the last stamps can scroll above it
+                  (follows the toolbar, which takes two rows on a narrow screen)  -->
             <CollectionView.Footer>
-                <BoxView BackgroundColor="Transparent" HeightRequest="92" />
+                <BoxView
+                    x:Name="toolbarSpace"
+                    BackgroundColor="Transparent"
+                    HeightRequest="92" />
             </CollectionView.Footer>
 
             <!--  A blank passport page until the first arrival is recorded  -->
@@ -405,6 +416,7 @@
 
         <!--  Controls float just above the tab bar, within thumb reach, over the stamps or the map  -->
         <Border
+            x:Name="toolbar"
             Grid.RowSpan="2"
             Margin="12,0,12,12"
             Padding="0"

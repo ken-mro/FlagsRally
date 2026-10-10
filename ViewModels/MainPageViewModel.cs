@@ -37,17 +37,27 @@ namespace FlagsRally.ViewModels
         // Summary shown next to the passport
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(SummaryText))]
+        [NotifyPropertyChangedFor(nameof(SummaryTitleText))]
         int _visitedCountryCount;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(SummaryText))]
+        [NotifyPropertyChangedFor(nameof(SummaryTitleText))]
         int _visitedRegionCount;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(SummaryText))]
+        [NotifyPropertyChangedFor(nameof(SummaryTitleText))]
         int _checkInCount;
 
         public string SummaryText => string.Format(AppResources.PassportSummary, VisitedCountryCount, VisitedRegionCount, CheckInCount);
+
+        // The summary for the title bar, where it may wrap: only between the counts, never inside
+        // one ("1 / check-ins", or "2記 / 録" since Japanese breaks between any two characters).
+        // Each count's characters are glued with word joiners; the space after each "·" is the only break.
+        public string SummaryTitleText => string.Join("\u00A0· ", SummaryText.Split(" · ").Select(GlueTogether));
+
+        static string GlueTogether(string text) => string.Join("\u2060", text.Replace(' ', '\u00A0').ToCharArray());
 
         // Set by the page while scrolling: the passport header is out of sight.
         [ObservableProperty]
