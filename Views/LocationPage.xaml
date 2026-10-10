@@ -159,7 +159,7 @@
                     Grid.Column="1"
                     FontAttributes="Bold"
                     FontSize="17"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     VerticalOptions="Center"
                     Text="{x:Static strings:AppResources.CheckInSpotTitle}" />
                 <Label
@@ -252,12 +252,12 @@
                     Grid.Row="0"
                     FontAttributes="Bold"
                     FontSize="18"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     Text="{Binding SelectedPinTitle}" />
                 <Label
                     Grid.Row="1"
                     FontSize="13"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     Text="{Binding SelectedPinSubtitle}"
                     TextColor="{StaticResource InkMuted}" />
                 <ImageButton
@@ -285,24 +285,23 @@
                     TextColor="{StaticResource InkMuted}"
                     VerticalOptions="Start"
                     WidthRequest="44" />
-                <Grid
+                <!--  Wraps instead of squeezing: in Japanese or with large text the three
+                      buttons do not fit on one line, and a squeezed button cuts its text.  -->
+                <FlexLayout
                     Grid.Row="2"
                     Grid.ColumnSpan="3"
-                    Margin="0,8,8,0"
-                    ColumnSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    Margin="0,4,8,0"
+                    AlignItems="Center"
+                    Wrap="Wrap">
                     <Button
-                        Grid.Column="0"
+                        Margin="0,4,8,0"
                         BackgroundColor="{StaticResource Stamp}"
                         Command="{Binding GetCurrentLocationCommand}"
+                        FlexLayout.Grow="1"
                         IsVisible="{Binding CanCheckIn}"
                         Text="{x:Static strings:AppResources.CheckIn}" />
                     <Button
-                        Grid.Column="1"
+                        Margin="0,4,8,0"
                         BackgroundColor="Transparent"
                         BorderColor="{StaticResource Navy}"
                         BorderWidth="1"
@@ -310,13 +309,13 @@
                         Text="{x:Static strings:AppResources.Directions}"
                         TextColor="{StaticResource Navy}" />
                     <Button
-                        Grid.Column="2"
+                        Margin="0,4,0,0"
                         BackgroundColor="Transparent"
                         Command="{Binding RemoveSelectedPinCommand}"
                         IsVisible="{Binding CanRemoveSelectedPin}"
                         Text="{Binding RemoveSelectedPinText}"
                         TextColor="{StaticResource Stamp}" />
-                </Grid>
+                </FlexLayout>
             </Grid>
         </Border>
 
