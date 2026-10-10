@@ -1355,5 +1355,23 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("RestoreSucceeded", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom in.
+        /// </summary>
+        internal static string ZoomIn {
+            get {
+                return ResourceManager.GetString("ZoomIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom out.
+        /// </summary>
+        internal static string ZoomOut {
+            get {
+                return ResourceManager.GetString("ZoomOut", resourceCulture);
+            }
+        }
     }
 }

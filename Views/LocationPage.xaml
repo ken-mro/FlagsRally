@@ -20,13 +20,58 @@
         </Grid.RowDefinitions>
         <!--  The map keeps one size: the panels below float over its lower edge instead of taking
               rows from it, so showing or hiding them never moves the map. The padding keeps the
-              Google logo and zoom buttons above the Get Location button.  -->
+              Google logo above the Get Location button.  -->
         <maps:Map
             x:Name="map"
             Grid.Row="0"
             Grid.RowSpan="2"
             Padding="0,0,0,64"
             SelectedPin="{Binding SelectedPin}" />
+
+        <!--  Zoom buttons halfway up the right edge, clear of every panel at the bottom  -->
+        <Border
+            Grid.Row="0"
+            Margin="0,0,8,0"
+            Padding="0"
+            BackgroundColor="{StaticResource PaperCard}"
+            HorizontalOptions="End"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 22"
+            StrokeThickness="1"
+            VerticalOptions="Center"
+            WidthRequest="44">
+            <Border.Shadow>
+                <Shadow
+                    Brush="{StaticResource NavyDeep}"
+                    Opacity="0.18"
+                    Radius="8"
+                    Offset="0,2" />
+            </Border.Shadow>
+            <VerticalStackLayout>
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ZoomInCommand}"
+                    FontSize="24"
+                    HeightRequest="48"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ZoomIn}"
+                    Text="＋"
+                    TextColor="{StaticResource Navy}" />
+                <BoxView
+                    Margin="10,0"
+                    HeightRequest="1"
+                    Color="{StaticResource PaperEdge}" />
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ZoomOutCommand}"
+                    FontSize="24"
+                    HeightRequest="48"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ZoomOut}"
+                    Text="−"
+                    TextColor="{StaticResource Navy}" />
+            </VerticalStackLayout>
+        </Border>
 
         <!--  Filter chips over the map (right margin keeps the my-location button free)  -->
         <ScrollView

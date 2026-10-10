@@ -244,6 +244,9 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
+            // The built-in zoom buttons sit at the bottom right, under the panels that float over the
+            // map; the page has its own zoom buttons halfway up the right edge instead.
+            _arrivalMap.UiSettings.ZoomControlsEnabled = false;
             _arrivalMap.InfoWindowLongClicked += async (sender, e) => await DeleteOrResetPinAsync(e.Pin);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
@@ -393,6 +396,19 @@ public partial class LocationPageViewModel : BaseViewModel
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
+    [RelayCommand]
+    Task ZoomIn() => ZoomByAsync(1);
+
+    [RelayCommand]
+    Task ZoomOut() => ZoomByAsync(-1);
+
+    private Task ZoomByAsync(double step)
+    {
+        if (ArrivalMap is null) return Task.CompletedTask;
+        var camera = ArrivalMap.CameraPosition;
+        return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(camera.Target, Math.Clamp(camera.Zoom + step, 2, 21)), animate: true);
+    }
+
     private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
     {
         if (ArrivalMap is null) return;
