@@ -472,7 +472,7 @@
     <value>Shared boards</value>
   </data>
   <data name="BoardCatalogHint" xml:space="preserve">
-    <value>Tap a board to add it. Your check-ins are kept when a board is updated.</value>
+    <value>Choose the boards to add, then tap the add button below. Your check-ins are kept when a board is updated.</value>
   </data>
   <data name="UpOneFolder" xml:space="preserve">
     <value>Up one folder</value>
@@ -560,5 +560,22 @@
   </data>
   <data name="ShowMyLocation" xml:space="preserve">
     <value>Show my location</value>
+  </data>
+  <data name="AddSelectedBoards" xml:space="preserve">
+    <value>Add selected boards ({0})</value>
+  </data>
+  <data name="SelectAllBoards" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="ClearBoardSelection" xml:space="preserve">
+    <value>Clear selection</value>
+  </data>
+  <data name="BoardsAdded" xml:space="preserve">
+    <value>Added these boards:
+{0}</value>
+  </data>
+  <data name="BoardsNotAdded" xml:space="preserve">
+    <value>Could not add these boards:
+{0}</value>
   </data>
 </root>

@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
-    xmlns:services="clr-namespace:FlagsRally.Services"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:BoardCatalogPageViewModel"
@@ -28,11 +27,11 @@
                 FontSize="13"
                 Text="{x:Static strings:AppResources.BoardCatalogHint}"
                 TextColor="{StaticResource InkMuted}" />
-            <!--  In a subfolder, "‹ folder" takes you up one level  -->
-            <HorizontalStackLayout Spacing="8">
-                <HorizontalStackLayout.GestureRecognizers>
+            <!--  In a subfolder, "‹ folder" takes you up one level. Long folder names wrap.  -->
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding NavigateBackCommand}" />
-                </HorizontalStackLayout.GestureRecognizers>
+                </Grid.GestureRecognizers>
                 <Label
                     FontSize="26"
                     IsVisible="{Binding IsInSubfolder}"
@@ -41,12 +40,24 @@
                     TextColor="{StaticResource Navy}"
                     VerticalOptions="Center" />
                 <controls:StampLabel
+                    Grid.Column="1"
                     FontSize="20"
-                    LineBreakMode="TailTruncation"
+                    LineBreakMode="WordWrap"
                     Text="{Binding FolderTitle}"
                     TextColor="{StaticResource Navy}"
                     VerticalOptions="Center" />
-            </HorizontalStackLayout>
+            </Grid>
+            <!--  Its own line, so it never squeezes a long folder name  -->
+            <Button
+                Padding="8,0"
+                BackgroundColor="Transparent"
+                Command="{Binding ToggleSelectAllCommand}"
+                FontSize="14"
+                HorizontalOptions="End"
+                IsVisible="{Binding HasBoardFiles}"
+                MinimumHeightRequest="36"
+                Text="{Binding SelectAllText}"
+                TextColor="{StaticResource Navy}" />
         </VerticalStackLayout>
 
         <Border
@@ -84,7 +95,7 @@
                     </Grid>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="services:DriveEntry">
+                    <DataTemplate x:DataType="viewmodels:BoardCatalogItem">
                         <Grid
                             Padding="14,0"
                             ColumnDefinitions="36,*,Auto"
@@ -119,12 +130,14 @@
                                 Text="›"
                                 TextColor="{StaticResource InkMuted}"
                                 VerticalOptions="Center" />
-                            <Label
+                            <!--  Tapping anywhere on the row selects the board  -->
+                            <CheckBox
                                 Grid.Column="2"
-                                FontSize="22"
+                                Margin="0,0,-8,0"
+                                Color="{StaticResource Stamp}"
+                                InputTransparent="True"
+                                IsChecked="{Binding IsSelected}"
                                 IsVisible="{Binding IsBoardFile}"
-                                Text="＋"
-                                TextColor="{StaticResource Stamp}"
                                 VerticalOptions="Center" />
                             <BoxView
                                 Grid.ColumnSpan="3"
@@ -138,14 +151,21 @@
             </CollectionView>
         </Border>
 
-        <Button
-            Grid.Row="2"
-            BackgroundColor="Transparent"
-            BorderColor="{StaticResource Navy}"
-            BorderWidth="1"
-            Command="{Binding AddFromDeviceCommand}"
-            Text="{x:Static strings:AppResources.AddFromDevice}"
-            TextColor="{StaticResource Navy}" />
+        <VerticalStackLayout Grid.Row="2" Spacing="8">
+            <Button
+                BackgroundColor="{StaticResource Stamp}"
+                Command="{Binding AddSelectedCommand}"
+                IsVisible="{Binding HasSelection}"
+                LineBreakMode="WordWrap"
+                Text="{Binding AddSelectedText}" />
+            <Button
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource Navy}"
+                BorderWidth="1"
+                Command="{Binding AddFromDeviceCommand}"
+                Text="{x:Static strings:AppResources.AddFromDevice}"
+                TextColor="{StaticResource Navy}" />
+        </VerticalStackLayout>
 
         <ActivityIndicator
             Grid.Row="1"
