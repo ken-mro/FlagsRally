@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.1.18] - Unreleased
 
 ### Changed
+- **Get Location works like a long press.** It puts the check-in spot at where you are and shows its card, just as a long press does at the place you pressed. Recording is then always "Check in here" on that card, instead of Get Location going straight to the confirmation.
+- **The pin card's Directions button is gone.** It did the same as the directions button on the map.
 - **Directions and open-in-Maps are back on the map.** They are round buttons above the zoom buttons, shown while a card shows a place, like Google's own toolbar, instead of small icons squeezed into the cards' title rows. The cards have room for their titles again on narrow phones.
 - **Development:** Every pull request now has to update this changelog. A hook blocks opening one that does not.
 - **Development:** A test now fails when any text other than a board, country or region name is set to be cut off, or when the app's own text is used as a placeholder. Layout changes are checked on both Android and iOS, with large text in English and Japanese.
