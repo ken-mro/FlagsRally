@@ -42,19 +42,14 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [ObservableProperty]
     int _gridItemSpan = 2;
 
-    // Tiles are sized from the page width and the board's image shape, so every device lays them out
-    // the same way (an image left to size itself depends on the bitmap and the screen density).
-    public const double TileCaptionHeight = 34;
-    public const double TileDateHeight = 26;
+    // A visited tile's image is sized from the page width and the board's image shape: left to size
+    // itself, its height depended on the bitmap and the screen density and differed between devices.
     const double PagePadding = 5;
 
     double _pageWidth;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(TileHeight))]
     double _tileImageHeight = 180;
-
-    public double TileHeight => TileImageHeight + TileCaptionHeight + TileDateHeight;
 
     public void UpdateTileSize(double pageWidth)
     {

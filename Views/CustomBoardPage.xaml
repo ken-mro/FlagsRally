@@ -92,13 +92,12 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=ShowOnMapCommand}" CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
-                            <!--  Visited and unvisited tiles have the same height, so a row never leaves a gap  -->
-                            <StackLayout HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=TileHeight}">
+                            <StackLayout>
                                 <Label
                                     Padding="2"
                                     FontFamily="KiwiMaru-Medium"
                                     FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
-                                    HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=TileHeight}"
+                                    HeightRequest="{Binding Board.Height}"
                                     HorizontalOptions="Center"
                                     IsVisible="{Binding HasNotBeenVisited}"
                                     LineBreakMode="MiddleTruncation"
@@ -117,7 +116,7 @@
                                     <Image
                                         Aspect="AspectFit"
                                         HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=TileImageHeight}"
-                                        HorizontalOptions="Fill"
+                                        HorizontalOptions="Center"
                                         VerticalOptions="Center">
                                         <Image.Source>
                                             <UriImageSource
@@ -126,14 +125,14 @@
                                                 Uri="{Binding ImageUrl}" />
                                         </Image.Source>
                                     </Image>
-                                    <StackLayout BackgroundColor="{StaticResource Ink}" HeightRequest="34">
+                                    <StackLayout BackgroundColor="{StaticResource Ink}">
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
                                             FontSize="{Binding Title, Converter={StaticResource FontSizeConverter}}"
                                             HorizontalOptions="Center"
-                                            LineBreakMode="TailTruncation"
+                                            LineBreakMode="MiddleTruncation"
                                             LineHeight="1"
-                                            MaxLines="1"
+                                            MaxLines="2"
                                             Text="{Binding Title}"
                                             TextColor="{StaticResource PaperCard}"
                                             VerticalOptions="Center" />
@@ -142,7 +141,6 @@
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
-                                        HeightRequest="26"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=DateIsVisible}"
                                         LineBreakMode="TailTruncation"
@@ -154,7 +152,6 @@
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
-                                        HeightRequest="26"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=DateIsNotVisible}"
                                         LineBreakMode="TailTruncation"
