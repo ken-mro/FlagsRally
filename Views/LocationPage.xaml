@@ -28,9 +28,11 @@
             Padding="0,0,0,64"
             SelectedPin="{Binding SelectedPin}" />
 
-        <!--  Zoom buttons halfway up the right edge, clear of every panel at the bottom  -->
+        <!--  Zoom buttons at the bottom right, lifted above whichever panel is showing (see code-behind)  -->
         <Border
+            x:Name="zoomButtons"
             Grid.Row="0"
+            Grid.RowSpan="2"
             Margin="0,0,8,0"
             Padding="0"
             BackgroundColor="{StaticResource PaperCard}"
@@ -38,7 +40,7 @@
             Stroke="{StaticResource PaperEdge}"
             StrokeShape="RoundRectangle 22"
             StrokeThickness="1"
-            VerticalOptions="Center"
+            VerticalOptions="End"
             WidthRequest="44">
             <Border.Shadow>
                 <Shadow
@@ -122,6 +124,7 @@
 
         <!--  Default controls: record the current location  -->
         <Grid
+            x:Name="getLocationPanel"
             Grid.Row="1"
             ColumnSpacing="8"
             IsVisible="{Binding ShowsGetLocationButton}">
@@ -134,6 +137,7 @@
 
         <!--  The check-in spot: how to move it, how far it is from you, and recording it  -->
         <Border
+            x:Name="checkInSpotPanel"
             Grid.Row="1"
             Padding="14,10,6,12"
             BackgroundColor="{StaticResource PaperCard}"
@@ -202,6 +206,7 @@
 
         <!--  Details of the selected pin, with its actions as buttons  -->
         <Border
+            x:Name="pinDetailsPanel"
             Grid.Row="1"
             Padding="14,10,6,12"
             BackgroundColor="{StaticResource PaperCard}"

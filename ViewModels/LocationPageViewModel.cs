@@ -244,8 +244,8 @@ public partial class LocationPageViewModel : BaseViewModel
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             _arrivalMap.UiSettings.MapToolbarEnabled = true;
-            // The built-in zoom buttons sit at the bottom right, under the panels that float over the
-            // map; the page has its own zoom buttons halfway up the right edge instead.
+            // The built-in zoom buttons would be hidden by the panels that float over the map; the page
+            // has its own, which move up above whichever panel is showing.
             _arrivalMap.UiSettings.ZoomControlsEnabled = false;
             _arrivalMap.InfoWindowLongClicked += async (sender, e) => await DeleteOrResetPinAsync(e.Pin);
             _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
