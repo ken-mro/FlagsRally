@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.1.18] - Unreleased
+## [1.1.20] - Unreleased
 
 ### Added
 - **Add several boards at once.** In Add Board, boards now have check boxes: pick as many as you like, even from different folders, or use "Select all" in a folder such as マンホールカード, then tap "Add selected boards". One message at the end lists what was added. Adding from a file on the device also accepts several files.
