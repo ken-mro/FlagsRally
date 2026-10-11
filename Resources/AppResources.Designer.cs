@@ -1436,5 +1436,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StatArrivals", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string AllCountriesShort {
+            get {
+                return ResourceManager.GetString("AllCountriesShort", resourceCulture);
+            }
+        }
     }
 }
