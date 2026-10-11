@@ -19,7 +19,7 @@ namespace FlagsRally.ViewModels
         private const string ALL_COUNTRY_CODE = "All";
         private readonly string ALL_COUNTRY_NAME = AppResources.AllCountries;
 
-        public MainPageViewModel(CustomCountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository, ArrivalLocationService arrivalLocationService, ICustomLocationDataRepository customLocationDataRepository)
+        public MainPageViewModel(CustomCountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository, ArrivalLocationService arrivalLocationService)
         {
             Title = "Main Page";
 
@@ -28,11 +28,9 @@ namespace FlagsRally.ViewModels
             _arrivalLocationRepository = arrivalLocationRepository;
             _countryHelper = countryHelper;
             _arrivalLocationService = arrivalLocationService;
-            _customLocationDataRepository = customLocationDataRepository;
             // Loaded by the page's OnAppearing.
         }
 
-        readonly ICustomLocationDataRepository _customLocationDataRepository;
 
         // Summary shown next to the passport
         [ObservableProperty]
@@ -45,9 +43,9 @@ namespace FlagsRally.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(SummaryText))]
-        int _checkInCount;
+        int _arrivalCount;
 
-        public string SummaryText => string.Format(AppResources.PassportSummary, VisitedCountryCount, VisitedRegionCount, CheckInCount);
+        public string SummaryText => string.Format(AppResources.PassportSummary, ArrivalCount, VisitedCountryCount, VisitedRegionCount);
 
         // Set by the page while scrolling: the passport header is out of sight.
         [ObservableProperty]
@@ -152,7 +150,7 @@ namespace FlagsRally.ViewModels
                     .Select(x => (x.CountryCode, x.AdminAreaName))
                     .Distinct()
                     .Count();
-                CheckInCount = await _customLocationDataRepository.CountVisitedAsync();
+                ArrivalCount = allArrivalLocationList.Count;
 
                 var distinctArrivalLocationList = sourceArrivalLocationList.GroupBy(x => x.CountryCode).Select(x => x.FirstOrDefault()).ToList();
                 var arrivalCountryList = distinctArrivalLocationList.ConvertAll(x => new Country()

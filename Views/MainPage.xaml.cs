@@ -29,13 +29,13 @@ public partial class MainPage : ContentPage
 
     // The counts sit beside the passport cover when each label fits on one line there. Otherwise
     // (a foldable's cover screen with large text) they move below the cover and use the full width,
-    // instead of breaking "Countries" or "チェックイン" in the middle of the word.
+    // instead of breaking "Countries" or "到着地点" in the middle of the word.
     private void PlaceStats()
     {
         if (passportHeader.Width <= 0) return;
 
         const double ColumnMargin = 8;
-        var widest = new View[] { countriesStat, regionsStat, checkInsStat }
+        var widest = new View[] { arrivalsStat, countriesStat, regionsStat }
             .Max(stat => stat.Measure(double.PositiveInfinity, double.PositiveInfinity).Width) + ColumnMargin;
         var needed = 3 * widest + 2 + statsCard.Padding.HorizontalThickness + statsCard.StrokeThickness * 2;
         var beside = passportHeader.Width - passportHeader.Padding.HorizontalThickness

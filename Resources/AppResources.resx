@@ -435,9 +435,6 @@
   <data name="StatRegions" xml:space="preserve">
     <value>Regions</value>
   </data>
-  <data name="StatCheckIns" xml:space="preserve">
-    <value>Check-ins</value>
-  </data>
   <data name="Data" xml:space="preserve">
     <value>Data</value>
   </data>
@@ -526,7 +523,7 @@
     <value>Critters</value>
   </data>
   <data name="PassportSummary" xml:space="preserve">
-    <value>{0} countries · {1} regions · {2} check-ins</value>
+    <value>{0} arrivals · {1} countries · {2} regions</value>
   </data>
   <data name="DisplayOptions" xml:space="preserve">
     <value>Display options</value>
@@ -577,5 +574,8 @@
   <data name="BoardsNotAdded" xml:space="preserve">
     <value>Could not add these boards:
 {0}</value>
+  </data>
+  <data name="StatArrivals" xml:space="preserve">
+    <value>Arrivals</value>
   </data>
 </root>

@@ -94,13 +94,6 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
         return rows.Select(GetCustomLocationPin).ToList();
     }
 
-    public async Task<int> CountVisitedAsync()
-    {
-        await Init();
-        return await _conn!.ExecuteScalarAsync<int>(
-            "SELECT COUNT(*) FROM CustomLocation WHERE ArrivalDate IS NOT NULL AND BoardName IN (SELECT Name FROM CustomBoard)");
-    }
-
     public async Task<int> UpdateCustomLocation(string key, DateTime? now)
     {
         await Init();

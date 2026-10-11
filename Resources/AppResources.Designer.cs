@@ -1015,15 +1015,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check-ins.
-        /// </summary>
-        internal static string StatCheckIns {
-            get {
-                return ResourceManager.GetString("StatCheckIns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Data.
         /// </summary>
         internal static string Data {
@@ -1285,7 +1276,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} countries · {1} regions · {2} check-ins.
+        ///   Looks up a localized string similar to {0} arrivals · {1} countries · {2} regions.
         /// </summary>
         internal static string PassportSummary {
             get {
@@ -1434,6 +1425,15 @@ namespace FlagsRally.Resources {
         internal static string BoardsNotAdded {
             get {
                 return ResourceManager.GetString("BoardsNotAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrivals.
+        /// </summary>
+        internal static string StatArrivals {
+            get {
+                return ResourceManager.GetString("StatArrivals", resourceCulture);
             }
         }
     }

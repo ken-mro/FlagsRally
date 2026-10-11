@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <!-- Check-ins: a map pin with a tick, like a checked-in pin on the map. Lines only, for tinting. -->
-  <g fill="none" stroke="#182A52" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 21.5 C7.6 16.4 5.2 13.1 5.2 9.6 A6.8 6.8 0 0 1 18.8 9.6 C18.8 13.1 16.4 16.4 12 21.5 Z"/>
-    <path d="M9.1 9.7 L11.2 11.8 L15 7.9"/>
-  </g>
-</svg>

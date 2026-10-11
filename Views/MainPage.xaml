@@ -64,6 +64,14 @@
                 VerticalOptions="Center">
                 <HorizontalStackLayout Spacing="12">
                     <HorizontalStackLayout Spacing="4">
+                        <Image Source="stat_arrivals.png" Style="{StaticResource TitleStatIcon}">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{StaticResource Gold}" />
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Style="{StaticResource TitleStatNumber}" Text="{Binding ArrivalCount}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="4">
                         <Image Source="stat_countries.png" Style="{StaticResource TitleStatIcon}">
                             <Image.Behaviors>
                                 <toolkit:IconTintColorBehavior TintColor="{StaticResource Gold}" />
@@ -78,14 +86,6 @@
                             </Image.Behaviors>
                         </Image>
                         <Label Style="{StaticResource TitleStatNumber}" Text="{Binding VisitedRegionCount}" />
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Spacing="4">
-                        <Image Source="stat_checkins.png" Style="{StaticResource TitleStatIcon}">
-                            <Image.Behaviors>
-                                <toolkit:IconTintColorBehavior TintColor="{StaticResource Gold}" />
-                            </Image.Behaviors>
-                        </Image>
-                        <Label Style="{StaticResource TitleStatNumber}" Text="{Binding CheckInCount}" />
                     </HorizontalStackLayout>
                 </HorizontalStackLayout>
             </Border>
@@ -120,8 +120,9 @@
                             WidthRequest="84">
                             <Image Aspect="AspectFill" Source="{Binding PassportImageSourceString}" />
                         </Border>
-                        <!--  The counts on a card with a dashed edge like the stamps; each icon is the
-                              one the title bar uses for that count once the header has scrolled away  -->
+                        <!--  Arrivals (stamps), countries and regions on a card with a dashed edge like the
+                              stamps; each icon is the one the title bar uses for that count once the header
+                              has scrolled away. The arrivals flag matches the arrival pins on the map.  -->
                         <Border
                             x:Name="statsCard"
                             Grid.Column="1"
@@ -134,12 +135,12 @@
                             VerticalOptions="Center">
                             <Grid ColumnDefinitions="*,Auto,*,Auto,*">
                                 <VerticalStackLayout
-                                    x:Name="countriesStat"
+                                    x:Name="arrivalsStat"
                                     Grid.Column="0"
                                     Spacing="2">
-                                    <Image Source="stat_countries.png" Style="{StaticResource HeaderStatIcon}" />
-                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding VisitedCountryCount}" />
-                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatCountries}" />
+                                    <Image Source="stat_arrivals.png" Style="{StaticResource HeaderStatIcon}" />
+                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding ArrivalCount}" />
+                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatArrivals}" />
                                 </VerticalStackLayout>
                                 <BoxView
                                     Grid.Column="1"
@@ -147,12 +148,12 @@
                                     WidthRequest="1"
                                     Color="{StaticResource PaperEdge}" />
                                 <VerticalStackLayout
-                                    x:Name="regionsStat"
+                                    x:Name="countriesStat"
                                     Grid.Column="2"
                                     Spacing="2">
-                                    <Image Source="stat_regions.png" Style="{StaticResource HeaderStatIcon}" />
-                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding VisitedRegionCount}" />
-                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatRegions}" />
+                                    <Image Source="stat_countries.png" Style="{StaticResource HeaderStatIcon}" />
+                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding VisitedCountryCount}" />
+                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatCountries}" />
                                 </VerticalStackLayout>
                                 <BoxView
                                     Grid.Column="3"
@@ -160,12 +161,12 @@
                                     WidthRequest="1"
                                     Color="{StaticResource PaperEdge}" />
                                 <VerticalStackLayout
-                                    x:Name="checkInsStat"
+                                    x:Name="regionsStat"
                                     Grid.Column="4"
                                     Spacing="2">
-                                    <Image Source="stat_checkins.png" Style="{StaticResource HeaderStatIcon}" />
-                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding CheckInCount}" />
-                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatCheckIns}" />
+                                    <Image Source="stat_regions.png" Style="{StaticResource HeaderStatIcon}" />
+                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding VisitedRegionCount}" />
+                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatRegions}" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>

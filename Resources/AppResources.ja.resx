@@ -435,9 +435,6 @@
   <data name="StatRegions" xml:space="preserve">
     <value>地域</value>
   </data>
-  <data name="StatCheckIns" xml:space="preserve">
-    <value>チェックイン</value>
-  </data>
   <data name="Data" xml:space="preserve">
     <value>データ</value>
   </data>
@@ -526,7 +523,7 @@
     <value>いきもの</value>
   </data>
   <data name="PassportSummary" xml:space="preserve">
-    <value>{0}か国 · {1}地域 · {2}記録</value>
+    <value>到着地点{0} · {1}か国 · {2}地域</value>
   </data>
   <data name="DisplayOptions" xml:space="preserve">
     <value>表示の設定</value>
@@ -577,5 +574,8 @@
   <data name="BoardsNotAdded" xml:space="preserve">
     <value>次のボードは追加できませんでした：
 {0}</value>
+  </data>
+  <data name="StatArrivals" xml:space="preserve">
+    <value>到着地点</value>
   </data>
 </root>
