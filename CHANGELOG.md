@@ -9,7 +9,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Add several boards at once.** In Add Board, boards now have check boxes: pick as many as you like, even from different folders, or use "Select all" in a folder such as マンホールカード, then tap "Add selected boards". One message at the end lists what was added. Adding from a file on the device also accepts several files.
 
 ### Changed
-- **A new look for the Passport counts.** The countries, regions and check-ins counts sit on a dashed card with an icon above each. On a narrow screen with large text, the card moves below the passport cover so every label stays on one line.
+- **The Passport counts show arrivals, countries and regions.** Check-ins on custom boards are no longer counted here (they belong to Collections); the first count is now the number of arrival stamps. The counts sit on a dashed card with an icon above each: a flag for arrivals, like the arrival pins on the map, a globe for countries and a folded map for regions. On a narrow screen with large text, the card moves below the passport cover so every label stays on one line.
 - **A my-location button in the app's style.** Google's square button at the top right of the map is replaced by a round button above the zoom buttons, which moves up with them above the cards.
 - **Get Location works like a long press.** It puts the check-in spot at where you are and shows its card, just as a long press does at the place you pressed. Recording is then always "Check in here" on that card, instead of Get Location going straight to the confirmation.
 - **The pin card's Directions button is gone.** It did the same as the directions button on the map.
@@ -21,7 +21,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **The map's compass hidden under the filter chips.** When the map is turned, the compass now shows just below the chips (Android: left, iPhone: right).
-- **The Passport counts running over the title after scrolling.** On iPhone with large text, "1 countries · 1 regions · 1 check-ins" covered "Passport" and wrapped onto two lines. The title bar now shows the counts as icons with numbers (globe for countries, flag for regions, checked pin for check-ins) on one line, the same icons as in the passport header.
+- **The Passport counts running over the title after scrolling.** On iPhone with large text, the counts covered "Passport" and wrapped onto two lines. The title bar now shows them as icons with numbers on one line, the same icons as in the passport header.
 - **Long board names cut off in the board's title and on Collections cards.** The title bar shows the whole name, on two lines and in a smaller font when needed, and card titles are no longer cut after two lines. On iPhone, the last row of cards is no longer hidden behind the tab bar.
 - **Galaxy Z Fold cover screen.** The Passport toolbar's country filter ("All Countries") moves to a second row instead of breaking into a letter per line, and the tab names shrink to fit instead of showing "コレクシ…" with Japanese and large text.
 - **Map card text cut off after the directions and open-in-Maps icons were added.** The check-in spot guide's title ("Check in at this pin" / このピンの場所で記録) and the pin details card's title and subtitle now wrap instead of ending in "…". The pin card's buttons move to a second line when they do not fit, instead of squeezing Check In down to "チ" in Japanese with large text.
