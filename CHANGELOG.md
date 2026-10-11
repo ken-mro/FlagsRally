@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.1.21] - Unreleased
 
 ### Fixed
 - **The Android app crashing right after launch (1.1.20).** The Google Play build closed as soon as it opened, and clearing the cache did not help. The change in 1.1.20 that left out unused library code also removed code the subscription library needs at startup; it is undone, so the app starts again. A test now stops that change from coming back without the code it needs.
