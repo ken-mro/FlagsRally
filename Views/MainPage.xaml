@@ -8,11 +8,44 @@
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel"
     Style="{StaticResource PaperPage}">
-    <!--  Once the passport has scrolled away, its numbers move up beside the title. They get only
-          the room the title leaves and wrap there, so they never run over it (large text, Japanese).  -->
+    <ContentPage.Resources>
+        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+        <converters:FontSizeConverter x:Key="FontSizeConverter" />
+        <Style x:Key="TitleStatIcon" TargetType="Image">
+            <Setter Property="HeightRequest" Value="15" />
+            <Setter Property="WidthRequest" Value="15" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="TitleStatNumber" TargetType="Label">
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextColor" Value="{StaticResource Gold}" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="HeaderStatIcon" TargetType="Image">
+            <Setter Property="HeightRequest" Value="20" />
+            <Setter Property="WidthRequest" Value="20" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="HeaderStatNumber" TargetType="Label">
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontFamily" Value="craftmincho" />
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="TextColor" Value="{StaticResource Navy}" />
+        </Style>
+        <Style x:Key="HeaderStatLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+        </Style>
+    </ContentPage.Resources>
+    <!--  Once the passport has scrolled away, its numbers move up beside the title as icon + number
+          pairs (the same icons as in the passport header), which stay on one line in any language.  -->
     <Shell.TitleView>
         <Grid
             Padding="0,0,12,0"
@@ -21,26 +54,43 @@
             <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabPassport}" />
             <Border
                 Grid.Column="1"
-                Padding="12,4"
-                HorizontalOptions="End"
+                Padding="12,5"
                 BackgroundColor="{StaticResource NavyDeep}"
+                HorizontalOptions="End"
                 IsVisible="{Binding ShowsSummaryInTitle}"
+                SemanticProperties.Description="{Binding SummaryText}"
                 StrokeShape="RoundRectangle 14"
                 StrokeThickness="0"
                 VerticalOptions="Center">
-                <Label
-                    FontSize="12"
-                    HorizontalTextAlignment="Center"
-                    LineBreakMode="WordWrap"
-                    Text="{Binding SummaryTitleText}"
-                    TextColor="{StaticResource Gold}" />
+                <HorizontalStackLayout Spacing="12">
+                    <HorizontalStackLayout Spacing="4">
+                        <Image Source="stat_countries.png" Style="{StaticResource TitleStatIcon}">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{StaticResource Gold}" />
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Style="{StaticResource TitleStatNumber}" Text="{Binding VisitedCountryCount}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="4">
+                        <Image Source="stat_regions.png" Style="{StaticResource TitleStatIcon}">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{StaticResource Gold}" />
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Style="{StaticResource TitleStatNumber}" Text="{Binding VisitedRegionCount}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="4">
+                        <Image Source="stat_checkins.png" Style="{StaticResource TitleStatIcon}">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{StaticResource Gold}" />
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Style="{StaticResource TitleStatNumber}" Text="{Binding CheckInCount}" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
             </Border>
         </Grid>
     </Shell.TitleView>
-    <ContentPage.Resources>
-        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
-        <converters:FontSizeConverter x:Key="FontSizeConverter" />
-    </ContentPage.Resources>
     <Grid RowDefinitions="Auto,*">
 
         <!--  Stamps; the passport and the filter bar scroll with them  -->
@@ -53,65 +103,72 @@
             Scrolled="OnStampsScrolled">
             <CollectionView.Header>
                 <VerticalStackLayout>
+                    <!--  On a narrow screen with large text the counts do not fit beside the cover;
+                          they then take a row of their own below it (see code-behind)  -->
                     <Grid
                         x:Name="passportHeader"
                         Padding="16,16,16,12"
                         ColumnDefinitions="Auto,*"
-                        ColumnSpacing="16">
+                        ColumnSpacing="16"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="12">
                         <Border
+                            x:Name="passportCover"
                             HeightRequest="116"
                             StrokeShape="RoundRectangle 6"
                             StrokeThickness="0"
                             WidthRequest="84">
                             <Image Aspect="AspectFill" Source="{Binding PassportImageSourceString}" />
                         </Border>
-                        <Grid
+                        <!--  The counts on a card with a dashed edge like the stamps; each icon is the
+                              one the title bar uses for that count once the header has scrolled away  -->
+                        <Border
+                            x:Name="statsCard"
                             Grid.Column="1"
-                            ColumnDefinitions="*,*,*"
+                            Padding="4,10"
+                            BackgroundColor="{StaticResource PaperCard}"
+                            Stroke="{StaticResource PaperEdge}"
+                            StrokeDashArray="4,3"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="1.5"
                             VerticalOptions="Center">
-                            <VerticalStackLayout Grid.Column="0" Spacing="0">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontFamily="craftmincho"
-                                    FontSize="32"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{Binding VisitedCountryCount}"
-                                    TextColor="{StaticResource Navy}" />
-                                <Label
-                                    FontSize="12"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{x:Static strings:AppResources.StatCountries}"
-                                    TextColor="{StaticResource InkMuted}" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1" Spacing="0">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontFamily="craftmincho"
-                                    FontSize="32"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{Binding VisitedRegionCount}"
-                                    TextColor="{StaticResource Navy}" />
-                                <Label
-                                    FontSize="12"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{x:Static strings:AppResources.StatRegions}"
-                                    TextColor="{StaticResource InkMuted}" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="2" Spacing="0">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontFamily="craftmincho"
-                                    FontSize="32"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{Binding CheckInCount}"
-                                    TextColor="{StaticResource Navy}" />
-                                <Label
-                                    FontSize="12"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{x:Static strings:AppResources.StatCheckIns}"
-                                    TextColor="{StaticResource InkMuted}" />
-                            </VerticalStackLayout>
-                        </Grid>
+                            <Grid ColumnDefinitions="*,Auto,*,Auto,*">
+                                <VerticalStackLayout
+                                    x:Name="countriesStat"
+                                    Grid.Column="0"
+                                    Spacing="2">
+                                    <Image Source="stat_countries.png" Style="{StaticResource HeaderStatIcon}" />
+                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding VisitedCountryCount}" />
+                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatCountries}" />
+                                </VerticalStackLayout>
+                                <BoxView
+                                    Grid.Column="1"
+                                    Margin="0,6"
+                                    WidthRequest="1"
+                                    Color="{StaticResource PaperEdge}" />
+                                <VerticalStackLayout
+                                    x:Name="regionsStat"
+                                    Grid.Column="2"
+                                    Spacing="2">
+                                    <Image Source="stat_regions.png" Style="{StaticResource HeaderStatIcon}" />
+                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding VisitedRegionCount}" />
+                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatRegions}" />
+                                </VerticalStackLayout>
+                                <BoxView
+                                    Grid.Column="3"
+                                    Margin="0,6"
+                                    WidthRequest="1"
+                                    Color="{StaticResource PaperEdge}" />
+                                <VerticalStackLayout
+                                    x:Name="checkInsStat"
+                                    Grid.Column="4"
+                                    Spacing="2">
+                                    <Image Source="stat_checkins.png" Style="{StaticResource HeaderStatIcon}" />
+                                    <Label Style="{StaticResource HeaderStatNumber}" Text="{Binding CheckInCount}" />
+                                    <Label Style="{StaticResource HeaderStatLabel}" Text="{x:Static strings:AppResources.StatCheckIns}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </VerticalStackLayout>
             </CollectionView.Header>

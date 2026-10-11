@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <!-- Regions: a flag on a pole, like the regional flags on the stamps. Lines only, for tinting. -->
+  <g fill="none" stroke="#182A52" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.5 21.5 V3"/>
+    <path d="M5.5 4 C8.5 2.6 11 5.6 14 4.6 C16 4 17.4 3.6 19 4.2 V13 C17.4 12.4 16 12.8 14 13.4 C11 14.4 8.5 11.4 5.5 12.8"/>
+  </g>
+</svg>
