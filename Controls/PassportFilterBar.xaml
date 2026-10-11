@@ -9,8 +9,9 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
-    <!--  On a narrow screen (a foldable's cover screen) with large text, the country filter moves
-          to a second row instead of being squeezed to a letter per line (see code-behind).  -->
+    <!--  On a narrow screen (a foldable's cover screen) the country filter shows "All" or a flag
+          instead of the full name, and only if even that does not fit does it move to a second row
+          (see code-behind), instead of being squeezed to a letter per line.  -->
     <Grid
         x:Name="bar"
         Padding="8"
@@ -95,6 +96,7 @@
         <Border
             x:Name="countryFilter"
             Grid.Column="1"
+            SemanticProperties.Description="{Binding FilteredCountry.CountryName}"
             Padding="8,7"
             HorizontalOptions="Start"
             BackgroundColor="{StaticResource PaperCard}"
@@ -105,12 +107,11 @@
                 <TapGestureRecognizer Command="{Binding ChooseCountryCommand}" />
             </Border.GestureRecognizers>
             <!--  Wraps rather than cuts: the text is often the app's own "All Countries".
-                  The no-break spaces keep the ▾ with the last word.  -->
+                  On a narrow screen it becomes "All" or the country's flag (see code-behind).  -->
             <Label
                 x:Name="countryFilterLabel"
                 FontSize="12"
                 LineBreakMode="WordWrap"
-                Text="{Binding FilteredCountry.CountryName, StringFormat='{0}&#160;&#160;▾'}"
                 TextColor="{StaticResource Ink}" />
         </Border>
 

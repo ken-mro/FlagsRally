@@ -578,4 +578,7 @@
   <data name="StatArrivals" xml:space="preserve">
     <value>到着地点</value>
   </data>
+  <data name="AllCountriesShort" xml:space="preserve">
+    <value>すべて</value>
+  </data>
 </root>

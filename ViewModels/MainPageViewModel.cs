@@ -125,7 +125,22 @@ namespace FlagsRally.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DisplayArrivalLocationList))]
         [NotifyPropertyChangedFor(nameof(MapArrivalLocationList))]
+        [NotifyPropertyChangedFor(nameof(CountryFilterText))]
+        [NotifyPropertyChangedFor(nameof(CompactCountryFilterText))]
         Country _filteredCountry = new ();
+
+        // The country filter's chip: "All Countries ▾" or the country's name, and the short form for
+        // a narrow screen, "All ▾" or just the country's flag. The filter bar picks the one that fits.
+        // The no-break spaces keep the ▾ with the text.
+        public string CountryFilterText => $"{FilteredCountry?.CountryName}\u00A0\u00A0▾";
+        public string CompactCountryFilterText => $"{CompactCountryName()}\u00A0\u00A0▾";
+
+        string CompactCountryName()
+        {
+            if (FilteredCountry is null || FilteredCountry.CountryShortCode == ALL_COUNTRY_CODE) return AppResources.AllCountriesShort;
+            var flag = SourceArrivalLocationList?.FirstOrDefault(x => x.CountryCode == FilteredCountry.CountryShortCode)?.CountryFlagSource;
+            return string.IsNullOrEmpty(flag) ? FilteredCountry.CountryName : flag;
+        }
 
         public bool IsCountry => SelectedRegion == AppResources.Country;
         public bool IsAdminArea => SelectedRegion == AppResources.AdminArea;

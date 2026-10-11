@@ -578,4 +578,7 @@
   <data name="StatArrivals" xml:space="preserve">
     <value>Arrivals</value>
   </data>
+  <data name="AllCountriesShort" xml:space="preserve">
+    <value>All</value>
+  </data>
 </root>
