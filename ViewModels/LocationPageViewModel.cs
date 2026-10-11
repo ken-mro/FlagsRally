@@ -252,7 +252,8 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             SetProperty(ref _arrivalMap, value);
             _arrivalMap!.MyLocationEnabled = true;
-            _arrivalMap.UiSettings.MyLocationButtonEnabled = true;
+            // The page draws its own my-location button in the app's style, with the other map buttons.
+            _arrivalMap.UiSettings.MyLocationButtonEnabled = false;
             _arrivalMap.UiSettings.CompassEnabled = true;
             _arrivalMap.UiSettings.ScrollGesturesEnabled = true;
             // Google's directions / open-in-Maps buttons would also be hidden under the panels; the
@@ -262,7 +263,6 @@ public partial class LocationPageViewModel : BaseViewModel
             // has its own, which move up above whichever panel is showing.
             _arrivalMap.UiSettings.ZoomControlsEnabled = false;
             _arrivalMap.InfoWindowLongClicked += async (sender, e) => await DeleteOrResetPinAsync(e.Pin);
-            _arrivalMap.MyLocationButtonClicked += async (sender, e) => await OnMyLocationButtonClickedAsync();
             _arrivalMap.MapClicked += (sender, e) => ClearTappedPointPin(sender, e);
             _arrivalMap.MapLongClicked += (sender, e) => ShowPinOnTappedPoint(sender, e);
             _arrivalMap.PinDragStart += (sender, e) => _isDraggingPin = true;
@@ -388,7 +388,8 @@ public partial class LocationPageViewModel : BaseViewModel
         return -99.999 / 20 * (zoomLevel - 2) + 100;
     }
 
-    private async Task OnMyLocationButtonClickedAsync()
+    [RelayCommand]
+    private async Task ShowMyLocationAsync()
     {
         var userLocation = await GetLastKnownOrDefaultLocationAsync();
         var currentCameraLocation = GetCurrentCameraLocation();

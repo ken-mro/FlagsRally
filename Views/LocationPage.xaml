@@ -29,7 +29,7 @@
             SelectedPin="{Binding SelectedPin}" />
 
         <!--  Map buttons at the bottom right, lifted above whichever panel is showing (see code-behind):
-              directions and open-in-Maps for the place on the card, like Google's own toolbar, then zoom.  -->
+              directions and open-in-Maps for the place on the card, like Google's own toolbar, then my location and zoom.  -->
         <VerticalStackLayout
             x:Name="mapButtons"
             Grid.Row="0"
@@ -82,6 +82,28 @@
                         Source="open_in_maps.png" />
                 </Border>
             </VerticalStackLayout>
+            <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
+            <Border
+                BackgroundColor="{StaticResource PaperCard}"
+                HeightRequest="48"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 24"
+                StrokeThickness="1"
+                WidthRequest="48">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="{StaticResource NavyDeep}"
+                        Opacity="0.18"
+                        Radius="8"
+                        Offset="0,2" />
+                </Border.Shadow>
+                <ImageButton
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ShowMyLocationCommand}"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
+                    Source="my_location.png" />
+            </Border>
             <Border
                 Padding="0"
                 BackgroundColor="{StaticResource PaperCard}"
@@ -122,10 +144,12 @@
             </Border>
         </VerticalStackLayout>
 
-        <!--  Filter chips over the map (right margin keeps the my-location button free)  -->
+        <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),
+              so Google's compass shows below them instead of under them.  -->
         <ScrollView
+            x:Name="filterChips"
             Grid.Row="0"
-            Margin="8,8,64,0"
+            Margin="8,8,8,0"
             HorizontalScrollBarVisibility="Never"
             Orientation="Horizontal"
             VerticalOptions="Start">

@@ -11,8 +11,10 @@
     <Shell.TitleView>
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabCollections}" />
     </Shell.TitleView>
+    <!--  iOS's tab bar floats over the bottom of the list, and a grouped list shows no footer there:
+          the margin keeps the last row of cards above the tab bar.  -->
     <CollectionView
-        Margin="8,0"
+        Margin="{OnPlatform iOS='8,0,8,72', Default='8,0'}"
         IsGrouped="True"
         ItemsSource="{Binding Sections}">
         <CollectionView.ItemsLayout>
@@ -123,8 +125,7 @@
                                     <Label
                                         FontAttributes="Bold"
                                         FontSize="14"
-                                        LineBreakMode="TailTruncation"
-                                        MaxLines="2"
+                                        LineBreakMode="WordWrap"
                                         Text="{Binding Title}" />
                                     <ProgressBar
                                         IsVisible="{Binding IsBoard}"

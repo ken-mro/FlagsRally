@@ -1015,15 +1015,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check-ins.
-        /// </summary>
-        internal static string StatCheckIns {
-            get {
-                return ResourceManager.GetString("StatCheckIns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Data.
         /// </summary>
         internal static string Data {
@@ -1123,7 +1114,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap a board to add it. Your check-ins are kept when a board is updated..
+        ///   Looks up a localized string similar to Choose the boards to add, then tap the add button below. Your check-ins are kept when a board is updated..
         /// </summary>
         internal static string BoardCatalogHint {
             get {
@@ -1285,7 +1276,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} countries · {1} regions · {2} check-ins.
+        ///   Looks up a localized string similar to {0} arrivals · {1} countries · {2} regions.
         /// </summary>
         internal static string PassportSummary {
             get {
@@ -1380,6 +1371,69 @@ namespace FlagsRally.Resources {
         internal static string OpenInMaps {
             get {
                 return ResourceManager.GetString("OpenInMaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my location.
+        /// </summary>
+        internal static string ShowMyLocation {
+            get {
+                return ResourceManager.GetString("ShowMyLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add selected boards ({0}).
+        /// </summary>
+        internal static string AddSelectedBoards {
+            get {
+                return ResourceManager.GetString("AddSelectedBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        internal static string SelectAllBoards {
+            get {
+                return ResourceManager.GetString("SelectAllBoards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear selection.
+        /// </summary>
+        internal static string ClearBoardSelection {
+            get {
+                return ResourceManager.GetString("ClearBoardSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added these boards: {0}.
+        /// </summary>
+        internal static string BoardsAdded {
+            get {
+                return ResourceManager.GetString("BoardsAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not add these boards: {0}.
+        /// </summary>
+        internal static string BoardsNotAdded {
+            get {
+                return ResourceManager.GetString("BoardsNotAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrivals.
+        /// </summary>
+        internal static string StatArrivals {
+            get {
+                return ResourceManager.GetString("StatArrivals", resourceCulture);
             }
         }
     }

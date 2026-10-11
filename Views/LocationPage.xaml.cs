@@ -21,7 +21,13 @@ public partial class LocationPage : ContentPage
         BindingContext = _viewModel = vm;
 
         map.CameraIdled += (_, e) => _lastCamera = e.Position;
-        map.HandlerChanged += (_, _) => RestoreCamera();
+        map.HandlerChanged += (_, _) =>
+        {
+            RestoreCamera();
+            PadMapBelowChips();
+        };
+
+        filterChips.SizeChanged += (_, _) => PadMapBelowChips();
 
         foreach (var panel in new View[] { getLocationPanel, checkInSpotPanel, pinDetailsPanel })
         {
@@ -46,7 +52,33 @@ public partial class LocationPage : ContentPage
         Dispatcher.Dispatch(() => map.MoveCamera(Maui.GoogleMaps.CameraUpdateFactory.NewCameraPosition(camera)));
     }
 
-    // The map buttons (directions, open in Maps, zoom) sit at the bottom right like Google's own,
+    // Google draws its compass in the map's top corner (left on Android, right on iOS), where the
+    // filter chips are. Padding the map's top edge by the chips' height moves the compass below them.
+    // The library applies Map.Padding only when the map is created, so the native map is padded too.
+    void PadMapBelowChips()
+    {
+        if (filterChips.Height <= 0) return;
+        var top = filterChips.Margin.Top + filterChips.Height + MapButtonsGap / 2;
+        var padding = new Thickness(map.Padding.Left, top, map.Padding.Right, map.Padding.Bottom);
+        map.Padding = padding;
+#if ANDROID
+        if (map.Handler?.PlatformView is Android.Gms.Maps.MapView mapView)
+        {
+            var density = DeviceDisplay.Current.MainDisplayInfo.Density;
+            mapView.GetMapAsync(new MapReadyCallback(nativeMap => nativeMap.SetPadding(
+                (int)(padding.Left * density), (int)(padding.Top * density),
+                (int)(padding.Right * density), (int)(padding.Bottom * density))));
+        }
+#elif IOS
+        if (map.Handler?.PlatformView is Google.Maps.MapView nativeMap)
+        {
+            nativeMap.Padding = new UIKit.UIEdgeInsets((nfloat)padding.Top, (nfloat)padding.Left,
+                (nfloat)padding.Bottom, (nfloat)padding.Right);
+        }
+#endif
+    }
+
+    // The map buttons (directions, open in Maps, my location, zoom) sit at the bottom right like Google's own,
     // just above whichever panel is showing (the Get Location button, the check-in spot guide or
     // the pin details), so a taller panel never covers them. Only the buttons move; the map stays where it is.
     void PlaceMapButtons()
@@ -60,4 +92,11 @@ public partial class LocationPage : ContentPage
         mapButtons.CancelAnimations();
         _ = mapButtons.TranslateToAsync(0, -(panelHeight + MapButtonsGap), MapButtonsMoveMs, Easing.CubicOut);
     }
+
+#if ANDROID
+    sealed class MapReadyCallback(Action<Android.Gms.Maps.GoogleMap> onReady) : Java.Lang.Object, Android.Gms.Maps.IOnMapReadyCallback
+    {
+        public void OnMapReady(Android.Gms.Maps.GoogleMap googleMap) => onReady(googleMap);
+    }
+#endif
 }

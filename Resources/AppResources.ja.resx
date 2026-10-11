@@ -435,9 +435,6 @@
   <data name="StatRegions" xml:space="preserve">
     <value>地域</value>
   </data>
-  <data name="StatCheckIns" xml:space="preserve">
-    <value>チェックイン</value>
-  </data>
   <data name="Data" xml:space="preserve">
     <value>データ</value>
   </data>
@@ -472,7 +469,7 @@
     <value>公開ボード</value>
   </data>
   <data name="BoardCatalogHint" xml:space="preserve">
-    <value>追加するボードをタップしてください。ボードを更新しても、チェックインの記録は残ります。</value>
+    <value>追加するボードを選んで、下の追加ボタンをタップしてください。ボードを更新しても、チェックインの記録は残ります。</value>
   </data>
   <data name="UpOneFolder" xml:space="preserve">
     <value>ひとつ上のフォルダへ</value>
@@ -526,7 +523,7 @@
     <value>いきもの</value>
   </data>
   <data name="PassportSummary" xml:space="preserve">
-    <value>{0}か国 · {1}地域 · {2}記録</value>
+    <value>到着地点{0} · {1}か国 · {2}地域</value>
   </data>
   <data name="DisplayOptions" xml:space="preserve">
     <value>表示の設定</value>
@@ -557,5 +554,28 @@
   </data>
   <data name="OpenInMaps" xml:space="preserve">
     <value>地図アプリで見る</value>
+  </data>
+  <data name="ShowMyLocation" xml:space="preserve">
+    <value>現在地を表示</value>
+  </data>
+  <data name="AddSelectedBoards" xml:space="preserve">
+    <value>選んだボードを追加（{0}）</value>
+  </data>
+  <data name="SelectAllBoards" xml:space="preserve">
+    <value>すべて選択</value>
+  </data>
+  <data name="ClearBoardSelection" xml:space="preserve">
+    <value>選択を解除</value>
+  </data>
+  <data name="BoardsAdded" xml:space="preserve">
+    <value>次のボードを追加しました：
+{0}</value>
+  </data>
+  <data name="BoardsNotAdded" xml:space="preserve">
+    <value>次のボードは追加できませんでした：
+{0}</value>
+  </data>
+  <data name="StatArrivals" xml:space="preserve">
+    <value>到着地点</value>
   </data>
 </root>
