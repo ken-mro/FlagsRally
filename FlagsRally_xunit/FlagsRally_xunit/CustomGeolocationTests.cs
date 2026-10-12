@@ -4,9 +4,10 @@ using Moq;
 
 namespace FlagsRallyTests.Utilities;
 
+// These call the real Google Geocoding API; see GeocodingFactAttribute for when they run.
 public class CustomGeolocationTests
 {
-    [Fact]
+    [GeocodingFact]
     public async Task Generate_location_data_from_location_coordinates()
     {
         // Arrange
@@ -39,7 +40,7 @@ public class CustomGeolocationTests
         Assert.Equal(location.Latitude, arrivalLocationData.Latitude);
     }
 
-    [Fact]
+    [GeocodingFact]
     public async Task Generate_location_data_from_location_coordinates_in_other_language()
     {
         // Arrange
@@ -71,7 +72,7 @@ public class CustomGeolocationTests
         Assert.Equal(location.Latitude, arrivalLocationData.Latitude);
     }
 
-    [Fact]
+    [GeocodingFact]
     public async Task Generate_location_data_from_location_coordinates_in_other_2()
     {
         // Arrange
