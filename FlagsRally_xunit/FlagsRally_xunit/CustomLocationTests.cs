@@ -1,4 +1,4 @@
-using FlagsRally.Models.CustomBoard;
+ï»¿using FlagsRally.Models.CustomBoard;
 using System.Globalization;
 
 namespace FlagsRallyTests.Models;
@@ -13,9 +13,9 @@ public class CustomLocationTests
         (
             board: new CustomBoard { Name= "Test Board", Url= "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width= 100, Height= 200 },
             code : "01-204-B-01",
-            title : "ˆ®ìs",
-            subtitle : "–kŠC“¹",
-            group : "–kŠC“¹",
+            title : "æ—­å·å¸‚",
+            subtitle : "åŒ—æµ·é“",
+            group : "åŒ—æµ·é“",
             location : new Location(43.762278, 142.359194),
             arrivalDate: DateTime.Now
         );
@@ -59,9 +59,9 @@ public class CustomLocationTests
         (
             board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
-            title: "ˆ®ìs",
-            subtitle: "–kŠC“¹",
-            group: "–kŠC“¹",
+            title: "æ—­å·å¸‚",
+            subtitle: "åŒ—æµ·é“",
+            group: "åŒ—æµ·é“",
             location: new Location(43.762278, 142.359194),
             arrivalDate: DateTime.Now
         );
@@ -83,9 +83,9 @@ public class CustomLocationTests
         (
             board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
-            title: "ˆ®ìs",
-            subtitle: "–kŠC“¹",
-            group: "–kŠC“¹",
+            title: "æ—­å·å¸‚",
+            subtitle: "åŒ—æµ·é“",
+            group: "åŒ—æµ·é“",
             location: new Location(43.762278, 142.359194),
             arrivalDate: null
         );
@@ -110,9 +110,9 @@ public class CustomLocationTests
         (
             board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
-            title: "ˆ®ìs",
-            subtitle: "–kŠC“¹",
-            group: "–kŠC“¹",
+            title: "æ—­å·å¸‚",
+            subtitle: "åŒ—æµ·é“",
+            group: "åŒ—æµ·é“",
             location: new Location(43.762278, 142.359194),
             arrivalDate: arrivalDate
         );
@@ -129,9 +129,9 @@ public class CustomLocationTests
         (
             board: new CustomBoard { Name = "Test Board", Url = "https://www.gk-p.jp/wp-content/uploads/mhc/{code}.jpg", Width = 100, Height = 200 },
             code: "01-204-B-01",
-            title: "ˆ®ìs",
-            subtitle: "–kŠC“¹",
-            group: "–kŠC“¹",
+            title: "æ—­å·å¸‚",
+            subtitle: "åŒ—æµ·é“",
+            group: "åŒ—æµ·é“",
             location: new Location(43.762278, 142.359194),
             arrivalDate: null
         );

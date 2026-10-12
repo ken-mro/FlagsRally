@@ -1,4 +1,4 @@
-using FlagsRally.Helpers;
+ï»¿using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using Moq;
 
@@ -57,9 +57,9 @@ public class CustomGeolocationTests
         // Assert
         Assert.NotNull(arrivalLocationData);
         Assert.Equal(datetime, arrivalLocationData.ArrivalDate);
-        Assert.Equal("ƒAƒƒŠƒJ‡O‘", arrivalLocationData.CountryName);
-        Assert.Equal("ƒJƒŠƒtƒHƒ‹ƒjƒAB", arrivalLocationData.AdminAreaName);
-        Assert.Equal("ƒTƒ“ƒtƒ‰ƒ“ƒVƒXƒR", arrivalLocationData.LocalityName);
+        Assert.Equal("ã‚¢ãƒ¡ãƒªã‚«åˆè¡†å›½", arrivalLocationData.CountryName);
+        Assert.Equal("ã‚«ãƒªãƒ•ã‚©ãƒ«ãƒ‹ã‚¢å·", arrivalLocationData.AdminAreaName);
+        Assert.Equal("ã‚µãƒ³ãƒ•ãƒ©ãƒ³ã‚·ã‚¹ã‚³", arrivalLocationData.LocalityName);
 
         Assert.Equal("United States", arrivalLocationData.EnCountryName);
         Assert.Equal("California", arrivalLocationData.EnAdminAreaName);
@@ -89,9 +89,9 @@ public class CustomGeolocationTests
         // Assert
         Assert.NotNull(arrivalLocationData);
         Assert.Equal(datetime, arrivalLocationData.ArrivalDate);
-        Assert.Equal("ƒZƒ“ƒgƒrƒ“ƒZƒ“ƒg‚¨‚æ‚ÑƒOƒŒƒiƒfƒB[ƒ“”“‡", arrivalLocationData.CountryName);
+        Assert.Equal("ã‚»ãƒ³ãƒˆãƒ“ãƒ³ã‚»ãƒ³ãƒˆãŠã‚ˆã³ã‚°ãƒ¬ãƒŠãƒ‡ã‚£ãƒ¼ãƒ³è«¸å³¶", arrivalLocationData.CountryName);
         Assert.Equal("Grenadines", arrivalLocationData.AdminAreaName);
-        Assert.Equal("ƒ|[ƒgEƒGƒŠƒUƒxƒX", arrivalLocationData.LocalityName);
+        Assert.Equal("ãƒãƒ¼ãƒˆãƒ»ã‚¨ãƒªã‚¶ãƒ™ã‚¹", arrivalLocationData.LocalityName);
 
         Assert.Equal("Saint Vincent and the Grenadines", arrivalLocationData.EnCountryName);
         Assert.Equal("Grenadines", arrivalLocationData.EnAdminAreaName);
