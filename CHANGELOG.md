@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.1.21] - Unreleased
+## [1.1.22] - Unreleased
 
 ### Changed
 - **Development:** The unit tests pass on every machine. Two Japanese test files were saved in Shift_JIS, so two geocoding tests failed everywhere except Japanese Windows; they are UTF-8 now, and a test stops non-UTF-8 source files. The tests that call the real Google Geocoding API are skipped, with the reason, where the real key or the network is missing.
@@ -14,6 +14,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - **Checking in the wrong board's place where two boards share a spot.** Where two boards have the same place, such as 香取神宮 on 全国一の宮巡り and 全国神宮二十五社巡り, choosing the second one in "Several pins are here" could leave the first one selected (seen on iPhone), so Check In recorded the first board's place and the second could look already checked in. Each pin is now its own place, so the one you choose is the one checked in.
 - **The selected pin hidden behind another pin at the same spot.** The selected pin is now drawn in front, so you can see which one the card is about.
+
+## [1.1.21] - Unreleased
+
+### Fixed
 - **The Android app crashing right after launch (1.1.20).** The Google Play build closed as soon as it opened, and clearing the cache did not help. The change in 1.1.20 that left out unused library code also removed code the subscription library needs at startup; it is undone, so the app starts again. A test now stops that change from coming back without the code it needs.
 
 ## [1.1.20] - Unreleased
