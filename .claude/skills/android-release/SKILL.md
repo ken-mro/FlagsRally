@@ -36,7 +36,7 @@ The upload needs the app's upload key and access to Google Play. Both are the us
 | `FLAGSRALLY_STORE_PASS`, `FLAGSRALLY_KEY_PASS` | its passwords (MSBuild reads them itself through `env:`; they never appear in a command or log) |
 | `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` | path to a Google Cloud service account key file, outside the repository. In the Play Console, under Users and permissions, the service account needs access to FlagsRally with "Release apps to testing tracks" and "Release to production". |
 
-The Python scripts run with [uv](https://docs.astral.sh/uv/): `uv run <script>`. uv picks the Python, and `upload_to_play.py` lists its packages (`google-api-python-client`, `google-auth`) in its header, so uv fetches them from PyPI into its own cache on the first run; nothing is installed into the system Python. If `uv` is missing, ask the user to install it.
+The Python scripts run with [uv](https://docs.astral.sh/uv/): `uv run <script>`. uv picks the Python, and `upload_to_play.py` lists its packages (`google-api-python-client`, `google-auth`) in its header, so uv fetches them from PyPI into its own cache on the first run; nothing is installed into the system Python. Their versions and hashes are pinned in `upload_to_play.py.lock`, and `--locked` stops instead of resolving anything else, since this script holds the Google Play credentials. To update them on purpose: `uv lock --script .claude/skills/android-release/scripts/upload_to_play.py --upgrade`, then review the lock diff. If `uv` is missing, ask the user to install it.
 
 If anything is missing when stage 5 starts, stop there and tell the user exactly what is missing. Do not create keys, service accounts or Play Console access yourself. Stages 1–4 do not need any of this.
 
@@ -97,7 +97,7 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
 
 ## 5. Upload to Google Play
 
-1. Check the one-time setup is in place: the variables above are set and the paths point to files (print only set/unset and exists, never the values), and `uv` is on the PATH. If not, stop and report what is missing. Then check access, read-only: `uv run .claude/skills/android-release/scripts/upload_to_play.py --show-track`. An error saying the Google Play Android Developer API is disabled, or a 403 on permissions, is the user's to fix in Google Cloud or the Play Console. Check variables inside `bash -c` so the same lines work whatever the Bash tool's shell is (zsh on a Mac, Git Bash on Windows).
+1. Check the one-time setup is in place: the variables above are set and the paths point to files (print only set/unset and exists, never the values), and `uv` is on the PATH. If not, stop and report what is missing. Then check access, read-only: `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --show-track`. An error saying the Google Play Android Developer API is disabled, or a 403 on permissions, is the user's to fix in Google Cloud or the Play Console. Check variables inside `bash -c` so the same lines work whatever the Bash tool's shell is (zsh on a Mac, Git Bash on Windows).
 2. Build the signed bundle on the merged `master`:
    ```bash
    bash .claude/skills/android-release/scripts/build_aab.sh
@@ -105,13 +105,13 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
    It makes a clean Release `.aab` signed with the upload key and prints the bundle's path on its last line. It stops if it is not on `master`, if `Repository/Constants.cs` is the committed version with dummy keys (a store build with them would ship broken maps and subscriptions), or if the bundle is signed with the debug key. A build error here means the same code that passed stage 1 fails in the store build: go back to stage 1 for it.
 3. Let Google Play check everything without publishing:
    ```bash
-   uv run .claude/skills/android-release/scripts/upload_to_play.py --aab <bundle> --notes <scratch>/release-notes-<version>.txt --version <version> --validate-only
+   uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --aab <bundle> --notes <scratch>/release-notes-<version>.txt --version <version> --validate-only
    ```
    It checks the notes locally (both languages present, at most 500 characters each) and that the manifest has `<version>`. It then sends the bundle and notes in an edit, has Google Play validate it and throws the edit away. Nothing is published and the versionCode stays free. Fix whatever it reports before going on.
 4. **Stop and ask the user.** Show the version and versionCode, the track (`production`), the release type (draft unless they asked otherwise), the bundle's size and the release notes block. Say that the upload uses up this versionCode for good. Wait for a clear yes in this conversation; anything else means no upload.
 5. Upload, with the same arguments as the validation but without `--validate-only`. Add `--status completed` to publish to everyone, or `--status inProgress --fraction 0.2` for a staged rollout, only when the user asked for that. The script prints `UPLOADED: ...` when Google Play has the release.
    - If it stops with "changesNotSentForReview" (the Play Console uses managed publishing), nothing was published: tell the user, and run again with `--not-sent-for-review` only after they say yes.
-6. If the upload fails, the script deletes its edit, so nothing half-done is left. If the connection dropped during the final commit, though, Google Play may have committed it anyway. Before any second attempt, look at what the track holds: `uv run .claude/skills/android-release/scripts/upload_to_play.py --show-track` (read-only). If the version is already there, it was uploaded; do not upload again. Report the error, and upload again only after the user says so.
+6. If the upload fails, the script deletes its edit, so nothing half-done is left. If the connection dropped during the final commit, though, Google Play may have committed it anyway. Before any second attempt, look at what the track holds: `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --show-track` (read-only). If the version is already there, it was uploaded; do not upload again. Report the error, and upload again only after the user says so.
 
 ## 6. Report to the user
 
