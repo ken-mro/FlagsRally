@@ -60,7 +60,7 @@ If anything is missing when stage 5 starts, stop there and tell the user exactly
 
 1.1.20 passed every Debug check and still crashed the moment it opened from Google Play: R8 had removed a class the subscription library loads at startup. Only a Release build shows what shrinking, trimming and AOT remove, so the Release launch check is never skipped, even for a version bump with no code changes.
 
-1. `dotnet test FlagsRally_xunit/FlagsRally_xunit/FlagsRally_xunit.csproj`. Compare failures with `master`; only new ones block the release (two `CustomGeolocationTests` fail on master today because of an encoding problem in the test file).
+1. `dotnet test FlagsRally_xunit/FlagsRally_xunit/FlagsRally_xunit.csproj`. Every test must pass. The `CustomGeolocationTests` call the real Google Geocoding API and are skipped, with the reason, when the real key or the network is missing; on the machine that builds the release they should run, so a skip there means `Repository/Constants.cs` lacks the real key.
 2. Back up the emulator's data: `bash .claude/skills/android-release/scripts/debug_build_back.sh`, then `bash tools/emu.sh db-backup`. The backup uses `run-as`, which only works while a Debug build is installed, and an earlier run may have left the Release build on the emulator. The script replaces it with the Debug build (data kept). `tools/emu.sh install` alone can skip the install and leave the Release build in place. The backup covers the database only, not settings (pin style, country of residence, API key): note them and change none during the checks, or put them back by hand.
 3. Release smoke test (clean Release build, install over the current app, launch, open all four tabs, search logcat):
    ```bash
