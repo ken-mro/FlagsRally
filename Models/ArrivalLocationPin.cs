@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace FlagsRally.Models;
 
-public class ArrivalLocationPin : Pin
+public class ArrivalLocationPin : AppPin
 {
     public ArrivalLocationPin(ArrivalLocationData arrivalLocationData)
     {
