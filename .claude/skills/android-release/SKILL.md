@@ -17,8 +17,7 @@ After a short start (stage 0), five stages run in this order, each finished befo
 
 **On Windows** the flow runs in Git Bash, like the project's other skills (`tools/emu.sh` already handles Windows paths):
 - Network git commands need `-c http.sslBackend=schannel` (CLAUDE.md), for example `git -c http.sslBackend=schannel pull --ff-only`.
-- Where this file says `python3`, use whatever runs Python 3 there (`python`, or `py -3`); `python3` is often missing or the Microsoft Store stub.
-- Environment variables are set as Windows user variables or in `~/.bashrc` for Git Bash. Paths may be written `C:\...`; `build_aab.sh` converts them.
+- Paths in the release variables (below) may be written `C:\...` or `C:/...`; `build_aab.sh` converts them.
 - `jarsigner` is looked for in `JAVA_HOME`, the Microsoft OpenJDK and Android Studio folders under `C:\Program Files`. If none is found, set `JAVA_HOME` to the JDK the Android build uses.
 - The iOS check in stage 1 step 5 cannot run on Windows. If a fix touches shared code or layout, say that iOS was not checked and leave it for a Mac.
 
@@ -28,7 +27,7 @@ The checks come first because a version number is a promise to Google Play: once
 
 ## One-time setup (the user's, before the first upload)
 
-The upload needs the app's upload key and access to Google Play. Both are the user's secrets: Claude never asks for them in chat, types them, prints them or puts them in the repository. They live outside the repository, in files and environment variables the user sets (for example in `~/.zshrc`):
+The upload needs the app's upload key and access to Google Play. Both are the user's secrets: Claude never asks for them in chat, types them, prints them or puts them in the repository. The key files live outside the repository. The variables below go in the `env` of `.claude/settings.local.json`, so only Claude Code in this project gets them (not every program, as with system-wide variables). That file is git-ignored, Claude Code may not read it (`settings.json` denies it), and `guard_secrets.py` blocks committing or pushing it. Claude Code reads it at start, so it is restarted after a change.
 
 | Variable | What |
 |---|---|
@@ -37,7 +36,7 @@ The upload needs the app's upload key and access to Google Play. Both are the us
 | `FLAGSRALLY_STORE_PASS`, `FLAGSRALLY_KEY_PASS` | its passwords (MSBuild reads them itself through `env:`; they never appear in a command or log) |
 | `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` | path to a Google Cloud service account key file, outside the repository. In the Play Console, under Users and permissions, the service account needs access to FlagsRally with "Release apps to testing tracks" and "Release to production". |
 
-The upload script also needs two Python packages: `python3 -m pip install --user google-api-python-client google-auth`. They are downloaded from PyPI, so they are installed only after the user says yes; offer it when they are missing.
+The Python scripts run with [uv](https://docs.astral.sh/uv/): `uv run <script>`. uv picks the Python, and `upload_to_play.py` lists its packages (`google-api-python-client`, `google-auth`) in its header, so uv fetches them from PyPI into its own cache on the first run; nothing is installed into the system Python. If `uv` is missing, ask the user to install it.
 
 If anything is missing when stage 5 starts, stop there and tell the user exactly what is missing. Do not create keys, service accounts or Play Console access yourself. Stages 1–4 do not need any of this.
 
@@ -51,7 +50,7 @@ If anything is missing when stage 5 starts, stop there and tell the user exactly
 - **Was the current version already uploaded?** The repository cannot tell: every changelog heading stays `- Unreleased`, even for versions that are on Google Play. When the top changelog section is that version, ask the user once, here at the start. If it was not uploaded, it can still go out as is: skip the bump in stage 2, keep the changelog entries under that version, and release it under the current number. Otherwise go on with a new version.
 - Pick the version now, so the branch can be named. The user's version wins (`1.2.0`, "マイナーを上げて"). Otherwise bump the patch. Preview it without writing:
   ```bash
-  python3 .claude/skills/android-release/scripts/bump_android_version.py --dry-run   # add --minor / --major / --version X.Y.Z when asked
+  uv run .claude/skills/android-release/scripts/bump_android_version.py --dry-run   # add --minor / --major / --version X.Y.Z when asked
   ```
 - Create the release branch: `git checkout -b chore/bump-android-<version>`. Any fixes from stage 1 go on this branch too, so the release is one PR.
 - `Repository/Constants.cs` must hold the real keys in the working tree (it does on this machine; never stage it). A Release build with the dummy keys would launch differently from the store build.
@@ -76,7 +75,7 @@ Non-fatal problems found on the way (a typo, a layout glitch) do not hold the re
 ## 2. Version bump
 
 1. ```bash
-   python3 .claude/skills/android-release/scripts/bump_android_version.py   # same flags as the dry run
+   uv run .claude/skills/android-release/scripts/bump_android_version.py   # same flags as the dry run
    ```
    It writes `android:versionName` and `android:versionCode` (`MMmmpp`, zero-padded: 1.1.22 → `010122`). It keeps the file's BOM and refuses a code that does not go up.
 2. `git diff Platforms/Android/AndroidManifest.xml` should show only those two values. Commit just that file: `Bump the Android version to <version> (<code>)`.
@@ -98,7 +97,7 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
 
 ## 5. Upload to Google Play
 
-1. Check the one-time setup is in place: the variables above are set and the paths point to files (print only set/unset and exists, never the values), and `python3 -c "import googleapiclient, google.oauth2"` works. If not, stop and report what is missing, offering to install the packages if those are what is missing. Check variables inside `bash -c` so the same lines work whatever the Bash tool's shell is (zsh on a Mac, Git Bash on Windows).
+1. Check the one-time setup is in place: the variables above are set and the paths point to files (print only set/unset and exists, never the values), and `uv` is on the PATH. If not, stop and report what is missing. Then check access, read-only: `uv run .claude/skills/android-release/scripts/upload_to_play.py --show-track`. An error saying the Google Play Android Developer API is disabled, or a 403 on permissions, is the user's to fix in Google Cloud or the Play Console. Check variables inside `bash -c` so the same lines work whatever the Bash tool's shell is (zsh on a Mac, Git Bash on Windows).
 2. Build the signed bundle on the merged `master`:
    ```bash
    bash .claude/skills/android-release/scripts/build_aab.sh
@@ -106,13 +105,13 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
    It makes a clean Release `.aab` signed with the upload key and prints the bundle's path on its last line. It stops if it is not on `master`, if `Repository/Constants.cs` is the committed version with dummy keys (a store build with them would ship broken maps and subscriptions), or if the bundle is signed with the debug key. A build error here means the same code that passed stage 1 fails in the store build: go back to stage 1 for it.
 3. Let Google Play check everything without publishing:
    ```bash
-   python3 .claude/skills/android-release/scripts/upload_to_play.py --aab <bundle> --notes <scratch>/release-notes-<version>.txt --version <version> --validate-only
+   uv run .claude/skills/android-release/scripts/upload_to_play.py --aab <bundle> --notes <scratch>/release-notes-<version>.txt --version <version> --validate-only
    ```
    It checks the notes locally (both languages present, at most 500 characters each) and that the manifest has `<version>`. It then sends the bundle and notes in an edit, has Google Play validate it and throws the edit away. Nothing is published and the versionCode stays free. Fix whatever it reports before going on.
 4. **Stop and ask the user.** Show the version and versionCode, the track (`production`), the release type (draft unless they asked otherwise), the bundle's size and the release notes block. Say that the upload uses up this versionCode for good. Wait for a clear yes in this conversation; anything else means no upload.
 5. Upload, with the same arguments as the validation but without `--validate-only`. Add `--status completed` to publish to everyone, or `--status inProgress --fraction 0.2` for a staged rollout, only when the user asked for that. The script prints `UPLOADED: ...` when Google Play has the release.
    - If it stops with "changesNotSentForReview" (the Play Console uses managed publishing), nothing was published: tell the user, and run again with `--not-sent-for-review` only after they say yes.
-6. If the upload fails, the script deletes its edit, so nothing half-done is left. If the connection dropped during the final commit, though, Google Play may have committed it anyway. Before any second attempt, look at what the track holds: `python3 .claude/skills/android-release/scripts/upload_to_play.py --show-track` (read-only). If the version is already there, it was uploaded; do not upload again. Report the error, and upload again only after the user says so.
+6. If the upload fails, the script deletes its edit, so nothing half-done is left. If the connection dropped during the final commit, though, Google Play may have committed it anyway. Before any second attempt, look at what the track holds: `uv run .claude/skills/android-release/scripts/upload_to_play.py --show-track` (read-only). If the version is already there, it was uploaded; do not upload again. Report the error, and upload again only after the user says so.
 
 ## 6. Report to the user
 

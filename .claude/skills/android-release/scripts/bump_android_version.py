@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Bump android:versionName / android:versionCode in Platforms/Android/AndroidManifest.xml.
 
-    python3 .claude/skills/android-release/scripts/bump_android_version.py            # 1.1.21 -> 1.1.22
-    python3 .claude/skills/android-release/scripts/bump_android_version.py --minor    # 1.1.21 -> 1.2.0
-    python3 .claude/skills/android-release/scripts/bump_android_version.py --version 1.2.3
-    python3 .claude/skills/android-release/scripts/bump_android_version.py --dry-run  # print only
+    uv run .claude/skills/android-release/scripts/bump_android_version.py            # 1.1.21 -> 1.1.22
+    uv run .claude/skills/android-release/scripts/bump_android_version.py --minor    # 1.1.21 -> 1.2.0
+    uv run .claude/skills/android-release/scripts/bump_android_version.py --version 1.2.3
+    uv run .claude/skills/android-release/scripts/bump_android_version.py --dry-run  # print only
 
 versionCode is the version written as MMmmpp with zero padding (1.1.21 -> 010121), as in every
 release so far. Google Play rejects a code that is not higher than the last upload, so the

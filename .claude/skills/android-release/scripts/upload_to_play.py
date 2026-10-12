@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["google-api-python-client", "google-auth"]
+# ///
 """Upload a signed .aab to Google Play with the release notes from /release-notes.
 
-    python3 upload_to_play.py --aab <file.aab> --notes <notes.txt> --version 1.1.22 --validate-only
-    python3 upload_to_play.py --aab <file.aab> --notes <notes.txt> --version 1.1.22          # draft
-    python3 upload_to_play.py ... --status completed                  # publish to everyone
-    python3 upload_to_play.py ... --status inProgress --fraction 0.2  # staged rollout to 20%
-    python3 upload_to_play.py --show-track                            # what the track holds now (read-only)
+    uv run upload_to_play.py --aab <file.aab> --notes <notes.txt> --version 1.1.22 --validate-only
+    uv run upload_to_play.py --aab <file.aab> --notes <notes.txt> --version 1.1.22          # draft
+    uv run upload_to_play.py ... --status completed                  # publish to everyone
+    uv run upload_to_play.py ... --status inProgress --fraction 0.2  # staged rollout to 20%
+    uv run upload_to_play.py --show-track                            # what the track holds now (read-only)
 
 --notes is the file holding exactly the block /release-notes printed (<en-US>...</en-US> and
 <ja-JP>...</ja-JP>), so the notes on Google Play are the ones the user saw and approved.
@@ -22,7 +26,7 @@ anyway: run --show-track before trying again.
 
 Credentials: GOOGLE_PLAY_SERVICE_ACCOUNT_JSON points to the service account key file (outside
 the repository), set up once by the user. Its contents are never printed.
-Needs: pip install google-api-python-client google-auth  (see the skill's One-time setup).
+Run it with `uv run`: uv reads the packages from the header above and fetches them itself.
 """
 from __future__ import annotations
 
@@ -134,7 +138,7 @@ def connect():
         from google.oauth2 import service_account
         from googleapiclient.discovery import build
     except ImportError:
-        raise SystemExit("FAIL: run `python3 -m pip install --user google-api-python-client google-auth` (see the skill's One-time setup)")
+        raise SystemExit("FAIL: Google API packages missing; run this script with `uv run` (see the skill's One-time setup)")
     creds = service_account.Credentials.from_service_account_file(
         key_file, scopes=["https://www.googleapis.com/auth/androidpublisher"])
     return build("androidpublisher", "v3", credentials=creds, cache_discovery=False).edits(), package_name()
