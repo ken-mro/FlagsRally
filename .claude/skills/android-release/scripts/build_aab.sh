@@ -29,8 +29,14 @@ done
 if [ ${#missing[@]} -gt 0 ]; then
   echo "FAIL: not set: ${missing[*]} (the user sets these up once; see the skill's One-time setup)"; exit 1
 fi
-[ -f "$FLAGSRALLY_KEYSTORE" ] || { echo "FAIL: FLAGSRALLY_KEYSTORE does not point to a file"; exit 1; }
-case "$(cd "$(dirname "$FLAGSRALLY_KEYSTORE")" && pwd)/" in
+# On Windows (Git Bash) the path may be written C:\...; check it in POSIX form, and give MSBuild,
+# a Windows program, the Windows form.
+KEYSTORE_POSIX=$FLAGSRALLY_KEYSTORE; KEYSTORE_ARG=$FLAGSRALLY_KEYSTORE
+if command -v cygpath > /dev/null; then
+  KEYSTORE_POSIX=$(cygpath -u "$FLAGSRALLY_KEYSTORE"); KEYSTORE_ARG=$(cygpath -w "$FLAGSRALLY_KEYSTORE")
+fi
+[ -f "$KEYSTORE_POSIX" ] || { echo "FAIL: FLAGSRALLY_KEYSTORE does not point to a file"; exit 1; }
+case "$(cd "$(dirname "$KEYSTORE_POSIX")" && pwd)/" in
   "$(pwd)/"*) echo "FAIL: the keystore is inside the repository; keep it outside so it can never be committed"; exit 1 ;;
 esac
 
@@ -40,7 +46,7 @@ LOG=$(mktemp -t flagsrally-aab.XXXXXX)
 if ! dotnet publish FlagsRally.csproj -f net10.0-android -c Release \
     -p:AndroidPackageFormat=aab \
     -p:AndroidKeyStore=true \
-    -p:AndroidSigningKeyStore="$FLAGSRALLY_KEYSTORE" \
+    -p:AndroidSigningKeyStore="$KEYSTORE_ARG" \
     -p:AndroidSigningKeyAlias="$FLAGSRALLY_KEY_ALIAS" \
     -p:AndroidSigningStorePass=env:FLAGSRALLY_STORE_PASS \
     -p:AndroidSigningKeyPass=env:FLAGSRALLY_KEY_PASS \
@@ -52,10 +58,18 @@ fi
 AAB=$(ls "$OUT"/*-Signed.aab 2>/dev/null | head -1)
 [ -n "$AAB" ] || { echo "FAIL: no signed .aab in $OUT (log: $LOG)"; exit 1; }
 # The upload key, not the debug key: Google Play rejects a bundle signed with the debug keystore.
-# The Android build's own JDK first: macOS's /usr/bin/jarsigner is a stub that fails without a
-# system Java, which would make a correctly signed bundle look unsigned.
-JARSIGNER=$(ls "$HOME"/Library/Developer/Android/jdk/*/bin/jarsigner 2>/dev/null | head -1)
-if [ -z "$JARSIGNER" ] && jarsigner -help > /dev/null 2>&1; then JARSIGNER=jarsigner; fi
+# A JDK's jarsigner that actually runs. macOS's /usr/bin/jarsigner is a stub that fails without a
+# system Java, which would make a correctly signed bundle look unsigned, so known JDKs come first:
+# the Android build's own JDK (Mac), JAVA_HOME, then the usual Windows places.
+JARSIGNER=
+for candidate in "$HOME"/Library/Developer/Android/jdk/*/bin/jarsigner \
+                 "${JAVA_HOME:-/nonexistent}"/bin/jarsigner "${JAVA_HOME:-/nonexistent}"/bin/jarsigner.exe \
+                 "/c/Program Files/Microsoft"/jdk-*/bin/jarsigner.exe \
+                 "/c/Program Files/Android/Android Studio/jbr/bin/jarsigner.exe" \
+                 "/c/Program Files/Eclipse Adoptium"/jdk-*/bin/jarsigner.exe \
+                 jarsigner; do
+  if "$candidate" -help > /dev/null 2>&1; then JARSIGNER=$candidate; break; fi
+done
 [ -n "$JARSIGNER" ] || { echo "FAIL: no working jarsigner, so the signature cannot be checked"; exit 1; }
 SIGNER=$("$JARSIGNER" -verify -verbose -certs "$AAB" 2>/dev/null | grep -m1 -o "CN=[^,]*" || true)
 [ -n "$SIGNER" ] || { echo "FAIL: $AAB is not signed"; exit 1; }

@@ -15,6 +15,13 @@ After a short start (stage 0), five stages run in this order, each finished befo
 
 `<scratch>` below means Claude's scratchpad directory, or another temporary folder outside the repository.
 
+**On Windows** the flow runs in Git Bash, like the project's other skills (`tools/emu.sh` already handles Windows paths):
+- Network git commands need `-c http.sslBackend=schannel` (CLAUDE.md), for example `git -c http.sslBackend=schannel pull --ff-only`.
+- Where this file says `python3`, use whatever runs Python 3 there (`python`, or `py -3`); `python3` is often missing or the Microsoft Store stub.
+- Environment variables are set as Windows user variables or in `~/.bashrc` for Git Bash. Paths may be written `C:\...`; `build_aab.sh` converts them.
+- `jarsigner` is looked for in `JAVA_HOME`, the Microsoft OpenJDK and Android Studio folders under `C:\Program Files`. If none is found, set `JAVA_HOME` to the JDK the Android build uses.
+- The iOS check in stage 1 step 5 cannot run on Windows. If a fix touches shared code or layout, say that iOS was not checked and leave it for a Mac.
+
 The checks come first because a version number is a promise to Google Play: once a build with that code is uploaded, the code cannot be used again. Bumping only after the app is known to start avoids burning numbers on broken builds.
 
 **The upload is the one step that cannot be taken back.** Once a bundle is committed to Google Play its versionCode is used up for good, and a published release goes to real users. So stage 5 always stops right before the upload, shows the user what will be sent, and goes on only after a clear yes in this conversation. Earlier approval (even "release it" at the start) does not cover it. By default the release is a **draft**: Google Play has the bundle and the notes, and the user starts the rollout in the Play Console. Publish or roll out in stages only when the user asks.
@@ -91,7 +98,7 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
 
 ## 5. Upload to Google Play
 
-1. Check the one-time setup is in place: the variables above are set and the paths point to files (print only set/unset and exists, never the values), and `python3 -c "import googleapiclient, google.oauth2"` works. If not, stop and report what is missing, offering to install the packages if those are what is missing. The Bash tool's shell is zsh, so check variables with zsh syntax (`${(P)name}`) or inside `bash -c`.
+1. Check the one-time setup is in place: the variables above are set and the paths point to files (print only set/unset and exists, never the values), and `python3 -c "import googleapiclient, google.oauth2"` works. If not, stop and report what is missing, offering to install the packages if those are what is missing. Check variables inside `bash -c` so the same lines work whatever the Bash tool's shell is (zsh on a Mac, Git Bash on Windows).
 2. Build the signed bundle on the merged `master`:
    ```bash
    bash .claude/skills/android-release/scripts/build_aab.sh
