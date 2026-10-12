@@ -54,6 +54,16 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
     Pin? _selectedPin;
 
+    // Above every other pin, so the selected one is drawn in front of pins at the same spot
+    // and a tap there reaches it first.
+    const int SelectedPinZIndex = 1;
+
+    partial void OnSelectedPinChanged(Pin? oldValue, Pin? newValue)
+    {
+        if (oldValue is not null) oldValue.ZIndex = 0;
+        if (newValue is not null) newValue.ZIndex = SelectedPinZIndex;
+    }
+
     // The check-in spot: dropped with a long press (or at your location by Get Location) and
     // dragged to where you want to record, as long as it stays within CheckInRange of you.
     Pin? _tappedPointPin;

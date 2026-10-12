@@ -69,7 +69,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - **フォントが Roboto になる／スプラッシュが紫一色** → `obj/.../resizetizer` だけ消すと再生成されない。`mauifont.*` `mauisplash.*` `mauiimage.*` の stamp も一緒に消すか Rebuild。
 - **VS のデバッグ起動失敗後、毎回起動で固まる（bg anr）** → エミュレーターに `debug.mono.extra` が残っている。`adb shell setprop debug.mono.extra "''"`。
 - **Git Bash から adb に `/sdcard` などを渡すとパスが変換される** → `export MSYS_NO_PATHCONV=1`。
-- **`Pin` は値で等価比較される**（ラベルと座標）。地図からの削除は参照比較・インデックスで行う（`RemovePinFromMap`）。
+- **Maui.GoogleMaps の `Pin` は値で等価比較される**（ラベル・座標・種類・住所）。アプリのピンは `AppPin` を継承して参照で比較する。継承しないと、2 つのボードの同じ神社など同じ場所のピンが「同じ」扱いになり、選び直しても `SelectedPin` が変わらず別のピンにチェックインしてしまう。新しいピンの種類も `AppPin` から作る。
 - **`MoveCamera`/`AnimateCamera` の Task が返ってこないことがある** → `MoveCameraSafelyAsync`（3 秒タイムアウト）経由で呼ぶ。
 - **CollectionView のセル再利用で別カードの画像が出る** → 1 つの Image に URL とローカル画像を両方流さない（`RemoteImageUrl` / `LocalImageFile` のように分ける）。
 - **`Xamarin.AndroidX.Lifecycle.LiveData`** は MAUI が固定している版に合わせる。上げると NU1608。

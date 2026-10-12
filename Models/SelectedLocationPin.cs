@@ -3,7 +3,7 @@ using Maui.GoogleMaps;
 
 namespace FlagsRally.Models;
 
-public class SelectedLocationPin : Pin
+public class SelectedLocationPin : AppPin
 {
     public SelectedLocationPin(Position position)
     {

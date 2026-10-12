@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace FlagsRally.Models.CustomBoard;
 
-public class CustomLocationPin : Pin
+public class CustomLocationPin : AppPin
 {
     public CustomLocationPin(CustomLocationData data)
     {
