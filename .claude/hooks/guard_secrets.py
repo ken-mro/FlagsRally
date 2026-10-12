@@ -24,8 +24,12 @@ BLANKET_ADD = re.compile(r"^\s*git\b.*\badd\s+(-A\b|--all\b|\.(\s|$))")
 COMMIT_ALL = re.compile(r"^\s*git\b.*\bcommit\b.*\s-(a|[a-zA-Z]*a[a-zA-Z]*)\b")
 
 
-def git(*args):
+def git(*args, required=False):
     result = subprocess.run(["git", *args], capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if result.returncode != 0 and required:
+        # The push check is the last line: if git cannot list what is being pushed, do not let it through.
+        block("Blocked: could not check the commits about to be pushed (`git " + " ".join(args[:2]) + "` failed: " +
+              result.stderr.strip()[:200] + ").")
     return result.stdout if result.returncode == 0 else ""
 
 
@@ -62,12 +66,12 @@ def main():
 
     if re.search(r"\bpush\b", command):
         # A secret file in an outgoing commit, even one with no key-shaped text (the signing passwords).
-        touched = {p for p in git("log", "--name-only", "--format=", "HEAD", "--not", "--remotes").splitlines()
+        touched = {p for p in git("log", "--name-only", "--format=", "HEAD", "--not", "--remotes", required=True).splitlines()
                    if SECRET_PATHS.match(p)}
         if touched:
             block("Blocked: the commits about to be pushed contain secret files: " + ", ".join(sorted(touched)) +
                   ". Remove them from those commits before pushing.")
-        outgoing = git("log", "-p", "--format=%H", "HEAD", "--not", "--remotes")
+        outgoing = git("log", "-p", "--format=%H", "HEAD", "--not", "--remotes", required=True)
         if KEY_PATTERNS.search(outgoing):
             block("Blocked: the commits about to be pushed contain what looks like a real API key "
                   "(probably Repository/Constants.cs). Remove it from those commits before pushing.")
