@@ -5,7 +5,7 @@
 #   bash .claude/skills/android-release/scripts/release_smoke.sh <out-dir> [--no-build]
 #
 # Exit code 0 = no fatal problem found, 1 = something to look at (details in <out-dir>/report.txt).
-# Screenshots of each tab go to <out-dir>. Run from the repository root.
+# Screenshots of each tab go to <out-dir>; the app is left on the Passport tab. Run from the repository root.
 # 1.1.20 passed every Debug check and still crashed on launch from Google Play: only a Release
 # build shows what R8 / trimming / AOT remove, so this always builds Release from clean.
 set -uo pipefail
@@ -33,8 +33,9 @@ if [ "$BUILD" = 1 ]; then
   log "build succeeded"
 fi
 
-APK=$(ls -t bin/Release/net10.0-android/*-Signed.apk 2>/dev/null | head -1)
-[ -n "$APK" ] || { log "FAIL: no signed Release APK in bin/Release/net10.0-android"; exit 1; }
+# By name: the APK's timestamps are fixed (1981) for reproducible builds, so "newest" means nothing.
+APK=bin/Release/net10.0-android/$PKG-Signed.apk
+[ -f "$APK" ] || { log "FAIL: $APK not found"; exit 1; }
 log "== Install $APK"
 adb install -r "$APK" >> "$REPORT" 2>&1 || { log "FAIL: install failed (a different signature? see report)"; exit 1; }
 
@@ -58,6 +59,9 @@ for tab in passport:135 map:405 collections:675 settings:945; do
   adb shell input tap "$x" 2290; sleep 6
   adb exec-out screencap -p > "$OUT/0${step}_${name}.png"; step=$((step+1))
 done
+# Back to the Passport tab, so later checks do not start on Settings (a stray tap there
+# changes a setting the database backup does not cover).
+alive && adb shell input tap 135 2290
 sleep 3
 
 adb logcat -d > "$OUT/logcat.txt"
