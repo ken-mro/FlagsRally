@@ -23,7 +23,8 @@
       "Bash(git add .)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
-      "Read(./Repository/Constants.cs)"
+      "Read(./Repository/Constants.cs)",
+      "Read(./.claude/settings.local.json)"
     ]
   },
   "hooks": {

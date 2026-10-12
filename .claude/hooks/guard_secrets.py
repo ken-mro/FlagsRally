@@ -1,7 +1,9 @@
 """PreToolUse hook: keep FlagsRally's local secrets out of git.
 
 Repository/Constants.cs is kept modified in the working tree with real API keys, and
-Resources/Sample/*.json.encrypted are local-only. This hook blocks (exit code 2):
+Resources/Sample/*.json.encrypted are local-only. .claude/settings.local.json holds the release
+signing passwords in its "env" (git-ignored, but `git add -f` would still stage it).
+This hook blocks (exit code 2):
   - blanket staging: `git add -A`, `git add .`, `git add --all`, `git commit -a`
   - a commit while a secret file is staged
   - a push whose outgoing commits contain something that looks like a real key
@@ -12,7 +14,7 @@ import re
 import subprocess
 import sys
 
-SECRET_PATHS = re.compile(r"^(Repository/Constants\.cs|Resources/Sample/.*\.encrypted)$")
+SECRET_PATHS = re.compile(r"^(Repository/Constants\.cs|Resources/Sample/.*\.encrypted|\.claude/settings\.local\.json)$")
 # Written so that this file never matches itself (the Syncfusion prefix is split by a character class).
 KEY_PATTERNS = re.compile(r"AIza[0-9A-Za-z_\-]{30,}|goog_[A-Za-z]{20,}|appl_[A-Za-z]{20,}|Ngo9Big[B]OggjHTQxAR8[A-Za-z0-9+/=]{20,}")
 QUOTED = re.compile(r'"(?:\\.|[^"\\])*"|\'[^\']*\'')
