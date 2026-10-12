@@ -37,6 +37,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 ```
 
 エミュレーターでの確認手順は `/android-verify` スキル、補助スクリプトは `tools/emu.sh`。iOS シミュレーターは `/ios-verify` スキル。
+このプロジェクトのスキル一覧と使い分けは `/project-skills`（`.claude/skills/` をその場で読むので、スキルを足しても直す必要はない）。
 
 ## 守ること
 

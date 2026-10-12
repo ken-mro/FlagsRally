@@ -18,5 +18,5 @@ Every pull request updates `CHANGELOG.md`. A hook (`.claude/hooks/guard_changelo
    - Several commits for one change are one bullet.
 5. **Internal-only branches** (skills, hooks, docs, tests, refactors, build scripts with no effect on the app): add a bullet under `### Changed` that starts with `**Development:**`, for example `- **Development:** A hook now blocks opening a pull request that does not update this changelog.`
    Only if the user says this PR should not appear in the changelog, skip the edit and open the PR with `--label no-changelog` (the hook lets that through).
-6. **Keep the file's format:** UTF-8 without BOM, CRLF line endings, one blank line between headings and lists.
+6. **Keep the file's format:** UTF-8 without BOM, LF line endings (check with `grep -c $'\r' CHANGELOG.md`, which should print 0), one blank line between headings and lists.
 7. **Commit it on its own:** `git add CHANGELOG.md` and a message such as `Add <change> to the changelog`.
