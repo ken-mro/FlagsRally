@@ -5,8 +5,8 @@ Resources/Sample/*.json.encrypted are local-only. .claude/settings.local.json ho
 signing passwords in its "env" (git-ignored, but `git add -f` would still stage it).
 This hook blocks (exit code 2):
   - blanket staging: `git add -A`, `git add .`, `git add --all`, `git commit -a`
-  - a commit while a secret file is staged
-  - a push whose outgoing commits contain something that looks like a real key
+  - a commit while a secret file is staged, or one that names a secret file
+  - a push whose outgoing commits contain a secret file or something that looks like a real key
 Input is the hook JSON on stdin; only Bash/PowerShell commands are inspected.
 """
 import json
@@ -50,12 +50,23 @@ def main():
               "Resources/Sample/*.encrypted are local-only, so `git add -A/.` and `git commit -a` are not allowed.")
 
     if re.search(r"\bcommit\b", command):
+        # `git commit <path>` commits that path without staging it first.
+        named = [t for s in segments if re.search(r"\bcommit\b", s) for t in s.split()
+                 if SECRET_PATHS.match(t.replace("\\", "/").removeprefix("./"))]
+        if named:
+            block("Blocked: the commit names secret files: " + ", ".join(named) + ".")
         staged = [p for p in git("diff", "--cached", "--name-only").splitlines() if SECRET_PATHS.match(p)]
         if staged:
             block("Blocked: secret files are staged: " + ", ".join(staged) +
                   ". Unstage them with `git restore --staged <path>`.")
 
     if re.search(r"\bpush\b", command):
+        # A secret file in an outgoing commit, even one with no key-shaped text (the signing passwords).
+        touched = {p for p in git("log", "--name-only", "--format=", "HEAD", "--not", "--remotes").splitlines()
+                   if SECRET_PATHS.match(p)}
+        if touched:
+            block("Blocked: the commits about to be pushed contain secret files: " + ", ".join(sorted(touched)) +
+                  ". Remove them from those commits before pushing.")
         outgoing = git("log", "-p", "--format=%H", "HEAD", "--not", "--remotes")
         if KEY_PATTERNS.search(outgoing):
             block("Blocked: the commits about to be pushed contain what looks like a real API key "
