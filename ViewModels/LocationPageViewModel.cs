@@ -250,9 +250,17 @@ public partial class LocationPageViewModel : BaseViewModel
             if (ReferenceEquals(ArrivalMap.Pins[i], pin))
             {
                 ArrivalMap.Pins.RemoveAt(i);
+                FanOutOverlappingPins();
                 return;
             }
         }
+    }
+
+    // Pins at (nearly) the same spot hide each other even zoomed all the way in; tilt them apart.
+    private void FanOutOverlappingPins()
+    {
+        if (ArrivalMap is null) return;
+        PinFanHelper.Apply(ArrivalMap.Pins);
     }
 
     public Map? ArrivalMap
@@ -714,6 +722,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 _settingsPreferences.SetLatestCountry(arrivalLocation.CountryCode);
                 ArrivalLocationPin arrivalLocationPin = new(arrivalLocation);
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
+                FanOutOverlappingPins();
 
                 if (isFirstTimeCountry)
                 {
@@ -918,6 +927,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var pinKey = (pin.Tag as MapPinTag)?.PinKey;
             pin.IsVisible = _visiblePinKeys.Count == 0 || pinKey is null || _visiblePinKeys.Contains(pinKey);
         }
+        FanOutOverlappingPins();
     }
 
     private async Task TryToOfferSubscription()
@@ -937,6 +947,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         var customLocationList = await _customLocationDataRepository.GetAllCustomLocationPins();
         AddPinsToMap(customLocationList);
+        FanOutOverlappingPins();
 
         await RebuildPinFilterList();
     }
