@@ -5,7 +5,7 @@ description: Retake the screenshots on FlagsRally's how-to pages (Resources/Imag
 
 # Retake the how-to screenshots
 
-The first three how-to pages (Settings > Information > How to use) show the real screens: the passport, the map with "Stamp where I am" framed, and Collections with the "Add board" card framed. One set per language: `Resources/Images/howto_{passport,stamp,boards}_{en,ja}.png`. They are taken on Android and used on iOS too, so they are cut to leave out the status bar and the tab bar, which differ between the two.
+The first three how-to pages (a card over the app, with the tab bar left in sight; Settings > Information > How to use) show the real screens: the passport, the map with "Stamp where I am" framed, and Collections with the "Add board" card framed. One set per language: `Resources/Images/howto_{passport,stamp,boards}_{en,ja}.png`. They are taken on Android and used on iOS too, so they are cut to leave out the status bar and the tab bar, which differ between the two.
 
 `tools/howto_screens.py` does the whole thing. For each language it puts sample data in the app (six arrivals in Japan, the United States and France; the map hint already seen; Classic pins; a US cover for English and a Japanese one for Japanese), opens each screen, finds the button by its text, crops, draws the frame and writes the PNG. It saves the app's database and settings first and puts them back at the end.
 

@@ -36,7 +36,7 @@ public partial class MainPage : ContentPage
             _hasCheckedOnboarding = true;
             if (await _onboardingService.ShouldShowOnLaunchAsync())
             {
-                await Navigation.PushModalAsync(new OnboardingPage(_settingsPreferences));
+                _ = OnboardingPopupView.ShowAsync(_settingsPreferences);
             }
         }
 

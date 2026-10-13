@@ -37,7 +37,7 @@ public partial class OnboardingViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Step), nameof(Title), nameof(Body), nameof(Note), nameof(HasNote), nameof(IsFirst), nameof(IsNotFirst), nameof(IsLast), nameof(IsNotLast))]
-    [NotifyPropertyChangedFor(nameof(Screenshot), nameof(HasScreenshot), nameof(HasNoScreenshot))]
+    [NotifyPropertyChangedFor(nameof(Screenshot), nameof(HasScreenshot), nameof(HasNoScreenshot), nameof(Tab))]
     [NotifyPropertyChangedFor(nameof(ShowsAllowLocation), nameof(ShowsDone))]
     int _index;
 
@@ -63,6 +63,20 @@ public partial class OnboardingViewModel : ObservableObject
     public string Screenshot => ScreenshotFor(Step, CultureInfo.CurrentUICulture);
     public bool HasScreenshot => Screenshot.Length > 0;
     public bool HasNoScreenshot => !HasScreenshot;
+
+    /// <summary>
+    /// The tab the page is about (0 Passport, 1 Map, 2 Collections), shown behind the page and pointed
+    /// at; null for the location page, which is about no tab.
+    /// </summary>
+    public int? Tab => TabFor(Step);
+
+    public static int? TabFor(OnboardingStep step) => step switch
+    {
+        OnboardingStep.Passport => 0,
+        OnboardingStep.Stamp => 1,
+        OnboardingStep.Boards => 2,
+        _ => null,
+    };
 
     public static string ScreenshotFor(OnboardingStep step, CultureInfo culture)
     {

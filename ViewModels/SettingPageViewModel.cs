@@ -319,7 +319,7 @@ namespace FlagsRally.ViewModels
 
         // The how-to pages from the first launch, to read again.
         [RelayCommand]
-        Task ShowHowToUseAsync() => Shell.Current.Navigation.PushModalAsync(new OnboardingPage(_settingPreferences));
+        Task ShowHowToUseAsync() => OnboardingPopupView.ShowAsync(_settingPreferences);
 
         [RelayCommand]
         async Task OpenPrivacyPolicyAsync()
