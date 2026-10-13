@@ -104,7 +104,6 @@ public partial class LocationPageViewModel : BaseViewModel
 
     [RelayCommand]
     void CancelCheckInSpot() => RemoveCheckInSpot();
-
     private void PlaceCheckInSpot(Position position, Location? here)
     {
         RemoveCheckInSpot();
@@ -269,7 +268,9 @@ public partial class LocationPageViewModel : BaseViewModel
         set
         {
             SetProperty(ref _arrivalMap, value);
-            _arrivalMap!.MyLocationEnabled = true;
+            // The blue dot is turned on once the location may be used (ShowMyLocationLayerIfAllowedAsync):
+            // turning it on without the permission makes Google Maps throw and the app close.
+            _arrivalMap!.MyLocationEnabled = false;
             // The page draws its own my-location button in the app's style, with the other map buttons.
             _arrivalMap.UiSettings.MyLocationButtonEnabled = false;
             _arrivalMap.UiSettings.CompassEnabled = true;
@@ -410,6 +411,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private async Task ShowMyLocationAsync()
     {
         var userLocation = await GetLastKnownOrDefaultLocationAsync();
+        await ShowMyLocationLayerIfAllowedAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
         var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
 
@@ -496,6 +498,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
         _cancelTokenSource = new CancellationTokenSource();
         var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        // Asking for the location may have just been allowed.
+        await ShowMyLocationLayerIfAllowedAsync();
         if (location is null)
             throw new Exception($"{AppResources.UnableToGetLocation}");
 
@@ -551,10 +555,33 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         if (!_pinsLoaded || ArrivalMap is null) return;
 
+        await ShowMyLocationLayerIfAllowedAsync();
+
         var key = _mapFocusRequest.Take();
         if (key is not null)
         {
             await ShowCustomLocationAsync(key);
+        }
+        else if (!_hasCenteredOnUser && await IsLocationAllowedAsync())
+        {
+            // Allowed since the map was made (on the how-to pages): show where the user is.
+            _hasCenteredOnUser = true;
+            var location = await GetLastKnownOrDefaultLocationAsync();
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(location.Latitude, location.Longitude), DEFAULT_ZOOM_LEVEL), animate: false);
+        }
+    }
+
+    // Whether the map has been moved to the user's location yet.
+    bool _hasCenteredOnUser;
+
+    private static async Task<bool> IsLocationAllowedAsync() =>
+        await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
+
+    private async Task ShowMyLocationLayerIfAllowedAsync()
+    {
+        if (ArrivalMap is not null && !ArrivalMap.MyLocationEnabled && await IsLocationAllowedAsync())
+        {
+            ArrivalMap.MyLocationEnabled = true;
         }
     }
 
@@ -611,7 +638,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
             await InitializeMapPins();
 
-            Location location = await GetLastKnownOrDefaultLocationAsync();
+            // The map is made at start-up, under the how-to pages: asking for the location here would
+            // put the system's prompt over them. Use it only if it was already allowed.
+            _hasCenteredOnUser = await IsLocationAllowedAsync();
+            Location location = _hasCenteredOnUser
+                ? await GetLastKnownOrDefaultLocationAsync()
+                : new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {

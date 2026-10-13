@@ -1445,5 +1445,140 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("AllCountriesShort", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to use.
+        /// </summary>
+        internal static string HowToUse {
+            get {
+                return ResourceManager.GetString("HowToUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        internal static string OnboardingSkip {
+            get {
+                return ResourceManager.GetString("OnboardingSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        internal static string OnboardingNext {
+            get {
+                return ResourceManager.GetString("OnboardingNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        internal static string OnboardingBack {
+            get {
+                return ResourceManager.GetString("OnboardingBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string OnboardingDone {
+            get {
+                return ResourceManager.GetString("OnboardingDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your travel passport.
+        /// </summary>
+        internal static string OnboardingPassportTitle {
+            get {
+                return ResourceManager.GetString("OnboardingPassportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collect a stamp for every country and region you visit. The cover shows the passport of the country you live in; if it is not yours, change it under Country of residence in Settings..
+        /// </summary>
+        internal static string OnboardingPassportBody {
+            get {
+                return ResourceManager.GetString("OnboardingPassportBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamp on the map.
+        /// </summary>
+        internal static string OnboardingStampTitle {
+            get {
+                return ResourceManager.GetString("OnboardingStampTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where you are, tap Stamp where I am on the Map, then Stamp here: the country and region go into your passport. To stamp a spot nearby, press and hold the map there; it must be within {0} of you..
+        /// </summary>
+        internal static string OnboardingStampBody {
+            get {
+                return ResourceManager.GetString("OnboardingStampBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collect boards.
+        /// </summary>
+        internal static string OnboardingBoardsTitle {
+            get {
+                return ResourceManager.GetString("OnboardingBoardsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add boards such as shrine tours or manhole cards with Add board in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In..
+        /// </summary>
+        internal static string OnboardingBoardsBody {
+            get {
+                return ResourceManager.GetString("OnboardingBoardsBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your location.
+        /// </summary>
+        internal static string OnboardingLocationTitle {
+            get {
+                return ResourceManager.GetString("OnboardingLocationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamps and check-ins use where you are. FlagsRally reads your location only while you are using it..
+        /// </summary>
+        internal static string OnboardingLocationBody {
+            get {
+                return ResourceManager.GetString("OnboardingLocationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow location.
+        /// </summary>
+        internal static string OnboardingAllowLocation {
+            get {
+                return ResourceManager.GetString("OnboardingAllowLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not now.
+        /// </summary>
+        internal static string OnboardingLater {
+            get {
+                return ResourceManager.GetString("OnboardingLater", resourceCulture);
+            }
+        }
     }
 }

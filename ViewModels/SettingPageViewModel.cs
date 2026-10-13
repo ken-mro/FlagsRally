@@ -10,6 +10,7 @@ using FlagsRally.Messages;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Views;
 using ICSharpCode.SharpZipLib.Zip;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
@@ -313,6 +314,10 @@ namespace FlagsRally.ViewModels
                 await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
+
+        // The how-to pages from the first launch, to read again.
+        [RelayCommand]
+        Task ShowHowToUseAsync() => Shell.Current.Navigation.PushModalAsync(new OnboardingPage(_settingPreferences));
 
         [RelayCommand]
         async Task OpenPrivacyPolicyAsync()

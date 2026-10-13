@@ -581,4 +581,49 @@
   <data name="AllCountriesShort" xml:space="preserve">
     <value>All</value>
   </data>
+  <data name="HowToUse" xml:space="preserve">
+    <value>How to use</value>
+  </data>
+  <data name="OnboardingSkip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="OnboardingNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="OnboardingBack" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="OnboardingDone" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="OnboardingPassportTitle" xml:space="preserve">
+    <value>Your travel passport</value>
+  </data>
+  <data name="OnboardingPassportBody" xml:space="preserve">
+    <value>Collect a stamp for every country and region you visit. The cover shows the passport of the country you live in; if it is not yours, change it under Country of residence in Settings.</value>
+  </data>
+  <data name="OnboardingStampTitle" xml:space="preserve">
+    <value>Stamp on the map</value>
+  </data>
+  <data name="OnboardingStampBody" xml:space="preserve">
+    <value>Where you are, tap Stamp where I am on the Map, then Stamp here: the country and region go into your passport. To stamp a spot nearby, press and hold the map there; it must be within {0} of you.</value>
+  </data>
+  <data name="OnboardingBoardsTitle" xml:space="preserve">
+    <value>Collect boards</value>
+  </data>
+  <data name="OnboardingBoardsBody" xml:space="preserve">
+    <value>Add boards such as shrine tours or manhole cards with Add board in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In.</value>
+  </data>
+  <data name="OnboardingLocationTitle" xml:space="preserve">
+    <value>Your location</value>
+  </data>
+  <data name="OnboardingLocationBody" xml:space="preserve">
+    <value>Stamps and check-ins use where you are. FlagsRally reads your location only while you are using it.</value>
+  </data>
+  <data name="OnboardingAllowLocation" xml:space="preserve">
+    <value>Allow location</value>
+  </data>
+  <data name="OnboardingLater" xml:space="preserve">
+    <value>Not now</value>
+  </data>
 </root>

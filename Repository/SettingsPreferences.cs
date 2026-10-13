@@ -14,6 +14,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _customBoardSort = "CustomBoardSort";
     private string _pinStyle = "PinStyle";
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
+    private string _hasSeenOnboarding = "HasSeenOnboarding";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -101,4 +102,9 @@ public partial class SettingsPreferences : ObservableObject
     {
         _defaultPreferences.Set(_regionalFlagsExpanded, isExpanded.ToString());
     }
+
+    // The how-to pages shown on the first launch (and again from Settings).
+    public bool GetHasSeenOnboarding() => _defaultPreferences.Get(_hasSeenOnboarding, false);
+
+    public void SetHasSeenOnboarding() => _defaultPreferences.Set(_hasSeenOnboarding, true);
 }

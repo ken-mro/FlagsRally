@@ -72,6 +72,7 @@ namespace FlagsRally
             builder.Services.AddSingleton<ArrivalLocationService>();
             builder.Services.AddSingleton<CustomBoardService>();
             builder.Services.AddSingleton<MapFocusRequest>();
+            builder.Services.AddSingleton<OnboardingService>();
             builder.Services.AddSingleton<CryptoService>();
 
             builder.Services.AddSingleton<ICustomLocationDataRepository, CustomLocationDataRepository>();
