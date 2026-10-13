@@ -4,22 +4,41 @@ using FlagsRally.Models.CustomBoard;
 namespace FlagsRally.Models;
 
 /// <summary>
-/// One filter chip on the map: "All pins", "Arrival location" or a custom board.
+/// One filter chip on the map: "All pins", "Arrival location", a custom board, or a series of
+/// boards (such as the manhole card issues) that opens a list to choose from.
 /// </summary>
 public partial class PinFilterChip : ObservableObject
 {
-    public PinFilterChip(CustomBoardPinFilterItem item, bool isSelected)
+    public PinFilterChip(CustomBoardPinFilterItem item)
     {
         Name = item.Name;
         IsAll = item.IsAll;
-        _isSelected = isSelected;
+        Members = item.Members;
     }
 
     public string Name { get; }
     public bool IsAll { get; }
 
+    /// <summary>The pin keys (board names) the chip stands for.</summary>
+    public IReadOnlyList<string> Members { get; }
+
+    public bool IsGroup => Members.Count > 1;
+
     [ObservableProperty]
     bool _isSelected;
+
+    /// <summary>How many of the members are shown, for a series.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Text))]
+    int _selectedCount;
+
+    /// <summary>
+    /// A series shows how many of its boards are chosen and a ▾ for its list, e.g. "マンホールカード 3/31 ▾".
+    /// The no-break spaces keep the count and the ▾ with the name.
+    /// </summary>
+    public string Text => !IsGroup ? Name
+        : SelectedCount > 0 ? $"{Name} {SelectedCount}/{Members.Count} ▾"
+        : $"{Name} ▾";
 }
 
 public static class PinFilterRules
@@ -27,34 +46,46 @@ public static class PinFilterRules
     /// <param name="visibleKeys">Pin keys currently shown; empty means all pins.</param>
     public static List<PinFilterChip> Build(IEnumerable<CustomBoardPinFilterItem> items, IReadOnlyCollection<string> visibleKeys)
     {
-        return items
-            .Select(item => new PinFilterChip(item, item.IsAll ? visibleKeys.Count == 0 : visibleKeys.Contains(item.Name)))
-            .ToList();
+        var chips = items.Select(item => new PinFilterChip(item)).ToList();
+        Refresh(chips, visibleKeys);
+        return chips;
     }
 
     /// <summary>
-    /// Applies a tap on <paramref name="tapped"/>: "All pins" clears the other chips,
-    /// any other chip toggles itself, and nothing selected falls back to "All pins".
-    /// Returns the pin keys to show (empty means all pins).
+    /// Marks the chips for the shown keys: "All pins" when nothing is chosen, otherwise every chip
+    /// with a chosen member.
     /// </summary>
-    public static IReadOnlyCollection<string> Toggle(IReadOnlyList<PinFilterChip> chips, PinFilterChip tapped)
+    public static void Refresh(IEnumerable<PinFilterChip> chips, IReadOnlyCollection<string> visibleKeys)
     {
-        if (tapped.IsAll)
+        foreach (var chip in chips)
         {
-            foreach (var chip in chips)
-            {
-                chip.IsSelected = chip.IsAll;
-            }
-            return [];
+            chip.SelectedCount = chip.IsAll ? 0 : chip.Members.Count(visibleKeys.Contains);
+            chip.IsSelected = chip.IsAll ? visibleKeys.Count == 0 : chip.SelectedCount > 0;
         }
+    }
 
-        tapped.IsSelected = !tapped.IsSelected;
+    /// <summary>
+    /// Applies a tap on a chip that is not a series: "All pins" clears the choice, any other chip
+    /// toggles itself. Nothing chosen means all pins. Returns the keys to show.
+    /// </summary>
+    public static IReadOnlyCollection<string> Toggle(IReadOnlyList<PinFilterChip> chips, PinFilterChip tapped, IReadOnlyCollection<string> visibleKeys)
+    {
+        var keys = tapped.IsAll ? [] : SetShown(visibleKeys, tapped.Members, !tapped.IsSelected);
+        Refresh(chips, keys);
+        return keys;
+    }
 
-        var selected = chips.Where(c => !c.IsAll && c.IsSelected).Select(c => c.Name).ToList();
-        foreach (var chip in chips.Where(c => c.IsAll))
+    /// <summary>
+    /// Shows or hides some members (boards of a series chosen in its list). Returns the keys to show.
+    /// </summary>
+    public static IReadOnlyCollection<string> SetShown(IReadOnlyCollection<string> visibleKeys, IEnumerable<string> members, bool shown)
+    {
+        var keys = new List<string>(visibleKeys);
+        foreach (var member in members)
         {
-            chip.IsSelected = selected.Count == 0;
+            keys.Remove(member);
+            if (shown) keys.Add(member);
         }
-        return selected;
+        return keys;
     }
 }

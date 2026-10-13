@@ -349,7 +349,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Location.
+        ///   Looks up a localized string similar to Stamp where I am.
         /// </summary>
         internal static string GetLocation {
             get {
@@ -358,7 +358,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check-in spot.
+        ///   Looks up a localized string similar to Stamp spot.
         /// </summary>
         internal static string GetLocationHere {
             get {
@@ -1213,7 +1213,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check in at this pin.
+        ///   Looks up a localized string similar to Stamp at this pin.
         /// </summary>
         internal static string CheckInSpotTitle {
             get {
@@ -1222,7 +1222,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are..
+        ///   Looks up a localized string similar to Press and hold the pin, then drag it to move it. You can stamp anywhere inside the circle, within {0} of where you are..
         /// </summary>
         internal static string CheckInSpotHint {
             get {
@@ -1258,7 +1258,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check in here.
+        ///   Looks up a localized string similar to Stamp here.
         /// </summary>
         internal static string CheckInHere {
             get {
@@ -1321,7 +1321,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you are somewhere new, tap Get Location on the Map and the country and region are stamped here..
+        ///   Looks up a localized string similar to When you are somewhere new, tap Stamp where I am on the Map and the country and region are stamped here..
         /// </summary>
         internal static string NoStampsHint {
             get {
@@ -1443,6 +1443,159 @@ namespace FlagsRally.Resources {
         internal static string AllCountriesShort {
             get {
                 return ResourceManager.GetString("AllCountriesShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to use.
+        /// </summary>
+        internal static string HowToUse {
+            get {
+                return ResourceManager.GetString("HowToUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        internal static string OnboardingSkip {
+            get {
+                return ResourceManager.GetString("OnboardingSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        internal static string OnboardingNext {
+            get {
+                return ResourceManager.GetString("OnboardingNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        internal static string OnboardingBack {
+            get {
+                return ResourceManager.GetString("OnboardingBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string OnboardingDone {
+            get {
+                return ResourceManager.GetString("OnboardingDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your travel passport.
+        /// </summary>
+        internal static string OnboardingPassportTitle {
+            get {
+                return ResourceManager.GetString("OnboardingPassportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collect a stamp for every country and region you visit..
+        /// </summary>
+        internal static string OnboardingPassportBody {
+            get {
+                return ResourceManager.GetString("OnboardingPassportBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamp on the map.
+        /// </summary>
+        internal static string OnboardingStampTitle {
+            get {
+                return ResourceManager.GetString("OnboardingStampTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where you are, tap Stamp where I am on the Map, then Stamp here: the country and region go into your passport. To stamp a spot nearby, press and hold the map there; it must be within {0} of you..
+        /// </summary>
+        internal static string OnboardingStampBody {
+            get {
+                return ResourceManager.GetString("OnboardingStampBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go on a stamp trail.
+        /// </summary>
+        internal static string OnboardingBoardsTitle {
+            get {
+                return ResourceManager.GetString("OnboardingBoardsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add boards such as shrine tours or manhole cards with Add board in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In..
+        /// </summary>
+        internal static string OnboardingBoardsBody {
+            get {
+                return ResourceManager.GetString("OnboardingBoardsBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your location.
+        /// </summary>
+        internal static string OnboardingLocationTitle {
+            get {
+                return ResourceManager.GetString("OnboardingLocationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamps and check-ins use where you are. FlagsRally reads your location only while you are using it..
+        /// </summary>
+        internal static string OnboardingLocationBody {
+            get {
+                return ResourceManager.GetString("OnboardingLocationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow location.
+        /// </summary>
+        internal static string OnboardingAllowLocation {
+            get {
+                return ResourceManager.GetString("OnboardingAllowLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not now.
+        /// </summary>
+        internal static string OnboardingLater {
+            get {
+                return ResourceManager.GetString("OnboardingLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold the map to put a pin where you want to stamp..
+        /// </summary>
+        internal static string LongPressHint {
+            get {
+                return ResourceManager.GetString("LongPressHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: The cover is the passport of the country you live in. If it is not yours, change it under Country of residence in Settings..
+        /// </summary>
+        internal static string OnboardingPassportNote {
+            get {
+                return ResourceManager.GetString("OnboardingPassportNote", resourceCulture);
             }
         }
     }

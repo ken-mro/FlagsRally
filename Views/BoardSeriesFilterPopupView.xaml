@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.BoardSeriesFilterPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:Name="popup"
+    x:DataType="viewmodels:BoardSeriesFilterViewModel"
+    BackgroundColor="{StaticResource PaperCard}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <!--  A series' boards, ticked when their pins are shown on the map  -->
+    <Grid
+        Padding="20,18,20,14"
+        RowDefinitions="Auto,Auto,Auto,Auto"
+        RowSpacing="10">
+        <controls:StampLabel
+            LineBreakMode="WordWrap"
+            Style="{StaticResource StampHeading}"
+            Text="{Binding Title}" />
+        <!--  Select all / Clear selection side by side, on two rows when they do not fit  -->
+        <FlexLayout
+            Grid.Row="1"
+            AlignItems="Center"
+            Wrap="Wrap">
+            <Button
+                Margin="0,0,8,4"
+                Padding="12,0"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource Navy}"
+                BorderWidth="1"
+                Command="{Binding ShowAllCommand}"
+                Text="{x:Static strings:AppResources.SelectAllBoards}"
+                TextColor="{StaticResource Navy}" />
+            <Button
+                Margin="0,0,8,4"
+                Padding="12,0"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource Navy}"
+                BorderWidth="1"
+                Command="{Binding HideAllCommand}"
+                Text="{x:Static strings:AppResources.ClearBoardSelection}"
+                TextColor="{StaticResource Navy}" />
+        </FlexLayout>
+        <ScrollView x:Name="boards" Grid.Row="2">
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Boards}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:BoardSeriesFilterItem">
+                        <!--  The whole row toggles the board  -->
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            ColumnSpacing="8"
+                            MinimumHeightRequest="48">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.ToggleBoardCommand, Source={x:Reference popup}, x:DataType=toolkit:Popup}" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Label
+                                FontSize="16"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding Name}"
+                                VerticalOptions="Center" />
+                            <CheckBox
+                                Grid.Column="1"
+                                InputTransparent="True"
+                                IsChecked="{Binding IsShown}"
+                                VerticalOptions="Center"
+                                Color="{StaticResource Stamp}" />
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button
+            Grid.Row="3"
+            Command="{Binding CloseCommand}"
+            HorizontalOptions="End"
+            MinimumWidthRequest="100"
+            Text="{x:Static strings:AppResources.Close}" />
+    </Grid>
+</toolkit:Popup>

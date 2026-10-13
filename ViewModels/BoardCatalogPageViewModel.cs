@@ -46,9 +46,10 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
 
     public ObservableCollection<BoardCatalogItem> Entries { get; } = [];
 
-    // Boards chosen so far, in the order they were chosen. Kept while moving between folders,
-    // so boards from different folders can be added together.
-    readonly List<DriveEntry> _selected = [];
+    // Boards chosen so far, in the order they were chosen, with the folder each was chosen in
+    // (empty at the top). Kept while moving between folders, so boards from different folders
+    // can be added together.
+    readonly List<(DriveEntry Entry, string Folder)> _selected = [];
 
     public int SelectedCount => _selected.Count;
     public bool HasSelection => _selected.Count > 0;
@@ -90,7 +91,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
             var folderId = _openFolders.LastOrDefault()?.Id ?? DriveBoardCatalog.RootFolderId;
             foreach (var entry in (await _catalog.ListAsync(folderId)).Where(x => x.IsFolder || x.IsBoardFile))
             {
-                Entries.Add(new BoardCatalogItem(entry) { IsSelected = _selected.Any(x => x.Id == entry.Id) });
+                Entries.Add(new BoardCatalogItem(entry) { IsSelected = _selected.Any(x => x.Entry.Id == entry.Id) });
             }
             _isLoaded = true;
         }
@@ -121,8 +122,8 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
     void SetSelected(BoardCatalogItem item, bool isSelected)
     {
         item.IsSelected = isSelected;
-        _selected.RemoveAll(x => x.Id == item.Entry.Id);
-        if (isSelected) _selected.Add(item.Entry);
+        _selected.RemoveAll(x => x.Entry.Id == item.Entry.Id);
+        if (isSelected) _selected.Add((item.Entry, _openFolders.LastOrDefault()?.Name ?? string.Empty));
     }
 
     [RelayCommand]
@@ -162,9 +163,9 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            foreach (var entry in _selected.ToList())
+            foreach (var (entry, folder) in _selected.ToList())
             {
-                await ImportOneAsync(results, entry.DisplayName, async () => await _catalog.DownloadAsync(entry.Id), entry.Name);
+                await ImportOneAsync(results, entry.DisplayName, async () => await _catalog.DownloadAsync(entry.Id), entry.Name, folder);
             }
         }
         finally
@@ -239,7 +240,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
 
     // Saves one board, asking first when a board with the same name is already there.
     // A failure is noted and the next board is tried.
-    async Task ImportOneAsync(ImportResults results, string label, Func<Task<Stream>> open, string fileName)
+    async Task ImportOneAsync(ImportResults results, string label, Func<Task<Stream>> open, string fileName, string folder = "")
     {
         try
         {
@@ -257,7 +258,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
                 if (!replaces) return;
             }
 
-            await _customBoardService.SaveBoardAndLocations(board);
+            await _customBoardService.SaveBoardAndLocations(board, folder);
             results.Added.Add(board.name);
         }
         catch (Exception ex)

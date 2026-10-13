@@ -184,7 +184,7 @@
     <value>Filter by Country</value>
   </data>
   <data name="GetLocation" xml:space="preserve">
-    <value>Get Location</value>
+    <value>Stamp where I am</value>
   </data>
   <data name="HideDateAndMonth" xml:space="preserve">
     <value>Hide date and month</value>
@@ -316,7 +316,7 @@
     <value>Are you sure to reset?</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>Check-in spot</value>
+    <value>Stamp spot</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>Fake location detected!</value>
@@ -502,10 +502,10 @@
     <value>Drop</value>
   </data>
   <data name="CheckInSpotTitle" xml:space="preserve">
-    <value>Check in at this pin</value>
+    <value>Stamp at this pin</value>
   </data>
   <data name="CheckInSpotHint" xml:space="preserve">
-    <value>Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are.</value>
+    <value>Press and hold the pin, then drag it to move it. You can stamp anywhere inside the circle, within {0} of where you are.</value>
   </data>
   <data name="CheckInSpotInRange" xml:space="preserve">
     <value>{0} from you - inside the circle</value>
@@ -517,7 +517,7 @@
     <value>The pin is {0} from where you are. Move it to within {1} of you (inside the circle) and try again.</value>
   </data>
   <data name="CheckInHere" xml:space="preserve">
-    <value>Check in here</value>
+    <value>Stamp here</value>
   </data>
   <data name="PinStyleCritter" xml:space="preserve">
     <value>Critters</value>
@@ -538,7 +538,7 @@
     <value>No stamps yet</value>
   </data>
   <data name="NoStampsHint" xml:space="preserve">
-    <value>When you are somewhere new, tap Get Location on the Map and the country and region are stamped here.</value>
+    <value>When you are somewhere new, tap Stamp where I am on the Map and the country and region are stamped here.</value>
   </data>
   <data name="StampFirstOnMap" xml:space="preserve">
     <value>Get your first stamp on the Map</value>
@@ -580,5 +580,56 @@
   </data>
   <data name="AllCountriesShort" xml:space="preserve">
     <value>All</value>
+  </data>
+  <data name="HowToUse" xml:space="preserve">
+    <value>How to use</value>
+  </data>
+  <data name="OnboardingSkip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="OnboardingNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="OnboardingBack" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="OnboardingDone" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="OnboardingPassportTitle" xml:space="preserve">
+    <value>Your travel passport</value>
+  </data>
+  <data name="OnboardingPassportBody" xml:space="preserve">
+    <value>Collect a stamp for every country and region you visit.</value>
+  </data>
+  <data name="OnboardingStampTitle" xml:space="preserve">
+    <value>Stamp on the map</value>
+  </data>
+  <data name="OnboardingStampBody" xml:space="preserve">
+    <value>Where you are, tap Stamp where I am on the Map, then Stamp here: the country and region go into your passport. To stamp a spot nearby, press and hold the map there; it must be within {0} of you.</value>
+  </data>
+  <data name="OnboardingBoardsTitle" xml:space="preserve">
+    <value>Go on a stamp trail</value>
+  </data>
+  <data name="OnboardingBoardsBody" xml:space="preserve">
+    <value>Add boards such as shrine tours or manhole cards with Add board in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In.</value>
+  </data>
+  <data name="OnboardingLocationTitle" xml:space="preserve">
+    <value>Your location</value>
+  </data>
+  <data name="OnboardingLocationBody" xml:space="preserve">
+    <value>Stamps and check-ins use where you are. FlagsRally reads your location only while you are using it.</value>
+  </data>
+  <data name="OnboardingAllowLocation" xml:space="preserve">
+    <value>Allow location</value>
+  </data>
+  <data name="OnboardingLater" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+  <data name="LongPressHint" xml:space="preserve">
+    <value>Press and hold the map to put a pin where you want to stamp.</value>
+  </data>
+  <data name="OnboardingPassportNote" xml:space="preserve">
+    <value>Note: The cover is the passport of the country you live in. If it is not yours, change it under Country of residence in Settings.</value>
   </data>
 </root>

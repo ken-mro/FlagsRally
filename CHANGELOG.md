@@ -6,9 +6,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.1.22] - Unreleased
 
 ### Added
+- **How-to pages on the first launch.** A new install opens four short pages: the passport (with a note that the cover can be changed under Country of residence in Settings), stamping on the map, boards, and the location. The last page explains why the location is needed before asking for it. Settings > Information > How to use opens them again. People who already use the app are not shown them after the update.
+- **Boards of one series share a chip on the map.** Boards added from the same shared folder, such as the manhole card issues, now appear as one chip like "マンホールカード ▾". Tap it to show the whole series or tick boards one by one; the chip shows how many are chosen. Boards added from a file or before this version are grouped by their name without the issue number.
+- **A hint for placing a stamp spot.** Until you have done it once, the map says that pressing and holding the map puts a pin where you want to stamp.
 - **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
 
 ### Changed
+- **The map's buttons say "stamp".** "Get Location" and "Check in here" are now "Stamp where I am" and "Stamp here" (「現在地でスタンプ」「ここでスタンプを押す」), so they are not mistaken for checking in at a board's place. Android no longer asks for the location the moment the app opens.
 - **Boards open and scroll smoothly, with fewer downloads.** A custom board downloaded the stamp image of every place, visited or not (all 109 on 全国一の宮巡り at 0 / 109), and stuttered while they arrived. Only visited places' stamps are loaded now. The regional flags board no longer loads the flags of regions not visited yet (the US state flags came from the internet), and the passport no longer loads region flags while it shows countries. The cards and tiles in these lists are also quicker to build.
 - **Development:** The unit tests pass on every machine. Two Japanese test files were saved in Shift_JIS, so two geocoding tests failed everywhere except Japanese Windows; they are UTF-8 now, and a test stops non-UTF-8 source files. The tests that call the real Google Geocoding API are skipped, with the reason, where the real key or the network is missing.
 - **Development:** A new `/android-release` skill prepares an Android release: a clean Release build is launched on the emulator and checked for crashes, fixing and re-checking until it is clean, then the version is bumped, the PR merged, the store release notes written, and the signed bundle uploaded to Google Play with those notes after the user confirms (as a draft unless asked to publish).
@@ -16,6 +20,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** A new `/project-skills` skill explains which skills this project has and when to use each, reading `.claude/skills/` each time so new skills are included without editing it.
 
 ### Fixed
+- **Settings closing the app on an iPhone with a language set just for FlagsRally.** Until a country of residence was chosen, the passport cover stayed empty and opening Settings closed the app. The country now comes from the device's region, so the cover shows and Settings opens.
 - **The passport date broken over two lines with large text.** With iOS's largest text sizes a stamp's date wrapped after the month ("09 10月" / "2026"). The date on passport stamps, regional flags and custom boards now gets a little smaller when needed and stays on one line; at normal sizes it looks as before.
 - **Checking in the wrong board's place where two boards share a spot.** Where two boards have the same place, such as 香取神宮 on 全国一の宮巡り and 全国神宮二十五社巡り, choosing the second one in "Several pins are here" could leave the first one selected (seen on iPhone), so Check In recorded the first board's place and the second could look already checked in. Each pin is now its own place, so the one you choose is the one checked in.
 - **The selected pin hidden behind another pin at the same spot.** The selected pin is now drawn in front, so you can see which one the card is about.

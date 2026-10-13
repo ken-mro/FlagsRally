@@ -176,7 +176,7 @@
                             </Border.GestureRecognizers>
                             <Label
                                 FontSize="13"
-                                Text="{Binding Name}"
+                                Text="{Binding Text}"
                                 TextColor="{StaticResource Ink}">
                                 <Label.Triggers>
                                     <DataTrigger
@@ -198,12 +198,39 @@
             x:Name="getLocationPanel"
             Grid.Row="1"
             ColumnSpacing="8"
-            IsVisible="{Binding ShowsGetLocationButton}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Button Command="{Binding GetCurrentLocationCommand}" Text="{x:Static strings:AppResources.GetLocation}" />
+            IsVisible="{Binding ShowsGetLocationButton}"
+            RowDefinitions="Auto,Auto"
+            RowSpacing="8">
+            <!--  Shown until the first long press (or ✕): a stamp spot can be put anywhere nearby  -->
+            <Border
+                Padding="14,8,4,8"
+                BackgroundColor="{StaticResource PaperCard}"
+                IsVisible="{Binding ShowsLongPressHint}"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 12">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+                    <Label
+                        FontSize="14"
+                        LineBreakMode="WordWrap"
+                        Text="{x:Static strings:AppResources.LongPressHint}"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding DismissLongPressHintCommand}"
+                        FontSize="18"
+                        SemanticProperties.Description="{x:Static strings:AppResources.Close}"
+                        Text="✕"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center"
+                        WidthRequest="44" />
+                </Grid>
+            </Border>
+            <Button
+                Grid.Row="1"
+                Command="{Binding GetCurrentLocationCommand}"
+                Text="{x:Static strings:AppResources.GetLocation}" />
         </Grid>
 
         <!--  The check-in spot: how to move it, how far it is from you, and recording it  -->

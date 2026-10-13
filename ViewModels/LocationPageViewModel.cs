@@ -105,6 +105,17 @@ public partial class LocationPageViewModel : BaseViewModel
     [RelayCommand]
     void CancelCheckInSpot() => RemoveCheckInSpot();
 
+    // A long press on the map puts a stamp spot; until someone has done it once, the map says so.
+    [ObservableProperty]
+    bool _showsLongPressHint;
+
+    [RelayCommand]
+    void DismissLongPressHint()
+    {
+        ShowsLongPressHint = false;
+        _settingsPreferences.SetHasSeenLongPressHint();
+    }
+
     private void PlaceCheckInSpot(Position position, Location? here)
     {
         RemoveCheckInSpot();
@@ -269,7 +280,9 @@ public partial class LocationPageViewModel : BaseViewModel
         set
         {
             SetProperty(ref _arrivalMap, value);
-            _arrivalMap!.MyLocationEnabled = true;
+            // The blue dot is turned on once the location may be used (ShowMyLocationLayerIfAllowedAsync):
+            // turning it on without the permission makes Google Maps throw and the app close.
+            _arrivalMap!.MyLocationEnabled = false;
             // The page draws its own my-location button in the app's style, with the other map buttons.
             _arrivalMap.UiSettings.MyLocationButtonEnabled = false;
             _arrivalMap.UiSettings.CompassEnabled = true;
@@ -336,6 +349,7 @@ public partial class LocationPageViewModel : BaseViewModel
         // Replacing the spot then would take the pin being dragged off the map.
         if (_isDraggingPin) return;
 
+        if (ShowsLongPressHint) DismissLongPressHint();
         PlaceCheckInSpot(e.Point, here: null);
         if (ArrivalMap is not null)
         {
@@ -410,6 +424,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private async Task ShowMyLocationAsync()
     {
         var userLocation = await GetLastKnownOrDefaultLocationAsync();
+        await ShowMyLocationLayerIfAllowedAsync();
         var currentCameraLocation = GetCurrentCameraLocation();
         var distance = userLocation.CalculateDistance(currentCameraLocation, DistanceUnits.Kilometers);
 
@@ -496,6 +511,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
         _cancelTokenSource = new CancellationTokenSource();
         var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        // Asking for the location may have just been allowed.
+        await ShowMyLocationLayerIfAllowedAsync();
         if (location is null)
             throw new Exception($"{AppResources.UnableToGetLocation}");
 
@@ -515,6 +532,7 @@ public partial class LocationPageViewModel : BaseViewModel
         _customGeolocation = customGeolocation;
         _revenueCat = revenueCat;
         _settingsPreferences = settingsPreferences;
+        _showsLongPressHint = !settingsPreferences.GetHasSeenLongPressHint();
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
         _mapFocusRequest = mapFocusRequest;
@@ -551,10 +569,33 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         if (!_pinsLoaded || ArrivalMap is null) return;
 
+        await ShowMyLocationLayerIfAllowedAsync();
+
         var key = _mapFocusRequest.Take();
         if (key is not null)
         {
             await ShowCustomLocationAsync(key);
+        }
+        else if (!_hasCenteredOnUser && await IsLocationAllowedAsync())
+        {
+            // Allowed since the map was made (on the how-to pages): show where the user is.
+            _hasCenteredOnUser = true;
+            var location = await GetLastKnownOrDefaultLocationAsync();
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(location.Latitude, location.Longitude), DEFAULT_ZOOM_LEVEL), animate: false);
+        }
+    }
+
+    // Whether the map has been moved to the user's location yet.
+    bool _hasCenteredOnUser;
+
+    private static async Task<bool> IsLocationAllowedAsync() =>
+        await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
+
+    private async Task ShowMyLocationLayerIfAllowedAsync()
+    {
+        if (ArrivalMap is not null && !ArrivalMap.MyLocationEnabled && await IsLocationAllowedAsync())
+        {
+            ArrivalMap.MyLocationEnabled = true;
         }
     }
 
@@ -580,7 +621,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         try
         {
-            var knownBoards = FilterChips.Select(c => c.Name).ToHashSet();
+            var knownBoards = FilterChips.SelectMany(c => c.Members).ToHashSet();
             if (message.PlacesChanged)
             {
                 await ReloadCustomLocationPinsAsync();
@@ -590,7 +631,7 @@ public partial class LocationPageViewModel : BaseViewModel
             // When filtering, also show boards that were just added.
             if (_visiblePinKeys.Count > 0)
             {
-                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll && !knownBoards.Contains(c.Name)).Select(c => c.Name));
+                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll).SelectMany(c => c.Members).Where(name => !knownBoards.Contains(name)));
                 OnPinFilterChanged();
             }
         }
@@ -611,7 +652,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
             await InitializeMapPins();
 
-            Location location = await GetLastKnownOrDefaultLocationAsync();
+            // The map is made at start-up, under the how-to pages: asking for the location here would
+            // put the system's prompt over them. Use it only if it was already allowed.
+            _hasCenteredOnUser = await IsLocationAllowedAsync();
+            Location location = _hasCenteredOnUser
+                ? await GetLastKnownOrDefaultLocationAsync()
+                : new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var position = new Position(location.Latitude, location.Longitude);
             if (ArrivalMap is not null)
             {
@@ -901,20 +947,36 @@ public partial class LocationPageViewModel : BaseViewModel
     readonly HashSet<string> _visiblePinKeys = [];
 
     [RelayCommand]
-    void ToggleFilterChip(PinFilterChip chip)
+    async Task ToggleFilterChipAsync(PinFilterChip chip)
     {
-        var keys = PinFilterRules.Toggle(FilterChips, chip);
+        if (chip.IsGroup)
+        {
+            await ChooseSeriesBoardsAsync(chip);
+            return;
+        }
+
+        SetVisiblePinKeys(PinFilterRules.Toggle(FilterChips, chip, _visiblePinKeys));
+    }
+
+    // A series chip (such as マンホールカード) opens its boards to show all of them or some.
+    private async Task ChooseSeriesBoardsAsync(PinFilterChip chip)
+    {
+        var boards = chip.Members.Select(name => new BoardSeriesFilterItem(name, _visiblePinKeys.Contains(name)));
+        var viewModel = new BoardSeriesFilterViewModel(chip.Name, boards, (names, shown) =>
+            SetVisiblePinKeys(PinFilterRules.SetShown(_visiblePinKeys, names, shown)));
+        await Shell.Current.CurrentPage.ShowPopupAsync(new BoardSeriesFilterPopupView(viewModel));
+    }
+
+    private void SetVisiblePinKeys(IReadOnlyCollection<string> keys)
+    {
         _visiblePinKeys.Clear();
         _visiblePinKeys.UnionWith(keys);
-        UpdatePinsVisibility();
+        OnPinFilterChanged();
     }
 
     private void OnPinFilterChanged()
     {
-        foreach (var chip in FilterChips)
-        {
-            chip.IsSelected = chip.IsAll ? _visiblePinKeys.Count == 0 : _visiblePinKeys.Contains(chip.Name);
-        }
+        PinFilterRules.Refresh(FilterChips, _visiblePinKeys);
         UpdatePinsVisibility();
     }
 
@@ -984,14 +1046,17 @@ public partial class LocationPageViewModel : BaseViewModel
             filterList.Add(new CustomBoardPinFilterItem(AppResources.ArrivalLocation));
         }
 
+        // Boards of one series (the shared folder they came from, or the same name but for the
+        // issue number) share a chip, in the place of the series' first board.
         var boardList = await _customBoardRepository.GetAllCustomBoards();
-        foreach (var board in boardList)
+        foreach (var series in boardList.GroupBy(b => BoardSeries.Of(b.Name, b.Folder)))
         {
-            filterList.Add(new CustomBoardPinFilterItem(board.Name));
+            var names = series.Select(b => b.Name).ToList();
+            filterList.Add(names.Count == 1 ? new CustomBoardPinFilterItem(names[0]) : new CustomBoardPinFilterItem(series.Key, names));
         }
 
         // Drop keys of filters that no longer exist (e.g. deleted boards).
-        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0;
+        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Members.Contains(key))) > 0;
 
         FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _visiblePinKeys));
 

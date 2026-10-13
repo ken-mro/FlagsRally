@@ -14,6 +14,8 @@ public partial class SettingsPreferences : ObservableObject
     private string _customBoardSort = "CustomBoardSort";
     private string _pinStyle = "PinStyle";
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
+    private string _hasSeenOnboarding = "HasSeenOnboarding";
+    private string _hasSeenLongPressHint = "HasSeenLongPressHint";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -32,9 +34,35 @@ public partial class SettingsPreferences : ObservableObject
 
     public string GetCountryOfResidence()
     {
-        var twoLetterISORegionName = RegionInfo.CurrentRegion.TwoLetterISORegionName;
-        return _defaultPreferences.Get(_selectedCountryOrRegionKey, twoLetterISORegionName);
+        var stored = _defaultPreferences.Get(_selectedCountryOrRegionKey, string.Empty);
+        return IsCountryCode(stored) ? stored : DefaultCountryOfResidence();
     }
+
+    /// <summary>
+    /// The device's region until one is chosen in Settings. With only a language set for the app (iOS
+    /// lets each app have its own), .NET's current region can be the invariant one ("IV"), which is
+    /// no country: the passport cover then did not load and Settings closed the app. The device's own
+    /// region setting comes next, and the United States last.
+    /// </summary>
+    static string DefaultCountryOfResidence() => PickCountryCode(
+        RegionInfo.CurrentRegion.TwoLetterISORegionName,
+#if IOS || MACCATALYST
+        Foundation.NSLocale.CurrentLocale.CountryCode,
+#elif ANDROID
+        Java.Util.Locale.Default.Country,
+#endif
+        "US");
+
+    /// <summary>
+    /// The first of the codes that is a real two-letter country code, in upper case.
+    /// </summary>
+    public static string PickCountryCode(params string?[] candidates) =>
+        candidates.Where(IsCountryCode).Select(c => c!.ToUpperInvariant()).FirstOrDefault() ?? "US";
+
+    // "IV" is .NET's invariant region and "ZZ" / "001" stand for unknown or the world.
+    static bool IsCountryCode(string? code) =>
+        code is { Length: 2 } && code.All(char.IsAsciiLetter)
+        && !code.Equals("IV", StringComparison.OrdinalIgnoreCase) && !code.Equals("ZZ", StringComparison.OrdinalIgnoreCase);
 
     public void SetIsSubscribed(bool isSubscribed)
     {
@@ -101,4 +129,14 @@ public partial class SettingsPreferences : ObservableObject
     {
         _defaultPreferences.Set(_regionalFlagsExpanded, isExpanded.ToString());
     }
+
+    // The how-to pages shown on the first launch (and again from Settings).
+    public bool GetHasSeenOnboarding() => _defaultPreferences.Get(_hasSeenOnboarding, false);
+
+    public void SetHasSeenOnboarding() => _defaultPreferences.Set(_hasSeenOnboarding, true);
+
+    // The one-time hint on the map that a long press puts a stamp spot.
+    public bool GetHasSeenLongPressHint() => _defaultPreferences.Get(_hasSeenLongPressHint, false);
+
+    public void SetHasSeenLongPressHint() => _defaultPreferences.Set(_hasSeenLongPressHint, true);
 }

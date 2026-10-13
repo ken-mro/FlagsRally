@@ -315,6 +315,21 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ShowHowToUseCommand}" />
+                        </Grid.GestureRecognizers>
+                        <Label
+                            FontSize="16"
+                            Text="{x:Static strings:AppResources.HowToUse}"
+                            VerticalOptions="Center" />
+                        <Label Grid.Column="1" Style="{StaticResource Chevron}" />
+                    </Grid>
+                    <BoxView Style="{StaticResource RowDivider}" />
+                    <Grid Style="{StaticResource SettingsRow}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenTermsOfUseCommand}" />
                         </Grid.GestureRecognizers>
                         <Label

@@ -31,14 +31,15 @@ public class CustomBoardService
         }
     }
 
-    public CustomBoard GetCustomBoard(CustomBoardJson json)
+    public CustomBoard GetCustomBoard(CustomBoardJson json, string folder = "")
     {
         return new CustomBoard()
         {
             Name = json.name,
             Url = json.url,
             Width = json.width,
-            Height = json.height
+            Height = json.height,
+            Folder = folder,
         };
     }
 
@@ -142,9 +143,10 @@ public class CustomBoardService
         return buffer.ToArray();
     }
 
-    public async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json)
+    /// <param name="folder">The shared folder the board was chosen in, if any.</param>
+    public async Task<(CustomBoard,IEnumerable<CustomLocationPin>)> SaveBoardAndLocations(CustomBoardJson json, string folder = "")
     {
-        var customBoard = GetCustomBoard(json);
+        var customBoard = GetCustomBoard(json, folder);
         await _customBoardRepository.InsertOrReplaceAsync(customBoard);
         var customLocations = GetCustomLocations(json, customBoard);
         var pins = await _customLocationDataRepository.InsertOrReplace(customLocations);

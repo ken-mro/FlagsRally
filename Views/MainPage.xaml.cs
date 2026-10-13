@@ -1,3 +1,5 @@
+using FlagsRally.Repository;
+using FlagsRally.Services;
 using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
@@ -5,15 +7,20 @@ namespace FlagsRally.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainPageViewModel _mainPageViewModel;
+    private readonly OnboardingService _onboardingService;
+    private readonly SettingsPreferences _settingsPreferences;
+    private bool _hasCheckedOnboarding;
 
     // For the stamps, which read the page's settings (countries or regions, date shown) and commands
     // through the page instead of each stamp looking up its ancestors (RelativeSource).
     public MainPageViewModel ViewModel => _mainPageViewModel;
 
-    public MainPage(MainPageViewModel vm)
+    public MainPage(MainPageViewModel vm, OnboardingService onboardingService, SettingsPreferences settingsPreferences)
     {
         InitializeComponent();
         BindingContext = _mainPageViewModel = vm;
+        _onboardingService = onboardingService;
+        _settingsPreferences = settingsPreferences;
         toolbar.SizeChanged += (_, _) => toolbarSpace.HeightRequest = toolbar.Height + toolbar.Margin.Bottom + 8;
         passportHeader.SizeChanged += (_, _) => PlaceStats();
     }
@@ -22,6 +29,17 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        // The passport is the first page: the how-to pages open over it on a new install.
+        if (!_hasCheckedOnboarding)
+        {
+            _hasCheckedOnboarding = true;
+            if (await _onboardingService.ShouldShowOnLaunchAsync())
+            {
+                await Navigation.PushModalAsync(new OnboardingPage(_settingsPreferences));
+            }
+        }
+
         await _mainPageViewModel.Init();
     }
 

@@ -10,6 +10,7 @@ using FlagsRally.Messages;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Views;
 using ICSharpCode.SharpZipLib.Zip;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
@@ -93,7 +94,9 @@ namespace FlagsRally.ViewModels
             _countryHelper = countryHelper;
             CountryList = new ObservableCollection<Country>(_countryHelper.GetCountryData());
 
-            _selectedCountry = _countryHelper.GetCountryByCode(_settingPreferences.GetCountryOfResidence());
+            // A code the country list does not know would leave the picker without a selection.
+            _selectedCountry = _countryHelper.GetCountryByCode(_settingPreferences.GetCountryOfResidence())
+                ?? _countryHelper.GetCountryByCode("US");
 
             PropertyChanged += OnSelectedCountryChanged;
         }
@@ -313,6 +316,10 @@ namespace FlagsRally.ViewModels
                 await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
             }
         }
+
+        // The how-to pages from the first launch, to read again.
+        [RelayCommand]
+        Task ShowHowToUseAsync() => Shell.Current.Navigation.PushModalAsync(new OnboardingPage(_settingPreferences));
 
         [RelayCommand]
         async Task OpenPrivacyPolicyAsync()

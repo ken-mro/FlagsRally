@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FlagsRally.Views.OnboardingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    ios:Page.UseSafeArea="True"
+    x:DataType="viewmodels:OnboardingViewModel"
+    BackgroundColor="{StaticResource Navy}">
+    <ContentPage.Resources>
+        <!--  A stamp's frame, as on the empty passport  -->
+        <Style x:Key="StampFrame" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="Stroke" Value="{StaticResource Stamp}" />
+            <Setter Property="StrokeDashArray" Value="4,3" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+            <Setter Property="StrokeThickness" Value="2.5" />
+            <Setter Property="Padding" Value="14,8" />
+        </Style>
+        <Style x:Key="StampWord" TargetType="Label">
+            <Setter Property="FontFamily" Value="JerseyclubGrungeBold" />
+            <Setter Property="FontSize" Value="26" />
+            <Setter Property="TextColor" Value="{StaticResource Stamp}" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+
+    <!--  A navy title bar like the app's other screens (the page's navy also fills the status bar),
+          and paper below it  -->
+    <Grid RowDefinitions="Auto,*">
+        <Grid
+            Padding="16,6,4,6"
+            ColumnDefinitions="*,Auto"
+            MinimumHeightRequest="56">
+            <controls:StampLabel
+                LineBreakMode="WordWrap"
+                Style="{StaticResource StampTitle}"
+                Text="{x:Static strings:AppResources.HowToUse}" />
+            <!--  Skip goes straight to the end; the last page has its own buttons  -->
+            <Button
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                Command="{Binding FinishCommand}"
+                IsVisible="{Binding IsNotLast}"
+                Text="{x:Static strings:AppResources.OnboardingSkip}"
+                TextColor="{StaticResource PaperCard}"
+                VerticalOptions="Center" />
+        </Grid>
+        <Image
+            Grid.Row="1"
+            Aspect="AspectFill"
+            BackgroundColor="{StaticResource Paper}"
+            Source="paper.jpg" />
+        <Grid Grid.Row="1" Padding="20,4,20,20" RowDefinitions="Auto,*,Auto,Auto" RowSpacing="12">
+
+            <ScrollView Grid.Row="1">
+                <ScrollView.GestureRecognizers>
+                    <SwipeGestureRecognizer Command="{Binding NextCommand}" Direction="Left" />
+                    <SwipeGestureRecognizer Command="{Binding BackCommand}" Direction="Right" />
+                </ScrollView.GestureRecognizers>
+                <VerticalStackLayout Padding="0,12" Spacing="24" VerticalOptions="Center">
+                    <!--  One picture per page  -->
+                    <Grid HeightRequest="180" HorizontalOptions="Center">
+                        <Grid IsVisible="{Binding ShowsPassport}" WidthRequest="220">
+                            <Image
+                                Aspect="AspectFill"
+                                HeightRequest="150"
+                                HorizontalOptions="Start"
+                                Rotation="-5"
+                                Source="{Binding PassportCoverUrl}"
+                                VerticalOptions="Center"
+                                WidthRequest="108" />
+                            <Border
+                                Margin="0,0,0,18"
+                                BackgroundColor="{StaticResource Paper}"
+                                HorizontalOptions="End"
+                                Rotation="8"
+                                Style="{StaticResource StampFrame}"
+                                VerticalOptions="End">
+                                <Label Style="{StaticResource StampWord}" Text="ARRIVAL" />
+                            </Border>
+                        </Grid>
+                        <Grid IsVisible="{Binding ShowsStamp}" WidthRequest="220">
+                            <Ellipse
+                                Fill="#1F182A52"
+                                HeightRequest="150"
+                                HorizontalOptions="Center"
+                                Stroke="{StaticResource Navy}"
+                                StrokeThickness="2"
+                                VerticalOptions="Center"
+                                WidthRequest="150" />
+                            <Image
+                                HeightRequest="56"
+                                HorizontalOptions="Center"
+                                Source="{Binding StampSpotIcon}"
+                                TranslationY="-24"
+                                VerticalOptions="Center" />
+                            <Border
+                                HorizontalOptions="End"
+                                Rotation="-8"
+                                Style="{StaticResource StampFrame}"
+                                BackgroundColor="{StaticResource Paper}"
+                                VerticalOptions="End">
+                                <Label Style="{StaticResource StampWord}" Text="ARRIVAL" />
+                            </Border>
+                        </Grid>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding ShowsBoards}"
+                            Spacing="18"
+                            VerticalOptions="Center">
+                            <Image
+                                HeightRequest="44"
+                                Rotation="-12"
+                                Source="{Binding UnvisitedPinIcon}" />
+                            <Image
+                                HeightRequest="56"
+                                Source="{Binding VisitedPinIcon}" />
+                            <Image
+                                HeightRequest="44"
+                                Rotation="12"
+                                Source="{Binding UnvisitedPinIcon}" />
+                        </HorizontalStackLayout>
+                        <Image
+                            HeightRequest="110"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding ShowsLocation}"
+                            Source="onboarding_location.png"
+                            VerticalOptions="Center"
+                            WidthRequest="110" />
+                    </Grid>
+
+                    <controls:StampLabel
+                        FontSize="26"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Title}"
+                        TextColor="{StaticResource Navy}" />
+                    <Label
+                        FontSize="16"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        LineHeight="1.3"
+                        Text="{Binding Body}"
+                        TextColor="{StaticResource Ink}" />
+                    <!--  A side note, kept apart from the main text so it reads as less important  -->
+                    <Label
+                        FontSize="13"
+                        HorizontalTextAlignment="Center"
+                        IsVisible="{Binding HasNote}"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Note}"
+                        TextColor="{StaticResource InkMuted}" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!--  Where you are in the pages  -->
+            <HorizontalStackLayout
+                Grid.Row="2"
+                BindableLayout.ItemsSource="{Binding Dots}"
+                HorizontalOptions="Center"
+                Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:OnboardingDot">
+                        <Ellipse
+                            Fill="{StaticResource PaperEdge}"
+                            HeightRequest="8"
+                            WidthRequest="8">
+                            <Ellipse.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsCurrent}"
+                                    TargetType="Ellipse"
+                                    Value="True">
+                                    <Setter Property="Fill" Value="{StaticResource Navy}" />
+                                </DataTrigger>
+                            </Ellipse.Triggers>
+                        </Ellipse>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+
+            <!--  Buttons wrap onto two rows when Japanese or large text does not fit beside each other  -->
+            <FlexLayout
+                Grid.Row="3"
+                AlignItems="Center"
+                JustifyContent="Center"
+                Wrap="Wrap">
+                <Button
+                    Margin="6"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource Navy}"
+                    BorderWidth="1"
+                    Command="{Binding BackCommand}"
+                    IsVisible="{Binding IsNotFirst}"
+                    MinimumWidthRequest="120"
+                    Text="{x:Static strings:AppResources.OnboardingBack}"
+                    TextColor="{StaticResource Navy}" />
+                <Button
+                    Margin="6"
+                    Command="{Binding NextCommand}"
+                    IsVisible="{Binding IsNotLast}"
+                    MinimumWidthRequest="120"
+                    Text="{x:Static strings:AppResources.OnboardingNext}" />
+                <Button
+                    Margin="6"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource Navy}"
+                    BorderWidth="1"
+                    Command="{Binding FinishCommand}"
+                    IsVisible="{Binding ShowsAllowLocation}"
+                    MinimumWidthRequest="120"
+                    Text="{x:Static strings:AppResources.OnboardingLater}"
+                    TextColor="{StaticResource Navy}" />
+                <Button
+                    Margin="6"
+                    BackgroundColor="{StaticResource Stamp}"
+                    Command="{Binding AllowLocationCommand}"
+                    IsVisible="{Binding ShowsAllowLocation}"
+                    LineBreakMode="WordWrap"
+                    MinimumWidthRequest="120"
+                    Text="{x:Static strings:AppResources.OnboardingAllowLocation}" />
+                <Button
+                    Margin="6"
+                    BackgroundColor="{StaticResource Stamp}"
+                    Command="{Binding FinishCommand}"
+                    IsVisible="{Binding ShowsDone}"
+                    MinimumWidthRequest="120"
+                    Text="{x:Static strings:AppResources.OnboardingDone}" />
+            </FlexLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
