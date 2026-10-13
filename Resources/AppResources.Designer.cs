@@ -349,7 +349,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Location.
+        ///   Looks up a localized string similar to Stamp where I am.
         /// </summary>
         internal static string GetLocation {
             get {
@@ -358,7 +358,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check-in spot.
+        ///   Looks up a localized string similar to Stamp spot.
         /// </summary>
         internal static string GetLocationHere {
             get {
@@ -1213,7 +1213,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check in at this pin.
+        ///   Looks up a localized string similar to Stamp at this pin.
         /// </summary>
         internal static string CheckInSpotTitle {
             get {
@@ -1222,7 +1222,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are..
+        ///   Looks up a localized string similar to Press and hold the pin, then drag it to move it. You can stamp anywhere inside the circle, within {0} of where you are..
         /// </summary>
         internal static string CheckInSpotHint {
             get {
@@ -1258,7 +1258,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check in here.
+        ///   Looks up a localized string similar to Stamp here.
         /// </summary>
         internal static string CheckInHere {
             get {
@@ -1321,7 +1321,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you are somewhere new, tap Get Location on the Map and the country and region are stamped here..
+        ///   Looks up a localized string similar to When you are somewhere new, tap Stamp where I am on the Map and the country and region are stamped here..
         /// </summary>
         internal static string NoStampsHint {
             get {

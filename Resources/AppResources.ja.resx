@@ -184,7 +184,7 @@
     <value>国ごとに表示</value>
   </data>
   <data name="GetLocation" xml:space="preserve">
-    <value>位置情報を取得</value>
+    <value>現在地でスタンプ</value>
   </data>
   <data name="HideDateAndMonth" xml:space="preserve">
     <value>日付を表示しない</value>
@@ -307,7 +307,7 @@
     <value>カスタムボード</value>
   </data>
   <data name="FailedToCheckIn" xml:space="preserve">
-    <value>チェックインンに失敗しました。</value>
+    <value>チェックインに失敗しました。</value>
   </data>
   <data name="ConfirmDelete" xml:space="preserve">
     <value>削除しますか？</value>
@@ -316,7 +316,7 @@
     <value>リセットしますか？</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>記録する場所</value>
+    <value>スタンプを押す場所</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>位置情報の偽装が検出されました。</value>
@@ -502,13 +502,13 @@
     <value>しずく</value>
   </data>
   <data name="CheckInSpotTitle" xml:space="preserve">
-    <value>このピンの場所で記録</value>
+    <value>このピンの場所でスタンプ</value>
   </data>
   <data name="CheckInSpotHint" xml:space="preserve">
-    <value>ピンを長押ししたまま動かすと、場所を変えられます。現在地から{0}以内（地図の円の中）なら、その場所で記録できます。</value>
+    <value>ピンを長押ししたまま動かすと、場所を変えられます。現在地から{0}以内（地図の円の中）なら、その場所でスタンプを押せます。</value>
   </data>
   <data name="CheckInSpotInRange" xml:space="preserve">
-    <value>現在地から {0}（円の中なので記録できます）</value>
+    <value>現在地から {0}（円の中なのでスタンプを押せます）</value>
   </data>
   <data name="CheckInSpotOutOfRange" xml:space="preserve">
     <value>現在地から {0}（円の中に戻してください）</value>
@@ -517,7 +517,7 @@
     <value>ピンが現在地から {0} 離れています。現在地から{1}以内（円の中）に動かしてから、もう一度お試しください。</value>
   </data>
   <data name="CheckInHere" xml:space="preserve">
-    <value>ここで記録</value>
+    <value>ここでスタンプを押す</value>
   </data>
   <data name="PinStyleCritter" xml:space="preserve">
     <value>いきもの</value>
@@ -538,7 +538,7 @@
     <value>まだスタンプがありません</value>
   </data>
   <data name="NoStampsHint" xml:space="preserve">
-    <value>訪れた場所でマップの「位置情報を取得」を押すと、ここに国と地域のスタンプが押されます。</value>
+    <value>訪れた場所でマップの「現在地でスタンプ」を押すと、ここに国と地域のスタンプが押されます。</value>
   </data>
   <data name="StampFirstOnMap" xml:space="preserve">
     <value>マップで最初のスタンプを押す</value>

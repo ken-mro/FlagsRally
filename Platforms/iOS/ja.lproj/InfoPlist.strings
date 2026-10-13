@@ -1,2 +1,2 @@
 /* Location permission description */
-"NSLocationWhenInUseUsageDescription" = "FlagsRallyは、訪問した場所を記録するために位置情報を使用します。例えば、位置情報を取得ボタンをタップすると、現在の国と地域（「日本、東京都」など）を特定し、訪問日とともにマップに追加します。";
+"NSLocationWhenInUseUsageDescription" = "FlagsRallyは、訪問した場所を記録するために位置情報を使用します。例えば、「現在地でスタンプ」ボタンをタップすると、現在の国と地域（「日本、東京都」など）を特定し、訪問日とともにマップに追加します。";

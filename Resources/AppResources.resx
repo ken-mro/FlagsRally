@@ -184,7 +184,7 @@
     <value>Filter by Country</value>
   </data>
   <data name="GetLocation" xml:space="preserve">
-    <value>Get Location</value>
+    <value>Stamp where I am</value>
   </data>
   <data name="HideDateAndMonth" xml:space="preserve">
     <value>Hide date and month</value>
@@ -316,7 +316,7 @@
     <value>Are you sure to reset?</value>
   </data>
   <data name="GetLocationHere" xml:space="preserve">
-    <value>Check-in spot</value>
+    <value>Stamp spot</value>
   </data>
   <data name="FakeLocationDetected" xml:space="preserve">
     <value>Fake location detected!</value>
@@ -502,10 +502,10 @@
     <value>Drop</value>
   </data>
   <data name="CheckInSpotTitle" xml:space="preserve">
-    <value>Check in at this pin</value>
+    <value>Stamp at this pin</value>
   </data>
   <data name="CheckInSpotHint" xml:space="preserve">
-    <value>Press and hold the pin, then drag it to move it. You can check in anywhere inside the circle, within {0} of where you are.</value>
+    <value>Press and hold the pin, then drag it to move it. You can stamp anywhere inside the circle, within {0} of where you are.</value>
   </data>
   <data name="CheckInSpotInRange" xml:space="preserve">
     <value>{0} from you - inside the circle</value>
@@ -517,7 +517,7 @@
     <value>The pin is {0} from where you are. Move it to within {1} of you (inside the circle) and try again.</value>
   </data>
   <data name="CheckInHere" xml:space="preserve">
-    <value>Check in here</value>
+    <value>Stamp here</value>
   </data>
   <data name="PinStyleCritter" xml:space="preserve">
     <value>Critters</value>
@@ -538,7 +538,7 @@
     <value>No stamps yet</value>
   </data>
   <data name="NoStampsHint" xml:space="preserve">
-    <value>When you are somewhere new, tap Get Location on the Map and the country and region are stamped here.</value>
+    <value>When you are somewhere new, tap Stamp where I am on the Map and the country and region are stamped here.</value>
   </data>
   <data name="StampFirstOnMap" xml:space="preserve">
     <value>Get your first stamp on the Map</value>
