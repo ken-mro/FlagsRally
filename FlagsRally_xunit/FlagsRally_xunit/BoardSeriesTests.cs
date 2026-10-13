@@ -28,4 +28,21 @@ public class BoardSeriesTests
         Assert.Equal("マンホールカード", BoardSeries.Of("マンホールカード第05弾", null));
         Assert.Equal("マンホールカード", BoardSeries.Of("マンホールカード第05弾", " "));
     }
+
+    [Fact]
+    public void A_subfolder_is_named_with_its_parents()
+    {
+        Assert.Equal("マンホールカード／関東", BoardSeries.FolderPath(["マンホールカード", "関東"]));
+        Assert.Equal("Expo25", BoardSeries.FolderPath(["Expo25"]));
+        Assert.Equal("", BoardSeries.FolderPath([]));
+    }
+
+    [Fact]
+    public void Subfolders_with_the_same_name_in_different_series_stay_apart()
+    {
+        var manhole = BoardSeries.Of("Board A", BoardSeries.FolderPath(["マンホールカード", "関東"]));
+        var shrines = BoardSeries.Of("Board B", BoardSeries.FolderPath(["神社", "関東"]));
+
+        Assert.NotEqual(manhole, shrines);
+    }
 }

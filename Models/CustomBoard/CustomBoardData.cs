@@ -17,7 +17,7 @@ public class CustomBoardData
     // Position in board lists. Rows created before this column existed default to 0 and fall back to Name order.
     public int SortOrder { get; set; }
 
-    // The shared folder the board was added from (e.g. マンホールカード), so the map can group
+    // The shared folder the board was added from, with its parents (e.g. マンホールカード／関東), so the map can group
     // its issues. Empty for boards added from a file or before this column existed.
     [MaxLength(168)]
     public string Folder { get; set; } = string.Empty;
