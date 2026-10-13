@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FlagsRally.Views.CollectionsPage"
+    x:Name="page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
@@ -141,7 +142,7 @@
                     ColumnDefinitions="Auto,*,Auto,Auto"
                     ColumnSpacing="6">
                     <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CollectionsPageViewModel}}, x:DataType=viewmodels:CollectionsPageViewModel, Path=ToggleSectionCommand}" CommandParameter="{Binding .}" />
+                        <TapGestureRecognizer Command="{Binding ViewModel.ToggleSectionCommand, Source={x:Reference page}, x:DataType=views:CollectionsPage}" CommandParameter="{Binding .}" />
                     </Grid.GestureRecognizers>
                     <Label
                         FontSize="20"
@@ -165,7 +166,7 @@
                         Grid.Column="3"
                         Padding="8,0"
                         BackgroundColor="Transparent"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CollectionsPageViewModel}}, x:DataType=viewmodels:CollectionsPageViewModel, Path=EditBoardsCommand}"
+                        Command="{Binding ViewModel.EditBoardsCommand, Source={x:Reference page}, x:DataType=views:CollectionsPage}"
                         HorizontalOptions="End"
                         IsVisible="{Binding IsEditable}"
                         Text="{x:Static strings:AppResources.Edit}"

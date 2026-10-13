@@ -5,6 +5,11 @@ namespace FlagsRally.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainPageViewModel _mainPageViewModel;
+
+    // For the stamps, which read the page's settings (countries or regions, date shown) and commands
+    // through the page instead of each stamp looking up its ancestors (RelativeSource).
+    public MainPageViewModel ViewModel => _mainPageViewModel;
+
     public MainPage(MainPageViewModel vm)
     {
         InitializeComponent();

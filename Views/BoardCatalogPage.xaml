@@ -6,8 +6,80 @@
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:BoardCatalogPageViewModel"
     Style="{StaticResource PaperPage}">
+    <!--  A folder and a board each have their own row, holding only the views that row shows.
+          Tapping a row is taken as a selection (see code-behind): a folder opens, a board is ticked.  -->
+    <ContentPage.Resources>
+        <DataTemplate x:Key="FolderRow" x:DataType="viewmodels:BoardCatalogItem">
+            <Grid
+                Padding="14,0"
+                ColumnDefinitions="36,*,Auto"
+                MinimumHeightRequest="60">
+                <Label
+                    FontSize="20"
+                    Text="📁"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Column="1"
+                    Margin="0,8"
+                    FontSize="16"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding DisplayName}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Column="2"
+                    FontSize="22"
+                    Text="›"
+                    TextColor="{StaticResource InkMuted}"
+                    VerticalOptions="Center" />
+                <BoxView
+                    Grid.ColumnSpan="3"
+                    Margin="36,0,0,0"
+                    HeightRequest="1"
+                    VerticalOptions="End"
+                    Color="{StaticResource PaperEdge}" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="BoardRow" x:DataType="viewmodels:BoardCatalogItem">
+            <Grid
+                Padding="14,0"
+                ColumnDefinitions="36,*,Auto"
+                MinimumHeightRequest="60">
+                <Image
+                    HeightRequest="24"
+                    HorizontalOptions="Start"
+                    Source="board.png"
+                    VerticalOptions="Center"
+                    WidthRequest="24" />
+                <Label
+                    Grid.Column="1"
+                    Margin="0,8"
+                    FontSize="16"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding DisplayName}"
+                    VerticalOptions="Center" />
+                <CheckBox
+                    Grid.Column="2"
+                    Margin="0,0,-8,0"
+                    Color="{StaticResource Stamp}"
+                    InputTransparent="True"
+                    IsChecked="{Binding IsSelected}"
+                    VerticalOptions="Center" />
+                <BoxView
+                    Grid.ColumnSpan="3"
+                    Margin="36,0,0,0"
+                    HeightRequest="1"
+                    VerticalOptions="End"
+                    Color="{StaticResource PaperEdge}" />
+            </Grid>
+        </DataTemplate>
+        <views:BoardCatalogRowTemplateSelector
+            x:Key="EntryRows"
+            Board="{StaticResource BoardRow}"
+            Folder="{StaticResource FolderRow}" />
+    </ContentPage.Resources>
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding NavigateBackCommand}" />
     </Shell.BackButtonBehavior>
@@ -66,7 +138,12 @@
             BackgroundColor="{StaticResource PaperCard}"
             StrokeShape="RoundRectangle 10"
             StrokeThickness="0">
-            <CollectionView ItemsSource="{Binding Entries}">
+            <CollectionView
+                x:Name="entries"
+                ItemTemplate="{StaticResource EntryRows}"
+                ItemsSource="{Binding Entries}"
+                SelectionChanged="OnEntrySelected"
+                SelectionMode="Single">
                 <CollectionView.EmptyView>
                     <Grid>
                         <VerticalStackLayout
@@ -94,60 +171,6 @@
                             VerticalOptions="Center" />
                     </Grid>
                 </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="viewmodels:BoardCatalogItem">
-                        <Grid
-                            Padding="14,0"
-                            ColumnDefinitions="36,*,Auto"
-                            MinimumHeightRequest="60">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BoardCatalogPageViewModel}}, x:DataType=viewmodels:BoardCatalogPageViewModel, Path=OpenEntryCommand}" CommandParameter="{Binding .}" />
-                            </Grid.GestureRecognizers>
-                            <!--  Folder or board  -->
-                            <Label
-                                FontSize="20"
-                                IsVisible="{Binding IsFolder}"
-                                Text="📁"
-                                VerticalOptions="Center" />
-                            <Image
-                                HeightRequest="24"
-                                HorizontalOptions="Start"
-                                IsVisible="{Binding IsBoardFile}"
-                                Source="board.png"
-                                VerticalOptions="Center"
-                                WidthRequest="24" />
-                            <Label
-                                Grid.Column="1"
-                                Margin="0,8"
-                                FontSize="16"
-                                LineBreakMode="WordWrap"
-                                Text="{Binding DisplayName}"
-                                VerticalOptions="Center" />
-                            <Label
-                                Grid.Column="2"
-                                FontSize="22"
-                                IsVisible="{Binding IsFolder}"
-                                Text="›"
-                                TextColor="{StaticResource InkMuted}"
-                                VerticalOptions="Center" />
-                            <!--  Tapping anywhere on the row selects the board  -->
-                            <CheckBox
-                                Grid.Column="2"
-                                Margin="0,0,-8,0"
-                                Color="{StaticResource Stamp}"
-                                InputTransparent="True"
-                                IsChecked="{Binding IsSelected}"
-                                IsVisible="{Binding IsBoardFile}"
-                                VerticalOptions="Center" />
-                            <BoxView
-                                Grid.ColumnSpan="3"
-                                Margin="36,0,0,0"
-                                HeightRequest="1"
-                                VerticalOptions="End"
-                                Color="{StaticResource PaperEdge}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
             </CollectionView>
         </Border>
 
