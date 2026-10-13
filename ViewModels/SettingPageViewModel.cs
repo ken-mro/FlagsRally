@@ -197,7 +197,8 @@ namespace FlagsRally.ViewModels
 
                 if (!fileSaverResult.IsSuccessful)
                 {
-                    if (fileSaverResult.Exception != null)
+                    // Closing the save screen without saving is not an error.
+                    if (fileSaverResult.Exception is not null and not OperationCanceledException)
                     {
                         throw fileSaverResult.Exception;
                     }
@@ -205,6 +206,10 @@ namespace FlagsRally.ViewModels
                 }
 
                 await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
+            }
+            catch (OperationCanceledException)
+            {
+                // Closed without saving
             }
             catch (UnauthorizedAccessException)
             {
