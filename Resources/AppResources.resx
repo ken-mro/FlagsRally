@@ -609,7 +609,7 @@
     <value>Where you are, tap Stamp where I am on the Map, then Stamp here: the country and region go into your passport. To stamp a spot nearby, press and hold the map there; it must be within {0} of you.</value>
   </data>
   <data name="OnboardingBoardsTitle" xml:space="preserve">
-    <value>Go on a stamp rally</value>
+    <value>Go on a stamp trail</value>
   </data>
   <data name="OnboardingBoardsBody" xml:space="preserve">
     <value>Add boards such as shrine tours or manhole cards with Add board in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In.</value>
