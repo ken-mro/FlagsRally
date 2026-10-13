@@ -92,9 +92,10 @@
             Grid.Row="2"
             BackgroundColor="{StaticResource Stamp}"
             Command="{Binding DeleteSelectedCommand}"
-            IsEnabled="{Binding HasSelection}"
             Text="{Binding DeleteSelectedText}"
             TextColor="White">
+            <!--  Greyed out until a board is ticked (the command does nothing then). Not IsEnabled: with a
+                  Command bound as well, the button kept its disabled look after a board was ticked.  -->
             <Button.Triggers>
                 <DataTrigger
                     Binding="{Binding HasSelection}"
