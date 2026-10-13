@@ -37,7 +37,7 @@ STAMP_RED = (185, 64, 71)
 # Texts the script looks for, per language.
 TEXTS = {
     "en": {"stamp": "Stamp where I am", "add_board": "Add board", "custom_boards": "Custom boards", "tab": "Passport"},
-    "ja": {"stamp": "現在地でスタンプ", "add_board": "ボードを追加", "custom_boards": "カスタムボード", "tab": "パスポート"},
+    "ja": {"stamp": "現在地でスタンプ", "add_board": "スタンプラリーを追加", "custom_boards": "スタンプラリー", "tab": "パスポート"},
 }
 # Country of residence for the passport cover in the screenshots.
 COVER = {"en": "US", "ja": "JP"}
@@ -187,7 +187,7 @@ def take(lang, original_db):
     plus = find("+", exact=True)
     # The whole card: from above its "+" to below its title, as wide as the title.
     card = (label[0] - 4, plus[1] - 40, label[2] + 4, label[3] + 14)
-    heading = find(t["custom_boards"])
+    heading = find(t["custom_boards"], exact=True)
     tab_bar = find(t["tab"], exact=True)[1] - 60   # stop above the tab bar
     top = max(282, heading[1] - 30)
     save(screen(), (0, top, 1080, min(tab_bar, card[3] + 40)), card, f"howto_boards_{lang}.png")

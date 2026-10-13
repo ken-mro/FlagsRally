@@ -10,7 +10,11 @@
     x:DataType="viewmodels:ManageCustomBoardsPageViewModel"
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.ManageBoards}" />
+        <!--  The whole title, made smaller to fit the bar when it is long (「スタンプラリーを追加」)  -->
+        <controls:FittingStampLabel
+            LineBreakMode="WordWrap"
+            Style="{StaticResource StampTitle}"
+            Text="{x:Static strings:AppResources.ManageBoards}" />
     </Shell.TitleView>
     <Grid Padding="12" RowSpacing="10">
         <Grid.RowDefinitions>
