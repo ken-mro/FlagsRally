@@ -1528,7 +1528,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collect boards.
+        ///   Looks up a localized string similar to Go on a stamp rally.
         /// </summary>
         internal static string OnboardingBoardsTitle {
             get {

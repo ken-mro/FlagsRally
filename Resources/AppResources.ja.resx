@@ -609,7 +609,7 @@
     <value>訪れた場所でマップの「現在地でスタンプ」を押し、「ここでスタンプを押す」を押すと、国と地域のスタンプがパスポートに押されます。近くの別の場所にしたいときは、マップを長押ししてピンを置きます（現在地から{0}以内）。</value>
   </data>
   <data name="OnboardingBoardsTitle" xml:space="preserve">
-    <value>ボードを集める</value>
+    <value>スタンプラリーをする</value>
   </data>
   <data name="OnboardingBoardsBody" xml:space="preserve">
     <value>コレクションの「ボードを追加」から、神社巡りやマンホールカードなどのボードを追加できます。ボードの地点はマップにピンで表示されます。地点から{0}以内でピンを選び、「チェックイン」を押すと記録されます。</value>
