@@ -137,7 +137,7 @@
                                             TextColor="{StaticResource PaperCard}"
                                             VerticalOptions="Center" />
                                     </StackLayout>
-                                    <Label
+                                    <controls:OneLineFittingLabel
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"
@@ -149,7 +149,7 @@
                                         Text="{Binding ArrivalDateString}"
                                         TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
-                                    <Label
+                                    <controls:OneLineFittingLabel
                                         FontAttributes="Bold"
                                         FontFamily="JerseyclubGrungeBold"
                                         FontSize="Medium"

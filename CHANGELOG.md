@@ -16,6 +16,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** A new `/project-skills` skill explains which skills this project has and when to use each, reading `.claude/skills/` each time so new skills are included without editing it.
 
 ### Fixed
+- **The passport date broken over two lines with large text.** With iOS's largest text sizes a stamp's date wrapped after the month ("09 10月" / "2026"). The date on passport stamps, regional flags and custom boards now gets a little smaller when needed and stays on one line; at normal sizes it looks as before.
 - **Checking in the wrong board's place where two boards share a spot.** Where two boards have the same place, such as 香取神宮 on 全国一の宮巡り and 全国神宮二十五社巡り, choosing the second one in "Several pins are here" could leave the first one selected (seen on iPhone), so Check In recorded the first board's place and the second could look already checked in. Each pin is now its own place, so the one you choose is the one checked in.
 - **The selected pin hidden behind another pin at the same spot.** The selected pin is now drawn in front, so you can see which one the card is about.
 
