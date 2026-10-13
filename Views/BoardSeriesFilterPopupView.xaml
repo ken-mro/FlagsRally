@@ -22,14 +22,30 @@
             LineBreakMode="WordWrap"
             Style="{StaticResource StampHeading}"
             Text="{Binding Title}" />
-        <Button
+        <!--  Select all / Clear selection side by side, on two rows when they do not fit  -->
+        <FlexLayout
             Grid.Row="1"
-            Padding="0"
-            BackgroundColor="Transparent"
-            Command="{Binding ToggleAllCommand}"
-            HorizontalOptions="Start"
-            Text="{Binding ToggleAllText}"
-            TextColor="{StaticResource Navy}" />
+            AlignItems="Center"
+            Wrap="Wrap">
+            <Button
+                Margin="0,0,8,4"
+                Padding="12,0"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource Navy}"
+                BorderWidth="1"
+                Command="{Binding ShowAllCommand}"
+                Text="{x:Static strings:AppResources.SelectAllBoards}"
+                TextColor="{StaticResource Navy}" />
+            <Button
+                Margin="0,0,8,4"
+                Padding="12,0"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource Navy}"
+                BorderWidth="1"
+                Command="{Binding HideAllCommand}"
+                Text="{x:Static strings:AppResources.ClearBoardSelection}"
+                TextColor="{StaticResource Navy}" />
+        </FlexLayout>
         <ScrollView x:Name="boards" Grid.Row="2">
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Boards}">
                 <BindableLayout.ItemTemplate>

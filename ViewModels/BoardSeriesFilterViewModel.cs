@@ -1,7 +1,6 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
@@ -38,30 +37,27 @@ public partial class BoardSeriesFilterViewModel : ObservableObject
 
     public IReadOnlyList<BoardSeriesFilterItem> Boards { get; }
 
-    public bool AllShown => Boards.All(b => b.IsShown);
-
-    public string ToggleAllText => AllShown ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
-
     [RelayCommand]
     void ToggleBoard(BoardSeriesFilterItem board)
     {
         board.IsShown = !board.IsShown;
         _setShown([board.Name], board.IsShown);
-        OnPropertyChanged(nameof(AllShown));
-        OnPropertyChanged(nameof(ToggleAllText));
     }
 
+    // Both are always there: with some boards ticked, either one takes a single tap.
     [RelayCommand]
-    void ToggleAll()
+    void ShowAll() => SetAll(true);
+
+    [RelayCommand]
+    void HideAll() => SetAll(false);
+
+    void SetAll(bool show)
     {
-        var show = !AllShown;
         foreach (var board in Boards)
         {
             board.IsShown = show;
         }
         _setShown(Boards.Select(b => b.Name).ToList(), show);
-        OnPropertyChanged(nameof(AllShown));
-        OnPropertyChanged(nameof(ToggleAllText));
     }
 
     [RelayCommand]
