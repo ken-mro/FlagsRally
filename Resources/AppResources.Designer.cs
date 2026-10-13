@@ -133,47 +133,11 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Backup.
-        /// </summary>
-        internal static string Backup {
-            get {
-                return ResourceManager.GetString("Backup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Backup saved successfully!.
         /// </summary>
         internal static string BackupSucceeded {
             get {
                 return ResourceManager.GetString("BackupSucceeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Banner.
-        /// </summary>
-        internal static string Banner {
-            get {
-                return ResourceManager.GetString("Banner", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Banner Visas.
-        /// </summary>
-        internal static string BannerVisas {
-            get {
-                return ResourceManager.GetString("BannerVisas", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stamp trails.
-        /// </summary>
-        internal static string Boards {
-            get {
-                return ResourceManager.GetString("Boards", resourceCulture);
             }
         }
         
@@ -223,15 +187,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm the current location and tap &apos;Get Location&apos; below..
-        /// </summary>
-        internal static string ConfirmLocationTapButton {
-            get {
-                return ResourceManager.GetString("ConfirmLocationTapButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure to reset?.
         /// </summary>
         internal static string ConfirmReset {
@@ -264,15 +219,6 @@ namespace FlagsRally.Resources {
         internal static string CreateBackup {
             get {
                 return ResourceManager.GetString("CreateBackup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stamp Trail.
-        /// </summary>
-        internal static string CustomBoard {
-            get {
-                return ResourceManager.GetString("CustomBoard", resourceCulture);
             }
         }
         
@@ -340,15 +286,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter pin.
-        /// </summary>
-        internal static string FilterPin {
-            get {
-                return ResourceManager.GetString("FilterPin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Stamp where I am.
         /// </summary>
         internal static string GetLocation {
@@ -376,56 +313,11 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How to use this app.
-        /// </summary>
-        internal static string HowTo {
-            get {
-                return ResourceManager.GetString("HowTo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Information.
         /// </summary>
         internal static string Information {
             get {
                 return ResourceManager.GetString("Information", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 1. Got to ”Settings” and set your Country of Residence..
-        /// </summary>
-        internal static string Instruciton1 {
-            get {
-                return ResourceManager.GetString("Instruciton1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 2. Go to &quot;Location&quot; and Get Locatoin.
-        /// </summary>
-        internal static string Instruciton2 {
-            get {
-                return ResourceManager.GetString("Instruciton2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 3. Go to &quot;Banner&quot; and pull to refresh..
-        /// </summary>
-        internal static string Instruciton3 {
-            get {
-                return ResourceManager.GetString("Instruciton3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bon Voyage!.
-        /// </summary>
-        internal static string Instruciton4 {
-            get {
-                return ResourceManager.GetString("Instruciton4", resourceCulture);
             }
         }
         
@@ -610,15 +502,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore.
-        /// </summary>
-        internal static string Restore {
-            get {
-                return ResourceManager.GetString("Restore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Restore backup.
         /// </summary>
         internal static string RestoreBackup {
@@ -700,15 +583,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go near the selected pin and tap &apos;Check In&apos; below..
-        /// </summary>
-        internal static string TapCheckInNearTheSelectedPin {
-            get {
-                return ResourceManager.GetString("TapCheckInNearTheSelectedPin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Terms of Use.
         /// </summary>
         internal static string TermsOfUse {
@@ -786,42 +660,6 @@ namespace FlagsRally.Resources {
         internal static string ManageBoards {
             get {
                 return ResourceManager.GetString("ManageBoards", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move up.
-        /// </summary>
-        internal static string MoveUp {
-            get {
-                return ResourceManager.GetString("MoveUp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move down.
-        /// </summary>
-        internal static string MoveDown {
-            get {
-                return ResourceManager.GetString("MoveDown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select pins to show.
-        /// </summary>
-        internal static string SelectPinsToShow {
-            get {
-                return ResourceManager.GetString("SelectPinsToShow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} selected.
-        /// </summary>
-        internal static string NSelected {
-            get {
-                return ResourceManager.GetString("NSelected", resourceCulture);
             }
         }
         
@@ -939,24 +777,6 @@ namespace FlagsRally.Resources {
         internal static string CountriesAndRegions {
             get {
                 return ResourceManager.GetString("CountriesAndRegions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Regional flags.
-        /// </summary>
-        internal static string RegionalFlags {
-            get {
-                return ResourceManager.GetString("RegionalFlags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to States and regions you have visited, by country.
-        /// </summary>
-        internal static string RegionalFlagsSubtitle {
-            get {
-                return ResourceManager.GetString("RegionalFlagsSubtitle", resourceCulture);
             }
         }
         
