@@ -381,7 +381,8 @@
                                         X2="150"
                                         Y1="0"
                                         Y2="0" />
-                                    <Label
+                                    <controls:OneLineFittingLabel
+                                        Margin="8,0"
                                         FontAttributes="Bold"
                                         FontFamily="craftmincho"
                                         FontSize="Body"
@@ -393,7 +394,8 @@
                                         Text="{Binding ArrivalDateString}"
                                         TextColor="{StaticResource Stamp}"
                                         VerticalOptions="Center" />
-                                    <Label
+                                    <controls:OneLineFittingLabel
+                                        Margin="8,0"
                                         FontAttributes="Bold"
                                         FontFamily="craftmincho"
                                         FontSize="Body"
