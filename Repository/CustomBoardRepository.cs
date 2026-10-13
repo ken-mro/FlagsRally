@@ -38,6 +38,11 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
         if (existing is not null)
         {
             customBoardData.SortOrder = existing.SortOrder;
+            // Replacing a board from a file keeps the folder it first came from.
+            if (string.IsNullOrEmpty(customBoardData.Folder))
+            {
+                customBoardData.Folder = existing.Folder ?? string.Empty;
+            }
         }
         else
         {
@@ -76,6 +81,7 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
             Height = customBoardData.Height,
             Url = customBoardData.Url,
             SortOrder = customBoardData.SortOrder,
+            Folder = customBoardData.Folder ?? string.Empty,
         };
     }
 
@@ -88,6 +94,7 @@ public class CustomBoardRepository : BaseRepository, ICustomBoardRepository
             Height = customBoard.Height,
             Url = customBoard.Url,
             SortOrder = customBoard.SortOrder,
+            Folder = customBoard.Folder,
         };
     }
 

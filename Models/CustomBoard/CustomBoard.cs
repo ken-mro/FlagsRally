@@ -7,4 +7,5 @@ public record CustomBoard
     public int Width { get; init; } = 0;
     public int Height { get; init; } = 0;
     public int SortOrder { get; init; } = 0;
+    public string Folder { get; init; } = string.Empty;
 }

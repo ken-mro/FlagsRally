@@ -176,7 +176,7 @@
                             </Border.GestureRecognizers>
                             <Label
                                 FontSize="13"
-                                Text="{Binding Name}"
+                                Text="{Binding Text}"
                                 TextColor="{StaticResource Ink}">
                                 <Label.Triggers>
                                     <DataTrigger

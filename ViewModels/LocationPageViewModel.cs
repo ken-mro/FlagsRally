@@ -621,7 +621,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         try
         {
-            var knownBoards = FilterChips.Select(c => c.Name).ToHashSet();
+            var knownBoards = FilterChips.SelectMany(c => c.Members).ToHashSet();
             if (message.PlacesChanged)
             {
                 await ReloadCustomLocationPinsAsync();
@@ -631,7 +631,7 @@ public partial class LocationPageViewModel : BaseViewModel
             // When filtering, also show boards that were just added.
             if (_visiblePinKeys.Count > 0)
             {
-                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll && !knownBoards.Contains(c.Name)).Select(c => c.Name));
+                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll).SelectMany(c => c.Members).Where(name => !knownBoards.Contains(name)));
                 OnPinFilterChanged();
             }
         }
@@ -947,20 +947,36 @@ public partial class LocationPageViewModel : BaseViewModel
     readonly HashSet<string> _visiblePinKeys = [];
 
     [RelayCommand]
-    void ToggleFilterChip(PinFilterChip chip)
+    async Task ToggleFilterChipAsync(PinFilterChip chip)
     {
-        var keys = PinFilterRules.Toggle(FilterChips, chip);
+        if (chip.IsGroup)
+        {
+            await ChooseSeriesBoardsAsync(chip);
+            return;
+        }
+
+        SetVisiblePinKeys(PinFilterRules.Toggle(FilterChips, chip, _visiblePinKeys));
+    }
+
+    // A series chip (such as マンホールカード) opens its boards to show all of them or some.
+    private async Task ChooseSeriesBoardsAsync(PinFilterChip chip)
+    {
+        var boards = chip.Members.Select(name => new BoardSeriesFilterItem(name, _visiblePinKeys.Contains(name)));
+        var viewModel = new BoardSeriesFilterViewModel(chip.Name, boards, (names, shown) =>
+            SetVisiblePinKeys(PinFilterRules.SetShown(_visiblePinKeys, names, shown)));
+        await Shell.Current.CurrentPage.ShowPopupAsync(new BoardSeriesFilterPopupView(viewModel));
+    }
+
+    private void SetVisiblePinKeys(IReadOnlyCollection<string> keys)
+    {
         _visiblePinKeys.Clear();
         _visiblePinKeys.UnionWith(keys);
-        UpdatePinsVisibility();
+        OnPinFilterChanged();
     }
 
     private void OnPinFilterChanged()
     {
-        foreach (var chip in FilterChips)
-        {
-            chip.IsSelected = chip.IsAll ? _visiblePinKeys.Count == 0 : _visiblePinKeys.Contains(chip.Name);
-        }
+        PinFilterRules.Refresh(FilterChips, _visiblePinKeys);
         UpdatePinsVisibility();
     }
 
@@ -1030,14 +1046,17 @@ public partial class LocationPageViewModel : BaseViewModel
             filterList.Add(new CustomBoardPinFilterItem(AppResources.ArrivalLocation));
         }
 
+        // Boards of one series (the shared folder they came from, or the same name but for the
+        // issue number) share a chip, in the place of the series' first board.
         var boardList = await _customBoardRepository.GetAllCustomBoards();
-        foreach (var board in boardList)
+        foreach (var series in boardList.GroupBy(b => BoardSeries.Of(b.Name, b.Folder)))
         {
-            filterList.Add(new CustomBoardPinFilterItem(board.Name));
+            var names = series.Select(b => b.Name).ToList();
+            filterList.Add(names.Count == 1 ? new CustomBoardPinFilterItem(names[0]) : new CustomBoardPinFilterItem(series.Key, names));
         }
 
         // Drop keys of filters that no longer exist (e.g. deleted boards).
-        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Name == key)) > 0;
+        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Members.Contains(key))) > 0;
 
         FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _visiblePinKeys));
 
