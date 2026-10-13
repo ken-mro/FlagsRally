@@ -132,20 +132,8 @@
   <data name="ArrivalLocationInfo" xml:space="preserve">
     <value>Arrival Location Info.</value>
   </data>
-  <data name="Backup" xml:space="preserve">
-    <value>Backup</value>
-  </data>
   <data name="BackupSucceeded" xml:space="preserve">
     <value>Backup saved successfully!</value>
-  </data>
-  <data name="Banner" xml:space="preserve">
-    <value>Banner</value>
-  </data>
-  <data name="BannerVisas" xml:space="preserve">
-    <value>Banner Visas</value>
-  </data>
-  <data name="Boards" xml:space="preserve">
-    <value>Stamp trails</value>
   </data>
   <data name="ClearAPIKey" xml:space="preserve">
     <value>API key is cleared successfully!</value>
@@ -155,9 +143,6 @@
   </data>
   <data name="Confirmation" xml:space="preserve">
     <value>Confirmation</value>
-  </data>
-  <data name="ConfirmLocationTapButton" xml:space="preserve">
-    <value>Confirm the current location and tap 'Get Location' below.</value>
   </data>
   <data name="Country" xml:space="preserve">
     <value>Country</value>
@@ -188,21 +173,6 @@
   </data>
   <data name="HideDateAndMonth" xml:space="preserve">
     <value>Hide date and month</value>
-  </data>
-  <data name="HowTo" xml:space="preserve">
-    <value>How to use this app</value>
-  </data>
-  <data name="Instruciton1" xml:space="preserve">
-    <value>1. Got to ”Settings” and set your Country of Residence.</value>
-  </data>
-  <data name="Instruciton2" xml:space="preserve">
-    <value>2. Go to "Location" and Get Locatoin</value>
-  </data>
-  <data name="Instruciton3" xml:space="preserve">
-    <value>3. Go to "Banner" and pull to refresh.</value>
-  </data>
-  <data name="Instruciton4" xml:space="preserve">
-    <value>Bon Voyage!</value>
   </data>
   <data name="InvalidAPIKey" xml:space="preserve">
     <value>Invalid API Key.</value>
@@ -246,9 +216,6 @@
   <data name="RelaunchToEnable" xml:space="preserve">
     <value>Please relaunch the app to enable the data.</value>
   </data>
-  <data name="Restore" xml:space="preserve">
-    <value>Restore</value>
-  </data>
   <data name="RestoreBackup" xml:space="preserve">
     <value>Restore backup</value>
   </data>
@@ -285,9 +252,6 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>Access to the selected folder denied.</value>
   </data>
-  <data name="FilterPin" xml:space="preserve">
-    <value>Filter pin</value>
-  </data>
   <data name="AllPins" xml:space="preserve">
     <value>All Pins</value>
   </data>
@@ -299,12 +263,6 @@
   </data>
   <data name="CheckIn" xml:space="preserve">
     <value>Check In</value>
-  </data>
-  <data name="TapCheckInNearTheSelectedPin" xml:space="preserve">
-    <value>Go near the selected pin and tap 'Check In' below.</value>
-  </data>
-  <data name="CustomBoard" xml:space="preserve">
-    <value>Stamp Trail</value>
   </data>
   <data name="FailedToCheckIn" xml:space="preserve">
     <value>Failed to check in.</value>
@@ -360,18 +318,6 @@
   <data name="ManageBoards" xml:space="preserve">
     <value>Manage Stamp Trails</value>
   </data>
-  <data name="MoveUp" xml:space="preserve">
-    <value>Move up</value>
-  </data>
-  <data name="MoveDown" xml:space="preserve">
-    <value>Move down</value>
-  </data>
-  <data name="SelectPinsToShow" xml:space="preserve">
-    <value>Select pins to show</value>
-  </data>
-  <data name="NSelected" xml:space="preserve">
-    <value>{0} selected</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -410,12 +356,6 @@
   </data>
   <data name="CountriesAndRegions" xml:space="preserve">
     <value>Countries &amp; regions</value>
-  </data>
-  <data name="RegionalFlags" xml:space="preserve">
-    <value>Regional flags</value>
-  </data>
-  <data name="RegionalFlagsSubtitle" xml:space="preserve">
-    <value>States and regions you have visited, by country</value>
   </data>
   <data name="CustomBoards" xml:space="preserve">
     <value>Stamp trails</value>
