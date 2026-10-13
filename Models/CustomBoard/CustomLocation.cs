@@ -12,6 +12,10 @@ public class CustomLocation
     public string Subtitle { get; init; } = string.Empty;
     public string Group { get; init; } = string.Empty;
     public string ImageUrl { get; init; } = string.Empty;
+    /// <summary>
+    /// The stamp to show on the board: only a visited place has one, so an unvisited place's image is never fetched.
+    /// </summary>
+    public string? StampImageUrl => HasBeenVisited ? ImageUrl : null;
     public Location Location { get; init; } = new ();
     public DateTime? ArrivalDate { get; init; } = null;
     /// <summary>

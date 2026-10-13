@@ -142,4 +142,23 @@ public class CustomLocationTests
         // Assert
         Assert.Equal(string.Empty, arrivalDateString);
     }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Only_a_visited_place_has_a_stamp_image_to_load(bool visited)
+    {
+        var customLocation = new CustomLocation
+        (
+            board: new CustomBoard { Name = "Test Board", Url = "https://www.sample/{code}.jpg" },
+            code: "01",
+            title: "旭川市",
+            subtitle: "北海道",
+            group: "北海道",
+            location: new Location(43.762278, 142.359194),
+            arrivalDate: visited ? new DateTime(2026, 10, 1) : null
+        );
+
+        Assert.Equal(visited ? "https://www.sample/01.jpg" : null, customLocation.StampImageUrl);
+    }
 }

@@ -7,6 +7,10 @@ public partial class FlagsBoardPage : ContentPage
     public const string Route = "FlagsBoard";
 
     private readonly FlagsBoardPageViewModel _flagsBoardPageViewModel;
+
+    // For the tiles, which read the page's settings (date shown) through the page.
+    public FlagsBoardPageViewModel ViewModel => _flagsBoardPageViewModel;
+
     public FlagsBoardPage(FlagsBoardPageViewModel vm)
     {
         InitializeComponent();

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FlagsRally.Views.MainPage"
+    x:Name="page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
@@ -10,6 +11,7 @@
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:MainPageViewModel"
     Style="{StaticResource PaperPage}">
     <ContentPage.Resources>
@@ -241,7 +243,7 @@
                         <SwipeView.LeftItems>
                             <SwipeItem
                                 BackgroundColor="{StaticResource Stamp}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=DeleteArrivalLocationCommand}"
+                                Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 CommandParameter="{Binding .}"
                                 IconImageSource="eraser.png"
                                 Text="{x:Static strings:AppResources.Delete}" />
@@ -253,7 +255,7 @@
                             StrokeShape="Rectangle"
                             StrokeThickness="4">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=ShowLocationInfoCommand}" CommandParameter="{Binding .}" />
+                                <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
                             <Border
                                 Margin="2"
@@ -266,7 +268,7 @@
                                     <FlyoutBase.ContextFlyout>
                                         <MenuFlyout>
                                             <MenuFlyoutItem
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=DeleteArrivalLocationCommand}"
+                                                Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
                                                 CommandParameter="{Binding .}"
                                                 IconImageSource="eraser.png"
                                                 IsDestructive="True"
@@ -279,7 +281,7 @@
                                                 Margin="-2"
                                                 FontSize="47"
                                                 HorizontalOptions="Center"
-                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=IsCountry}"
+                                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                                 Text="{Binding CountryFlagSource}"
                                                 VerticalOptions="Center">
                                                 <Label.Triggers>
@@ -296,7 +298,7 @@
                                             <Label
                                                 FontSize="45"
                                                 HorizontalOptions="Center"
-                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=IsCountry}"
+                                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                                 Text="{Binding CountryFlagSource}"
                                                 VerticalOptions="Center">
                                                 <Label.Triggers>
@@ -314,7 +316,7 @@
                                                 Margin="10"
                                                 HeightRequest="40"
                                                 HorizontalOptions="Center"
-                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=IsCountry}"
+                                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                                 Source="{Binding CountryFlagSource}"
                                                 VerticalOptions="Center" />
                                         </On>
@@ -323,10 +325,17 @@
                                         Margin="10"
                                         HeightRequest="40"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=IsAdminArea}"
+                                        IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Source="{Binding AdminAreaFlagSource}"
                                         VerticalOptions="Center">
                                         <Image.Triggers>
+                                            <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
+                                            <DataTrigger
+                                                Binding="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                                TargetType="Image"
+                                                Value="True">
+                                                <Setter Property="Source" Value="{x:Null}" />
+                                            </DataTrigger>
                                             <DataTrigger
                                                 Binding="{Binding AdminAreaFlagSource}"
                                                 TargetType="Image"
@@ -342,7 +351,7 @@
                                         FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
                                         HorizontalOptions="Center"
                                         HorizontalTextAlignment="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=IsCountry}"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         LineBreakMode="CharacterWrap"
                                         LineHeight="1"
                                         MaxLines="2"
@@ -356,7 +365,7 @@
                                         FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
                                         HorizontalOptions="Center"
                                         HorizontalTextAlignment="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=IsAdminArea}"
+                                        IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         LineBreakMode="CharacterWrap"
                                         LineHeight="1"
                                         MaxLines="2"
@@ -377,7 +386,7 @@
                                         FontFamily="craftmincho"
                                         FontSize="Body"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=DateIsVisible}"
+                                        IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         HorizontalTextAlignment="Center"
                                         LineBreakMode="WordWrap"
                                         LineHeight="1"
@@ -389,7 +398,7 @@
                                         FontFamily="craftmincho"
                                         FontSize="Body"
                                         HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, x:DataType=viewmodels:MainPageViewModel, Path=DateIsNotVisible}"
+                                        IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         HorizontalTextAlignment="Center"
                                         LineBreakMode="WordWrap"
                                         LineHeight="1"

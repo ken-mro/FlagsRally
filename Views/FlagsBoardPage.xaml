@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FlagsRally.Views.FlagsBoardPage"
+    x:Name="page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
@@ -10,6 +11,7 @@
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:FlagsBoardPageViewModel"
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
@@ -21,6 +23,107 @@
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
+        <!--  A visited region and one not visited yet have their own tiles, so a tile builds only the views
+              it shows and an unvisited region's flag is never loaded. Page settings come through the page
+              (x:Reference), found once, instead of each tile looking up its ancestors (RelativeSource).  -->
+        <DataTemplate x:Key="UnvisitedTile" x:DataType="{x:Type models:SubRegion}">
+            <Border
+                BackgroundColor="Transparent"
+                Stroke="{StaticResource Ink}"
+                StrokeShape="RoundRectangle 20,20,20,20"
+                StrokeThickness="4">
+                <Label
+                    Padding="2"
+                    FontFamily="KiwiMaru-Medium"
+                    FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
+                    HeightRequest="134.48"
+                    HorizontalOptions="Center"
+                    LineBreakMode="MiddleTruncation"
+                    LineHeight="1"
+                    MaxLines="2"
+                    Text="{Binding Name}"
+                    TextColor="{StaticResource InkMuted}"
+                    VerticalOptions="Center" />
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="VisitedTile" x:DataType="{x:Type models:SubRegion}">
+            <Border
+                BackgroundColor="Transparent"
+                Stroke="{StaticResource Ink}"
+                StrokeShape="RoundRectangle 20,20,20,20"
+                StrokeThickness="4">
+                <VerticalStackLayout
+                    Spacing="{OnPlatform MacCatalyst=2,
+                                         iOS=2,
+                                         Default=0}"
+                    VerticalOptions="Center">
+                    <Image
+                        Margin="5"
+                        HeightRequest="40"
+                        HorizontalOptions="Center"
+                        Source="{Binding FlagSource}"
+                        VerticalOptions="Center" />
+                    <StackLayout BackgroundColor="{StaticResource Ink}">
+                        <Label
+                            FontFamily="KiwiMaru-Medium"
+                            FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
+                            HorizontalOptions="Center"
+                            LineBreakMode="MiddleTruncation"
+                            LineHeight="1"
+                            MaxLines="2"
+                            Text="{Binding Name}"
+                            TextColor="{StaticResource PaperCard}"
+                            VerticalOptions="Center" />
+                    </StackLayout>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="JerseyclubGrungeBold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:FlagsBoardPage}"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        LineHeight="1"
+                        Text="{Binding ArrivalDateString}"
+                        TextColor="{StaticResource Stamp}"
+                        VerticalOptions="Center" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="JerseyclubGrungeBold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:FlagsBoardPage}"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        LineHeight="1"
+                        Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
+                        TextColor="{StaticResource Stamp}"
+                        VerticalOptions="Center" />
+                    <Line
+                        HorizontalOptions="Center"
+                        Stroke="{StaticResource Ink}"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="120"
+                        Y1="0"
+                        Y2="0" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="True"
+                        FontFamily="JerseyclubGrungeBold"
+                        FontSize="35"
+                        HorizontalOptions="Center"
+                        LineBreakMode="NoWrap"
+                        Text="ARRIVAL"
+                        TextColor="{StaticResource Ink}"
+                        VerticalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
+        </DataTemplate>
+        <views:RegionTileTemplateSelector
+            x:Key="Tiles"
+            NotVisited="{StaticResource UnvisitedTile}"
+            Visited="{StaticResource VisitedTile}" />
     </ContentPage.Resources>
     <Grid Padding="5" RowSpacing="8">
         <Grid.RowDefinitions>
@@ -49,6 +152,7 @@
             <CollectionView
                 x:Name="collectionView"
                 Background="Transparent"
+                ItemTemplate="{StaticResource Tiles}"
                 ItemsSource="{Binding DisplayFullSubRegionList}"
                 VerticalOptions="Fill">
                 <!--  Room for the floating toolbar so the last tiles can scroll above it  -->
@@ -58,98 +162,6 @@
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
                 </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Type models:SubRegion}">
-                        <Border
-                            BackgroundColor="Transparent"
-                            Stroke="{StaticResource Ink}"
-                            StrokeShape="RoundRectangle 20,20,20,20"
-                            StrokeThickness="4">
-                            <StackLayout>
-                                <Label
-                                    Padding="2"
-                                    FontFamily="KiwiMaru-Medium"
-                                    FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                    HeightRequest="134.48"
-                                    HorizontalOptions="Center"
-                                    IsVisible="{Binding HasNotBeenVisited}"
-                                    LineBreakMode="MiddleTruncation"
-                                    LineHeight="1"
-                                    MaxLines="2"
-                                    Text="{Binding Name}"
-                                    TextColor="{StaticResource InkMuted}"
-                                    VerticalOptions="Center" />
-                                <VerticalStackLayout
-                                    IsVisible="{Binding HasBeenVisited}"
-                                    Spacing="{OnPlatform MacCatalyst=2,
-                                                         iOS=2,
-                                                         Default=0}"
-                                    VerticalOptions="Center">
-                                    <Image
-                                        Margin="5"
-                                        HeightRequest="40"
-                                        HorizontalOptions="Center"
-                                        Source="{Binding FlagSource}"
-                                        VerticalOptions="Center" />
-                                    <StackLayout BackgroundColor="{StaticResource Ink}">
-                                        <Label
-                                            FontFamily="KiwiMaru-Medium"
-                                            FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                                            HorizontalOptions="Center"
-                                            LineBreakMode="MiddleTruncation"
-                                            LineHeight="1"
-                                            MaxLines="2"
-                                            Text="{Binding Name}"
-                                            TextColor="{StaticResource PaperCard}"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="Medium"
-                                        HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FlagsBoardPageViewModel}}, Path=DateIsVisible}"
-                                        HorizontalTextAlignment="Center"
-                                        LineBreakMode="WordWrap"
-                                        LineHeight="1"
-                                        Text="{Binding ArrivalDateString}"
-                                        TextColor="{StaticResource Stamp}"
-                                        VerticalOptions="Center" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="Medium"
-                                        HorizontalOptions="Center"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FlagsBoardPageViewModel}}, x:DataType=viewmodels:FlagsBoardPageViewModel, Path=DateIsNotVisible}"
-                                        HorizontalTextAlignment="Center"
-                                        LineBreakMode="WordWrap"
-                                        LineHeight="1"
-                                        Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
-                                        TextColor="{StaticResource Stamp}"
-                                        VerticalOptions="Center" />
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="{StaticResource Ink}"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="120"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontAutoScalingEnabled="True"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="35"
-                                        HorizontalOptions="Center"
-                                        LineBreakMode="NoWrap"
-                                        Text="ARRIVAL"
-                                        TextColor="{StaticResource Ink}"
-                                        VerticalOptions="Center" />
-                                </VerticalStackLayout>
-                            </StackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
         <!--  The regions on a map, in place of the tiles  -->
