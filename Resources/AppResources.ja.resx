@@ -626,4 +626,7 @@
   <data name="OnboardingLater" xml:space="preserve">
     <value>あとで</value>
   </data>
+  <data name="LongPressHint" xml:space="preserve">
+    <value>マップを長押しすると、スタンプを押したい場所にピンを置けます。</value>
+  </data>
 </root>

@@ -54,4 +54,14 @@ public class OnboardingServiceTests
         Assert.False(await service.ShouldShowOnLaunchAsync());
         Assert.True(settings.GetHasSeenOnboarding());
     }
+
+    [Fact]
+    public void The_long_press_hint_is_shown_until_dismissed()
+    {
+        var (_, settings) = Create();
+
+        Assert.False(settings.GetHasSeenLongPressHint());
+        settings.SetHasSeenLongPressHint();
+        Assert.True(settings.GetHasSeenLongPressHint());
+    }
 }

@@ -104,6 +104,18 @@ public partial class LocationPageViewModel : BaseViewModel
 
     [RelayCommand]
     void CancelCheckInSpot() => RemoveCheckInSpot();
+
+    // A long press on the map puts a stamp spot; until someone has done it once, the map says so.
+    [ObservableProperty]
+    bool _showsLongPressHint;
+
+    [RelayCommand]
+    void DismissLongPressHint()
+    {
+        ShowsLongPressHint = false;
+        _settingsPreferences.SetHasSeenLongPressHint();
+    }
+
     private void PlaceCheckInSpot(Position position, Location? here)
     {
         RemoveCheckInSpot();
@@ -337,6 +349,7 @@ public partial class LocationPageViewModel : BaseViewModel
         // Replacing the spot then would take the pin being dragged off the map.
         if (_isDraggingPin) return;
 
+        if (ShowsLongPressHint) DismissLongPressHint();
         PlaceCheckInSpot(e.Point, here: null);
         if (ArrivalMap is not null)
         {
@@ -519,6 +532,7 @@ public partial class LocationPageViewModel : BaseViewModel
         _customGeolocation = customGeolocation;
         _revenueCat = revenueCat;
         _settingsPreferences = settingsPreferences;
+        _showsLongPressHint = !settingsPreferences.GetHasSeenLongPressHint();
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
         _mapFocusRequest = mapFocusRequest;

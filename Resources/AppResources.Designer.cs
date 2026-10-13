@@ -1580,5 +1580,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("OnboardingLater", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold the map to put a pin where you want to stamp..
+        /// </summary>
+        internal static string LongPressHint {
+            get {
+                return ResourceManager.GetString("LongPressHint", resourceCulture);
+            }
+        }
     }
 }

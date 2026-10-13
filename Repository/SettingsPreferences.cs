@@ -15,6 +15,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _pinStyle = "PinStyle";
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
     private string _hasSeenOnboarding = "HasSeenOnboarding";
+    private string _hasSeenLongPressHint = "HasSeenLongPressHint";
 
     public SettingsPreferences(IPreferences defaultPreferences)
     {
@@ -107,4 +108,9 @@ public partial class SettingsPreferences : ObservableObject
     public bool GetHasSeenOnboarding() => _defaultPreferences.Get(_hasSeenOnboarding, false);
 
     public void SetHasSeenOnboarding() => _defaultPreferences.Set(_hasSeenOnboarding, true);
+
+    // The one-time hint on the map that a long press puts a stamp spot.
+    public bool GetHasSeenLongPressHint() => _defaultPreferences.Get(_hasSeenLongPressHint, false);
+
+    public void SetHasSeenLongPressHint() => _defaultPreferences.Set(_hasSeenLongPressHint, true);
 }

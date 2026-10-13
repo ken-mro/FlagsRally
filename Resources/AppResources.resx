@@ -626,4 +626,7 @@
   <data name="OnboardingLater" xml:space="preserve">
     <value>Not now</value>
   </data>
+  <data name="LongPressHint" xml:space="preserve">
+    <value>Press and hold the map to put a pin where you want to stamp.</value>
+  </data>
 </root>
