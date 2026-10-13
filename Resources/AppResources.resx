@@ -600,7 +600,7 @@
     <value>Your travel passport</value>
   </data>
   <data name="OnboardingPassportBody" xml:space="preserve">
-    <value>Collect a stamp for every country and region you visit. The cover shows the passport of the country you live in; if it is not yours, change it under Country of residence in Settings.</value>
+    <value>Collect a stamp for every country and region you visit.</value>
   </data>
   <data name="OnboardingStampTitle" xml:space="preserve">
     <value>Stamp on the map</value>
@@ -628,5 +628,8 @@
   </data>
   <data name="LongPressHint" xml:space="preserve">
     <value>Press and hold the map to put a pin where you want to stamp.</value>
+  </data>
+  <data name="OnboardingPassportNote" xml:space="preserve">
+    <value>Note: The cover is the passport of the country you live in. If it is not yours, change it under Country of residence in Settings.</value>
   </data>
 </root>

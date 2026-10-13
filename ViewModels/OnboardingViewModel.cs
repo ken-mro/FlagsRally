@@ -39,7 +39,7 @@ public partial class OnboardingViewModel : ObservableObject
     public IReadOnlyList<OnboardingDot> Dots { get; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Step), nameof(Title), nameof(Body), nameof(IsFirst), nameof(IsNotFirst), nameof(IsLast), nameof(IsNotLast))]
+    [NotifyPropertyChangedFor(nameof(Step), nameof(Title), nameof(Body), nameof(Note), nameof(HasNote), nameof(IsFirst), nameof(IsNotFirst), nameof(IsLast), nameof(IsNotLast))]
     [NotifyPropertyChangedFor(nameof(ShowsPassport), nameof(ShowsStamp), nameof(ShowsBoards), nameof(ShowsLocation))]
     [NotifyPropertyChangedFor(nameof(ShowsAllowLocation), nameof(ShowsDone))]
     int _index;
@@ -82,6 +82,12 @@ public partial class OnboardingViewModel : ObservableObject
         OnboardingStep.Boards => string.Format(AppResources.OnboardingBoardsBody, CheckInRange.LimitText),
         _ => AppResources.OnboardingLocationBody,
     };
+
+    /// <summary>
+    /// A side note under the text, shown smaller (only the passport page has one: changing the cover).
+    /// </summary>
+    public string Note => Step == OnboardingStep.Passport ? AppResources.OnboardingPassportNote : string.Empty;
+    public bool HasNote => Note.Length > 0;
 
     // The cover the passport tab shows now, so it is clear whether it is the user's own country's.
     public string PassportCoverUrl => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOfResidence().ToLower()}.png";

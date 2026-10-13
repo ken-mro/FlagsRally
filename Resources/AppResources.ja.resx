@@ -600,7 +600,7 @@
     <value>旅のパスポート</value>
   </data>
   <data name="OnboardingPassportBody" xml:space="preserve">
-    <value>訪れた国や地域のスタンプを集めるパスポートです。表紙は住んでいる国のパスポートです。自分の国のものでなければ、設定の「居住国」で変えられます。</value>
+    <value>訪れた国や地域のスタンプを集めるパスポートです。</value>
   </data>
   <data name="OnboardingStampTitle" xml:space="preserve">
     <value>マップでスタンプ</value>
@@ -628,5 +628,8 @@
   </data>
   <data name="LongPressHint" xml:space="preserve">
     <value>マップを長押しすると、スタンプを押したい場所にピンを置けます。</value>
+  </data>
+  <data name="OnboardingPassportNote" xml:space="preserve">
+    <value>※ 表紙は住んでいる国のパスポートです。自分の国のものでなければ、設定の「居住国」で変えられます。</value>
   </data>
 </root>

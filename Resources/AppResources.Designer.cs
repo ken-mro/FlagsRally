@@ -1501,7 +1501,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collect a stamp for every country and region you visit. The cover shows the passport of the country you live in; if it is not yours, change it under Country of residence in Settings..
+        ///   Looks up a localized string similar to Collect a stamp for every country and region you visit..
         /// </summary>
         internal static string OnboardingPassportBody {
             get {
@@ -1587,6 +1587,15 @@ namespace FlagsRally.Resources {
         internal static string LongPressHint {
             get {
                 return ResourceManager.GetString("LongPressHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: The cover is the passport of the country you live in. If it is not yours, change it under Country of residence in Settings..
+        /// </summary>
+        internal static string OnboardingPassportNote {
+            get {
+                return ResourceManager.GetString("OnboardingPassportNote", resourceCulture);
             }
         }
     }
