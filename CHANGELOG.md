@@ -22,6 +22,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** A new `/android-release` skill prepares an Android release: a clean Release build is launched on the emulator and checked for crashes, fixing and re-checking until it is clean, then the version is bumped, the PR merged, the store release notes written, and the signed bundle uploaded to Google Play with those notes after the user confirms (as a draft unless asked to publish).
 - **Development:** `.claude/settings.local.json`, where the release signing passwords are kept, is treated like the other local secrets: Claude Code is not allowed to read it, and a commit with it staged is blocked.
 - **Development:** A new `/project-skills` skill explains which skills this project has and when to use each, reading `.claude/skills/` each time so new skills are included without editing it.
+- **Development:** Store screenshots for Google Play and the App Store (iPhone 6.9" and 6.5", iPad 13"), in English and Japanese, with and without headlines, are kept with the scripts that make them, together with the Play icon and feature graphic. They show the current screens, and the headlines say stamp trail instead of board.
 
 ### Fixed
 - **An error after closing Create backup.** Leaving the save screen without saving showed "Error: A task was canceled."; it now just goes back to Settings.
