@@ -20,11 +20,9 @@ public enum CollectionCardKind { Regional, Custom, Add }
 public record CollectionCard(CollectionCardKind Kind, string Key, string Title, int Visited, int Total, string ImageUrl, string Badge)
 {
     public bool IsAddCard => Kind == CollectionCardKind.Add;
-    public bool IsBoard => !IsAddCard;
     public bool HasImage => !string.IsNullOrEmpty(ImageUrl);
     public bool HasRemoteImage => HasImage && ImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase);
     public bool HasLocalImage => HasImage && !HasRemoteImage;
-    public bool HasNoImage => IsBoard && !HasImage;
     // Each image view gets only its own kind of source, so a recycled card never shows another card's picture.
     public string? RemoteImageUrl => HasRemoteImage ? ImageUrl : null;
     public string? LocalImageFile => HasLocalImage ? ImageUrl : null;

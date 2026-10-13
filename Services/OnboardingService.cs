@@ -34,6 +34,4 @@ public class OnboardingService
         }
         return true;
     }
-
-    public void MarkSeen() => _settingsPreferences.SetHasSeenOnboarding();
 }

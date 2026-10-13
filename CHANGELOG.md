@@ -12,6 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
 
 ### Changed
+- **Development:** Code that the how-to and Collections changes left unused is removed.
 - **Boards are now stamp trails (スタンプラリー).** The screens and messages say "Add stamp trail", "Manage Stamp Trails" and so on in English, and 「スタンプラリーを追加」, 「スタンプラリーの地点」 in Japanese, instead of board / ボード.
 - **The classic stamp spot points at its spot.** The orange figure now stands on a leg that tapers to a point, so it is clear which point it marks.
 - **Development:** A new `/howto-screens` skill retakes the how-to screenshots on the Android emulator, in English and Japanese, with the button to tap framed.
