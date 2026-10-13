@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.OnboardingPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    Margin="0"
+    Padding="0"
+    x:DataType="viewmodels:OnboardingViewModel"
+    BackgroundColor="Transparent"
+    HorizontalOptions="Fill"
+    VerticalOptions="End">
+    <!--  A card just above the tab bar, which stays in sight: each page opens its tab behind the card
+          and points at it, so the first look at the app shows where everything is.  -->
+    <Grid x:Name="layout" RowDefinitions="Auto,Auto">
+        <Border
+            x:Name="card"
+            Margin="12,0"
+            Padding="18,10,18,12"
+            BackgroundColor="{StaticResource PaperCard}"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeShape="RoundRectangle 18"
+            StrokeThickness="1">
+            <Border.Shadow>
+                <Shadow
+                    Brush="{StaticResource NavyDeep}"
+                    Opacity="0.3"
+                    Radius="18"
+                    Offset="0,4" />
+            </Border.Shadow>
+            <Border.GestureRecognizers>
+                <SwipeGestureRecognizer Command="{Binding NextCommand}" Direction="Left" />
+                <SwipeGestureRecognizer Command="{Binding BackCommand}" Direction="Right" />
+            </Border.GestureRecognizers>
+            <!--  Every page's card is as tall as the space allows, so its top, its buttons and the arrow
+                  stay in the same place from page to page; the text scrolls when it does not fit  -->
+            <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="8">
+                <!--  As tall with or without Skip, so the card's contents start at the same place on every page  -->
+                <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="44">
+                    <controls:StampLabel
+                        FontSize="15"
+                        LineBreakMode="WordWrap"
+                        Text="{x:Static strings:AppResources.HowToUse}"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center" />
+                    <!--  Skip goes straight to the end; the last page has its own buttons  -->
+                    <Button
+                        Grid.Column="1"
+                        Padding="8,0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding FinishCommand}"
+                        IsVisible="{Binding IsNotLast}"
+                        Text="{x:Static strings:AppResources.OnboardingSkip}"
+                        TextColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Grid>
+
+                <ScrollView x:Name="scroll" Grid.Row="1">
+                    <VerticalStackLayout Spacing="12" VerticalOptions="Center">
+                        <!--  The real screen, with what to tap framed (tools/howto_screens.py takes them);
+                              the last page has an icon instead  -->
+                        <Border
+                            Padding="0"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding HasScreenshot}"
+                            Stroke="{StaticResource PaperEdge}"
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="1.5">
+                            <Image
+                                x:Name="screenshot"
+                                Aspect="AspectFit"
+                                Source="{Binding Screenshot}" />
+                        </Border>
+                        <Image
+                            HeightRequest="80"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding HasNoScreenshot}"
+                            Source="onboarding_location.png"
+                            WidthRequest="80" />
+                        <controls:StampLabel
+                            FontSize="22"
+                            HorizontalTextAlignment="Center"
+                            LineBreakMode="WordWrap"
+                            Text="{Binding Title}"
+                            TextColor="{StaticResource Navy}" />
+                        <Label
+                            FontSize="15"
+                            HorizontalTextAlignment="Center"
+                            LineBreakMode="WordWrap"
+                            LineHeight="1.25"
+                            Text="{Binding Body}"
+                            TextColor="{StaticResource Ink}" />
+                        <!--  A side note, kept apart from the main text so it reads as less important  -->
+                        <Label
+                            FontSize="12"
+                            HorizontalTextAlignment="Center"
+                            IsVisible="{Binding HasNote}"
+                            LineBreakMode="WordWrap"
+                            Text="{Binding Note}"
+                            TextColor="{StaticResource InkMuted}" />
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!--  Where you are in the pages  -->
+                <HorizontalStackLayout
+                    Grid.Row="2"
+                    BindableLayout.ItemsSource="{Binding Dots}"
+                    HorizontalOptions="Center"
+                    Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:OnboardingDot">
+                            <Ellipse
+                                Fill="{StaticResource PaperEdge}"
+                                HeightRequest="8"
+                                WidthRequest="8">
+                                <Ellipse.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsCurrent}"
+                                        TargetType="Ellipse"
+                                        Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource Navy}" />
+                                    </DataTrigger>
+                                </Ellipse.Triggers>
+                            </Ellipse>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
+
+                <!--  Buttons wrap onto two rows when Japanese or large text does not fit beside each other  -->
+                <FlexLayout
+                    Grid.Row="3"
+                    AlignItems="Center"
+                    JustifyContent="Center"
+                    Wrap="Wrap">
+                    <Button
+                        Margin="5"
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource Navy}"
+                        BorderWidth="1"
+                        Command="{Binding BackCommand}"
+                        IsVisible="{Binding IsNotFirst}"
+                        MinimumWidthRequest="110"
+                        Text="{x:Static strings:AppResources.OnboardingBack}"
+                        TextColor="{StaticResource Navy}" />
+                    <Button
+                        Margin="5"
+                        Command="{Binding NextCommand}"
+                        IsVisible="{Binding IsNotLast}"
+                        MinimumWidthRequest="110"
+                        Text="{x:Static strings:AppResources.OnboardingNext}" />
+                    <Button
+                        Margin="5"
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource Navy}"
+                        BorderWidth="1"
+                        Command="{Binding FinishCommand}"
+                        IsVisible="{Binding ShowsAllowLocation}"
+                        MinimumWidthRequest="110"
+                        Text="{x:Static strings:AppResources.OnboardingLater}"
+                        TextColor="{StaticResource Navy}" />
+                    <Button
+                        Margin="5"
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding AllowLocationCommand}"
+                        IsVisible="{Binding ShowsAllowLocation}"
+                        LineBreakMode="WordWrap"
+                        MinimumWidthRequest="110"
+                        Text="{x:Static strings:AppResources.OnboardingAllowLocation}" />
+                    <Button
+                        Margin="5"
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding FinishCommand}"
+                        IsVisible="{Binding ShowsDone}"
+                        MinimumWidthRequest="110"
+                        Text="{x:Static strings:AppResources.OnboardingDone}" />
+                </FlexLayout>
+            </Grid>
+        </Border>
+
+        <!--  Points down at the page's tab in the tab bar below (placed in code)  -->
+        <Polygon
+            x:Name="arrow"
+            Grid.Row="1"
+            HeightRequest="16"
+            WidthRequest="28"
+            Margin="0,-1,0,0"
+            Fill="{StaticResource PaperCard}"
+            HorizontalOptions="Start"
+            Points="0,0 28,0 14,16"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeThickness="1" />
+    </Grid>
+</toolkit:Popup>

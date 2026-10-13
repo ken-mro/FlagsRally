@@ -84,7 +84,11 @@
         <BackButtonBehavior Command="{Binding NavigateBackCommand}" />
     </Shell.BackButtonBehavior>
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.AddBoard}" />
+        <!--  The whole title, made smaller to fit the bar when it is long (「スタンプラリーを追加」)  -->
+        <controls:FittingStampLabel
+            LineBreakMode="WordWrap"
+            Style="{StaticResource StampTitle}"
+            Text="{x:Static strings:AppResources.AddBoard}" />
     </Shell.TitleView>
     <Grid Padding="12" RowSpacing="10">
         <Grid.RowDefinitions>

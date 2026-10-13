@@ -169,7 +169,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Boards.
+        ///   Looks up a localized string similar to Stamp trails.
         /// </summary>
         internal static string Boards {
             get {
@@ -268,7 +268,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom Board.
+        ///   Looks up a localized string similar to Stamp Trail.
         /// </summary>
         internal static string CustomBoard {
             get {
@@ -781,7 +781,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Boards.
+        ///   Looks up a localized string similar to Manage Stamp Trails.
         /// </summary>
         internal static string ManageBoards {
             get {
@@ -844,7 +844,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete the following boards? All of their locations and check-in records will also be deleted..
+        ///   Looks up a localized string similar to Delete the following stamp trails? All of their places and check-in records will also be deleted..
         /// </summary>
         internal static string ConfirmDeleteBoards {
             get {
@@ -898,7 +898,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add board.
+        ///   Looks up a localized string similar to Add stamp trail.
         /// </summary>
         internal static string AddBoard {
             get {
@@ -961,7 +961,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom boards.
+        ///   Looks up a localized string similar to Stamp trails.
         /// </summary>
         internal static string CustomBoards {
             get {
@@ -1069,7 +1069,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Board order.
+        ///   Looks up a localized string similar to Trail order.
         /// </summary>
         internal static string SortJsonOrder {
             get {
@@ -1105,7 +1105,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shared boards.
+        ///   Looks up a localized string similar to Shared stamp trails.
         /// </summary>
         internal static string SharedBoards {
             get {
@@ -1114,7 +1114,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose the boards to add, then tap the add button below. Your check-ins are kept when a board is updated..
+        ///   Looks up a localized string similar to Choose the stamp trails to add, then tap the add button below. Your check-ins are kept when a stamp trail is updated..
         /// </summary>
         internal static string BoardCatalogHint {
             get {
@@ -1159,7 +1159,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn't load the boards. Check your connection and try again..
+        ///   Looks up a localized string similar to Couldn't load the stamp trails. Check your connection and try again..
         /// </summary>
         internal static string CouldNotLoadBoards {
             get {
@@ -1177,7 +1177,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no boards in this folder..
+        ///   Looks up a localized string similar to There are no stamp trails in this folder..
         /// </summary>
         internal static string NoBoardsInFolder {
             get {
@@ -1384,7 +1384,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add selected boards ({0}).
+        ///   Looks up a localized string similar to Add selected stamp trails ({0}).
         /// </summary>
         internal static string AddSelectedBoards {
             get {
@@ -1411,7 +1411,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added these boards: {0}.
+        ///   Looks up a localized string similar to Added these stamp trails: {0}.
         /// </summary>
         internal static string BoardsAdded {
             get {
@@ -1420,7 +1420,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not add these boards: {0}.
+        ///   Looks up a localized string similar to Could not add these stamp trails: {0}.
         /// </summary>
         internal static string BoardsNotAdded {
             get {
@@ -1537,7 +1537,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add boards such as shrine tours or manhole cards with Add board in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In..
+        ///   Looks up a localized string similar to Add stamp trails such as shrine tours or manhole cards with Add stamp trail in Collections. Their places appear as pins on the map; go within {0} of one, select it and tap Check In..
         /// </summary>
         internal static string OnboardingBoardsBody {
             get {
