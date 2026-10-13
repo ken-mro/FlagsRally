@@ -18,6 +18,9 @@ public partial class OnboardingPopupView : Popup
     static double TabBarInset => DeviceInfo.Platform == DevicePlatform.iOS ? 20 : 0;
     static double TabBarHeight => DeviceInfo.Platform == DevicePlatform.iOS ? 18 : 26;
     const double ArrowWidth = 28;
+    const double ArrowHeight = 16;
+    // The status bar and the title bar stay above the card (the title names the tab behind it).
+    static double TopSpace => DeviceInfo.Platform == DevicePlatform.iOS ? 184 : 150;
 
     readonly OnboardingViewModel _viewModel;
     readonly SettingsPreferences _settingsPreferences;
@@ -71,7 +74,8 @@ public partial class OnboardingPopupView : Popup
     // Opens the page's tab behind the card and moves the arrow over it.
     void ShowTab()
     {
-        arrow.IsVisible = _viewModel.Tab is not null;
+        // Hidden but keeping its place, so the card does not move on the page without a tab
+        arrow.Opacity = _viewModel.Tab is null ? 0 : 1;
         if (_viewModel.Tab is int tab && _tabs is not null && tab < _tabs.Items.Count)
         {
             _tabs.CurrentItem = _tabs.Items[tab];
@@ -83,11 +87,11 @@ public partial class OnboardingPopupView : Popup
     void PlaceCard()
     {
         layout.Padding = new Thickness(0, 0, 0, TabBarHeight);
-        // Below the status bar and above the tab bar; the text scrolls inside the card when it does not
-        // fit, and the screenshot takes at most about a third of that, so the buttons stay in view.
-        var available = _screenHeight - TabBarHeight - 16 - 80;
-        scroll.MaximumHeightRequest = Math.Max(160, available - 140);
-        screenshot.MaximumHeightRequest = Math.Max(120, available * 0.34);
+        // From just below the title bar down to the arrow over the tab bar, the same on every page;
+        // the screenshot takes at most about a third of it, so the text and buttons stay in view.
+        var cardHeight = Math.Max(320, _screenHeight - TabBarHeight - ArrowHeight - TopSpace);
+        card.HeightRequest = cardHeight;
+        screenshot.MaximumHeightRequest = Math.Max(120, cardHeight * 0.36);
         if (_viewModel.Tab is int tab)
         {
             var tabWidth = (_screenWidth - 2 * TabBarInset) / TabCount;

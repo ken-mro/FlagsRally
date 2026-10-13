@@ -123,12 +123,16 @@ def save(image, crop, mark, name):
 
 
 def sample_database(original, lang):
-    """The app's database with the sample arrivals in place of its own."""
+    """The app's database with the sample arrivals in place of its own, and no boards."""
     path = tempfile.mktemp(suffix=".db3")
     with open(path, "wb") as f:
         f.write(original)
     con = sqlite3.connect(path)
     con.execute("DELETE FROM ArrivalLocation")
+    # No boards yet, as on a first launch: the boards page shows the "Add board" card alone.
+    for table in ("CustomLocation", "CustomBoard"):
+        if con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone():
+            con.execute(f"DELETE FROM {table}")
     ticks = 639271947338696231  # .NET ticks, October 2026
     i = 1 if lang == "ja" else 0
     for n, (cc, country, rc, region) in enumerate(SAMPLE_ARRIVALS):
@@ -174,7 +178,7 @@ def take(lang, original_db):
     button = find(t["stamp"])
     save(screen(), (0, max(282, button[1] - 600), 1080, button[3] + 30), button, f"howto_stamp_{lang}.png")
 
-    # Collections: the custom boards with the "Add board" card framed.
+    # Collections: the custom boards, none yet, with the "Add board" card framed.
     emu("tab", "collections")
     time.sleep(3)
     swipe_up(8)
