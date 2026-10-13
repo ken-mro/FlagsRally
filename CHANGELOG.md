@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.1.22] - Unreleased
+## [1.2.0] - Unreleased
 
 ### Added
 - **How-to pages on the first launch.** A new install opens four short pages: the passport (with a note that the cover can be changed under Country of residence in Settings), stamping on the map, boards, and the location. The pages sit just above the tab bar and open each tab behind them, with an arrow pointing at it, so it is clear where everything is; the first three also show the app's own screens with what to tap framed. The last page explains why the location is needed before asking for it. Settings > Information > How to use opens them again. People who already use the app are not shown them after the update.
@@ -18,10 +18,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** A new `/howto-screens` skill retakes the how-to screenshots on the Android emulator, in English and Japanese, with the button to tap framed.
 - **The map's buttons say "stamp".** "Get Location" and "Check in here" are now "Stamp where I am" and "Stamp here" (「現在地でスタンプ」「ここでスタンプを押す」), so they are not mistaken for checking in at a board's place. Android no longer asks for the location the moment the app opens.
 - **Boards open and scroll smoothly, with fewer downloads.** A custom board downloaded the stamp image of every place, visited or not (all 109 on 全国一の宮巡り at 0 / 109), and stuttered while they arrived. Only visited places' stamps are loaded now. The regional flags board no longer loads the flags of regions not visited yet (the US state flags came from the internet), and the passport no longer loads region flags while it shows countries. The cards and tiles in these lists are also quicker to build.
-- **Development:** The unit tests pass on every machine. Two Japanese test files were saved in Shift_JIS, so two geocoding tests failed everywhere except Japanese Windows; they are UTF-8 now, and a test stops non-UTF-8 source files. The tests that call the real Google Geocoding API are skipped, with the reason, where the real key or the network is missing.
-- **Development:** A new `/android-release` skill prepares an Android release: a clean Release build is launched on the emulator and checked for crashes, fixing and re-checking until it is clean, then the version is bumped, the PR merged, the store release notes written, and the signed bundle uploaded to Google Play with those notes after the user confirms (as a draft unless asked to publish).
-- **Development:** `.claude/settings.local.json`, where the release signing passwords are kept, is treated like the other local secrets: Claude Code is not allowed to read it, and a commit with it staged is blocked.
-- **Development:** A new `/project-skills` skill explains which skills this project has and when to use each, reading `.claude/skills/` each time so new skills are included without editing it.
 - **Development:** Store screenshots for Google Play and the App Store (iPhone 6.9" and 6.5", iPad 13"), in English and Japanese, with and without headlines, are kept with the scripts that make them, together with the Play icon and feature graphic. They show the current screens, and the headlines say stamp trail instead of board.
 
 ### Fixed
@@ -29,6 +25,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **The delete button in Manage boards looking disabled.** After ticking a board the button stayed grey, though it worked; it now turns red once something is ticked.
 - **Settings closing the app on an iPhone with a language set just for FlagsRally.** Until a country of residence was chosen, the passport cover stayed empty and opening Settings closed the app. The country now comes from the device's region, so the cover shows and Settings opens.
 - **The passport date broken over two lines with large text.** With iOS's largest text sizes a stamp's date wrapped after the month ("09 10月" / "2026"). The date on passport stamps, regional flags and custom boards now gets a little smaller when needed and stays on one line; at normal sizes it looks as before.
+
+## [1.1.22] - Unreleased
+
+### Changed
+- **Development:** The unit tests pass on every machine. Two Japanese test files were saved in Shift_JIS, so two geocoding tests failed everywhere except Japanese Windows; they are UTF-8 now, and a test stops non-UTF-8 source files. The tests that call the real Google Geocoding API are skipped, with the reason, where the real key or the network is missing.
+- **Development:** A new `/android-release` skill prepares an Android release: a clean Release build is launched on the emulator and checked for crashes, fixing and re-checking until it is clean, then the version is bumped, the PR merged, the store release notes written, and the signed bundle uploaded to Google Play with those notes after the user confirms (as a draft unless asked to publish).
+- **Development:** `.claude/settings.local.json`, where the release signing passwords are kept, is treated like the other local secrets: Claude Code is not allowed to read it, and a commit with it staged is blocked.
+- **Development:** A new `/project-skills` skill explains which skills this project has and when to use each, reading `.claude/skills/` each time so new skills are included without editing it.
+
+### Fixed
 - **Checking in the wrong board's place where two boards share a spot.** Where two boards have the same place, such as 香取神宮 on 全国一の宮巡り and 全国神宮二十五社巡り, choosing the second one in "Several pins are here" could leave the first one selected (seen on iPhone), so Check In recorded the first board's place and the second could look already checked in. Each pin is now its own place, so the one you choose is the one checked in.
 - **The selected pin hidden behind another pin at the same spot.** The selected pin is now drawn in front, so you can see which one the card is about.
 
