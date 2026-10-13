@@ -79,7 +79,7 @@ public class RedesignViewModelTests
         Assert.Equal("https://example.com/a2.png", a.ImageUrl); // most recent check-in
         var b = vm.BoardCards[1];
         Assert.Equal("0 / 1", b.ProgressText);
-        Assert.True(b.HasNoImage);
+        Assert.False(b.HasImage); // shown with its badge
         Assert.True(vm.BoardCards[2].IsAddCard);
     }
 
