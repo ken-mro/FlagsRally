@@ -96,7 +96,8 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CustomBoardPageViewModel}}, x:DataType=viewmodels:CustomBoardPageViewModel, Path=ShowOnMapCommand}" CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
-                            <!--  An unvisited tile lays out the visited content too, unseen, so both are as tall as each other on every screen width  -->
+                            <!--  An unvisited tile lays out the visited content too, unseen, so both are as tall as each other on every screen width;
+                                  its stamp is not fetched (the image keeps its height without one).  -->
                             <Grid>
                                 <VerticalStackLayout
                                     Spacing="{OnPlatform MacCatalyst=2,
@@ -120,7 +121,7 @@
                                             <UriImageSource
                                                 CacheValidity="30"
                                                 CachingEnabled="True"
-                                                Uri="{Binding ImageUrl}" />
+                                                Uri="{Binding StampImageUrl}" />
                                         </Image.Source>
                                     </Image>
                                     <StackLayout BackgroundColor="{StaticResource Ink}">
