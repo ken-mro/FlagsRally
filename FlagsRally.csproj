@@ -58,6 +58,8 @@
 		<MauiImage Update="Resources\Images\board.png" BaseSize="32, 32" />
 		<!-- Page background texture: stretched to fill, so keep one copy instead of per-density sizes -->
 		<MauiImage Update="Resources\Images\paper.jpg" Resize="False" />
+		<!-- How-to screenshots (tools/howto_screens.py): already 2x of the page width, shown scaled down -->
+		<MauiImage Update="Resources\Images\howto_*.png" Resize="False" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />

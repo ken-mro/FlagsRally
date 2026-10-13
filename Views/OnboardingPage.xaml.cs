@@ -17,7 +17,7 @@ public partial class OnboardingPage : ContentPage
     {
         InitializeComponent();
         _settingsPreferences = settingsPreferences;
-        BindingContext = _viewModel = new OnboardingViewModel(settingsPreferences, CloseAsync);
+        BindingContext = _viewModel = new OnboardingViewModel(CloseAsync);
     }
 
     /// <summary>

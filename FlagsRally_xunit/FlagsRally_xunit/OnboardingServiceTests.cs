@@ -64,4 +64,26 @@ public class OnboardingServiceTests
         settings.SetHasSeenLongPressHint();
         Assert.True(settings.GetHasSeenLongPressHint());
     }
+
+    [Theory]
+    [InlineData(FlagsRally.ViewModels.OnboardingStep.Passport, "ja-JP", "howto_passport_ja.png")]
+    [InlineData(FlagsRally.ViewModels.OnboardingStep.Stamp, "en-US", "howto_stamp_en.png")]
+    [InlineData(FlagsRally.ViewModels.OnboardingStep.Boards, "fr-FR", "howto_boards_en.png")]
+    [InlineData(FlagsRally.ViewModels.OnboardingStep.Location, "ja-JP", "")]
+    public void Each_page_shows_the_screenshot_in_the_app_language(FlagsRally.ViewModels.OnboardingStep step, string culture, string expected)
+    {
+        Assert.Equal(expected, FlagsRally.ViewModels.OnboardingViewModel.ScreenshotFor(step, new System.Globalization.CultureInfo(culture)));
+    }
+
+    [Fact]
+    public void Every_screenshot_a_page_names_is_in_the_app()
+    {
+        var images = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "Resources", "Images");
+        foreach (var step in Enum.GetValues<FlagsRally.ViewModels.OnboardingStep>())
+        foreach (var culture in new[] { "en-US", "ja-JP" })
+        {
+            var name = FlagsRally.ViewModels.OnboardingViewModel.ScreenshotFor(step, new System.Globalization.CultureInfo(culture));
+            if (name.Length > 0) Assert.True(File.Exists(Path.Combine(images, name)), name);
+        }
+    }
 }

@@ -1,8 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Globalization;
 using FlagsRally.Helpers;
-using FlagsRally.Models;
-using FlagsRally.Repository;
 using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
@@ -25,12 +24,10 @@ public partial class OnboardingViewModel : ObservableObject
 {
     static readonly OnboardingStep[] Steps = Enum.GetValues<OnboardingStep>();
 
-    readonly SettingsPreferences _settingsPreferences;
     readonly Func<Task> _close;
 
-    public OnboardingViewModel(SettingsPreferences settingsPreferences, Func<Task> close)
+    public OnboardingViewModel(Func<Task> close)
     {
-        _settingsPreferences = settingsPreferences;
         _close = close;
         Dots = Steps.Select(_ => new OnboardingDot()).ToList();
         UpdateDots();
@@ -40,7 +37,7 @@ public partial class OnboardingViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Step), nameof(Title), nameof(Body), nameof(Note), nameof(HasNote), nameof(IsFirst), nameof(IsNotFirst), nameof(IsLast), nameof(IsNotLast))]
-    [NotifyPropertyChangedFor(nameof(ShowsPassport), nameof(ShowsStamp), nameof(ShowsBoards), nameof(ShowsLocation))]
+    [NotifyPropertyChangedFor(nameof(Screenshot), nameof(HasScreenshot), nameof(HasNoScreenshot))]
     [NotifyPropertyChangedFor(nameof(ShowsAllowLocation), nameof(ShowsDone))]
     int _index;
 
@@ -59,10 +56,26 @@ public partial class OnboardingViewModel : ObservableObject
     public bool IsLast => Index == Steps.Length - 1;
     public bool IsNotLast => !IsLast;
 
-    public bool ShowsPassport => Step == OnboardingStep.Passport;
-    public bool ShowsStamp => Step == OnboardingStep.Stamp;
-    public bool ShowsBoards => Step == OnboardingStep.Boards;
-    public bool ShowsLocation => Step == OnboardingStep.Location;
+    /// <summary>
+    /// The screenshot for the page in the app's language (Resources/Images/howto_*), or empty for the
+    /// location page, which has an icon.
+    /// </summary>
+    public string Screenshot => ScreenshotFor(Step, CultureInfo.CurrentUICulture);
+    public bool HasScreenshot => Screenshot.Length > 0;
+    public bool HasNoScreenshot => !HasScreenshot;
+
+    public static string ScreenshotFor(OnboardingStep step, CultureInfo culture)
+    {
+        var page = step switch
+        {
+            OnboardingStep.Passport => "passport",
+            OnboardingStep.Stamp => "stamp",
+            OnboardingStep.Boards => "boards",
+            _ => null,
+        };
+        var language = culture.TwoLetterISOLanguageName == "ja" ? "ja" : "en";
+        return page is null ? string.Empty : $"howto_{page}_{language}.png";
+    }
 
     public bool ShowsAllowLocation => IsLast && !IsLocationAllowed;
     public bool ShowsDone => IsLast && IsLocationAllowed;
@@ -88,14 +101,6 @@ public partial class OnboardingViewModel : ObservableObject
     /// </summary>
     public string Note => Step == OnboardingStep.Passport ? AppResources.OnboardingPassportNote : string.Empty;
     public bool HasNote => Note.Length > 0;
-
-    // The cover the passport tab shows now, so it is clear whether it is the user's own country's.
-    public string PassportCoverUrl => $"https://www.passportindex.org/countries/{_settingsPreferences.GetCountryOfResidence().ToLower()}.png";
-
-    // The pins in the style chosen in Settings.
-    public string StampSpotIcon => $"{PinIcons.FileName(PinKind.CheckInSpot, PinIcons.Style)}.png";
-    public string UnvisitedPinIcon => $"{PinIcons.FileName(PinKind.Unvisited, PinIcons.Style)}.png";
-    public string VisitedPinIcon => $"{PinIcons.FileName(PinKind.Visited, PinIcons.Style)}.png";
 
     public async Task RefreshLocationPermissionAsync()
     {

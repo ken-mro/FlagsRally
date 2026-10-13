@@ -10,24 +10,6 @@
     ios:Page.UseSafeArea="True"
     x:DataType="viewmodels:OnboardingViewModel"
     BackgroundColor="{StaticResource Navy}">
-    <ContentPage.Resources>
-        <!--  A stamp's frame, as on the empty passport  -->
-        <Style x:Key="StampFrame" TargetType="Border">
-            <Setter Property="BackgroundColor" Value="Transparent" />
-            <Setter Property="Stroke" Value="{StaticResource Stamp}" />
-            <Setter Property="StrokeDashArray" Value="4,3" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-            <Setter Property="StrokeThickness" Value="2.5" />
-            <Setter Property="Padding" Value="14,8" />
-        </Style>
-        <Style x:Key="StampWord" TargetType="Label">
-            <Setter Property="FontFamily" Value="JerseyclubGrungeBold" />
-            <Setter Property="FontSize" Value="26" />
-            <Setter Property="TextColor" Value="{StaticResource Stamp}" />
-            <Setter Property="HorizontalTextAlignment" Value="Center" />
-        </Style>
-    </ContentPage.Resources>
-
     <!--  A navy title bar like the app's other screens (the page's navy also fills the status bar),
           and paper below it  -->
     <Grid RowDefinitions="Auto,*">
@@ -63,75 +45,34 @@
                 </ScrollView.GestureRecognizers>
                 <VerticalStackLayout Padding="0,12" Spacing="24" VerticalOptions="Center">
                     <!--  One picture per page  -->
-                    <Grid HeightRequest="180" HorizontalOptions="Center">
-                        <Grid IsVisible="{Binding ShowsPassport}" WidthRequest="220">
-                            <Image
-                                Aspect="AspectFill"
-                                HeightRequest="150"
-                                HorizontalOptions="Start"
-                                Rotation="-5"
-                                Source="{Binding PassportCoverUrl}"
-                                VerticalOptions="Center"
-                                WidthRequest="108" />
-                            <Border
-                                Margin="0,0,0,18"
-                                BackgroundColor="{StaticResource Paper}"
-                                HorizontalOptions="End"
-                                Rotation="8"
-                                Style="{StaticResource StampFrame}"
-                                VerticalOptions="End">
-                                <Label Style="{StaticResource StampWord}" Text="ARRIVAL" />
-                            </Border>
-                        </Grid>
-                        <Grid IsVisible="{Binding ShowsStamp}" WidthRequest="220">
-                            <Ellipse
-                                Fill="#1F182A52"
-                                HeightRequest="150"
-                                HorizontalOptions="Center"
-                                Stroke="{StaticResource Navy}"
-                                StrokeThickness="2"
-                                VerticalOptions="Center"
-                                WidthRequest="150" />
-                            <Image
-                                HeightRequest="56"
-                                HorizontalOptions="Center"
-                                Source="{Binding StampSpotIcon}"
-                                TranslationY="-24"
-                                VerticalOptions="Center" />
-                            <Border
-                                HorizontalOptions="End"
-                                Rotation="-8"
-                                Style="{StaticResource StampFrame}"
-                                BackgroundColor="{StaticResource Paper}"
-                                VerticalOptions="End">
-                                <Label Style="{StaticResource StampWord}" Text="ARRIVAL" />
-                            </Border>
-                        </Grid>
-                        <HorizontalStackLayout
-                            HorizontalOptions="Center"
-                            IsVisible="{Binding ShowsBoards}"
-                            Spacing="18"
-                            VerticalOptions="Center">
-                            <Image
-                                HeightRequest="44"
-                                Rotation="-12"
-                                Source="{Binding UnvisitedPinIcon}" />
-                            <Image
-                                HeightRequest="56"
-                                Source="{Binding VisitedPinIcon}" />
-                            <Image
-                                HeightRequest="44"
-                                Rotation="12"
-                                Source="{Binding UnvisitedPinIcon}" />
-                        </HorizontalStackLayout>
+                    <!--  The real screen, with what to tap framed (tools/howto_screens.py takes them);
+                          the last page has an icon instead  -->
+                    <Border
+                        Padding="0"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasScreenshot}"
+                        MaximumWidthRequest="300"
+                        Stroke="{StaticResource PaperEdge}"
+                        StrokeShape="RoundRectangle 14"
+                        StrokeThickness="1.5">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="{StaticResource NavyDeep}"
+                                Opacity="0.16"
+                                Radius="12"
+                                Offset="0,4" />
+                        </Border.Shadow>
                         <Image
-                            HeightRequest="110"
-                            HorizontalOptions="Center"
-                            IsVisible="{Binding ShowsLocation}"
-                            Source="onboarding_location.png"
-                            VerticalOptions="Center"
-                            WidthRequest="110" />
-                    </Grid>
+                            Aspect="AspectFit"
+                            MaximumHeightRequest="260"
+                            Source="{Binding Screenshot}" />
+                    </Border>
+                    <Image
+                        HeightRequest="110"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasNoScreenshot}"
+                        Source="onboarding_location.png"
+                        WidthRequest="110" />
 
                     <controls:StampLabel
                         FontSize="26"
