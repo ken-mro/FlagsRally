@@ -36,7 +36,7 @@ STAMP_RED = (185, 64, 71)
 
 # Texts the script looks for, per language.
 TEXTS = {
-    "en": {"stamp": "Stamp where I am", "add_board": "Add board", "custom_boards": "Custom boards", "tab": "Passport"},
+    "en": {"stamp": "Stamp where I am", "add_board": "Add stamp trail", "custom_boards": "Stamp trails", "tab": "Passport"},
     "ja": {"stamp": "現在地でスタンプ", "add_board": "スタンプラリーを追加", "custom_boards": "スタンプラリー", "tab": "パスポート"},
 }
 # Country of residence for the passport cover in the screenshots.
