@@ -38,6 +38,15 @@ public static partial class BoardSeries
         return name;
     }
 
+    /// <summary>
+    /// The folders a board was chosen in, outermost first, as one name: "マンホールカード／関東". The
+    /// whole path, so subfolders with the same name in different series ("関東") stay apart.
+    /// </summary>
+    public static string FolderPath(IEnumerable<string> folders) =>
+        string.Join(PathSeparator, folders.Select(f => f.Trim()).Where(f => f.Length > 0));
+
+    public const string PathSeparator = "／";
+
     static string TrimSeparators(string text) => text.TrimEnd(' ', '　', '-', '_', '・', '–', '(', '（');
 
     // 第1弾 / 第０１弾 / 特別版 …

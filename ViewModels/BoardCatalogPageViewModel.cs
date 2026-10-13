@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FlagsRally.Helpers;
 using FlagsRally.Messages;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
@@ -47,7 +48,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
     public ObservableCollection<BoardCatalogItem> Entries { get; } = [];
 
     // Boards chosen so far, in the order they were chosen, with the folder each was chosen in
-    // (empty at the top). Kept while moving between folders, so boards from different folders
+    // ("マンホールカード／関東" in a subfolder, empty at the top). Kept while moving between folders, so boards from different folders
     // can be added together.
     readonly List<(DriveEntry Entry, string Folder)> _selected = [];
 
@@ -123,7 +124,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
     {
         item.IsSelected = isSelected;
         _selected.RemoveAll(x => x.Entry.Id == item.Entry.Id);
-        if (isSelected) _selected.Add((item.Entry, _openFolders.LastOrDefault()?.Name ?? string.Empty));
+        if (isSelected) _selected.Add((item.Entry, BoardSeries.FolderPath(_openFolders.Select(f => f.Name))));
     }
 
     [RelayCommand]
