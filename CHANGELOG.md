@@ -5,7 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [1.1.22] - Unreleased
 
+### Added
+- **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
+
 ### Changed
+- **Boards open and scroll smoothly, with fewer downloads.** A custom board downloaded the stamp image of every place, visited or not (all 109 on 全国一の宮巡り at 0 / 109), and stuttered while they arrived. Only visited places' stamps are loaded now. The regional flags board no longer loads the flags of regions not visited yet (the US state flags came from the internet), and the passport no longer loads region flags while it shows countries. The cards and tiles in these lists are also quicker to build.
 - **Development:** The unit tests pass on every machine. Two Japanese test files were saved in Shift_JIS, so two geocoding tests failed everywhere except Japanese Windows; they are UTF-8 now, and a test stops non-UTF-8 source files. The tests that call the real Google Geocoding API are skipped, with the reason, where the real key or the network is missing.
 - **Development:** A new `/android-release` skill prepares an Android release: a clean Release build is launched on the emulator and checked for crashes, fixing and re-checking until it is clean, then the version is bumped, the PR merged, the store release notes written, and the signed bundle uploaded to Google Play with those notes after the user confirms (as a draft unless asked to publish).
 - **Development:** `.claude/settings.local.json`, where the release signing passwords are kept, is treated like the other local secrets: Claude Code is not allowed to read it, and a commit with it staged is blocked.
