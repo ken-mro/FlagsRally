@@ -3,17 +3,28 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.2.0] - Unreleased
+## [1.2.1] - Unreleased
 
 ### Added
-- **How-to pages on the first launch.** A new install opens five short pages: the passport (with a note that the cover can be changed under Country of residence in Settings), stamping on the map, boards, where to open the pages again (How to use under Information, at the bottom of Settings), and the location. The pages sit just above the tab bar and open each tab behind them, with an arrow pointing at it, so it is clear where everything is; the first four also show the app's own screens with what to tap framed. The last page explains why the location is needed before asking for it. Settings > Information > How to use opens them again. People who already use the app are not shown them after the update.
-- **Boards of one series share a chip on the map.** Boards added from the same shared folder, such as the manhole card issues, now appear as one chip like "マンホールカード ▾". Tap it to tick boards one by one, or use Select all / Clear selection; the chip shows how many are chosen. In a subfolder the series is the whole path, such as マンホールカード／関東, so subfolders with the same name in different series stay apart. Boards added from a file or before this version are grouped by their name without the issue number.
-- **A hint for placing a stamp spot.** Until you have done it once, the map says that pressing and holding the map puts a pin where you want to stamp.
-- **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
+- **A how-to page showing where to see the pages again.** Before the location page, the how-to pages now open Settings and point at How to use under Information, at the bottom of Settings, with a picture of it framed, so it is clear how to open them again later.
 - **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
 
 ### Changed
 - **Stamp trails scroll smoothly with many stamps.** Each stamp image sized itself when it arrived, so the tile and the list were laid out again for every stamp, and a trail with many visited places stuttered while scrolling (on 全国一の宮巡り with all 109 visited, the slowest frames took 45–100 ms). The images now have a fixed size from the start (about 20 ms). Region flags in the passport and on a country's regions page get a fixed box for the same reason.
+- **The list of pins at the same spot keeps its order.** Tapping where pins overlap lists them to choose from; the list now has the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
+
+### Fixed
+- **Confetti before the stamp.** After a check-in the confetti could fall on an empty frame while the stamp was still downloading; it now starts once the stamp is shown.
+
+## [1.2.0] - Unreleased
+
+### Added
+- **How-to pages on the first launch.** A new install opens four short pages: the passport (with a note that the cover can be changed under Country of residence in Settings), stamping on the map, boards, and the location. The pages sit just above the tab bar and open each tab behind them, with an arrow pointing at it, so it is clear where everything is; the first three also show the app's own screens with what to tap framed. The last page explains why the location is needed before asking for it. Settings > Information > How to use opens them again. People who already use the app are not shown them after the update.
+- **Boards of one series share a chip on the map.** Boards added from the same shared folder, such as the manhole card issues, now appear as one chip like "マンホールカード ▾". Tap it to tick boards one by one, or use Select all / Clear selection; the chip shows how many are chosen. In a subfolder the series is the whole path, such as マンホールカード／関東, so subfolders with the same name in different series stay apart. Boards added from a file or before this version are grouped by their name without the issue number.
+- **A hint for placing a stamp spot.** Until you have done it once, the map says that pressing and holding the map puts a pin where you want to stamp.
+- **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
+
+### Changed
 - **Development:** Code that the how-to and Collections changes left unused is removed, and 20 app strings that nothing used.
 - **Boards are now stamp trails (スタンプラリー).** The screens and messages say "Add stamp trail", "Manage Stamp Trails" and so on in English, and 「スタンプラリーを追加」, 「スタンプラリーの地点」 in Japanese, instead of board / ボード.
 - **The classic stamp spot points at its spot.** The orange figure now stands on a leg that tapers to a point, so it is clear which point it marks.
@@ -23,7 +34,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** Store screenshots for Google Play and the App Store (iPhone 6.9" and 6.5", iPad 13"), in English and Japanese, with and without headlines, are kept with the scripts that make them, together with the Play icon and feature graphic. They show the current screens, and the headlines say stamp trail instead of board.
 
 ### Fixed
-- **Confetti before the stamp.** After a check-in the confetti could fall on an empty frame while the stamp was still downloading; it now starts once the stamp is shown.
 - **An error after closing Create backup.** Leaving the save screen without saving showed "Error: A task was canceled."; it now just goes back to Settings.
 - **The delete button in Manage boards looking disabled.** After ticking a board the button stayed grey, though it worked; it now turns red once something is ticked.
 - **Settings closing the app on an iPhone with a language set just for FlagsRally.** Until a country of residence was chosen, the passport cover stayed empty and opening Settings closed the app. The country now comes from the device's region, so the cover shows and Settings opens.
@@ -39,7 +49,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **Checking in the wrong board's place where two boards share a spot.** Where two boards have the same place, such as 香取神宮 on 全国一の宮巡り and 全国神宮二十五社巡り, choosing the second one in "Several pins are here" could leave the first one selected (seen on iPhone), so Check In recorded the first board's place and the second could look already checked in. Each pin is now its own place, so the one you choose is the one checked in.
-- **The list of pins at the same spot changing its order.** Tapping where pins overlap lists them to choose from; the list now keeps the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
+- **The selected pin hidden behind another pin at the same spot.** The selected pin is now drawn in front, so you can see which one the card is about.
 
 ## [1.1.21] - Unreleased
 
