@@ -22,6 +22,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** Store screenshots for Google Play and the App Store (iPhone 6.9" and 6.5", iPad 13"), in English and Japanese, with and without headlines, are kept with the scripts that make them, together with the Play icon and feature graphic. They show the current screens, and the headlines say stamp trail instead of board.
 
 ### Fixed
+- **Confetti before the stamp.** After a check-in the confetti could fall on an empty frame while the stamp was still downloading; it now starts once the stamp is shown.
 - **An error after closing Create backup.** Leaving the save screen without saving showed "Error: A task was canceled."; it now just goes back to Settings.
 - **The delete button in Manage boards looking disabled.** After ticking a board the button stayed grey, though it worked; it now turns red once something is ticked.
 - **Settings closing the app on an iPhone with a language set just for FlagsRally.** Until a country of residence was chosen, the passport cover stayed empty and opening Settings closed the app. The country now comes from the device's region, so the cover shows and Settings opens.
