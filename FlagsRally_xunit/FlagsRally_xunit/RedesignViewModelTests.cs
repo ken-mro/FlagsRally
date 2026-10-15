@@ -257,6 +257,15 @@ public class RedesignViewModelTests
         Assert.Equal(expected, CustomBoardPageViewModel.TileImageHeightFor(pageWidth, span, w, h));
     }
 
+    [Theory]
+    [InlineData(411, 2, 196)]
+    [InlineData(800, 4, 194)]
+    [InlineData(60, 2, 40)] // never narrower than 40
+    public void Tile_images_have_a_fixed_width_of_one_column(double pageWidth, int span, double expected)
+    {
+        Assert.Equal(expected, CustomBoardPageViewModel.TileImageWidthFor(pageWidth, span));
+    }
+
     // ---------- Manage boards ----------
 
     [Fact]

@@ -117,6 +117,7 @@
                                         Aspect="AspectFit"
                                         HeightRequest="{Binding ViewModel.TileImageHeight, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
                                         HorizontalOptions="Center"
+                                        WidthRequest="{Binding ViewModel.TileImageWidth, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
                                         VerticalOptions="Center">
                                         <Image.Source>
                                             <UriImageSource
