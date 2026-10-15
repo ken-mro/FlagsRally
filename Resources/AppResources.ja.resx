@@ -572,4 +572,10 @@
   <data name="OnboardingPassportNote" xml:space="preserve">
     <value>※ 表紙は住んでいる国のパスポートです。自分の国のものでなければ、設定の「居住国」で変えられます。</value>
   </data>
+  <data name="OnboardingHowToAgainTitle" xml:space="preserve">
+    <value>使い方をもう一度見る</value>
+  </data>
+  <data name="OnboardingHowToAgainBody" xml:space="preserve">
+    <value>この使い方は、設定のいちばん下、「情報」にある「アプリの使い方」からいつでも見直せます。</value>
+  </data>
 </root>

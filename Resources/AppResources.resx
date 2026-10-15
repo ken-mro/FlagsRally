@@ -572,4 +572,10 @@
   <data name="OnboardingPassportNote" xml:space="preserve">
     <value>Note: The cover is the passport of the country you live in. If it is not yours, change it under Country of residence in Settings.</value>
   </data>
+  <data name="OnboardingHowToAgainTitle" xml:space="preserve">
+    <value>See this again</value>
+  </data>
+  <data name="OnboardingHowToAgainBody" xml:space="preserve">
+    <value>You can open these pages again at any time from How to use under Information, at the bottom of Settings.</value>
+  </data>
 </root>
