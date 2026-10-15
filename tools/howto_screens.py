@@ -13,7 +13,7 @@ around the button and saves Resources/Images/howto_<page>_<lang>.png. The app's 
 settings are saved first and put back at the end (the database hash is printed; it must not change).
 
 Run it from the repository root with the Debug build installed (bash tools/emu.sh install), after any
-change to the passport, the map's bottom panel or the Collections cards.
+change to the passport, the map's bottom panel, the Collections cards or the Information card in Settings.
 """
 import argparse
 import html
@@ -36,8 +36,10 @@ STAMP_RED = (185, 64, 71)
 
 # Texts the script looks for, per language.
 TEXTS = {
-    "en": {"stamp": "Stamp where I am", "add_board": "Add stamp trail", "custom_boards": "Stamp trails", "tab": "Passport"},
-    "ja": {"stamp": "現在地でスタンプ", "add_board": "スタンプラリーを追加", "custom_boards": "スタンプラリー", "tab": "パスポート"},
+    "en": {"stamp": "Stamp where I am", "add_board": "Add stamp trail", "custom_boards": "Stamp trails", "tab": "Passport",
+           "information": "Information", "how_to": "How to use", "privacy": "Privacy Policy"},
+    "ja": {"stamp": "現在地でスタンプ", "add_board": "スタンプラリーを追加", "custom_boards": "スタンプラリー", "tab": "パスポート",
+           "information": "情報", "how_to": "アプリの使い方", "privacy": "プライバシーポリシー"},
 }
 # Country of residence for the passport cover in the screenshots.
 COVER = {"en": "US", "ja": "JP"}
@@ -191,6 +193,18 @@ def take(lang, original_db):
     tab_bar = find(t["tab"], exact=True)[1] - 60   # stop above the tab bar
     top = max(282, heading[1] - 30)
     save(screen(), (0, top, 1080, min(tab_bar, card[3] + 40)), card, f"howto_boards_{lang}.png")
+
+    # Settings: the Information card at the bottom, with the "How to use" row framed.
+    emu("tab", "settings")
+    time.sleep(3)
+    swipe_up(8)
+    time.sleep(1.5)
+    heading = find(t["information"], exact=True)
+    row = find(t["how_to"], exact=True)
+    last = find(t["privacy"], exact=True)
+    # The whole row, across the card (the card has the same margins as the screen's 16-dp gutter)
+    mark = (64, row[1] - 24, 1080 - 64, row[3] + 24)
+    save(screen(), (0, max(282, heading[1] - 30), 1080, last[3] + 70), mark, f"howto_settings_{lang}.png")
 
 
 def main():
