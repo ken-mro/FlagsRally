@@ -321,13 +321,15 @@
                                                 VerticalOptions="Center" />
                                         </On>
                                     </OnPlatform>
+                                    <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the stamp again  -->
                                     <Image
                                         Margin="10"
                                         HeightRequest="40"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Source="{Binding AdminAreaFlagSource}"
-                                        VerticalOptions="Center">
+                                        VerticalOptions="Center"
+                                        WidthRequest="80">
                                         <Image.Triggers>
                                             <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
                                             <DataTrigger

@@ -13,6 +13,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
 
 ### Changed
+- **Stamp trails scroll smoothly with many stamps.** Each stamp image sized itself when it arrived, so the tile and the list were laid out again for every stamp, and a trail with many visited places stuttered while scrolling (on 全国一の宮巡り with all 109 visited, the slowest frames took 45–100 ms). The images now have a fixed size from the start (about 20 ms). Region flags in the passport and on a country's regions page get a fixed box for the same reason.
 - **Development:** Code that the how-to and Collections changes left unused is removed, and 20 app strings that nothing used.
 - **Boards are now stamp trails (スタンプラリー).** The screens and messages say "Add stamp trail", "Manage Stamp Trails" and so on in English, and 「スタンプラリーを追加」, 「スタンプラリーの地点」 in Japanese, instead of board / ボード.
 - **The classic stamp spot points at its spot.** The orange figure now stands on a leg that tapers to a point, so it is clear which point it marks.

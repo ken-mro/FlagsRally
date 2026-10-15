@@ -57,12 +57,14 @@
                                          iOS=2,
                                          Default=0}"
                     VerticalOptions="Center">
+                    <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the tile again  -->
                     <Image
                         Margin="5"
                         HeightRequest="40"
                         HorizontalOptions="Center"
                         Source="{Binding FlagSource}"
-                        VerticalOptions="Center" />
+                        VerticalOptions="Center"
+                        WidthRequest="80" />
                     <StackLayout BackgroundColor="{StaticResource Ink}">
                         <Label
                             FontFamily="KiwiMaru-Medium"

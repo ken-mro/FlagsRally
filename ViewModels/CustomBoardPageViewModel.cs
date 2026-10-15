@@ -44,6 +44,8 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
 
     // A visited tile's image is sized from the page width and the board's image shape: left to size
     // itself, its height depended on the bitmap and the screen density and differed between devices.
+    // Its width is fixed too: an image that sizes itself makes its tile, and the list, lay out again
+    // when the stamp arrives, which made scrolling through visited places stutter.
     const double PagePadding = 5;
 
     double _pageWidth;
@@ -51,12 +53,16 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [ObservableProperty]
     double _tileImageHeight = 180;
 
+    [ObservableProperty]
+    double _tileImageWidth = 180;
+
     public void UpdateTileSize(double pageWidth)
     {
         if (pageWidth <= 0) return;
         _pageWidth = pageWidth;
         GridItemSpan = Math.Max((int)pageWidth / 196, 2);
         TileImageHeight = TileImageHeightFor(pageWidth, GridItemSpan, FilteredCustomBoard?.Width ?? 0, FilteredCustomBoard?.Height ?? 0);
+        TileImageWidth = TileImageWidthFor(pageWidth, GridItemSpan);
     }
 
     /// <summary>
@@ -64,10 +70,17 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     /// </summary>
     public static double TileImageHeightFor(double pageWidth, int span, double boardWidth, double boardHeight)
     {
-        var columnWidth = (pageWidth - PagePadding * 2) / Math.Max(span, 1) - 4; // minus the tile border
         var ratio = boardWidth > 0 && boardHeight > 0 ? boardHeight / boardWidth : 1;
-        return Math.Round(Math.Max(columnWidth, 40) * ratio);
+        return Math.Round(ImageColumnWidth(pageWidth, span) * ratio);
     }
+
+    /// <summary>
+    /// The width of a tile's image: the column's width, so the image keeps the board's shape at <see cref="TileImageHeightFor"/>.
+    /// </summary>
+    public static double TileImageWidthFor(double pageWidth, int span) => Math.Round(ImageColumnWidth(pageWidth, span));
+
+    static double ImageColumnWidth(double pageWidth, int span) =>
+        Math.Max((pageWidth - PagePadding * 2) / Math.Max(span, 1) - 4, 40); // minus the tile border
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
