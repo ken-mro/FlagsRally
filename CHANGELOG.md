@@ -10,6 +10,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Boards of one series share a chip on the map.** Boards added from the same shared folder, such as the manhole card issues, now appear as one chip like "マンホールカード ▾". Tap it to tick boards one by one, or use Select all / Clear selection; the chip shows how many are chosen. In a subfolder the series is the whole path, such as マンホールカード／関東, so subfolders with the same name in different series stay apart. Boards added from a file or before this version are grouped by their name without the issue number.
 - **A hint for placing a stamp spot.** Until you have done it once, the map says that pressing and holding the map puts a pin where you want to stamp.
 - **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
+- **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
 
 ### Changed
 - **Development:** Code that the how-to and Collections changes left unused is removed, and 20 app strings that nothing used.
@@ -36,7 +37,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **Checking in the wrong board's place where two boards share a spot.** Where two boards have the same place, such as 香取神宮 on 全国一の宮巡り and 全国神宮二十五社巡り, choosing the second one in "Several pins are here" could leave the first one selected (seen on iPhone), so Check In recorded the first board's place and the second could look already checked in. Each pin is now its own place, so the one you choose is the one checked in.
-- **The selected pin hidden behind another pin at the same spot.** The selected pin is now drawn in front, so you can see which one the card is about.
+- **The list of pins at the same spot changing its order.** Tapping where pins overlap lists them to choose from; the list now keeps the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
 
 ## [1.1.21] - Unreleased
 

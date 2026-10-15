@@ -9,26 +9,37 @@ public static class PinOverlapHelper
 
     /// <summary>
     /// Returns the visible pins located at (practically) the same coordinates as <paramref name="tappedPin"/>,
-    /// with the tapped pin first. Returns just the tapped pin when nothing overlaps it.
+    /// in the order of <paramref name="pins"/>, so the list is the same whichever of them was tapped.
+    /// Returns just the tapped pin when nothing overlaps it.
     /// </summary>
     public static IReadOnlyList<Pin> FindOverlapping(Pin tappedPin, IEnumerable<Pin> pins, double toleranceMeters = DEFAULT_TOLERANCE_METERS)
     {
         var tappedLocation = ToLocation(tappedPin.Position);
         // Pin equality is value-based (same label and position compare equal), so compare references.
-        var others = pins.Where(p => !ReferenceEquals(p, tappedPin) && p.IsVisible
-                                     && tappedLocation.CalculateDistance(ToLocation(p.Position), DistanceUnits.Kilometers) * 1000 <= toleranceMeters);
-        return [tappedPin, .. others];
+        var overlapping = pins.Where(p => ReferenceEquals(p, tappedPin)
+                                          || (p.IsVisible && tappedLocation.CalculateDistance(ToLocation(p.Position), DistanceUnits.Kilometers) * 1000 <= toleranceMeters))
+                              .ToList();
+        return overlapping.Count > 0 ? overlapping : [tappedPin];
     }
 
     /// <summary>
     /// Builds a distinct display label for each pin (title and board name), for use in a chooser.
+    /// Board places already checked in are marked with a check and the check-in date.
     /// </summary>
     public static IReadOnlyList<string> GetChoiceLabels(IReadOnlyList<Pin> pins)
     {
         var labels = new List<string>(pins.Count);
         foreach (var pin in pins)
         {
-            var label = pin.Tag is MapPinTag tag ? $"{pin.Label} – {tag.BoardName}" : pin.Label;
+            var label = pin.Tag switch
+            {
+                MapPinTag { IsCustomLocation: true, IsVisited: true } tag => string.IsNullOrEmpty(pin.Address)
+                    ? $"✓ {pin.Label} – {tag.BoardName}"
+                    // Non-breaking spaces keep the date on one line when a long label wraps.
+                    : $"✓ {pin.Label} – {tag.BoardName} ({pin.Address.Replace(' ', '\u00A0')})",
+                MapPinTag tag => $"{pin.Label} – {tag.BoardName}",
+                _ => pin.Label,
+            };
             var uniqueLabel = label;
             for (int i = 2; labels.Contains(uniqueLabel); i++)
             {
