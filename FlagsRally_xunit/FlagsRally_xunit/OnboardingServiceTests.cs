@@ -69,6 +69,7 @@ public class OnboardingServiceTests
     [InlineData(FlagsRally.ViewModels.OnboardingStep.Passport, "ja-JP", "howto_passport_ja.png")]
     [InlineData(FlagsRally.ViewModels.OnboardingStep.Stamp, "en-US", "howto_stamp_en.png")]
     [InlineData(FlagsRally.ViewModels.OnboardingStep.Boards, "fr-FR", "howto_boards_en.png")]
+    [InlineData(FlagsRally.ViewModels.OnboardingStep.HowToAgain, "ja-JP", "howto_settings_ja.png")]
     [InlineData(FlagsRally.ViewModels.OnboardingStep.Location, "ja-JP", "")]
     public void Each_page_shows_the_screenshot_in_the_app_language(FlagsRally.ViewModels.OnboardingStep step, string culture, string expected)
     {

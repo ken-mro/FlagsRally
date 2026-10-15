@@ -1418,5 +1418,23 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("OnboardingPassportNote", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See this again.
+        /// </summary>
+        internal static string OnboardingHowToAgainTitle {
+            get {
+                return ResourceManager.GetString("OnboardingHowToAgainTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can open these pages again at any time from How to use under Information, at the bottom of Settings..
+        /// </summary>
+        internal static string OnboardingHowToAgainBody {
+            get {
+                return ResourceManager.GetString("OnboardingHowToAgainBody", resourceCulture);
+            }
+        }
     }
 }

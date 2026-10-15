@@ -6,7 +6,7 @@ using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
-public enum OnboardingStep { Passport, Stamp, Boards, Location }
+public enum OnboardingStep { Passport, Stamp, Boards, HowToAgain, Location }
 
 /// <summary>
 /// One dot under the how-to pages; the current page's dot is filled.
@@ -18,7 +18,8 @@ public partial class OnboardingDot : ObservableObject
 }
 
 /// <summary>
-/// The how-to pages: the passport, stamping on the map, boards, and the location permission.
+/// The how-to pages: the passport, stamping on the map, boards, where to open these pages again in
+/// Settings, and the location permission.
 /// </summary>
 public partial class OnboardingViewModel : ObservableObject
 {
@@ -65,7 +66,7 @@ public partial class OnboardingViewModel : ObservableObject
     public bool HasNoScreenshot => !HasScreenshot;
 
     /// <summary>
-    /// The tab the page is about (0 Passport, 1 Map, 2 Collections), shown behind the page and pointed
+    /// The tab the page is about (0 Passport, 1 Map, 2 Collections, 3 Settings), shown behind the page and pointed
     /// at; null for the location page, which is about no tab.
     /// </summary>
     public int? Tab => TabFor(Step);
@@ -75,6 +76,7 @@ public partial class OnboardingViewModel : ObservableObject
         OnboardingStep.Passport => 0,
         OnboardingStep.Stamp => 1,
         OnboardingStep.Boards => 2,
+        OnboardingStep.HowToAgain => 3,
         _ => null,
     };
 
@@ -85,6 +87,7 @@ public partial class OnboardingViewModel : ObservableObject
             OnboardingStep.Passport => "passport",
             OnboardingStep.Stamp => "stamp",
             OnboardingStep.Boards => "boards",
+            OnboardingStep.HowToAgain => "settings",
             _ => null,
         };
         var language = culture.TwoLetterISOLanguageName == "ja" ? "ja" : "en";
@@ -99,6 +102,7 @@ public partial class OnboardingViewModel : ObservableObject
         OnboardingStep.Passport => AppResources.OnboardingPassportTitle,
         OnboardingStep.Stamp => AppResources.OnboardingStampTitle,
         OnboardingStep.Boards => AppResources.OnboardingBoardsTitle,
+        OnboardingStep.HowToAgain => AppResources.OnboardingHowToAgainTitle,
         _ => AppResources.OnboardingLocationTitle,
     };
 
@@ -107,6 +111,7 @@ public partial class OnboardingViewModel : ObservableObject
         OnboardingStep.Passport => AppResources.OnboardingPassportBody,
         OnboardingStep.Stamp => string.Format(AppResources.OnboardingStampBody, CheckInRange.LimitText),
         OnboardingStep.Boards => string.Format(AppResources.OnboardingBoardsBody, CheckInRange.LimitText),
+        OnboardingStep.HowToAgain => AppResources.OnboardingHowToAgainBody,
         _ => AppResources.OnboardingLocationBody,
     };
 
