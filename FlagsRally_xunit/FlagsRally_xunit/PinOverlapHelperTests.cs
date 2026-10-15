@@ -71,4 +71,21 @@ public class PinOverlapHelperTests
 
         Assert.Equal(["Tower – Board A", "Tower – Board A (2)", "Tower – Board B"], labels);
     }
+
+    [Fact]
+    public void Choice_labels_mark_checked_in_places_with_the_date()
+    {
+        var visited = new Pin
+        {
+            Label = "Kashima Jingu",
+            Position = new Position(35.0, 135.0),
+            Address = "10 Oct 2026",
+            Tag = MapPinTag.SetCustomLocationTag("Board A-1", "Board A", true),
+        };
+        var notVisited = CreatePin("Kashima Jingu", 35.0, 135.0, "Board B");
+
+        var labels = PinOverlapHelper.GetChoiceLabels([visited, notVisited]);
+
+        Assert.Equal(["✓ Kashima Jingu – Board A (10\u00A0Oct\u00A02026)", "Kashima Jingu – Board B"], labels);
+    }
 }

@@ -10,6 +10,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Boards of one series share a chip on the map.** Boards added from the same shared folder, such as the manhole card issues, now appear as one chip like "マンホールカード ▾". Tap it to tick boards one by one, or use Select all / Clear selection; the chip shows how many are chosen. In a subfolder the series is the whole path, such as マンホールカード／関東, so subfolders with the same name in different series stay apart. Boards added from a file or before this version are grouped by their name without the issue number.
 - **A hint for placing a stamp spot.** Until you have done it once, the map says that pressing and holding the map puts a pin where you want to stamp.
 - **Pins at the same spot fan out on the map.** Where pins sit on the same place or within a few metres, such as 香取神宮 on two boards, they now lean apart like a hand of cards with their tips still on the spot, so each one can be seen even zoomed all the way in.
+- **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
 
 ### Changed
 - **Development:** Code that the how-to and Collections changes left unused is removed, and 20 app strings that nothing used.
