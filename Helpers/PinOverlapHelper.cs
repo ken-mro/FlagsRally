@@ -9,15 +9,17 @@ public static class PinOverlapHelper
 
     /// <summary>
     /// Returns the visible pins located at (practically) the same coordinates as <paramref name="tappedPin"/>,
-    /// with the tapped pin first. Returns just the tapped pin when nothing overlaps it.
+    /// in the order of <paramref name="pins"/>, so the list is the same whichever of them was tapped.
+    /// Returns just the tapped pin when nothing overlaps it.
     /// </summary>
     public static IReadOnlyList<Pin> FindOverlapping(Pin tappedPin, IEnumerable<Pin> pins, double toleranceMeters = DEFAULT_TOLERANCE_METERS)
     {
         var tappedLocation = ToLocation(tappedPin.Position);
         // Pin equality is value-based (same label and position compare equal), so compare references.
-        var others = pins.Where(p => !ReferenceEquals(p, tappedPin) && p.IsVisible
-                                     && tappedLocation.CalculateDistance(ToLocation(p.Position), DistanceUnits.Kilometers) * 1000 <= toleranceMeters);
-        return [tappedPin, .. others];
+        var overlapping = pins.Where(p => ReferenceEquals(p, tappedPin)
+                                          || (p.IsVisible && tappedLocation.CalculateDistance(ToLocation(p.Position), DistanceUnits.Kilometers) * 1000 <= toleranceMeters))
+                              .ToList();
+        return overlapping.Count > 0 ? overlapping : [tappedPin];
     }
 
     /// <summary>

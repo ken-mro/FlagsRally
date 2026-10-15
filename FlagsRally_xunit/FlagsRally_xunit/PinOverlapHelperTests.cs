@@ -14,15 +14,14 @@ public class PinOverlapHelperTests
     };
 
     [Fact]
-    public void Pins_at_identical_coordinates_overlap_with_tapped_pin_first()
+    public void Pins_at_identical_coordinates_overlap_in_map_order_whichever_is_tapped()
     {
         var a = CreatePin("A", 35.0, 135.0);
         var b = CreatePin("B", 35.0, 135.0, "Board B");
         var c = CreatePin("C", 35.1, 135.0);
 
-        var result = PinOverlapHelper.FindOverlapping(b, [a, b, c]);
-
-        Assert.Equal([b, a], result);
+        Assert.Equal([a, b], PinOverlapHelper.FindOverlapping(a, [a, b, c]));
+        Assert.Equal([a, b], PinOverlapHelper.FindOverlapping(b, [a, b, c]));
     }
 
     [Fact]
