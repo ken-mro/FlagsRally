@@ -636,8 +636,8 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="CountryData.Standard" Version="1.5.0" />
 		<PackageReference Include="Kebechet.Maui.RevenueCat.InAppBilling" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.101" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.101" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.110" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.110" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.12" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />

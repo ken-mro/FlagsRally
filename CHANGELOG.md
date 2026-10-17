@@ -12,6 +12,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - **Stamp trails scroll smoothly with many stamps.** Each stamp image sized itself when it arrived, so the tile and the list were laid out again for every stamp, and a trail with many visited places stuttered while scrolling (on 全国一の宮巡り with all 109 visited, the slowest frames took 45–100 ms). The images now have a fixed size from the start (about 20 ms). Region flags in the passport and on a country's regions page get a fixed box for the same reason.
 - **The list of pins at the same spot keeps its order.** Tapping where pins overlap lists them to choose from; the list now has the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
+- **Development:** The iOS and Mac Catalyst app now start through a scene (`SceneDelegate` and `UIApplicationSceneManifest` in `Info.plist`). Apps built with Xcode 27 must use the UIScene lifecycle or they close at launch; it also works with the current Xcode 26.
+- **Development:** .NET MAUI is updated to 10.0.110 (from 10.0.101), the version the .NET for iOS release for Xcode 27 recommends. Builds need .NET SDK 10.0.401 with workload set 10.0.401.1, and Xcode 27.0 for iOS and Mac Catalyst.
 
 ### Fixed
 - **Confetti before the stamp.** After a check-in the confetti could fall on an empty frame while the stamp was still downloading; it now starts once the stamp is shown.
