@@ -7,13 +7,6 @@ RAW = f'{TOOLS}/raw'
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(TOOLS)
 NAMES = ['1_passport', '2_regions', '3_worldmap', '4_map', '5_collections', '6_board']
 
-def iphone_65(im):
-    # 1320x2868 -> 1284x2778: scale to the width, then trim the few extra rows top and bottom.
-    h = round(im.height * 1284 / im.width)
-    im = im.resize((1284, h), Image.LANCZOS)
-    top = (h - 2778) // 2
-    return im.crop((0, top, 1284, top + 2778))
-
 def android_phone(im):
     # Google Play allows at most 2:1. Drop the system status bar (rows 0-129) and the gesture
     # handle (rows 2350+), then widen 1080 -> 1110 by repeating the edge columns.
@@ -25,8 +18,12 @@ def android_phone(im):
     return out
 
 TARGETS = [
+    # The iOS captures already have the store sizes, so they are used as they are.
     ('ios69', 'ios/plain/iphone_6.9in_1320x2868', lambda im: im),
-    ('ios69', 'ios/plain/iphone_6.5in_1284x2778', iphone_65),
+    ('ios65', 'ios/plain/iphone_6.5in_1284x2778', lambda im: im),
+    ('ios63', 'ios/plain/iphone_6.3in_1206x2622', lambda im: im),
+    ('duoout', 'ios/plain/iphone_duo_outer_1398x2034', lambda im: im),
+    ('duoin', 'ios/plain/iphone_duo_inner_2007x2853', lambda im: im),
     ('ipad13', 'ios/plain/ipad_13in_2064x2752', lambda im: im),
     ('android', 'android/plain/phone_1110x2220', android_phone),
 ]

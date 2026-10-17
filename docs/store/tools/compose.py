@@ -124,6 +124,9 @@ def compose(raw_path, out_path, size, lang, idx, kind):
     if kind == 'tablet':
         # a tablet is wide: size it by width and let the bottom run off the canvas
         frame = device(shot, round(W * 0.88 * shot.height / shot.width), kind)
+    elif W / H > 0.6:
+        # a wide phone canvas (iPhone Duo): size the phone by width too, so it does not float in empty space
+        frame = device(shot, max(round(avail * 1.04), round(W * 0.6 * shot.height / shot.width)), kind)
     else:
         frame = device(shot, round(avail * 1.04), kind)
     max_w = W * (0.92 if kind == 'tablet' else 0.86)
@@ -139,10 +142,13 @@ def compose(raw_path, out_path, size, lang, idx, kind):
 
 # store target sizes
 TARGETS = [
-    # (raw folder prefix, out folder, size, kind)
-    ('ios69', 'ios/iphone_6.9in_1320x2868', (1320, 2868), 'phone_ios'),
-    ('ios69', 'ios/iphone_6.5in_1284x2778', (1284, 2778), 'phone_ios'),
-    ('ipad13', 'ios/ipad_13in_2064x2752', (2064, 2752), 'tablet'),
+    # (raw folder prefix, out folder, size, kind). Every size comes from a simulator of that size, never a scaled capture.
+    ('ios69', 'ios/iphone_6.9in_1320x2868', (1320, 2868), 'phone_ios'),    # iPhone 17 Pro Max
+    ('ios65', 'ios/iphone_6.5in_1284x2778', (1284, 2778), 'phone_ios'),    # iPhone 14 Plus
+    ('ios63', 'ios/iphone_6.3in_1206x2622', (1206, 2622), 'phone_ios'),    # iPhone 17
+    ('duoout', 'ios/iphone_duo_outer_1398x2034', (1398, 2034), 'phone_ios'),  # iPhone Duo, outer display
+    ('duoin', 'ios/iphone_duo_inner_2007x2853', (2007, 2853), 'tablet'),      # iPhone Duo, inner display
+    ('ipad13', 'ios/ipad_13in_2064x2752', (2064, 2752), 'tablet'),         # iPad Pro 13-inch (M5)
     ('android', 'android/phone_1080x1920', (1080, 1920), 'phone_android'),
 ]
 NAMES = ['1_passport', '2_regions', '3_worldmap', '4_map', '5_collections', '6_board']
