@@ -1,0 +1,7 @@
+No sign-in is needed.
+
+Location: the app uses the location only while it is in use, to stamp a place when the user is within 50 m of it. To try it on a device away from the sample places, press and hold anywhere on the Map tab to put a pin there, then tap "Stamp here".
+
+Stamp trails: Collections > Add stamp trail lists trails shared in a public Google Drive folder; tick one and add it. Its places then appear on the Map tab.
+
+Subscription: the first 5 arrivals are free. Recording a 6th arrival on the Map tab opens the subscription screen (monthly or yearly, auto-renewable). It can also be opened from Settings. Entering your own Google Maps API key in Settings removes the limit instead.

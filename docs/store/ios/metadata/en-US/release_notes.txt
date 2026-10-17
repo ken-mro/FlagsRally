@@ -1,0 +1,5 @@
+- A new look: your arrivals are now passport stamps, with a new map and new screens throughout.
+- Stamp trails: collect stamps at shrines, temples, manhole cards and more, and add several trails at once.
+- Short how-to pages on the first launch, which you can open again from Settings.
+- Pins at the same spot spread out so each one can be tapped, and the map is easier to use.
+- Text is no longer cut off with large text sizes, and several crashes and display problems are fixed.

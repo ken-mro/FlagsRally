@@ -1,0 +1,23 @@
+FlagsRally turns your travels into a passport full of stamps.
+
+PASSPORT
+Record your arrival in a country and it becomes an ARRIVAL stamp with the flag and the date. The passport counts your arrivals, countries and regions, and shows the flags of the regions you have been to.
+
+WORLD MAP
+The countries and regions you have visited are coloured in on a world map.
+
+STAMP TRAILS
+Collect stamps at shrines, temples, manhole cards and more. Add stamp trails from the shared list, or load a trail file of your own. When you are within 50 m of a place, stamp it on the map and its stamp joins the trail.
+
+YOUR OWN SPOTS
+Press and hold anywhere on the map to put a pin there and stamp it.
+
+YOUR DATA STAYS WITH YOU
+No account is needed. Your records are kept on your device, and you can back them up to a file and restore them.
+
+SUBSCRIPTION
+Your first 5 arrivals are free. To record more, subscribe monthly or yearly (new subscribers get the first 3 months free), or enter your own Google Maps API key in Settings.
+Payment is charged to your Apple Account when you confirm the purchase. The subscription renews automatically unless it is cancelled at least 24 hours before the end of the current period. You can manage or cancel it in your Apple Account settings.
+
+Terms of Use: https://doc-hosting.flycricket.io/flagsrally-terms-of-use/ffd4eac4-1892-4fd4-940d-7ada8775f93a/terms
+Privacy Policy: https://doc-hosting.flycricket.io/flagsrally-privacy-policy/4cade2a6-c6e3-47e3-85b6-ca608fbaea31/privacy
