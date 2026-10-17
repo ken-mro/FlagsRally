@@ -36,7 +36,9 @@
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.2</string>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>18</string>
 </dict>
 </plist>
