@@ -15,9 +15,10 @@
     VerticalOptions="End">
     <!--  A card just above the tab bar, which stays in sight: each page opens its tab behind the card
           and points at it, so the first look at the app shows where everything is.  -->
-    <Grid x:Name="layout" RowDefinitions="Auto,Auto">
+    <Grid x:Name="layout" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
         <Border
             x:Name="card"
+            Grid.Column="1"
             Margin="12,0"
             Padding="18,10,18,12"
             BackgroundColor="{StaticResource PaperCard}"
@@ -59,10 +60,20 @@
                 </Grid>
 
                 <ScrollView x:Name="scroll" Grid.Row="1">
-                    <VerticalStackLayout Spacing="12" VerticalOptions="Center">
+                    <!--  One column; beside a side tab bar in landscape (wide and short) the screenshot moves to
+                          the left of the text (set in code)  -->
+                    <Grid
+                        x:Name="pageGrid"
+                        ColumnDefinitions="Auto,*"
+                        ColumnSpacing="16"
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                        RowSpacing="12"
+                        VerticalOptions="Center">
                         <!--  The real screen, with what to tap framed (tools/howto_screens.py takes them);
                               the last page has an icon instead  -->
                         <Border
+                            x:Name="screenshotFrame"
+                            Grid.ColumnSpan="2"
                             Padding="0"
                             HorizontalOptions="Center"
                             IsVisible="{Binding HasScreenshot}"
@@ -75,18 +86,27 @@
                                 Source="{Binding Screenshot}" />
                         </Border>
                         <Image
+                            x:Name="icon"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
                             HeightRequest="80"
                             HorizontalOptions="Center"
                             IsVisible="{Binding HasNoScreenshot}"
                             Source="onboarding_location.png"
                             WidthRequest="80" />
                         <controls:StampLabel
+                            x:Name="pageTitle"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"
                             FontSize="22"
                             HorizontalTextAlignment="Center"
                             LineBreakMode="WordWrap"
                             Text="{Binding Title}"
                             TextColor="{StaticResource Navy}" />
                         <Label
+                            x:Name="pageBody"
+                            Grid.Row="3"
+                            Grid.ColumnSpan="2"
                             FontSize="15"
                             HorizontalTextAlignment="Center"
                             LineBreakMode="WordWrap"
@@ -95,13 +115,16 @@
                             TextColor="{StaticResource Ink}" />
                         <!--  A side note, kept apart from the main text so it reads as less important  -->
                         <Label
+                            x:Name="pageNote"
+                            Grid.Row="4"
+                            Grid.ColumnSpan="2"
                             FontSize="12"
                             HorizontalTextAlignment="Center"
                             IsVisible="{Binding HasNote}"
                             LineBreakMode="WordWrap"
                             Text="{Binding Note}"
                             TextColor="{StaticResource InkMuted}" />
-                    </VerticalStackLayout>
+                    </Grid>
                 </ScrollView>
 
                 <!--  Where you are in the pages  -->
@@ -184,6 +207,7 @@
         <Polygon
             x:Name="arrow"
             Grid.Row="1"
+            Grid.Column="1"
             HeightRequest="16"
             WidthRequest="28"
             Margin="0,-1,0,0"
@@ -192,5 +216,31 @@
             Points="0,0 28,0 14,16"
             Stroke="{StaticResource PaperEdge}"
             StrokeThickness="1" />
+
+        <!--  Point sideways at the page's tab when the tab bar stands down a side, as on the iPhone Duo's
+              outer screen (right in portrait, left in landscape); placed in code  -->
+        <Polygon
+            x:Name="leftArrow"
+            HeightRequest="28"
+            WidthRequest="16"
+            Margin="0,0,-1,0"
+            Fill="{StaticResource PaperCard}"
+            IsVisible="False"
+            Points="16,0 0,14 16,28"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeThickness="1"
+            VerticalOptions="Start" />
+        <Polygon
+            x:Name="rightArrow"
+            Grid.Column="2"
+            HeightRequest="28"
+            WidthRequest="16"
+            Margin="-1,0,0,0"
+            Fill="{StaticResource PaperCard}"
+            IsVisible="False"
+            Points="0,0 16,14 0,28"
+            Stroke="{StaticResource PaperEdge}"
+            StrokeThickness="1"
+            VerticalOptions="Start" />
     </Grid>
 </toolkit:Popup>

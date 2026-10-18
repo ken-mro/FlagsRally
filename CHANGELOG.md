@@ -17,6 +17,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** The App Store files are complete: the listing text in English and Japanese, screenshots retaken on a simulator of each size (6.9", 6.5", 6.3", iPad 13" and both iPhone Duo screens, none scaled from another size), app previews for iPhone and iPad, and the iOS 27 header and search results images and videos. `docs/store/tools/check_ios.py` checks them against App Store Connect's sizes, formats and text limits.
 
 ### Fixed
+- **The how-to pages on the iPhone Duo.** On the outer screen the card ran off the left edge and its arrow pointed at nothing, because the tab bar stands down the right side there. The card now sits beside that tab bar with an arrow pointing sideways at the tab; in landscape the picture goes beside the text so everything fits. The pages also follow the screen when the phone is folded or unfolded, and on the iPad the arrow now points at the right tab.
 - **Confetti before the stamp.** After a check-in the confetti could fall on an empty frame while the stamp was still downloading; it now starts once the stamp is shown.
 
 ## [1.2.0] - Unreleased
