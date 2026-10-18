@@ -16,7 +16,7 @@ Every step that changes files ends with its own commit (a fix is one commit per 
 
 `<scratch>` below means Claude's scratchpad directory. Needs a Mac with Xcode, a booted simulator and AXe, as in `/ios-verify`.
 
-**How the iOS numbers are kept:** they live only on `release/ios-*` branches, which are not merged back (`master`'s Info.plist still says build 5 and has no `CFBundleShortVersionString`). So the last build number comes from those branches, not from `master`. Info.plist values win over `ApplicationDisplayVersion` / `ApplicationVersion` in `FlagsRally.csproj`; the .ipa carries the Info.plist numbers.
+**Where the iOS numbers live:** `Platforms/iOS/Info.plist`. Its values win over `ApplicationDisplayVersion` / `ApplicationVersion` in `FlagsRally.csproj`; the .ipa carries the Info.plist numbers.
 
 **The upload is the one step that cannot be taken back.** App Store Connect accepts each build number once per version; after an upload that number is used up even if the build is never released. So stage 4 always stops right before the upload, shows what will be sent and goes on only after a clear yes in this conversation. Earlier approval ("release it") does not cover it. The upload only puts the build in App Store Connect (TestFlight); submitting it for review is the user's.
 
@@ -34,15 +34,10 @@ Signing needs the "Apple Distribution: Ken Murao (NQJ2NB4BG5)" certificate in th
 
 ## 0. Start
 
-- **The version.** Use the one the user gave (`1.2`, `1.2.1`). If they gave none, ask for it with AskUserQuestion before anything else, showing the current one from the last release branch (below). Do not guess.
+- **The version.** Use the one the user gave (`1.2`, `1.2.1`). If they gave none, ask for it with AskUserQuestion before anything else, showing the current one from `Platforms/iOS/Info.plist`. Do not guess.
 - Update `master`: `git checkout master && git pull --ff-only`. Open PRs that should go out must be merged first (`gh pr list --state open`); ask about any whose status is unclear.
-- Find the last iOS release branch and the next build number:
-  ```bash
-  git for-each-ref --sort=-committerdate --format='%(refname:short)' 'refs/heads/release/ios-*' 'refs/remotes/origin/release/ios-*'
-  uv run .claude/skills/ios-release/scripts/bump_ios_version.py --version <version> --dry-run
-  ```
-- Create the branch from `master`: `git checkout -b release/ios-<version>-build<N>`.
-- **Carry over the iOS-only commits** of the last release branch that `master` lacks, except its version commit ("Set the iOS version to ..."). `git cherry -v master <last release branch>` lists them (`+` = not on master). Show the list and cherry-pick them in order (`git cherry-pick <sha>`), unless the user says otherwise. An example is the `ValidateXcodeVersion=false` property, needed while Xcode is newer than the iOS SDK.
+- Preview the next build number: `uv run .claude/skills/ios-release/scripts/bump_ios_version.py --version <version> --dry-run`.
+- Create the branch from `master`: `git checkout -b release/ios-<version>-build<N>`. Nothing is cherry-picked onto it.
 - `Repository/Constants.cs` must hold the real keys in the working tree (`git diff --quiet Repository/Constants.cs` exits 1). Never stage it. A build with the dummy keys ships broken maps and subscriptions.
 
 ## 1. Release check (repeat until clean)
@@ -55,7 +50,7 @@ Only a Release build shows what trimming removes, so the Release launch check is
    bash .claude/skills/ios-release/scripts/release_smoke.sh <scratch>/ios-release-check-1 [--udid <udid>]
    ```
    Exit 0 means it launched, every tab opened and no new crash report appeared. Exit 1 lists what was found (`report.txt`, `build.log`, crash `.ips` files and a screenshot per tab are in the folder). Look at the screenshots yourself too: a blank tab or an endless spinner is fatal even without a crash. Without `--udid` it takes the first booted simulator; pick an iPhone.
-3. Check what changed since the last iOS release, with the Release build installed: `git log --oneline <last release branch>..HEAD --no-merges`. Drive the simulator as in `/ios-verify` (check-ins and the map for map changes, adding a board for board changes, the paywall for subscription changes; English and Japanese when text changed).
+3. Check what changed since the last iOS release, with the Release build installed: `git log --oneline -G'<key>CFBundleVersion</key>' -1 --all -- Platforms/iOS/Info.plist` finds the last version commit, and `git log --oneline <that commit>..HEAD --no-merges` lists the changes. Drive the simulator as in `/ios-verify` (check-ins and the map for map changes, adding a board for board changes, the paywall for subscription changes; English and Japanese when text changed).
 4. **Something fatal?** (crash, freeze, a screen that does not load, data loss.) Find the cause before changing code (the crash report's exception and stack, `xcrun simctl spawn booted log show --last 5m --predicate 'process == "FlagsRally"'`). Fix it on the release branch, add a test that would have caught it when possible, run the tests and commit one concern per commit. If the fix touches shared code or layout, also check Android with `/android-verify`. Then **go back to step 1 with a new output folder**: only a full clean run counts.
 
 Non-fatal problems (a typo, a layout glitch) do not hold the release. List them for the user; fix them here only if small and clearly wanted.
@@ -65,7 +60,7 @@ Non-fatal problems (a typo, a layout glitch) do not hold the release. List them 
 1. ```bash
    uv run .claude/skills/ios-release/scripts/bump_ios_version.py --version <version>   # --build <N> only when the user names one
    ```
-   It sets `CFBundleShortVersionString` (adding it when missing) and sets `CFBundleVersion` to one more than the highest found in the working tree and on every `release/ios-*` branch. It refuses a number that does not go up. If the user says App Store Connect already has a higher build (an upload from another machine), use `--build`.
+   It sets `CFBundleShortVersionString` (adding it when missing) and sets `CFBundleVersion` to the current value in Info.plist plus one. It refuses a number that does not go up. If the user names a build number, or App Store Connect already has that build, use `--build`.
 2. `git diff Platforms/iOS/Info.plist` must show only those values, and `plutil -lint Platforms/iOS/Info.plist` must say OK.
 3. Commit just that file: `git add Platforms/iOS/Info.plist`, message `Set the iOS version to <version> (build <N>)`.
 
