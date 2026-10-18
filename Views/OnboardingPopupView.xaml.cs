@@ -24,6 +24,8 @@ public partial class OnboardingPopupView : Popup
     const double MinSideCardHeight = 440;
     // The card's distance from the top and bottom edges beside a side tab bar
     const double SideMargin = 36;
+    // How close the card may come to the window's edges when its text needs the room
+    const double MinEdgeMargin = 8;
     // The status bar and the title bar stay above the card (the title names the tab behind it).
     static double TopSpace => DeviceInfo.Platform == DevicePlatform.iOS ? 184 : 150;
 
@@ -33,6 +35,10 @@ public partial class OnboardingPopupView : Popup
     readonly ShellSection? _startTab;
     bool _isClosing;
     readonly Window? _window;
+    // The toolkit keeps a popup this far from the window's edges (Popup.Margin, 30 pt by default).
+    // The layout above a bottom tab bar is set out with it; beside a side tab bar it is taken away,
+    // or the card could not reach down to the lowest tab.
+    readonly Thickness _defaultMargin;
     // Whether the card was already placed again from the layout's measured position since the last page
     // or window change: once is enough, and more would chase the layout's own size changes forever.
     bool _replacedAfterLayout;
@@ -57,6 +63,13 @@ public partial class OnboardingPopupView : Popup
         _window = Shell.Current?.Window;
         if (_window is not null) _window.SizeChanged += OnWindowSizeChanged;
         layout.SizeChanged += OnLayoutSizeChanged;
+        pageGrid.SizeChanged += (_, _) => Dispatcher.Dispatch(FitTextBesideSideTabBar);
+        // When the card grows to fit its text it moves without the layout changing size: the side arrow
+        // follows it once it has been laid out
+        card.SizeChanged += (_, _) => Dispatcher.Dispatch(PlaceSideArrowFromCard);
+        // Placed again once the toolkit has wrapped the popup, so the margin reaches its border
+        Loaded += (_, _) => PlaceCard();
+        _defaultMargin = Margin;
         ShowTab();
     }
 
@@ -94,15 +107,27 @@ public partial class OnboardingPopupView : Popup
         PlaceCard();
     }
 
-    void OnWindowSizeChanged(object? sender, EventArgs e) =>
-        // The tab bar moves with the new size only after the window has laid out again
-        Dispatcher.Dispatch(() =>
+
+    // The tab bar moves to its new place (bottom or side, left or right) only some time after the window
+    // has changed size, as when the iPhone Duo is folded or unfolded: the card is placed again once it
+    // has settled, from scratch each time.
+    // Turning the Duo while folded can take UIKit a few seconds to move the tab buttons.
+    static readonly TimeSpan[] SettleDelays = [TimeSpan.Zero, TimeSpan.FromMilliseconds(400), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4)];
+
+    void OnWindowSizeChanged(object? sender, EventArgs e)
+    {
+        foreach (var delay in SettleDelays)
         {
-            _replacedAfterLayout = false;
-            _sideTopCorrection = 0;
-            _sideCardSpan = null;
-            PlaceCard();
-        });
+            Dispatcher.DispatchDelayed(delay, () =>
+            {
+                if (_isClosing) return;
+                _replacedAfterLayout = false;
+                _sideTopCorrection = 0;
+                _sideCardSpan = null;
+                PlaceCard();
+            });
+        }
+    }
 
     Size WindowSize()
     {
@@ -133,6 +158,7 @@ public partial class OnboardingPopupView : Popup
     {
         arrow.IsVisible = true;
         leftArrow.IsVisible = rightArrow.IsVisible = false;
+        SetPopupMargin(_defaultMargin);
         layout.Padding = new Thickness(0, 0, 0, TabBarHeight);
         // From just below the title bar down to the arrow over the tab bar, the same on every page;
         // the screenshot takes at most about a third of it, so the text and buttons stay in view.
@@ -159,6 +185,7 @@ public partial class OnboardingPopupView : Popup
         rightArrow.IsVisible = onRight;
         (onRight ? rightArrow : leftArrow).Opacity = _viewModel.Tab is null ? 0 : 1;
         layout.HeightRequest = -1;
+        SetPopupMargin(new Thickness(0));
 
         // The card: beside the bar, from below the title bar (it names the tab behind the card) to near
         // the bottom; when that is too short, as on the outer screen in landscape, it covers the title bar.
@@ -201,6 +228,15 @@ public partial class OnboardingPopupView : Popup
         return (top, bottom);
     }
 
+    void PlaceSideArrowFromCard()
+    {
+        if ((leftArrow.IsVisible || rightArrow.IsVisible) && TabBarGeometry.TabBar() is Rect bar
+            && TabBarGeometry.FrameInWindow(card) is Rect frame)
+        {
+            PlaceSideArrow(bar, frame.Top);
+        }
+    }
+
     // Points the side arrow at the page's tab button, measured from the card's top.
     void PlaceSideArrow(Rect bar, double cardTop)
     {
@@ -230,9 +266,9 @@ public partial class OnboardingPopupView : Popup
                     _sideTopCorrection += 2 * (SideCardSpan(WindowSize()).Top - placed.Top);
                 PlaceCard();
             }
-            else if (TabBarGeometry.TabBar() is Rect bar && TabBarGeometry.FrameInWindow(card) is Rect frame)
+            else
             {
-                PlaceSideArrow(bar, frame.Top);
+                PlaceSideArrowFromCard();
             }
         });
     }
@@ -260,6 +296,45 @@ public partial class OnboardingPopupView : Popup
         pageGrid.ColumnDefinitions[1].Width = sideBySide ? new GridLength(2, GridUnitType.Star) : GridLength.Star;
         // Beside the text the screenshot can be taller: it no longer pushes the text down
         if (sideBySide) screenshot.MaximumHeightRequest = Math.Max(120, card.HeightRequest * 0.45);
+    }
+
+    // Beside a side tab bar the card is narrow, so large text may not fit under the picture. Then the
+    // picture gets smaller, down to a minimum, and after that the card grows upwards over the title bar.
+    // Only ever shrinking the picture or raising the card, so this settles after a step or two.
+    const double MinSidePictureHeight = 80;
+    void FitTextBesideSideTabBar()
+    {
+        if (!(leftArrow.IsVisible || rightArrow.IsVisible) || scroll.Height <= 0) return;
+        var overflow = pageGrid.Height - scroll.Height;
+        if (overflow <= 1) return;
+        // Beside the text (landscape) a smaller picture gives the text no more room
+        var sideBySide = Grid.GetColumnSpan(screenshotFrame) == 1;
+        if (!sideBySide && screenshot.IsVisible && screenshot.MaximumHeightRequest > MinSidePictureHeight)
+        {
+            screenshot.MaximumHeightRequest = Math.Max(MinSidePictureHeight, screenshot.MaximumHeightRequest - overflow);
+            return;
+        }
+        // Then the card grows: up over the title bar, then into its top and bottom margins
+        if (_sideCardSpan is { } span)
+        {
+            var bottomLimit = WindowSize().Height - MinEdgeMargin;
+            var grown = span.Top > SideMargin ? (Math.Max(SideMargin, span.Top - overflow), span.Bottom)
+                : span.Top > MinEdgeMargin ? (Math.Max(MinEdgeMargin, span.Top - overflow), span.Bottom)
+                : span.Bottom < bottomLimit ? (span.Top, Math.Min(bottomLimit, span.Bottom + overflow))
+                : span;
+            if (grown == span) return;
+            _sideCardSpan = grown;
+            _replacedAfterLayout = false;
+            PlaceCard();
+        }
+    }
+
+    // The toolkit copies Popup.Margin to the border it wraps the popup in only when it opens; the pages
+    // can change layout while open (folding the iPhone Duo), so the border is set directly too.
+    void SetPopupMargin(Thickness margin)
+    {
+        if (Margin != margin) Margin = margin;
+        if (Parent is View host && host.Margin != margin) host.Margin = margin;
     }
 
     void SetCardHeight(double cardHeight)
