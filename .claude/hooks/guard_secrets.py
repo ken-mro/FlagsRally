@@ -2,7 +2,8 @@
 
 Repository/Constants.cs is kept modified in the working tree with real API keys, and
 Resources/Sample/*.json.encrypted are local-only. .claude/settings.local.json holds the release
-signing passwords in its "env" (git-ignored, but `git add -f` would still stage it).
+signing passwords in its "env" (git-ignored, but `git add -f` would still stage it), and a .p8 file
+is an App Store Connect API key, which belongs outside the repository.
 This hook blocks (exit code 2):
   - blanket staging: `git add -A`, `git add .`, `git add --all`, `git commit -a`
   - a commit while a secret file is staged, or one that names a secret file
@@ -14,7 +15,7 @@ import re
 import subprocess
 import sys
 
-SECRET_PATHS = re.compile(r"^(Repository/Constants\.cs|Resources/Sample/.*\.encrypted|\.claude/settings\.local\.json)$")
+SECRET_PATHS = re.compile(r"^(Repository/Constants\.cs|Resources/Sample/.*\.encrypted|\.claude/settings\.local\.json|.*\.p8)$")
 # Written so that this file never matches itself (the Syncfusion prefix is split by a character class).
 KEY_PATTERNS = re.compile(r"AIza[0-9A-Za-z_\-]{30,}|goog_[A-Za-z]{20,}|appl_[A-Za-z]{20,}|Ngo9Big[B]OggjHTQxAR8[A-Za-z0-9+/=]{20,}")
 QUOTED = re.compile(r'"(?:\\.|[^"\\])*"|\'[^\']*\'')
