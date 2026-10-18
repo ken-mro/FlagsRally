@@ -14,6 +14,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **The list of pins at the same spot keeps its order.** Tapping where pins overlap lists them to choose from; the list now has the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
 - **Development:** The iOS and Mac Catalyst app now start through a scene (`SceneDelegate` and `UIApplicationSceneManifest` in `Info.plist`). Apps built with Xcode 27 must use the UIScene lifecycle or they close at launch; it also works with the current Xcode 26.
 - **Development:** .NET MAUI is updated to 10.0.110 (from 10.0.101), the version the .NET for iOS release for Xcode 27 recommends. Builds need .NET SDK 10.0.401 with workload set 10.0.401.1, and Xcode 27.0 for iOS and Mac Catalyst.
+- **Development:** The Mac Catalyst app now needs Mac Catalyst 17.0 (macOS 14) or later, up from 15.0. The .NET for iOS release for Xcode 27 refuses to build for anything older.
 - **Development:** The App Store files are complete: the listing text in English and Japanese, screenshots retaken on a simulator of each size (6.9", 6.5", 6.3", iPad 13" and both iPhone Duo screens, none scaled from another size), app previews for iPhone and iPad, and the iOS 27 header and search results images and videos. `docs/store/tools/check_ios.py` checks them against App Store Connect's sizes, formats and text limits.
 
 ### Fixed
