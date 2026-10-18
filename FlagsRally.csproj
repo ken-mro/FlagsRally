@@ -41,6 +41,11 @@
 		<AndroidSkipGradleRestore>true</AndroidSkipGradleRestore>
 	</PropertyGroup>
 
+	<!-- Allow building when the installed Xcode is newer than the one the iOS/Mac Catalyst SDK was released for (e.g. SDK 26.5 with Xcode 26.6) -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<ValidateXcodeVersion>false</ValidateXcodeVersion>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<!-- The foreground leaves room for Android's adaptive-icon mask; iOS shows the whole canvas, so draw it larger there. -->
