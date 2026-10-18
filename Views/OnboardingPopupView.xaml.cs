@@ -89,7 +89,8 @@ public partial class OnboardingPopupView : Popup
         {
             _tabs.CurrentItem = _tabs.Items[tab];
         }
-        _replacedAfterLayout = false;
+        // Beside a side tab bar the card keeps its place from page to page (only the arrow moves), so
+        // its position is not measured and corrected again here
         PlaceCard();
     }
 
@@ -99,6 +100,7 @@ public partial class OnboardingPopupView : Popup
         {
             _replacedAfterLayout = false;
             _sideTopCorrection = 0;
+            _sideCardSpan = null;
             PlaceCard();
         });
 
@@ -165,6 +167,10 @@ public partial class OnboardingPopupView : Popup
         SetCardHeight(cardBottom - cardTop);
         // Wide and short (the outer screen in landscape): the screenshot beside the text, so it all fits
         SetSideBySide(cardBottom - cardTop < MinSideCardHeight);
+        // The card beside a side tab bar is narrower than a phone's: a smaller picture leaves the text
+        // room to show in full, even with large text
+        if (cardBottom - cardTop >= MinSideCardHeight)
+            screenshot.MaximumHeightRequest = Math.Max(120, (cardBottom - cardTop) * 0.26);
 
         // The popup centres the layout in its own area, which does not line up with the window here, so
         // the padding comes from where the layout really is (its width is fixed, so this does not move it
@@ -181,11 +187,17 @@ public partial class OnboardingPopupView : Popup
         PlaceSideArrow(bar, TabBarGeometry.FrameInWindow(card)?.Top ?? cardTop);
     }
 
+    // Worked out once per window size: measured again on another page, the title bar of the tab that
+    // is just opening behind the card gives a different height, and the card would jump between pages.
+    (double Top, double Bottom)? _sideCardSpan;
+
     (double Top, double Bottom) SideCardSpan(Size size)
     {
+        if (_sideCardSpan is { } span) return span;
         var bottom = size.Height - SideMargin;
         var top = (TabBarGeometry.TitleBarBottom() ?? 96) + 12;
         if (bottom - top < MinSideCardHeight) top = SideMargin;
+        _sideCardSpan = (top, bottom);
         return (top, bottom);
     }
 
@@ -244,10 +256,10 @@ public partial class OnboardingPopupView : Popup
         }
         pageGrid.RowDefinitions[^1].Height = sideBySide ? GridLength.Star : GridLength.Auto;
         // Fixed shares side by side, so a wide screenshot cannot squeeze the text into a narrow strip
-        pageGrid.ColumnDefinitions[0].Width = sideBySide ? new GridLength(2, GridUnitType.Star) : GridLength.Auto;
-        pageGrid.ColumnDefinitions[1].Width = sideBySide ? new GridLength(3, GridUnitType.Star) : GridLength.Star;
+        pageGrid.ColumnDefinitions[0].Width = sideBySide ? new GridLength(1, GridUnitType.Star) : GridLength.Auto;
+        pageGrid.ColumnDefinitions[1].Width = sideBySide ? new GridLength(2, GridUnitType.Star) : GridLength.Star;
         // Beside the text the screenshot can be taller: it no longer pushes the text down
-        if (sideBySide) screenshot.MaximumHeightRequest = Math.Max(120, card.HeightRequest * 0.5);
+        if (sideBySide) screenshot.MaximumHeightRequest = Math.Max(120, card.HeightRequest * 0.45);
     }
 
     void SetCardHeight(double cardHeight)
