@@ -983,22 +983,17 @@ public partial class LocationPageViewModel : BaseViewModel
         SetHiddenPinKeys(PinFilterRules.Toggle(FilterChips, chip, _hiddenPinKeys));
     }
 
-    // One button for Select all and Clear all. Its box shows whether all, some or none of the pins
-    // are shown; a tap clears them when all are shown and shows them all otherwise.
+    // One button for Select all and Clear all, showing what a tap does: an empty box (Clear all)
+    // while every pin is shown, two ticks (Select all) otherwise.
     [RelayCommand]
     void ToggleAllPins() => SetHiddenPinKeys(PinFilterRules.ToggleAll(FilterChips, _hiddenPinKeys));
 
-    PinsShown ShownPins => PinFilterRules.Shown(FilterChips, _hiddenPinKeys);
+    bool ClearsAllPins => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) == PinsShown.All;
 
-    public string ToggleAllPinsIcon => ShownPins switch
-    {
-        PinsShown.All => "pins_all_shown.png",
-        PinsShown.Some => "pins_some_shown.png",
-        _ => "pins_none_shown.png",
-    };
+    public string ToggleAllPinsIcon => ClearsAllPins ? "clear_all_pins.png" : "select_all_pins.png";
 
     // Says what a tap does, for screen readers.
-    public string ToggleAllPinsDescription => ShownPins == PinsShown.All ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
+    public string ToggleAllPinsDescription => ClearsAllPins ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
 
     // A series chip (such as マンホールカード) opens its boards to show all of them or some.
     private Task ChooseSeriesBoardsAsync(PinFilterChip chip) => ChoosePinKeysAsync(chip.Name, chip.Members);

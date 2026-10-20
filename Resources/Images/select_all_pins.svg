@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <!-- Select all: two ticks, many items chosen at once. -->
+  <path d="M18 6 L7 17 L2 12" fill="none" stroke="#182A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22 10 L14.5 17.5 L13 16" fill="none" stroke="#182A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

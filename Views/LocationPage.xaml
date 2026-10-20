@@ -178,9 +178,8 @@
                         VerticalOptions="Center" />
                 </HorizontalStackLayout>
             </Border>
-            <!--  Select all and Clear all in one: the box is ticked when every pin is shown, has a dash
-                  when some are, and is empty when none are. A tap clears all when all are shown,
-                  otherwise shows all.  -->
+            <!--  Select all and Clear all in one, showing what a tap does: an empty box clears every pin
+                  while all are shown; two ticks show them all otherwise.  -->
             <Border
                 Grid.Column="1"
                 Padding="12,0"
