@@ -124,6 +124,46 @@ public class RedesignViewModelTests
         Assert.True(vm.BoardCards.IsExpanded);
     }
 
+    [Fact]
+    public async Task Collections_without_a_stamp_can_be_hidden_and_the_choice_is_remembered()
+    {
+        var (boards, locations) = CreateRepositories();
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                   .Returns((string _, string defaultValue, string? _) => defaultValue);
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService(), new SettingsPreferences(preferences.Object));
+        await vm.Init();
+        var countries = vm.RegionalCards.Count;
+
+        vm.SetHidesEmptyCards(true);
+
+        Assert.Equal(["JP"], vm.RegionalCards.Select(c => c.Key));
+        Assert.Equal(["Board A", ""], vm.BoardCards.Select(c => c.Key)); // Board B (0 / 1) is gone; the Add card stays
+        Assert.Equal("1 / " + countries, vm.RegionalCards.Summary);       // still counts every country
+        preferences.Verify(p => p.Set("HidesEmptyCollections", "True", It.IsAny<string>()));
+
+        vm.SetHidesEmptyCards(false);
+
+        Assert.Equal(countries, vm.RegionalCards.Count);
+        Assert.Equal(3, vm.BoardCards.Count);
+    }
+
+    [Fact]
+    public async Task Collections_start_with_the_remembered_choice()
+    {
+        var (boards, locations) = CreateRepositories();
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                   .Returns((string key, string defaultValue, string? _) => key == "HidesEmptyCollections" ? "True" : defaultValue);
+        var vm = new CollectionsPageViewModel(boards.Object, locations.Object, CreateRegionalFlagsService(), new SettingsPreferences(preferences.Object));
+
+        await vm.Init();
+
+        Assert.True(vm.HidesEmptyCards);
+        Assert.Single(vm.RegionalCards);
+        Assert.Equal(2, vm.BoardCards.Count);
+    }
+
     // iOS's grouped CollectionView throws when a Reset is followed at once by item inserts.
     [Fact]
     public void Replacing_or_folding_cards_raises_a_single_reset()

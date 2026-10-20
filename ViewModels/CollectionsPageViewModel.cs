@@ -120,6 +120,7 @@ public partial class CollectionsPageViewModel : BaseViewModel
         _regionalFlagsService = regionalFlagsService;
         _settingsPreferences = settingsPreferences;
         RegionalCards.IsExpanded = settingsPreferences.GetRegionalFlagsExpanded();
+        HidesEmptyCards = settingsPreferences.GetHidesEmptyCollections();
         Sections = [RegionalCards, BoardCards];
     }
 
@@ -129,6 +130,43 @@ public partial class CollectionsPageViewModel : BaseViewModel
     public CollectionSection BoardCards { get; } = new(AppResources.CustomBoards, isEditable: true);
 
     public ObservableCollection<CollectionSection> Sections { get; }
+
+    /// <summary>
+    /// Leaves off the countries and boards without a stamp yet. The Add board card always stays,
+    /// and the countries' summary still counts every country.
+    /// </summary>
+    public bool HidesEmptyCards { get; private set; }
+
+    // Every card from the last load, so the display option applies without reading the data again.
+    List<CollectionCard> _allRegionalCards = [];
+    List<CollectionCard> _allBoardCards = [];
+
+    void ShowShownCards()
+    {
+        RegionalCards.SetCards(_allRegionalCards.Where(Shows));
+        BoardCards.SetCards(_allBoardCards.Where(Shows));
+    }
+
+    bool Shows(CollectionCard card) => !HidesEmptyCards || card.IsAddCard || card.Visited > 0;
+
+    [RelayCommand]
+    async Task ChooseDisplayOptionsAsync()
+    {
+        var hideEmpty = HidesEmptyCards ? $"✓ {AppResources.HideEmptyCollections}" : AppResources.HideEmptyCollections;
+        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideEmpty);
+        if (choice == hideEmpty)
+        {
+            SetHidesEmptyCards(!HidesEmptyCards);
+        }
+    }
+
+    public void SetHidesEmptyCards(bool hides)
+    {
+        HidesEmptyCards = hides;
+        _settingsPreferences.SetHidesEmptyCollections(hides);
+        OnPropertyChanged(nameof(HidesEmptyCards));
+        ShowShownCards();
+    }
 
     public async Task Init()
     {
@@ -156,7 +194,8 @@ public partial class CollectionsPageViewModel : BaseViewModel
                     string.IsNullOrEmpty(board.Name) ? string.Empty : board.Name[..1]));
             }
             boardCards.Add(new CollectionCard(CollectionCardKind.Add, string.Empty, AppResources.AddBoard, 0, 0, string.Empty, string.Empty));
-            BoardCards.SetCards(boardCards);
+            _allBoardCards = boardCards;
+            ShowShownCards();
         }
         catch (Exception ex)
         {
@@ -181,7 +220,7 @@ public partial class CollectionsPageViewModel : BaseViewModel
                 country.CountryFlag));
         }
 
-        RegionalCards.SetCards(cards.OrderBy(c => c.Visited == 0));
+        _allRegionalCards = [.. cards.OrderBy(c => c.Visited == 0)];
         RegionalCards.Summary = $"{cards.Count(c => c.Visited > 0)} / {cards.Count}";
     }
 

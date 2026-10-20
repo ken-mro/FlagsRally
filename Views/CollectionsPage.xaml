@@ -6,6 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:CollectionsPageViewModel"
@@ -119,7 +120,24 @@
             RemoteImageCard="{StaticResource RemoteImageCard}" />
     </ContentPage.Resources>
     <Shell.TitleView>
-        <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabCollections}" />
+        <Grid Padding="0,0,4,0" ColumnDefinitions="*,Auto">
+            <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.TabCollections}" />
+            <!--  Display options: hide the countries and boards without a stamp  -->
+            <ImageButton
+                Grid.Column="1"
+                Padding="11"
+                BackgroundColor="Transparent"
+                Command="{Binding ChooseDisplayOptionsCommand}"
+                HeightRequest="44"
+                SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
+                Source="filter.png"
+                VerticalOptions="Center"
+                WidthRequest="44">
+                <ImageButton.Behaviors>
+                    <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
+                </ImageButton.Behaviors>
+            </ImageButton>
+        </Grid>
     </Shell.TitleView>
     <!--  iOS's tab bar floats over the bottom of the list, and a grouped list shows no footer there:
           the margin keeps the last row of cards above the tab bar.  -->

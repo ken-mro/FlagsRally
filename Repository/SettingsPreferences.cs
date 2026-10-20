@@ -14,6 +14,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _customBoardSort = "CustomBoardSort";
     private string _pinStyle = "PinStyle";
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
+    private string _hidesEmptyCollections = "HidesEmptyCollections";
     private string _hasSeenOnboarding = "HasSeenOnboarding";
     private string _hasSeenLongPressHint = "HasSeenLongPressHint";
 
@@ -128,6 +129,17 @@ public partial class SettingsPreferences : ObservableObject
     public void SetRegionalFlagsExpanded(bool isExpanded)
     {
         _defaultPreferences.Set(_regionalFlagsExpanded, isExpanded.ToString());
+    }
+
+    // Collections without a stamp (countries never visited, boards not checked in) left off the Collections page.
+    public bool GetHidesEmptyCollections()
+    {
+        return bool.Parse(_defaultPreferences.Get(_hidesEmptyCollections, false.ToString()));
+    }
+
+    public void SetHidesEmptyCollections(bool hides)
+    {
+        _defaultPreferences.Set(_hidesEmptyCollections, hides.ToString());
     }
 
     // The how-to pages shown on the first launch (and again from Settings).
