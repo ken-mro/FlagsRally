@@ -584,4 +584,7 @@
   <data name="FilterPins" xml:space="preserve">
     <value>絞り込み</value>
   </data>
+  <data name="HideEmptyCollections" xml:space="preserve">
+    <value>0件のものを隠す</value>
+  </data>
 </root>

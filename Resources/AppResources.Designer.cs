@@ -1454,5 +1454,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("FilterPins", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide those with no stamps.
+        /// </summary>
+        internal static string HideEmptyCollections {
+            get {
+                return ResourceManager.GetString("HideEmptyCollections", resourceCulture);
+            }
+        }
     }
 }
