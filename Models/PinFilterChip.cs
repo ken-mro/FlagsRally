@@ -39,6 +39,8 @@ public partial class PinFilterChip : ObservableObject
         : $"{Name}\u00A0▾";
 }
 
+public enum PinsShown { All, Some, None }
+
 public static class PinFilterRules
 {
     /// <param name="hiddenKeys">Pin keys hidden from the map; empty means all pins are shown.</param>
@@ -52,6 +54,21 @@ public static class PinFilterRules
     /// <summary>Every pin key the chips stand for (arrival location and every board).</summary>
     public static IReadOnlyList<string> AllKeys(IEnumerable<PinFilterChip> chips) =>
         chips.SelectMany(c => c.Members).Distinct().ToList();
+
+    /// <summary>Whether all, some or none of the chips' pins are shown.</summary>
+    public static PinsShown Shown(IEnumerable<PinFilterChip> chips, IReadOnlyCollection<string> hiddenKeys)
+    {
+        var keys = AllKeys(chips);
+        var hidden = keys.Count(hiddenKeys.Contains);
+        return hidden == 0 ? PinsShown.All : hidden == keys.Count ? PinsShown.None : PinsShown.Some;
+    }
+
+    /// <summary>
+    /// The one Select all / Clear all button: clears every pin when all are shown, otherwise shows
+    /// them all. Returns the keys to hide.
+    /// </summary>
+    public static IReadOnlyCollection<string> ToggleAll(IReadOnlyList<PinFilterChip> chips, IReadOnlyCollection<string> hiddenKeys) =>
+        Shown(chips, hiddenKeys) == PinsShown.All ? AllKeys(chips) : [];
 
     /// <summary>Selects every chip with a member shown, and counts a series' shown boards.</summary>
     public static void Refresh(IEnumerable<PinFilterChip> chips, IReadOnlyCollection<string> hiddenKeys)

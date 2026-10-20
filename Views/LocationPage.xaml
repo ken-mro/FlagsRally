@@ -145,67 +145,64 @@
         </VerticalStackLayout>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),
-              so Google's compass shows below them instead of under them.  -->
-        <ScrollView
+              so Google's compass shows below them instead of under them. Filter and the Select all /
+              Clear all button stay at the left; only the boards' chips scroll.  -->
+        <Grid
             x:Name="filterChips"
             Grid.Row="0"
             Margin="8,8,8,0"
-            HorizontalScrollBarVisibility="Never"
-            Orientation="Horizontal"
+            ColumnDefinitions="Auto,Auto,*"
+            ColumnSpacing="6"
+            RowDefinitions="Auto"
             VerticalOptions="Start">
-            <HorizontalStackLayout Spacing="6">
-                <!--  Opens every board in one list: select all, clear, or tick a few  -->
-                <Border
-                    Padding="10,6,12,6"
-                    BackgroundColor="{StaticResource PaperCard}"
-                    Stroke="{StaticResource PaperEdge}"
-                    StrokeShape="RoundRectangle 16"
-                    StrokeThickness="1">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ChooseShownPinsCommand}" />
-                    </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="4">
-                        <Image
-                            HeightRequest="16"
-                            Source="filter.png"
-                            VerticalOptions="Center"
-                            WidthRequest="16" />
-                        <Label
-                            FontSize="13"
-                            Text="{x:Static strings:AppResources.FilterPins}"
-                            TextColor="{StaticResource Ink}"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Border>
-                <!--  Actions, not filters: they never show as selected  -->
-                <Border
-                    Padding="12,6"
-                    BackgroundColor="{StaticResource PaperCard}"
-                    Stroke="{StaticResource PaperEdge}"
-                    StrokeShape="RoundRectangle 16"
-                    StrokeThickness="1">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ShowAllPinsCommand}" />
-                    </Border.GestureRecognizers>
+            <!--  Opens every board in one list: select all, clear, or tick a few  -->
+            <Border
+                Padding="10,6,12,6"
+                BackgroundColor="{StaticResource PaperCard}"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 16"
+                StrokeThickness="1">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChooseShownPinsCommand}" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="4">
+                    <Image
+                        HeightRequest="16"
+                        Source="filter.png"
+                        VerticalOptions="Center"
+                        WidthRequest="16" />
                     <Label
                         FontSize="13"
-                        Text="{x:Static strings:AppResources.SelectAllBoards}"
-                        TextColor="{StaticResource Navy}" />
-                </Border>
-                <Border
-                    Padding="12,6"
-                    BackgroundColor="{StaticResource PaperCard}"
-                    Stroke="{StaticResource PaperEdge}"
-                    StrokeShape="RoundRectangle 16"
-                    StrokeThickness="1">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding HideAllPinsCommand}" />
-                    </Border.GestureRecognizers>
-                    <Label
-                        FontSize="13"
-                        Text="{x:Static strings:AppResources.ClearBoardSelection}"
-                        TextColor="{StaticResource Navy}" />
-                </Border>
+                        Text="{x:Static strings:AppResources.FilterPins}"
+                        TextColor="{StaticResource Ink}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+            <!--  Select all and Clear all in one: the box is ticked when every pin is shown, has a dash
+                  when some are, and is empty when none are. A tap clears all when all are shown,
+                  otherwise shows all.  -->
+            <Border
+                Grid.Column="1"
+                Padding="12,0"
+                BackgroundColor="{StaticResource PaperCard}"
+                SemanticProperties.Description="{Binding ToggleAllPinsDescription}"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 16"
+                StrokeThickness="1">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleAllPinsCommand}" />
+                </Border.GestureRecognizers>
+                <!--  The same height as the chips: an ImageButton would keep Android's 48 dp minimum  -->
+                <Image
+                    HeightRequest="20"
+                    Source="{Binding ToggleAllPinsIcon}"
+                    VerticalOptions="Center"
+                    WidthRequest="20" />
+            </Border>
+            <ScrollView
+                Grid.Column="2"
+                HorizontalScrollBarVisibility="Never"
+                Orientation="Horizontal">
                 <HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterChips}" Spacing="6">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:PinFilterChip">
@@ -244,8 +241,8 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </HorizontalStackLayout>
-            </HorizontalStackLayout>
-        </ScrollView>
+            </ScrollView>
+        </Grid>
 
         <!--  Default controls: record the current location  -->
         <Grid

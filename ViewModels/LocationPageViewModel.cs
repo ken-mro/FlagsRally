@@ -983,11 +983,22 @@ public partial class LocationPageViewModel : BaseViewModel
         SetHiddenPinKeys(PinFilterRules.Toggle(FilterChips, chip, _hiddenPinKeys));
     }
 
+    // One button for Select all and Clear all. Its box shows whether all, some or none of the pins
+    // are shown; a tap clears them when all are shown and shows them all otherwise.
     [RelayCommand]
-    void ShowAllPins() => SetHiddenPinKeys([]);
+    void ToggleAllPins() => SetHiddenPinKeys(PinFilterRules.ToggleAll(FilterChips, _hiddenPinKeys));
 
-    [RelayCommand]
-    void HideAllPins() => SetHiddenPinKeys(PinFilterRules.AllKeys(FilterChips));
+    PinsShown ShownPins => PinFilterRules.Shown(FilterChips, _hiddenPinKeys);
+
+    public string ToggleAllPinsIcon => ShownPins switch
+    {
+        PinsShown.All => "pins_all_shown.png",
+        PinsShown.Some => "pins_some_shown.png",
+        _ => "pins_none_shown.png",
+    };
+
+    // Says what a tap does, for screen readers.
+    public string ToggleAllPinsDescription => ShownPins == PinsShown.All ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
 
     // A series chip (such as マンホールカード) opens its boards to show all of them or some.
     private Task ChooseSeriesBoardsAsync(PinFilterChip chip) => ChoosePinKeysAsync(chip.Name, chip.Members);
@@ -1006,6 +1017,12 @@ public partial class LocationPageViewModel : BaseViewModel
         await Shell.Current.CurrentPage.ShowPopupAsync(new BoardSeriesFilterPopupView(viewModel));
     }
 
+    private void OnToggleAllPinsChanged()
+    {
+        OnPropertyChanged(nameof(ToggleAllPinsIcon));
+        OnPropertyChanged(nameof(ToggleAllPinsDescription));
+    }
+
     private void SetHiddenPinKeys(IReadOnlyCollection<string> keys)
     {
         _hiddenPinKeys.Clear();
@@ -1016,6 +1033,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private void OnPinFilterChanged()
     {
         PinFilterRules.Refresh(FilterChips, _hiddenPinKeys);
+        OnToggleAllPinsChanged();
         UpdatePinsVisibility();
     }
 
@@ -1098,6 +1116,7 @@ public partial class LocationPageViewModel : BaseViewModel
         var removed = _hiddenPinKeys.RemoveWhere(key => !filterList.Any(f => f.Members.Contains(key))) > 0;
 
         FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _hiddenPinKeys));
+        OnToggleAllPinsChanged();
 
         if (removed)
         {

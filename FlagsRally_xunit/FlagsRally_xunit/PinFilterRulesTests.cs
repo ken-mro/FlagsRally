@@ -107,6 +107,33 @@ public class PinFilterRulesTests
     }
 
     [Fact]
+    public void The_select_all_button_shows_whether_all_some_or_none_are_shown()
+    {
+        Assert.Equal(PinsShown.All, PinFilterRules.Shown(Build(), []));
+        Assert.Equal(PinsShown.Some, PinFilterRules.Shown(Build("Manhole 2"), ["Manhole 2"]));
+        Assert.Equal(PinsShown.None, PinFilterRules.Shown(Build(AllKeys), AllKeys));
+    }
+
+    [Fact]
+    public void The_select_all_button_clears_all_when_all_are_shown()
+    {
+        Assert.Equal(AllKeys, PinFilterRules.ToggleAll(Build(), []));
+    }
+
+    [Fact]
+    public void The_select_all_button_shows_all_when_some_or_none_are_shown()
+    {
+        Assert.Empty(PinFilterRules.ToggleAll(Build("Board A"), ["Board A"]));
+        Assert.Empty(PinFilterRules.ToggleAll(Build(AllKeys), AllKeys));
+    }
+
+    [Fact]
+    public void A_hidden_key_of_a_deleted_board_does_not_count()
+    {
+        Assert.Equal(PinsShown.All, PinFilterRules.Shown(Build(), ["Deleted board"]));
+    }
+
+    [Fact]
     public void A_board_alone_is_not_a_series()
     {
         var chip = Chip(Build(), "Board A");
