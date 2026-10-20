@@ -6,6 +6,8 @@ public interface IArrivalLocationDataRepository
 {
     Task<ArrivalLocation> Save(ArrivalLocationData arrivalLocationData);
     Task<List<ArrivalLocation>> GetAllArrivalLocations();
+    /// <summary>The arrival with this id, or null when it has been deleted.</summary>
+    Task<ArrivalLocation?> GetArrivalLocationAsync(int id);
     Task<int> DeleteAsync(int Id);
     Task<List<ArrivalLocationPin>> GetArrivalLocationPinsAsync();
     Task<List<SubRegion>> GetSubRegionsByCountryCode(string countryCode);

@@ -578,4 +578,7 @@
   <data name="OnboardingHowToAgainBody" xml:space="preserve">
     <value>You can open these pages again at any time from How to use under Information, at the bottom of Settings.</value>
   </data>
+  <data name="ViewStamp" xml:space="preserve">
+    <value>View stamp</value>
+  </data>
 </root>

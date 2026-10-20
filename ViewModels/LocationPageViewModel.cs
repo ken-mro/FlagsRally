@@ -49,6 +49,7 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(CanCheckIn))]
     [NotifyPropertyChangedFor(nameof(CanRemoveSelectedPin))]
     [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
+    [NotifyPropertyChangedFor(nameof(CanViewStamp))]
     [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
     [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
     [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
@@ -194,9 +195,27 @@ public partial class LocationPageViewModel : BaseViewModel
         _ => string.Empty,
     };
 
-    public bool CanCheckIn => SelectedPin is CustomLocationPin;
+    // Only a place not checked in yet: checking in again would replace the date of the first visit.
+    public bool CanCheckIn => SelectedPin is CustomLocationPin { IsVisited: false };
 
     public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
+
+    // Arrivals and checked-in places have a stamp, which can be looked at again from the pin.
+    public bool CanViewStamp => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
+
+    [RelayCommand]
+    async Task ViewStampAsync()
+    {
+        switch (SelectedPin)
+        {
+            case ArrivalLocationPin pin:
+                await ShowArrivalStampPopup(pin.Id);
+                break;
+            case CustomLocationPin { IsVisited: true } pin:
+                await ShowCustomLocationImagePopup(pin.CustomLocationKey, celebrates: false);
+                break;
+        }
+    }
 
     public string RemoveSelectedPinText => SelectedPin is ArrivalLocationPin ? AppResources.Delete : AppResources.ResetCheckIn;
 
@@ -845,10 +864,11 @@ public partial class LocationPageViewModel : BaseViewModel
         ArrivalMap.SelectedPin = selectedCustomLocationPin;
 
         // Show the image popup for successful check-in
-        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, now);
+        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, celebrates: true);
     }
 
-    private async Task ShowCustomLocationImagePopup(string customLocationKey, DateTime arrivalDate)
+    // The board's stamp for the place: with confetti just after checking in, without when looked at again.
+    private async Task ShowCustomLocationImagePopup(string customLocationKey, bool celebrates)
     {
         try
         {
@@ -856,7 +876,7 @@ public partial class LocationPageViewModel : BaseViewModel
             var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
             if (customLocation is null) return;
 
-            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation);
+            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation, celebrates);
             var popup = new CustomLocationImagePopupView(popupViewModel);
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
 
@@ -866,6 +886,28 @@ public partial class LocationPageViewModel : BaseViewModel
             // If popup fails, don't block the check-in process
 #if DEBUG
             Console.WriteLine($"Failed to show image popup: {ex.Message}");
+#endif
+        }
+    }
+
+    private async Task ShowArrivalStampPopup(int arrivalLocationId)
+    {
+        try
+        {
+            var arrival = await _arrivalLocationRepository.GetArrivalLocationAsync(arrivalLocationId);
+            if (arrival is null)
+            {
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}", "OK");
+                return;
+            }
+
+            var popup = new ArrivalStampPopupView(new ArrivalStampPopupViewModel(arrival));
+            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Console.WriteLine($"Failed to show the arrival stamp: {ex.Message}");
 #endif
         }
     }

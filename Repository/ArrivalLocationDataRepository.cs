@@ -36,6 +36,13 @@ public class ArrivalLocationDataRepository : BaseRepository, IArrivalLocationDat
         return [.. (await Task.WhenAll(tasks))];
     }
 
+    public async Task<ArrivalLocation?> GetArrivalLocationAsync(int id)
+    {
+        await Init();
+        var data = await _conn!.Table<ArrivalLocationData>().Where(i => i.Id == id).FirstOrDefaultAsync();
+        return data is null ? null : await GetArrivalLocation(data);
+    }
+
     private async Task<ArrivalLocation> GetArrivalLocation(ArrivalLocationData ArrivalLocationData)
     {
         var adminAreaCode = ArrivalLocationData.AdminAreaCode;
