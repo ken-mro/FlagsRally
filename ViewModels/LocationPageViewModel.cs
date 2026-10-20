@@ -195,7 +195,8 @@ public partial class LocationPageViewModel : BaseViewModel
         _ => string.Empty,
     };
 
-    public bool CanCheckIn => SelectedPin is CustomLocationPin;
+    // Only a place not checked in yet: checking in again would replace the date of the first visit.
+    public bool CanCheckIn => SelectedPin is CustomLocationPin { IsVisited: false };
 
     public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
 
