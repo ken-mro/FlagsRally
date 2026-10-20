@@ -16,8 +16,9 @@ public partial class BoardSeriesFilterItem(string name, bool isShown) : Observab
 }
 
 /// <summary>
-/// The list a series chip opens on the map (such as マンホールカード): show the whole series or
-/// tick the boards one by one. Each change applies to the map at once.
+/// A list of boards on the map, ticked when their pins are shown: the boards of a series chip
+/// (such as マンホールカード), or every board and the arrival location from the Filter chip.
+/// Select all, clear, or tick them one by one; each change applies to the map at once.
 /// </summary>
 public partial class BoardSeriesFilterViewModel : ObservableObject
 {

@@ -97,15 +97,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All Pins.
-        /// </summary>
-        internal static string AllPins {
-            get {
-                return ResourceManager.GetString("AllPins", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to restore the backup file?.
         /// </summary>
         internal static string AreYouSureRestoreBackup {
@@ -1222,7 +1213,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clear selection.
+        ///   Looks up a localized string similar to Clear all.
         /// </summary>
         internal static string ClearBoardSelection {
             get {
@@ -1443,6 +1434,24 @@ namespace FlagsRally.Resources {
         internal static string ViewStamp {
             get {
                 return ResourceManager.GetString("ViewStamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pins to show.
+        /// </summary>
+        internal static string PinsToShow {
+            get {
+                return ResourceManager.GetString("PinsToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        internal static string FilterPins {
+            get {
+                return ResourceManager.GetString("FilterPins", resourceCulture);
             }
         }
     }

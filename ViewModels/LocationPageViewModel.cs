@@ -616,11 +616,10 @@ public partial class LocationPageViewModel : BaseViewModel
         var pin = ArrivalMap.Pins.OfType<CustomLocationPin>().FirstOrDefault(p => p.CustomLocationKey == compositeKey);
         if (pin is null) return;
 
-        // Make sure a filter does not hide the requested pin.
-        if (!pin.IsVisible)
+        // Make sure a filter does not hide the requested pin: show its board again.
+        if (!pin.IsVisible && (pin.Tag as MapPinTag)?.PinKey is string key)
         {
-            _visiblePinKeys.Clear();
-            OnPinFilterChanged();
+            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, [key], shown: true));
         }
 
         await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
@@ -631,19 +630,12 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         try
         {
-            var knownBoards = FilterChips.SelectMany(c => c.Members).ToHashSet();
+            // Boards just added are not among the hidden keys, so they are shown even while filtering.
             if (message.PlacesChanged)
             {
                 await ReloadCustomLocationPinsAsync();
             }
             await RebuildPinFilterList();
-
-            // When filtering, also show boards that were just added.
-            if (_visiblePinKeys.Count > 0)
-            {
-                _visiblePinKeys.UnionWith(FilterChips.Where(c => !c.IsAll).SelectMany(c => c.Members).Where(name => !knownBoards.Contains(name)));
-                OnPinFilterChanged();
-            }
         }
         catch (Exception ex)
         {
@@ -976,8 +968,8 @@ public partial class LocationPageViewModel : BaseViewModel
     [ObservableProperty]
     ObservableCollection<PinFilterChip> _filterChips = [];
 
-    // Pin keys (board names / arrival location) currently shown. Empty means all pins are shown.
-    readonly HashSet<string> _visiblePinKeys = [];
+    // Pin keys (board names / arrival location) hidden from the map. Empty means all pins are shown.
+    readonly HashSet<string> _hiddenPinKeys = [];
 
     [RelayCommand]
     async Task ToggleFilterChipAsync(PinFilterChip chip)
@@ -988,28 +980,62 @@ public partial class LocationPageViewModel : BaseViewModel
             return;
         }
 
-        SetVisiblePinKeys(PinFilterRules.Toggle(FilterChips, chip, _visiblePinKeys));
+        SetHiddenPinKeys(PinFilterRules.Toggle(FilterChips, chip, _hiddenPinKeys));
     }
 
-    // A series chip (such as マンホールカード) opens its boards to show all of them or some.
-    private async Task ChooseSeriesBoardsAsync(PinFilterChip chip)
+    // One button for Select all and Clear all. While every pin is shown it looks like a selected
+    // chip (two white ticks on navy) and a tap clears them all; otherwise it shows a box with a dash
+    // (some shown) or an empty box (none shown), and a tap shows them all.
+    [RelayCommand]
+    void ToggleAllPins() => SetHiddenPinKeys(PinFilterRules.ToggleAll(FilterChips, _hiddenPinKeys));
+
+    public bool AllPinsShown => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) == PinsShown.All;
+
+    public string ToggleAllPinsIcon => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) switch
     {
-        var boards = chip.Members.Select(name => new BoardSeriesFilterItem(name, _visiblePinKeys.Contains(name)));
-        var viewModel = new BoardSeriesFilterViewModel(chip.Name, boards, (names, shown) =>
-            SetVisiblePinKeys(PinFilterRules.SetShown(_visiblePinKeys, names, shown)));
+        PinsShown.All => "all_pins_shown.png",
+        PinsShown.Some => "some_pins_shown.png",
+        _ => "no_pins_shown.png",
+    };
+
+    // Says what a tap does, for screen readers.
+    public string ToggleAllPinsDescription => AllPinsShown ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
+
+    // A series chip (such as マンホールカード) opens its boards to show all of them or some.
+    private Task ChooseSeriesBoardsAsync(PinFilterChip chip) => ChoosePinKeysAsync(chip.Name, chip.Members);
+
+    // Every board and the arrival location in one list, with Select all and Clear selection, so that
+    // hiding all of them or all but a few takes a few taps however many boards there are.
+    [RelayCommand]
+    Task ChooseShownPinsAsync() => ChoosePinKeysAsync(AppResources.PinsToShow, PinFilterRules.AllKeys(FilterChips));
+
+    // A list of pin keys, ticked when their pins are shown; each change applies to the map at once.
+    private async Task ChoosePinKeysAsync(string title, IEnumerable<string> keys)
+    {
+        var items = keys.Select(key => new BoardSeriesFilterItem(key, !_hiddenPinKeys.Contains(key)));
+        var viewModel = new BoardSeriesFilterViewModel(title, items, (names, shown) =>
+            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, names, shown)));
         await Shell.Current.CurrentPage.ShowPopupAsync(new BoardSeriesFilterPopupView(viewModel));
     }
 
-    private void SetVisiblePinKeys(IReadOnlyCollection<string> keys)
+    private void OnToggleAllPinsChanged()
     {
-        _visiblePinKeys.Clear();
-        _visiblePinKeys.UnionWith(keys);
+        OnPropertyChanged(nameof(AllPinsShown));
+        OnPropertyChanged(nameof(ToggleAllPinsIcon));
+        OnPropertyChanged(nameof(ToggleAllPinsDescription));
+    }
+
+    private void SetHiddenPinKeys(IReadOnlyCollection<string> keys)
+    {
+        _hiddenPinKeys.Clear();
+        _hiddenPinKeys.UnionWith(keys);
         OnPinFilterChanged();
     }
 
     private void OnPinFilterChanged()
     {
-        PinFilterRules.Refresh(FilterChips, _visiblePinKeys);
+        PinFilterRules.Refresh(FilterChips, _hiddenPinKeys);
+        OnToggleAllPinsChanged();
         UpdatePinsVisibility();
     }
 
@@ -1020,7 +1046,7 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             // Pins without a tag (e.g. the tapped point) are never filtered out.
             var pinKey = (pin.Tag as MapPinTag)?.PinKey;
-            pin.IsVisible = _visiblePinKeys.Count == 0 || pinKey is null || _visiblePinKeys.Contains(pinKey);
+            pin.IsVisible = pinKey is null || !_hiddenPinKeys.Contains(pinKey);
         }
         FanOutOverlappingPins();
     }
@@ -1071,7 +1097,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task RebuildPinFilterList()
     {
-        var filterList = new List<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
+        var filterList = new List<CustomBoardPinFilterItem>();
 
         var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
         if (hasArrivalPins)
@@ -1089,9 +1115,10 @@ public partial class LocationPageViewModel : BaseViewModel
         }
 
         // Drop keys of filters that no longer exist (e.g. deleted boards).
-        var removed = _visiblePinKeys.RemoveWhere(key => !filterList.Any(f => f.Members.Contains(key))) > 0;
+        var removed = _hiddenPinKeys.RemoveWhere(key => !filterList.Any(f => f.Members.Contains(key))) > 0;
 
-        FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _visiblePinKeys));
+        FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _hiddenPinKeys));
+        OnToggleAllPinsChanged();
 
         if (removed)
         {
