@@ -3,19 +3,15 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.2.1] - Unreleased
+## [1.2.2] - Unreleased
 
 ### Added
-- **A how-to page showing where to see the pages again.** Before the location page, the how-to pages now open Settings and point at How to use under Information, at the bottom of Settings, with a picture of it framed, so it is clear how to open them again later.
 - **Hide collections with no stamps.** A display options button at the top right of Collections can leave off the countries never visited and the stamp trails with nothing checked in, so only those with stamps are listed. Add stamp trail stays, the countries' count still counts every country, and the choice is remembered.
 - **Choose the map's pins freely.** Each chip on the Map is now selected exactly while its pins are shown, and tapping it shows or hides just those pins. All Pins is replaced by one Select all / Clear all button. While every pin is shown it looks like a selected chip, with two white ticks, and a tap clears them all; when some are shown it has a box with a dash, when none are an empty box, and a tap shows them all. It and a Filter chip stay at the left while the trails' chips scroll. Filter opens every stamp trail and the arrival location in one list with Select all and Clear all, and a series' list ticks the boards that are shown.
 - **See a stamp again from its pin on the map.** Selecting an arrival or a checked-in place on the Map now shows a View stamp button on its card. An arrival opens its passport stamp (the country and region flags, names and date); a checked-in place opens the trail's stamp, without the confetti of a new check-in.
-- **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
 
 ### Changed
-- **Stamp trails scroll smoothly with many stamps.** Each stamp image sized itself when it arrived, so the tile and the list were laid out again for every stamp, and a trail with many visited places stuttered while scrolling (on 全国一の宮巡り with all 109 visited, the slowest frames took 45–100 ms). The images now have a fixed size from the start (about 20 ms). Region flags in the passport and on a country's regions page get a fixed box for the same reason.
 - **A checked-in place no longer offers Check In on the map.** Checking in again replaced the date of the first visit; the card now shows View stamp and Reset check-in instead. To record a new date, reset the check-in and check in again.
-- **The list of pins at the same spot keeps its order.** Tapping where pins overlap lists them to choose from; the list now has the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
 - **Development:** The iOS and Mac Catalyst app now start through a scene (`SceneDelegate` and `UIApplicationSceneManifest` in `Info.plist`). Apps built with Xcode 27 must use the UIScene lifecycle or they close at launch; it also works with the current Xcode 26.
 - **Development:** .NET MAUI is updated to 10.0.110 (from 10.0.101), the version the .NET for iOS release for Xcode 27 recommends. Builds need .NET SDK 10.0.401 with workload set 10.0.401.1, and Xcode 27.0 for iOS and Mac Catalyst.
 - **Development:** The Mac Catalyst app now needs Mac Catalyst 17.0 (macOS 14) or later, up from 15.0. The .NET for iOS release for Xcode 27 refuses to build for anything older.
@@ -27,6 +23,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **The how-to pages on the iPhone Duo.** On the outer screen the card ran off the left edge and its arrow pointed at nothing, because the tab bar stands down the right side there. The card now sits beside that tab bar with an arrow pointing sideways at the tab; in landscape the picture goes beside the text so everything fits. The pages also follow the screen when the phone is folded or unfolded, and on the iPad the arrow now points at the right tab.
+
+## [1.2.1] - Unreleased
+
+### Added
+- **A how-to page showing where to see the pages again.** Before the location page, the how-to pages now open Settings and point at How to use under Information, at the bottom of Settings, with a picture of it framed, so it is clear how to open them again later.
+- **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
+
+### Changed
+- **Stamp trails scroll smoothly with many stamps.** Each stamp image sized itself when it arrived, so the tile and the list were laid out again for every stamp, and a trail with many visited places stuttered while scrolling (on 全国一の宮巡り with all 109 visited, the slowest frames took 45–100 ms). The images now have a fixed size from the start (about 20 ms). Region flags in the passport and on a country's regions page get a fixed box for the same reason.
+- **The list of pins at the same spot keeps its order.** Tapping where pins overlap lists them to choose from; the list now has the same order whichever pin was tapped or chosen before, and choosing one no longer brings it to the front of the others.
+
+### Fixed
 - **Confetti before the stamp.** After a check-in the confetti could fall on an empty frame while the stamp was still downloading; it now starts once the stamp is shown.
 
 ## [1.2.0] - Unreleased
