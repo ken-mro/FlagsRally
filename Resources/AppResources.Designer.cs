@@ -1436,5 +1436,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("OnboardingHowToAgainBody", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View stamp.
+        /// </summary>
+        internal static string ViewStamp {
+            get {
+                return ResourceManager.GetString("ViewStamp", resourceCulture);
+            }
+        }
     }
 }

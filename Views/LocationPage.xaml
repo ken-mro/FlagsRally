@@ -364,6 +364,11 @@
                         IsVisible="{Binding CanCheckIn}"
                         Text="{x:Static strings:AppResources.CheckIn}" />
                     <Button
+                        Margin="0,4,8,0"
+                        Command="{Binding ViewStampCommand}"
+                        IsVisible="{Binding CanViewStamp}"
+                        Text="{x:Static strings:AppResources.ViewStamp}" />
+                    <Button
                         Margin="0,4,0,0"
                         BackgroundColor="Transparent"
                         Command="{Binding RemoveSelectedPinCommand}"

@@ -578,4 +578,7 @@
   <data name="OnboardingHowToAgainBody" xml:space="preserve">
     <value>この使い方は、設定のいちばん下、「情報」にある「アプリの使い方」からいつでも見直せます。</value>
   </data>
+  <data name="ViewStamp" xml:space="preserve">
+    <value>スタンプを見る</value>
+  </data>
 </root>

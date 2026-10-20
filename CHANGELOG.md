@@ -7,6 +7,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - **A how-to page showing where to see the pages again.** Before the location page, the how-to pages now open Settings and point at How to use under Information, at the bottom of Settings, with a picture of it framed, so it is clear how to open them again later.
+- **See a stamp again from its pin on the map.** Selecting an arrival or a checked-in place on the Map now shows a View stamp button on its card. An arrival opens its passport stamp (the country and region flags, names and date); a checked-in place opens the trail's stamp, without the confetti of a new check-in.
 - **Checked-in places are marked when choosing among pins at the same spot.** In the list that opens where pins overlap, a place already checked in shows a check and its date, such as "✓ 鹿島神宮 – 全国一の宮巡り (15 Oct 2026)".
 
 ### Changed

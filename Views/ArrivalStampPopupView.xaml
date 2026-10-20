@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.ArrivalStampPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:ArrivalStampPopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Margin="0,1,0,0"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <toolkit:Popup.Resources>
+        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+    </toolkit:Popup.Resources>
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <!--  The stamp as the passport draws it (a solid frame round a dashed one), only larger  -->
+        <Border
+            BackgroundColor="Transparent"
+            HorizontalOptions="Center"
+            Stroke="{StaticResource Ink}"
+            StrokeShape="Rectangle"
+            StrokeThickness="4"
+            WidthRequest="260">
+            <Border
+                Margin="2"
+                Padding="8,12"
+                BackgroundColor="Transparent"
+                Stroke="{StaticResource Ink}"
+                StrokeDashArray="2,2"
+                StrokeShape="Rectangle"
+                StrokeThickness="2">
+                <VerticalStackLayout Spacing="6">
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                        <Label
+                            FontSize="56"
+                            Text="{Binding Arrival.CountryFlagSource}"
+                            VerticalOptions="Center" />
+                        <!--  A fixed box as on the passport (flags up to 2:1 keep their height)  -->
+                        <Image
+                            HeightRequest="48"
+                            IsVisible="{Binding HasAdminAreaFlag}"
+                            Source="{Binding Arrival.AdminAreaFlagSource}"
+                            VerticalOptions="Center"
+                            WidthRequest="96" />
+                    </HorizontalStackLayout>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="{Binding Arrival.CountryName, Converter={StaticResource FontFamilyConverter}}"
+                        FontSize="24"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Arrival.CountryName}"
+                        TextColor="{StaticResource Ink}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="{Binding Arrival.AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        IsVisible="{Binding HasAdminAreaName}"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Arrival.AdminAreaName}"
+                        TextColor="{StaticResource Ink}" />
+                    <Line
+                        HorizontalOptions="Center"
+                        Stroke="{StaticResource Ink}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="200"
+                        Y1="0"
+                        Y2="0" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="craftmincho"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Arrival.ArrivalDateString}"
+                        TextColor="{StaticResource Stamp}" />
+                    <Line
+                        HorizontalOptions="Center"
+                        Stroke="{StaticResource Ink}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="160"
+                        Y1="0"
+                        Y2="0" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="False"
+                        FontFamily="JerseyclubGrungeBold"
+                        FontSize="48"
+                        HorizontalOptions="Center"
+                        LineBreakMode="NoWrap"
+                        Text="ARRIVAL"
+                        TextColor="{StaticResource Ink}" />
+                </VerticalStackLayout>
+            </Border>
+        </Border>
+        <Button
+            Command="{Binding ClosePopupCommand}"
+            HorizontalOptions="Center"
+            Text="OK"
+            WidthRequest="100" />
+    </VerticalStackLayout>
+</toolkit:Popup>
