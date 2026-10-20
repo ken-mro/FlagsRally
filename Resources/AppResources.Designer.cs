@@ -1445,5 +1445,23 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("ViewStamp", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pins to show.
+        /// </summary>
+        internal static string PinsToShow {
+            get {
+                return ResourceManager.GetString("PinsToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        internal static string FilterPins {
+            get {
+                return ResourceManager.GetString("FilterPins", resourceCulture);
+            }
+        }
     }
 }

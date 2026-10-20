@@ -581,4 +581,10 @@
   <data name="ViewStamp" xml:space="preserve">
     <value>スタンプを見る</value>
   </data>
+  <data name="PinsToShow" xml:space="preserve">
+    <value>表示するピン</value>
+  </data>
+  <data name="FilterPins" xml:space="preserve">
+    <value>絞り込み</value>
+  </data>
 </root>

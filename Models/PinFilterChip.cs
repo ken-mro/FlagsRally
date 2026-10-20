@@ -43,49 +43,68 @@ public partial class PinFilterChip : ObservableObject
 
 public static class PinFilterRules
 {
-    /// <param name="visibleKeys">Pin keys currently shown; empty means all pins.</param>
-    public static List<PinFilterChip> Build(IEnumerable<CustomBoardPinFilterItem> items, IReadOnlyCollection<string> visibleKeys)
+    /// <param name="hiddenKeys">Pin keys hidden from the map; empty means all pins are shown.</param>
+    public static List<PinFilterChip> Build(IEnumerable<CustomBoardPinFilterItem> items, IReadOnlyCollection<string> hiddenKeys)
     {
         var chips = items.Select(item => new PinFilterChip(item)).ToList();
-        Refresh(chips, visibleKeys);
+        Refresh(chips, hiddenKeys);
         return chips;
     }
 
+    /// <summary>Every pin key the chips stand for (arrival location and every board).</summary>
+    public static IReadOnlyList<string> AllKeys(IEnumerable<PinFilterChip> chips) =>
+        chips.Where(c => !c.IsAll).SelectMany(c => c.Members).Distinct().ToList();
+
     /// <summary>
-    /// Marks the chips for the shown keys: "All pins" when nothing is chosen, otherwise every chip
-    /// with a chosen member.
+    /// Marks the chips: "All pins" when nothing is hidden, otherwise every chip with a member shown.
     /// </summary>
-    public static void Refresh(IEnumerable<PinFilterChip> chips, IReadOnlyCollection<string> visibleKeys)
+    public static void Refresh(IEnumerable<PinFilterChip> chips, IReadOnlyCollection<string> hiddenKeys)
     {
+        var filtering = hiddenKeys.Count > 0;
         foreach (var chip in chips)
         {
-            chip.SelectedCount = chip.IsAll ? 0 : chip.Members.Count(visibleKeys.Contains);
-            chip.IsSelected = chip.IsAll ? visibleKeys.Count == 0 : chip.SelectedCount > 0;
+            chip.SelectedCount = chip.IsAll || !filtering ? 0 : chip.Members.Count(m => !hiddenKeys.Contains(m));
+            chip.IsSelected = chip.IsAll ? !filtering : chip.SelectedCount > 0;
         }
     }
 
     /// <summary>
-    /// Applies a tap on a chip that is not a series: "All pins" clears the choice, any other chip
-    /// toggles itself. Nothing chosen means all pins. Returns the keys to show.
+    /// Applies a tap on a chip that is not a series. "All pins" shows everything. While everything
+    /// is shown, a chip shows only its own pins; otherwise it shows or hides its pins. Hiding the
+    /// last shown chip this way goes back to all pins. Returns the keys to hide.
     /// </summary>
-    public static IReadOnlyCollection<string> Toggle(IReadOnlyList<PinFilterChip> chips, PinFilterChip tapped, IReadOnlyCollection<string> visibleKeys)
+    public static IReadOnlyCollection<string> Toggle(IReadOnlyList<PinFilterChip> chips, PinFilterChip tapped, IReadOnlyCollection<string> hiddenKeys)
     {
-        var keys = tapped.IsAll ? [] : SetShown(visibleKeys, tapped.Members, !tapped.IsSelected);
+        IReadOnlyCollection<string> keys;
+        var allKeys = AllKeys(chips);
+        if (tapped.IsAll)
+        {
+            keys = [];
+        }
+        else if (hiddenKeys.Count == 0)
+        {
+            keys = allKeys.Except(tapped.Members).ToList();
+        }
+        else
+        {
+            keys = SetShown(hiddenKeys, tapped.Members, shown: !tapped.IsSelected);
+            if (allKeys.All(keys.Contains)) keys = [];
+        }
         Refresh(chips, keys);
         return keys;
     }
 
     /// <summary>
-    /// Shows or hides some members (boards of a series chosen in its list). Returns the keys to show.
+    /// Shows or hides some keys (ticked or unticked in a list). Returns the keys to hide.
     /// </summary>
-    public static IReadOnlyCollection<string> SetShown(IReadOnlyCollection<string> visibleKeys, IEnumerable<string> members, bool shown)
+    public static IReadOnlyCollection<string> SetShown(IReadOnlyCollection<string> hiddenKeys, IEnumerable<string> keys, bool shown)
     {
-        var keys = new List<string>(visibleKeys);
-        foreach (var member in members)
+        var hidden = new List<string>(hiddenKeys);
+        foreach (var key in keys)
         {
-            keys.Remove(member);
-            if (shown) keys.Add(member);
+            hidden.Remove(key);
+            if (!shown) hidden.Add(key);
         }
-        return keys;
+        return hidden;
     }
 }

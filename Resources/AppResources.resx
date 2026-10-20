@@ -581,4 +581,10 @@
   <data name="ViewStamp" xml:space="preserve">
     <value>View stamp</value>
   </data>
+  <data name="PinsToShow" xml:space="preserve">
+    <value>Pins to show</value>
+  </data>
+  <data name="FilterPins" xml:space="preserve">
+    <value>Filter</value>
+  </data>
 </root>
