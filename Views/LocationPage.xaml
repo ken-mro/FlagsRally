@@ -177,6 +177,35 @@
                             VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Border>
+                <!--  Actions, not filters: they never show as selected  -->
+                <Border
+                    Padding="12,6"
+                    BackgroundColor="{StaticResource PaperCard}"
+                    Stroke="{StaticResource PaperEdge}"
+                    StrokeShape="RoundRectangle 16"
+                    StrokeThickness="1">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowAllPinsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="13"
+                        Text="{x:Static strings:AppResources.SelectAllBoards}"
+                        TextColor="{StaticResource Navy}" />
+                </Border>
+                <Border
+                    Padding="12,6"
+                    BackgroundColor="{StaticResource PaperCard}"
+                    Stroke="{StaticResource PaperEdge}"
+                    StrokeShape="RoundRectangle 16"
+                    StrokeThickness="1">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding HideAllPinsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="13"
+                        Text="{x:Static strings:AppResources.ClearBoardSelection}"
+                        TextColor="{StaticResource Navy}" />
+                </Border>
                 <HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterChips}" Spacing="6">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:PinFilterChip">

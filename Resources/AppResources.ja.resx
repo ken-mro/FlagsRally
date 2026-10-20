@@ -252,9 +252,6 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>選択したフォルダへのアクセスが拒否されました。</value>
   </data>
-  <data name="AllPins" xml:space="preserve">
-    <value>全てのピン</value>
-  </data>
   <data name="ArrivalLocation" xml:space="preserve">
     <value>到着地点</value>
   </data>
@@ -505,7 +502,7 @@
     <value>すべて選択</value>
   </data>
   <data name="ClearBoardSelection" xml:space="preserve">
-    <value>選択を解除</value>
+    <value>すべて解除</value>
   </data>
   <data name="BoardsAdded" xml:space="preserve">
     <value>次のスタンプラリーを追加しました：

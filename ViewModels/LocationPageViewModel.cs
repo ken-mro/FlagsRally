@@ -983,6 +983,12 @@ public partial class LocationPageViewModel : BaseViewModel
         SetHiddenPinKeys(PinFilterRules.Toggle(FilterChips, chip, _hiddenPinKeys));
     }
 
+    [RelayCommand]
+    void ShowAllPins() => SetHiddenPinKeys([]);
+
+    [RelayCommand]
+    void HideAllPins() => SetHiddenPinKeys(PinFilterRules.AllKeys(FilterChips));
+
     // A series chip (such as マンホールカード) opens its boards to show all of them or some.
     private Task ChooseSeriesBoardsAsync(PinFilterChip chip) => ChoosePinKeysAsync(chip.Name, chip.Members);
 
@@ -1071,7 +1077,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task RebuildPinFilterList()
     {
-        var filterList = new List<CustomBoardPinFilterItem>(CustomBoardPinFilterItem.CreateFilterList());
+        var filterList = new List<CustomBoardPinFilterItem>();
 
         var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
         if (hasArrivalPins)

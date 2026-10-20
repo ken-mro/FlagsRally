@@ -4,20 +4,18 @@ using FlagsRally.Models.CustomBoard;
 namespace FlagsRally.Models;
 
 /// <summary>
-/// One filter chip on the map: "All pins", "Arrival location", a custom board, or a series of
-/// boards (such as the manhole card issues) that opens a list to choose from.
+/// One filter chip on the map: "Arrival location", a custom board, or a series of boards (such as
+/// the manhole card issues) that opens a list to choose from. A chip is selected while its pins are shown.
 /// </summary>
 public partial class PinFilterChip : ObservableObject
 {
     public PinFilterChip(CustomBoardPinFilterItem item)
     {
         Name = item.Name;
-        IsAll = item.IsAll;
         Members = item.Members;
     }
 
     public string Name { get; }
-    public bool IsAll { get; }
 
     /// <summary>The pin keys (board names) the chip stands for.</summary>
     public IReadOnlyList<string> Members { get; }
@@ -33,12 +31,12 @@ public partial class PinFilterChip : ObservableObject
     int _selectedCount;
 
     /// <summary>
-    /// A series shows how many of its boards are chosen and a ▾ for its list, e.g. "マンホールカード 3/31 ▾".
-    /// The no-break spaces keep the count and the ▾ with the name.
+    /// A series shows a ▾ for its list, and how many of its boards are shown when only some are,
+    /// e.g. "マンホールカード 3/31 ▾". The no-break spaces keep the count and the ▾ with the name.
     /// </summary>
     public string Text => !IsGroup ? Name
-        : SelectedCount > 0 ? $"{Name} {SelectedCount}/{Members.Count} ▾"
-        : $"{Name} ▾";
+        : SelectedCount > 0 && SelectedCount < Members.Count ? $"{Name}\u00A0{SelectedCount}/{Members.Count}\u00A0▾"
+        : $"{Name}\u00A0▾";
 }
 
 public static class PinFilterRules
@@ -53,43 +51,25 @@ public static class PinFilterRules
 
     /// <summary>Every pin key the chips stand for (arrival location and every board).</summary>
     public static IReadOnlyList<string> AllKeys(IEnumerable<PinFilterChip> chips) =>
-        chips.Where(c => !c.IsAll).SelectMany(c => c.Members).Distinct().ToList();
+        chips.SelectMany(c => c.Members).Distinct().ToList();
 
-    /// <summary>
-    /// Marks the chips: "All pins" when nothing is hidden, otherwise every chip with a member shown.
-    /// </summary>
+    /// <summary>Selects every chip with a member shown, and counts a series' shown boards.</summary>
     public static void Refresh(IEnumerable<PinFilterChip> chips, IReadOnlyCollection<string> hiddenKeys)
     {
-        var filtering = hiddenKeys.Count > 0;
         foreach (var chip in chips)
         {
-            chip.SelectedCount = chip.IsAll || !filtering ? 0 : chip.Members.Count(m => !hiddenKeys.Contains(m));
-            chip.IsSelected = chip.IsAll ? !filtering : chip.SelectedCount > 0;
+            chip.SelectedCount = chip.Members.Count(m => !hiddenKeys.Contains(m));
+            chip.IsSelected = chip.SelectedCount > 0;
         }
     }
 
     /// <summary>
-    /// Applies a tap on a chip that is not a series. "All pins" shows everything. While everything
-    /// is shown, a chip shows only its own pins; otherwise it shows or hides its pins. Hiding the
-    /// last shown chip this way goes back to all pins. Returns the keys to hide.
+    /// Applies a tap on a chip that is not a series: it shows its pins when they are hidden and
+    /// hides them when they are shown. Returns the keys to hide.
     /// </summary>
     public static IReadOnlyCollection<string> Toggle(IReadOnlyList<PinFilterChip> chips, PinFilterChip tapped, IReadOnlyCollection<string> hiddenKeys)
     {
-        IReadOnlyCollection<string> keys;
-        var allKeys = AllKeys(chips);
-        if (tapped.IsAll)
-        {
-            keys = [];
-        }
-        else if (hiddenKeys.Count == 0)
-        {
-            keys = allKeys.Except(tapped.Members).ToList();
-        }
-        else
-        {
-            keys = SetShown(hiddenKeys, tapped.Members, shown: !tapped.IsSelected);
-            if (allKeys.All(keys.Contains)) keys = [];
-        }
+        var keys = SetShown(hiddenKeys, tapped.Members, shown: !tapped.IsSelected);
         Refresh(chips, keys);
         return keys;
     }
