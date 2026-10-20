@@ -983,17 +983,23 @@ public partial class LocationPageViewModel : BaseViewModel
         SetHiddenPinKeys(PinFilterRules.Toggle(FilterChips, chip, _hiddenPinKeys));
     }
 
-    // One button for Select all and Clear all, showing what a tap does: an empty box (Clear all)
-    // while every pin is shown, two ticks (Select all) otherwise.
+    // One button for Select all and Clear all. While every pin is shown it looks like a selected
+    // chip (two white ticks on navy) and a tap clears them all; otherwise it shows a box with a dash
+    // (some shown) or an empty box (none shown), and a tap shows them all.
     [RelayCommand]
     void ToggleAllPins() => SetHiddenPinKeys(PinFilterRules.ToggleAll(FilterChips, _hiddenPinKeys));
 
-    bool ClearsAllPins => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) == PinsShown.All;
+    public bool AllPinsShown => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) == PinsShown.All;
 
-    public string ToggleAllPinsIcon => ClearsAllPins ? "clear_all_pins.png" : "select_all_pins.png";
+    public string ToggleAllPinsIcon => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) switch
+    {
+        PinsShown.All => "all_pins_shown.png",
+        PinsShown.Some => "some_pins_shown.png",
+        _ => "no_pins_shown.png",
+    };
 
     // Says what a tap does, for screen readers.
-    public string ToggleAllPinsDescription => ClearsAllPins ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
+    public string ToggleAllPinsDescription => AllPinsShown ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
 
     // A series chip (such as マンホールカード) opens its boards to show all of them or some.
     private Task ChooseSeriesBoardsAsync(PinFilterChip chip) => ChoosePinKeysAsync(chip.Name, chip.Members);
@@ -1014,6 +1020,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private void OnToggleAllPinsChanged()
     {
+        OnPropertyChanged(nameof(AllPinsShown));
         OnPropertyChanged(nameof(ToggleAllPinsIcon));
         OnPropertyChanged(nameof(ToggleAllPinsDescription));
     }
