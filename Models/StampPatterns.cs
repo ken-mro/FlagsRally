@@ -104,7 +104,7 @@ public static class StampPatterns
         StampPattern.Airmail => new Thickness(26, 42, 20, 30),
         StampPattern.CompassHexagon => new Thickness(40, 46, 40, 42),
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
-        StampPattern.ScallopedGlobe => new Thickness(46, 46, 46, 40),
+        StampPattern.ScallopedGlobe => new Thickness(46, 44, 46, 40),
         StampPattern.GlobePostmark => new Thickness(30, 40, 30, 32),
         StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
         StampPattern.Ticket => new Thickness(24, 36, 24, 46),

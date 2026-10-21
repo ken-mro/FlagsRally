@@ -204,15 +204,20 @@ public class StampFrame : GraphicsView
             Waves(d, new RectF(ring.Right - 26, c.Y - 18, right - (ring.Right - 26), 30), 5);
         }
 
-        // A medal: a bumpy edge with a thick ring and a thin one, a globe at the top with stars on an
-        // arc either side, laurel branches up both sides and a large star at the bottom between dashes.
+        // A round medal: a solid band of ink with a bumpy edge, a thin ring inside it, a globe at the top
+        // with stars on an arc either side, laurel branches up both sides and a large star at the bottom.
         static void ScallopedGlobe(Pen d, RectF r)
         {
-            var edge = Scalloped(r, d.Small ? 12 : 20, d.Small ? 1.5f : 4f);
-            d.FillTint(() => d.Canvas.FillPath(edge));
-            d.Stroke(d.Outer, () => d.Canvas.DrawPath(edge));
-            var ring = r.Inflate(-d.Gap * 1.8f, -d.Gap * 1.8f);
-            d.Stroke(d.Outer * 0.7f, () => d.Canvas.DrawEllipse(ring));
+            // A solid band of ink between the scalloped edge and a ring, round a true circle
+            var medal = Round(r);
+            var edge = Scalloped(medal, d.Small ? 12 : 22, d.Small ? 1.5f : 3.5f);
+            var ring = medal.Inflate(-(d.Small ? 3 : 8), -(d.Small ? 3 : 8));
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(edge);
+            // The paper shows again inside the ring
+            d.Canvas.FillColor = Paper;
+            d.Canvas.FillEllipse(ring);
+            d.FillTint(() => d.Canvas.FillEllipse(ring));
             if (d.Small) return;
             var inner = ring.Inflate(-4, -4);
             d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawEllipse(inner));
@@ -230,8 +235,9 @@ public class StampFrame : GraphicsView
             {
                 d.Canvas.FillPath(Star(On(angle, 12), 4.2f));
             }
-            Laurel(d, c, rx - 13, ry - 13, 108, 196, left: true);
-            Laurel(d, c, rx - 13, ry - 13, 72, -16, left: false);
+            // Up the sides beside the flag and the name, clear of the date
+            Laurel(d, c, rx - 11, ry - 11, 156, 222, left: true);
+            Laurel(d, c, rx - 11, ry - 11, 24, -42, left: false);
             var bottom = On(90, 12);
             d.Canvas.FillColor = d.Ink;
             d.Canvas.FillPath(Star(bottom, 7));
@@ -425,9 +431,9 @@ public class StampFrame : GraphicsView
             Sparkle(d, new PointF(c.X, ring.Bottom - 14), 6);
         }
 
-        // A postmark: a round-cornered double frame with a big globe and its continents rising behind
-        // the text, which sits on a clear patch of paper; rules at the top corners and beside the date,
-        // a small diamond at the bottom, and wavy lines running off the right edge.
+        // A postmark: a round-cornered double frame with a big globe, its grid and continents, behind the
+        // flag; rules at the top corners and beside the date, a small diamond at the bottom, and wavy
+        // lines running off the right edge.
         static void GlobePostmark(Pen d, RectF r)
         {
             d.FillTint(() => d.Canvas.FillRoundedRectangle(r, 12));
@@ -437,21 +443,16 @@ public class StampFrame : GraphicsView
             if (d.Small) return;
             var c = inner.Center;
 
-            // The top of a big globe rising behind the flag, cut off where the text begins
-            var radius = inner.Width * 0.37f;
-            var globe = new PointF(c.X, inner.Top + 10 + radius);
-            var horizon = globe.Y - radius * 0.1f;
+            // A big globe behind the flag, its lower part cut off where the name begins
+            var radius = inner.Width * 0.36f;
+            var globe = new PointF(c.X, inner.Top + 8 + radius);
+            var horizon = globe.Y + 2;
             d.Canvas.SaveState();
             d.Canvas.ClipRectangle(inner.Left, inner.Top, inner.Width, horizon - inner.Top);
-            d.Stroke(d.Inner * 1.2f, () => d.Canvas.DrawCircle(globe, radius));
+            Graticule(d, globe, radius);
             Continents(d, globe, radius);
+            d.Stroke(d.Inner * 1.3f, () => d.Canvas.DrawCircle(globe, radius));
             d.Canvas.RestoreState();
-
-            // A clear patch of paper for the flag, like the label on a postmark
-            var patch = new RectF(c.X - inner.Width * 0.24f, inner.Top + 36, inner.Width * 0.48f, horizon - inner.Top - 36);
-            d.Canvas.FillColor = Paper;
-            d.Canvas.FillRoundedRectangle(patch, 5);
-            d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawRoundedRectangle(patch, 5));
 
             d.Stroke(d.Inner, () =>
             {
@@ -480,18 +481,39 @@ public class StampFrame : GraphicsView
         static readonly (float X, float Y)[][] ContinentShapes =
         [
             // North America
-            [(-0.92f, -0.42f), (-0.8f, -0.66f), (-0.55f, -0.8f), (-0.3f, -0.82f), (-0.18f, -0.7f), (-0.3f, -0.55f), (-0.38f, -0.36f), (-0.5f, -0.2f), (-0.62f, -0.08f), (-0.72f, -0.18f), (-0.86f, -0.26f)],
+            [(-0.95f, -0.45f), (-0.88f, -0.6f), (-0.75f, -0.7f), (-0.6f, -0.78f), (-0.45f, -0.8f), (-0.35f, -0.74f), (-0.28f, -0.62f), (-0.33f, -0.55f), (-0.27f, -0.48f), (-0.3f, -0.4f), (-0.38f, -0.36f), (-0.42f, -0.28f), (-0.5f, -0.22f), (-0.55f, -0.12f), (-0.6f, -0.05f), (-0.66f, -0.12f), (-0.7f, -0.22f), (-0.8f, -0.28f), (-0.9f, -0.34f)],
             // Greenland
-            [(-0.22f, -0.92f), (-0.06f, -0.95f), (-0.02f, -0.84f), (-0.14f, -0.78f)],
+            [(-0.25f, -0.95f), (-0.08f, -0.97f), (-0.02f, -0.88f), (-0.1f, -0.78f), (-0.2f, -0.8f)],
             // South America
-            [(-0.58f, 0.02f), (-0.38f, 0.06f), (-0.24f, 0.2f), (-0.26f, 0.4f), (-0.36f, 0.62f), (-0.46f, 0.82f), (-0.52f, 0.7f), (-0.56f, 0.44f), (-0.66f, 0.2f)],
+            [(-0.5f, 0.05f), (-0.38f, 0.04f), (-0.25f, 0.14f), (-0.18f, 0.24f), (-0.22f, 0.36f), (-0.3f, 0.48f), (-0.36f, 0.64f), (-0.42f, 0.8f), (-0.47f, 0.72f), (-0.48f, 0.55f), (-0.52f, 0.38f), (-0.58f, 0.22f), (-0.56f, 0.12f)],
+            // Great Britain
+            [(-0.09f, -0.7f), (-0.03f, -0.75f), (-0.01f, -0.64f), (-0.07f, -0.61f)],
             // Europe
-            [(0.0f, -0.62f), (0.12f, -0.8f), (0.3f, -0.84f), (0.42f, -0.7f), (0.3f, -0.56f), (0.18f, -0.48f), (0.04f, -0.46f)],
+            [(-0.02f, -0.58f), (0.0f, -0.68f), (0.08f, -0.74f), (0.14f, -0.86f), (0.24f, -0.9f), (0.32f, -0.82f), (0.4f, -0.72f), (0.36f, -0.62f), (0.28f, -0.56f), (0.2f, -0.5f), (0.12f, -0.52f), (0.05f, -0.48f)],
             // Africa
-            [(-0.02f, -0.38f), (0.22f, -0.42f), (0.42f, -0.3f), (0.5f, -0.1f), (0.44f, 0.16f), (0.32f, 0.4f), (0.2f, 0.5f), (0.12f, 0.3f), (0.06f, 0.02f), (-0.08f, -0.14f)],
+            [(-0.04f, -0.4f), (0.08f, -0.44f), (0.22f, -0.44f), (0.34f, -0.4f), (0.4f, -0.3f), (0.5f, -0.18f), (0.56f, -0.06f), (0.48f, 0.06f), (0.44f, 0.2f), (0.36f, 0.36f), (0.28f, 0.48f), (0.22f, 0.44f), (0.18f, 0.28f), (0.14f, 0.12f), (0.06f, 0.0f), (-0.04f, -0.06f), (-0.1f, -0.18f), (-0.08f, -0.3f)],
             // Asia
-            [(0.46f, -0.66f), (0.7f, -0.74f), (0.92f, -0.52f), (0.98f, -0.22f), (0.82f, -0.08f), (0.66f, -0.2f), (0.56f, -0.36f), (0.46f, -0.44f)],
+            [(0.42f, -0.62f), (0.54f, -0.76f), (0.7f, -0.8f), (0.86f, -0.68f), (0.95f, -0.48f), (0.98f, -0.28f), (0.9f, -0.18f), (0.8f, -0.2f), (0.72f, -0.1f), (0.64f, -0.18f), (0.56f, -0.28f), (0.5f, -0.34f), (0.44f, -0.44f)],
         ];
+
+        // A globe's faint grid: parallels and meridians inside its outline.
+        static void Graticule(Pen d, PointF c, float radius)
+        {
+            d.Canvas.StrokeColor = d.Ink.WithAlpha(0.35f);
+            d.Canvas.StrokeSize = d.Inner * 0.7f;
+            d.Canvas.StrokeDashPattern = null;
+            foreach (var f in new[] { -0.75f, -0.5f, -0.25f, 0f, 0.25f })
+            {
+                var y = c.Y + f * radius;
+                var half = radius * MathF.Sqrt(1 - f * f);
+                d.Canvas.DrawLine(c.X - half, y, c.X + half, y);
+            }
+            foreach (var share in new[] { 0.35f, 0.7f })
+            {
+                d.Canvas.DrawEllipse(c.X - radius * share, c.Y - radius, radius * share * 2, radius * 2);
+            }
+            d.Canvas.DrawLine(c.X, c.Y - radius, c.X, c.Y + radius);
+        }
 
         static void Continents(Pen d, PointF centre, float radius)
         {
@@ -499,7 +521,7 @@ public class StampFrame : GraphicsView
             var disc = new PathF();
             disc.AppendCircle(centre, radius);
             d.Canvas.ClipPath(disc);
-            d.Canvas.FillColor = d.Ink.WithAlpha(0.8f);
+            d.Canvas.FillColor = d.Ink.WithAlpha(0.75f);
             foreach (var shape in ContinentShapes)
             {
                 // Smoothed through the midpoints of the outline's sides
