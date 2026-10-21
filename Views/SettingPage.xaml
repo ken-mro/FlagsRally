@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FlagsRally.Views.SettingPage"
+    x:Name="settingsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel"
@@ -207,6 +209,60 @@
                         VerticalOptions="Center" />
                 </Grid>
               </VerticalStackLayout>
+            </Border>
+
+            <!--  Passport stamp patterns: a mix, one per country, or one pattern for all  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.PassportStamps}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding StampStyleOptions}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:StampStyleOption">
+                            <VerticalStackLayout>
+                                <BoxView IsVisible="{Binding ShowsDivider}" Style="{StaticResource RowDivider}" />
+                                <Grid ColumnDefinitions="Auto,*,Auto" Style="{StaticResource SettingsRow}">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.SetStampStyleCommand, Source={x:Reference settingsPage}, x:DataType=ContentPage}" CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <!--  A fixed width, so the names line up whatever the number of previews  -->
+                                    <HorizontalStackLayout
+                                        BindableLayout.ItemsSource="{Binding Previews}"
+                                        Spacing="3"
+                                        VerticalOptions="Center"
+                                        WidthRequest="114">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="models:StampPattern">
+                                                <controls:StampFrame
+                                                    HeightRequest="28"
+                                                    IsSmall="True"
+                                                    Pattern="{Binding .}"
+                                                    WidthRequest="36" />
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </HorizontalStackLayout>
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+                                        <Label FontSize="16" Text="{Binding Title}" />
+                                        <Label
+                                            FontSize="12"
+                                            IsVisible="{Binding HasHint}"
+                                            Text="{Binding Hint}"
+                                            TextColor="{StaticResource InkMuted}" />
+                                    </VerticalStackLayout>
+                                    <Label
+                                        Grid.Column="2"
+                                        FontAttributes="Bold"
+                                        FontSize="20"
+                                        IsVisible="{Binding IsSelected}"
+                                        Text="✓"
+                                        TextColor="{StaticResource Navy}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
             </Border>
 
             <!--  Subscription  -->

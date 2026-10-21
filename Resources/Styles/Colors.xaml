@@ -9,6 +9,9 @@
     <Color x:Key="NavyDeep">#0F1C3A</Color>
     <Color x:Key="NavyMuted">#A3AEC8</Color>
     <Color x:Key="Stamp">#B94047</Color>
+    <!--  Inks of the passport stamp patterns besides Ink, Navy and Stamp  -->
+    <Color x:Key="StampGreen">#2F6B4F</Color>
+    <Color x:Key="StampPurple">#5B4389</Color>
     <Color x:Key="Paper">#F4EEDF</Color>
     <Color x:Key="PaperCard">#FBF8F0</Color>
     <Color x:Key="PaperEdge">#DDD2BA</Color>

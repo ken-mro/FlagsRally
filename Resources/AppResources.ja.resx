@@ -587,4 +587,34 @@
   <data name="HideEmptyCollections" xml:space="preserve">
     <value>0件のものを隠す</value>
   </data>
+  <data name="PassportStamps" xml:space="preserve">
+    <value>パスポートのスタンプ</value>
+  </data>
+  <data name="StampStyleMixed" xml:space="preserve">
+    <value>いろいろなデザインを混ぜる</value>
+  </data>
+  <data name="StampStyleMixedHint" xml:space="preserve">
+    <value>スタンプごとに、下のデザインから自動で選びます。</value>
+  </data>
+  <data name="StampStyleByCountry" xml:space="preserve">
+    <value>国ごとにデザインをそろえる</value>
+  </data>
+  <data name="StampStyleByCountryHint" xml:space="preserve">
+    <value>同じ国のスタンプは同じデザインになります。</value>
+  </data>
+  <data name="StampPatternSquare" xml:space="preserve">
+    <value>四角（従来）</value>
+  </data>
+  <data name="StampPatternCircle" xml:space="preserve">
+    <value>丸</value>
+  </data>
+  <data name="StampPatternOval" xml:space="preserve">
+    <value>楕円</value>
+  </data>
+  <data name="StampPatternOctagon" xml:space="preserve">
+    <value>八角形</value>
+  </data>
+  <data name="StampPatternPostage" xml:space="preserve">
+    <value>切手風</value>
+  </data>
 </root>

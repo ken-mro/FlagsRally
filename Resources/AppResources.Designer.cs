@@ -1463,5 +1463,95 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("HideEmptyCollections", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passport stamps.
+        /// </summary>
+        internal static string PassportStamps {
+            get {
+                return ResourceManager.GetString("PassportStamps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mix of designs.
+        /// </summary>
+        internal static string StampStyleMixed {
+            get {
+                return ResourceManager.GetString("StampStyleMixed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each stamp gets one of the designs below..
+        /// </summary>
+        internal static string StampStyleMixedHint {
+            get {
+                return ResourceManager.GetString("StampStyleMixedHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One design per country.
+        /// </summary>
+        internal static string StampStyleByCountry {
+            get {
+                return ResourceManager.GetString("StampStyleByCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamps of the same country share a design..
+        /// </summary>
+        internal static string StampStyleByCountryHint {
+            get {
+                return ResourceManager.GetString("StampStyleByCountryHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square (original).
+        /// </summary>
+        internal static string StampPatternSquare {
+            get {
+                return ResourceManager.GetString("StampPatternSquare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Circle.
+        /// </summary>
+        internal static string StampPatternCircle {
+            get {
+                return ResourceManager.GetString("StampPatternCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oval.
+        /// </summary>
+        internal static string StampPatternOval {
+            get {
+                return ResourceManager.GetString("StampPatternOval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Octagon.
+        /// </summary>
+        internal static string StampPatternOctagon {
+            get {
+                return ResourceManager.GetString("StampPatternOctagon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Postage stamp.
+        /// </summary>
+        internal static string StampPatternPostage {
+            get {
+                return ResourceManager.GetString("StampPatternPostage", resourceCulture);
+            }
+        }
     }
 }

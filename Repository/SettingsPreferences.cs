@@ -13,6 +13,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _apiKey = "ApiKey";
     private string _customBoardSort = "CustomBoardSort";
     private string _pinStyle = "PinStyle";
+    private string _stampStyle = "StampStyle";
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
     private string _hidesEmptyCollections = "HidesEmptyCollections";
     private string _hasSeenOnboarding = "HasSeenOnboarding";
@@ -120,6 +121,11 @@ public partial class SettingsPreferences : ObservableObject
     {
         _defaultPreferences.Set(_pinStyle, style.ToString());
     }
+
+    // The passport's stamp patterns: one for all, a mix, or one per country.
+    public StampStyle GetStampStyle() => StampStyle.FromKey(_defaultPreferences.Get(_stampStyle, StampStyle.Default.Key));
+
+    public void SetStampStyle(StampStyle style) => _defaultPreferences.Set(_stampStyle, style.Key);
 
     public bool GetRegionalFlagsExpanded()
     {

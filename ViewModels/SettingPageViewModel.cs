@@ -66,6 +66,24 @@ namespace FlagsRally.ViewModels
             PinStyle = Enum.Parse<PinStyle>(style);
         }
 
+        // Settings > Passport stamps: how the passport picks each stamp's pattern.
+        public IReadOnlyList<StampStyleOption> StampStyleOptions { get; } = StampStyleOption.All();
+
+        [RelayCommand]
+        void SetStampStyle(StampStyleOption option)
+        {
+            _settingPreferences.SetStampStyle(option.Style);
+            MarkStampStyle(option.Style);
+        }
+
+        void MarkStampStyle(StampStyle style)
+        {
+            foreach (var option in StampStyleOptions)
+            {
+                option.IsSelected = option.Style == style;
+            }
+        }
+
         // The pin previews leave out custom board pins while there are no custom boards.
         [ObservableProperty]
         private bool _hasCustomBoards;
@@ -89,6 +107,7 @@ namespace FlagsRally.ViewModels
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
             _pinStyle = _settingPreferences.GetPinStyle();
+            MarkStampStyle(_settingPreferences.GetStampStyle());
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;

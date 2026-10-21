@@ -5,6 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- **Passport stamps in more designs.** Settings has a new Passport stamps section. Stamps can all use one design — the original square, a circle, an oval, an octagon or a postage stamp, each in its own ink — or mix them, each stamp getting one of the designs and leaning a little like a stamp pressed by hand, or use one design per country. A stamp keeps its look every time the passport is opened, and the original square stays the default.
+
 ### Fixed
 - **A stamp recorded in the wrong country.** Google's place lookup started returning a stray Hanoi address among its results for any place, sometimes first. A stamp could then be saved as Vietnam (Saint Vincent and the Grenadines did), or with Hà Nội as the region in Japanese (San Francisco did). The country is now the one the results agree on, and each name is taken from that area's own result in that country; stray results elsewhere are ignored.
 

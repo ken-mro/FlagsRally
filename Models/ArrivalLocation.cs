@@ -24,4 +24,15 @@ public record ArrivalLocation
     public string LocalityName { get; init; } = string.Empty;
     
     public Location Location { get; init; } = new Location();
+
+    // How the passport draws the stamp (Settings > Passport stamps); see StampPatterns.Apply.
+    public StampPattern StampPattern { get; init; } = StampPattern.Square;
+    public double StampTilt { get; init; }
+    public Thickness StampMargin => StampPatterns.MarginFor(StampTilt);
+    public Color StampInk => StampPatterns.InkFor(StampPattern);
+    public Color StampDateInk => StampPatterns.DateInkFor(StampPattern);
+    public Thickness StampPadding => StampPatterns.PaddingFor(StampPattern);
+    public double StampArrivalFontSize => StampPatterns.ArrivalFontSizeFor(StampPattern);
+    public double StampLongLine => StampPatterns.LongLineFor(StampPattern);
+    public double StampShortLine => StampPatterns.ShortLineFor(StampPattern);
 }

@@ -587,4 +587,34 @@
   <data name="HideEmptyCollections" xml:space="preserve">
     <value>Hide those with no stamps</value>
   </data>
+  <data name="PassportStamps" xml:space="preserve">
+    <value>Passport stamps</value>
+  </data>
+  <data name="StampStyleMixed" xml:space="preserve">
+    <value>Mix of designs</value>
+  </data>
+  <data name="StampStyleMixedHint" xml:space="preserve">
+    <value>Each stamp gets one of the designs below.</value>
+  </data>
+  <data name="StampStyleByCountry" xml:space="preserve">
+    <value>One design per country</value>
+  </data>
+  <data name="StampStyleByCountryHint" xml:space="preserve">
+    <value>Stamps of the same country share a design.</value>
+  </data>
+  <data name="StampPatternSquare" xml:space="preserve">
+    <value>Square (original)</value>
+  </data>
+  <data name="StampPatternCircle" xml:space="preserve">
+    <value>Circle</value>
+  </data>
+  <data name="StampPatternOval" xml:space="preserve">
+    <value>Oval</value>
+  </data>
+  <data name="StampPatternOctagon" xml:space="preserve">
+    <value>Octagon</value>
+  </data>
+  <data name="StampPatternPostage" xml:space="preserve">
+    <value>Postage stamp</value>
+  </data>
 </root>
