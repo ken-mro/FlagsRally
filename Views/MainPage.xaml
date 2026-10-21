@@ -258,7 +258,7 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
                     </Grid.GestureRecognizers>
-                    <controls:StampFrame Pattern="{Binding StampPattern}" />
+                    <controls:StampFrame Pattern="{Binding StampPattern}" Seed="{Binding Id}" />
                     <Grid>
                         <VerticalStackLayout Padding="{Binding StampPadding}" VerticalOptions="Center">
                             <FlyoutBase.ContextFlyout>
@@ -350,7 +350,7 @@
                                 HorizontalOptions="Center"
                                 HorizontalTextAlignment="Center"
                                 IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                LineBreakMode="CharacterWrap"
+                                LineBreakMode="WordWrap"
                                 LineHeight="1"
                                 MaxLines="2"
                                 Text="{Binding CountryName}"
@@ -364,7 +364,7 @@
                                 HorizontalOptions="Center"
                                 HorizontalTextAlignment="Center"
                                 IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                LineBreakMode="CharacterWrap"
+                                LineBreakMode="WordWrap"
                                 LineHeight="1"
                                 MaxLines="2"
                                 Text="{Binding AdminAreaName}"
