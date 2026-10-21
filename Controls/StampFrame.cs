@@ -96,8 +96,9 @@ public class StampFrame : GraphicsView
 
         // ---------- the designs ----------
 
-        // An airmail envelope: the striped edge, "AIR MAIL" at the top left, and at the top right a
-        // postage stamp cancelled by a round postmark whose wavy lines run off to the left.
+        // An airmail envelope: the striped edge, at the top right a postage stamp cancelled by a round
+        // postmark whose wavy lines run off to the left, and an address line under the text, which
+        // lines up at the left (see StampPatterns.IsLeftAligned).
         static void Airmail(Pen d, RectF r)
         {
             d.FillTint(() => d.Canvas.FillRoundedRectangle(r, 8));
@@ -138,18 +139,9 @@ public class StampFrame : GraphicsView
             d.Canvas.FillPath(StarPoints(mark, 4, 4));
             Waves(d, new RectF(mark.X - 40, mark.Y - 6, 28, 12), 3);
 
-            // "AIR MAIL" at the top left, on two lines between rules, to balance the stamp
-            var label = new RectF(inner.Left + 7, inner.Top + 6, 42, 24);
+            // The address line under the text, which lines up at the left like an address
             d.Stroke(d.Inner * 0.8f, () =>
-            {
-                d.Canvas.DrawLine(label.Left, label.Top, label.Right, label.Top);
-                d.Canvas.DrawLine(label.Left, label.Bottom, label.Right, label.Bottom);
-            });
-            d.Canvas.FontColor = d.Ink;
-            d.Canvas.Font = Microsoft.Maui.Graphics.Font.DefaultBold;
-            d.Canvas.FontSize = 9.5f;
-            d.Canvas.DrawString("AIR", label.Left, label.Top - 1, label.Width, 14, HorizontalAlignment.Center, VerticalAlignment.Center);
-            d.Canvas.DrawString("MAIL", label.Left, label.Top + 10, label.Width, 14, HorizontalAlignment.Center, VerticalAlignment.Center);
+                d.Canvas.DrawLine(inner.Left + 10, inner.Bottom - 9, inner.Left + inner.Width * 0.66f, inner.Bottom - 9));
         }
 
         // A hexagon on its point: a compass rose in a ring with N, W and E at the top, a dashed orbit

@@ -34,6 +34,8 @@ public record ArrivalLocation
     public Thickness StampPadding => StampPatterns.PaddingFor(StampPattern);
     public double StampArrivalFontSize => StampPatterns.ArrivalFontSizeFor(StampPattern);
     public bool StampShowsArrival => StampPatterns.ShowsArrival(StampPattern);
+    public LayoutOptions StampAlignment => StampPatterns.IsLeftAligned(StampPattern) ? LayoutOptions.Start : LayoutOptions.Center;
+    public TextAlignment StampTextAlignment => StampPatterns.IsLeftAligned(StampPattern) ? TextAlignment.Start : TextAlignment.Center;
     public double StampLongLine => StampPatterns.LongLineFor(StampPattern);
     public double StampShortLine => StampPatterns.ShortLineFor(StampPattern);
 }

@@ -99,7 +99,7 @@ public static class StampPatterns
     /// </summary>
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.Airmail => new Thickness(20, 34, 20, 14),
+        StampPattern.Airmail => new Thickness(26, 42, 20, 30),
         StampPattern.CompassHexagon => new Thickness(40, 46, 40, 42),
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
         StampPattern.ScallopedGlobe => new Thickness(38, 40, 38, 42),
@@ -116,7 +116,10 @@ public static class StampPatterns
     /// (a globe, a compass, the row of travel) leave it out to keep the original stamp's size.
     /// </summary>
     public static bool ShowsArrival(StampPattern pattern) =>
-        pattern is StampPattern.Square or StampPattern.Airmail or StampPattern.WorldOval;
+        pattern is StampPattern.Square or StampPattern.WorldOval;
+
+    /// <summary>Whether the text lines up at the left, like the address on the airmail envelope.</summary>
+    public static bool IsLeftAligned(StampPattern pattern) => pattern == StampPattern.Airmail;
 
     public static double ArrivalFontSizeFor(StampPattern pattern) => pattern == StampPattern.Square ? 40 : 28;
 

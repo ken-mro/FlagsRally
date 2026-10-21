@@ -97,6 +97,13 @@ public class StampPatternsTests
     {
         Assert.True(StampPatterns.ShowsArrival(StampPattern.Square));
         Assert.False(StampPatterns.ShowsArrival(StampPattern.ScallopedGlobe)); // globe above, travel row below
-        Assert.True(StampPatterns.ShowsArrival(StampPattern.Airmail));   // motifs in the corners only
+        Assert.True(StampPatterns.ShowsArrival(StampPattern.WorldOval)); // motifs at the sides only
+        Assert.False(StampPatterns.ShowsArrival(StampPattern.Airmail));  // an envelope's address, not a stamp's word
+    }
+
+    [Fact]
+    public void Only_the_airmail_envelope_lines_its_text_up_at_the_left()
+    {
+        Assert.Equal([StampPattern.Airmail], StampPatterns.All.Where(StampPatterns.IsLeftAligned));
     }
 }

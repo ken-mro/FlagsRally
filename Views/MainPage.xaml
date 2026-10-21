@@ -266,7 +266,7 @@
                                     <Label
                                         Margin="-2"
                                         FontSize="38"
-                                        HorizontalOptions="Center"
+                                        HorizontalOptions="{Binding StampAlignment}"
                                         IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Text="{Binding CountryFlagSource}"
                                         VerticalOptions="Center">
@@ -283,7 +283,7 @@
                                 <On Platform="Android">
                                     <Label
                                         FontSize="36"
-                                        HorizontalOptions="Center"
+                                        HorizontalOptions="{Binding StampAlignment}"
                                         IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Text="{Binding CountryFlagSource}"
                                         VerticalOptions="Center">
@@ -301,7 +301,7 @@
                                     <Image
                                         Margin="10"
                                         HeightRequest="40"
-                                        HorizontalOptions="Center"
+                                        HorizontalOptions="{Binding StampAlignment}"
                                         IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Source="{Binding CountryFlagSource}"
                                         VerticalOptions="Center" />
@@ -311,7 +311,7 @@
                             <Image
                                 Margin="6"
                                 HeightRequest="32"
-                                HorizontalOptions="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
                                 IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 Source="{Binding AdminAreaFlagSource}"
                                 VerticalOptions="Center"
@@ -339,8 +339,8 @@
                                 FontAttributes="Bold"
                                 FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
                                 FontSize="18"
-                                HorizontalOptions="Center"
-                                HorizontalTextAlignment="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
+                                HorizontalTextAlignment="{Binding StampTextAlignment}"
                                 IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 LineBreakMode="WordWrap"
                                 LineHeight="1"
@@ -355,8 +355,8 @@
                                 FontAttributes="Bold"
                                 FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
                                 FontSize="18"
-                                HorizontalOptions="Center"
-                                HorizontalTextAlignment="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
+                                HorizontalTextAlignment="{Binding StampTextAlignment}"
                                 IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 LineBreakMode="WordWrap"
                                 LineHeight="1"
@@ -365,7 +365,7 @@
                                 TextColor="{Binding StampInk}"
                                 VerticalOptions="Center" />
                             <Line
-                                HorizontalOptions="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
                                 Stroke="{Binding StampInk}"
                                 StrokeDashArray="2,2"
                                 StrokeThickness="2"
@@ -378,9 +378,9 @@
                                 FontAttributes="Bold"
                                 FontFamily="craftmincho"
                                 FontSize="14"
-                                HorizontalOptions="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
                                 IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                HorizontalTextAlignment="Center"
+                                HorizontalTextAlignment="{Binding StampTextAlignment}"
                                 LineBreakMode="WordWrap"
                                 LineHeight="1"
                                 Text="{Binding ArrivalDateString}"
@@ -391,16 +391,16 @@
                                 FontAttributes="Bold"
                                 FontFamily="craftmincho"
                                 FontSize="14"
-                                HorizontalOptions="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
                                 IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                HorizontalTextAlignment="Center"
+                                HorizontalTextAlignment="{Binding StampTextAlignment}"
                                 LineBreakMode="WordWrap"
                                 LineHeight="1"
                                 Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
                                 TextColor="{Binding StampDateInk}"
                                 VerticalOptions="Center" />
                             <Line
-                                HorizontalOptions="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
                                 Stroke="{Binding StampInk}"
                                 StrokeDashArray="2,2"
                                 StrokeThickness="2"
@@ -413,7 +413,7 @@
                                 FontAutoScalingEnabled="False"
                                 FontFamily="JerseyclubGrungeBold"
                                 FontSize="{Binding StampArrivalFontSize}"
-                                HorizontalOptions="Center"
+                                HorizontalOptions="{Binding StampAlignment}"
                                 LineBreakMode="NoWrap"
                                 IsVisible="{Binding StampShowsArrival}"
                                 Text="ARRIVAL"
