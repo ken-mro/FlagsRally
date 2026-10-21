@@ -632,4 +632,7 @@
   <data name="StampPatternStarSeal" xml:space="preserve">
     <value>星の飾り縁</value>
   </data>
+  <data name="StampPatternGlobePostmark" xml:space="preserve">
+    <value>地球の消印</value>
+  </data>
 </root>

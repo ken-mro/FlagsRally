@@ -50,6 +50,7 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
         StampPattern.CompassSeal => AppResources.StampPatternCompassSeal,
         StampPattern.Triangle => AppResources.StampPatternTriangle,
         StampPattern.StarSeal => AppResources.StampPatternStarSeal,
+        StampPattern.GlobePostmark => AppResources.StampPatternGlobePostmark,
         _ => AppResources.StampPatternSquare,
     };
 }

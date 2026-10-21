@@ -17,6 +17,7 @@ public enum StampPattern
     CompassSeal,
     Triangle,
     StarSeal,
+    GlobePostmark,
 }
 
 /// <summary>
@@ -88,6 +89,7 @@ public static class StampPatterns
         StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
         StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
         StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
+        StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         _ => Token("Ink", "#22252E"),
     };
@@ -102,7 +104,8 @@ public static class StampPatterns
         StampPattern.Airmail => new Thickness(26, 42, 20, 30),
         StampPattern.CompassHexagon => new Thickness(40, 46, 40, 42),
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
-        StampPattern.ScallopedGlobe => new Thickness(38, 40, 38, 42),
+        StampPattern.ScallopedGlobe => new Thickness(46, 46, 46, 40),
+        StampPattern.GlobePostmark => new Thickness(30, 40, 30, 32),
         StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
         StampPattern.Ticket => new Thickness(24, 36, 24, 46),
         StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),

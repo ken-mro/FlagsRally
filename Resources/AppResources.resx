@@ -632,4 +632,7 @@
   <data name="StampPatternStarSeal" xml:space="preserve">
     <value>Star seal</value>
   </data>
+  <data name="StampPatternGlobePostmark" xml:space="preserve">
+    <value>Globe postmark</value>
+  </data>
 </root>

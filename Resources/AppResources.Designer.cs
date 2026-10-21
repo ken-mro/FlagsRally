@@ -1599,5 +1599,14 @@ namespace FlagsRally.Resources {
             }
         }
         
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Globe postmark.
+        /// </summary>
+        internal static string StampPatternGlobePostmark {
+            get {
+                return ResourceManager.GetString("StampPatternGlobePostmark", resourceCulture);
+            }
+        }
     }
 }
