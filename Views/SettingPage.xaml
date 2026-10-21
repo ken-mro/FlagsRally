@@ -231,31 +231,11 @@
                                         WidthRequest="114">
                                         <BindableLayout.ItemTemplate>
                                             <DataTemplate x:DataType="models:StampPattern">
-                                                <Grid HeightRequest="28" WidthRequest="36">
-                                                    <controls:StampFrame IsSmall="True" Pattern="{Binding .}">
-                                                        <controls:StampFrame.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding .}"
-                                                                TargetType="controls:StampFrame"
-                                                                Value="{x:Static models:StampPattern.Journey}">
-                                                                <Setter Property="IsVisible" Value="False" />
-                                                            </DataTrigger>
-                                                        </controls:StampFrame.Triggers>
-                                                    </controls:StampFrame>
-                                                    <!--  The journey stamp is a picture, not drawn  -->
-                                                    <Image
-                                                        IsVisible="False"
-                                                        Source="stamp_journey.png">
-                                                        <Image.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding .}"
-                                                                TargetType="Image"
-                                                                Value="{x:Static models:StampPattern.Journey}">
-                                                                <Setter Property="IsVisible" Value="True" />
-                                                            </DataTrigger>
-                                                        </Image.Triggers>
-                                                    </Image>
-                                                </Grid>
+                                                <controls:StampFrame
+                                                    HeightRequest="28"
+                                                    IsSmall="True"
+                                                    Pattern="{Binding .}"
+                                                    WidthRequest="36" />
                                             </DataTemplate>
                                         </BindableLayout.ItemTemplate>
                                     </HorizontalStackLayout>

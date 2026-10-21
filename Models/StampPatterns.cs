@@ -90,7 +90,7 @@ public static class StampPatterns
         StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
         StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
         StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
-        StampPattern.Journey => Token("StampInkJourney", "#1C2B4A"),
+        StampPattern.Journey => Token("StampInkJourney", "#173A6B"),
         StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         _ => Token("Ink", "#22252E"),
@@ -108,7 +108,7 @@ public static class StampPatterns
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
         StampPattern.ScallopedGlobe => new Thickness(46, 44, 46, 40),
         StampPattern.GlobePostmark => new Thickness(30, 40, 30, 32),
-        // Not used: the journey stamp has its own template with the picture
+        // Not used: the journey stamp has its own template (flag on the globe, name and date below)
         StampPattern.Journey => new Thickness(20, 12),
         StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
         StampPattern.Ticket => new Thickness(24, 36, 24, 46),
@@ -137,13 +137,11 @@ public static class StampPatterns
     public static Color DateInkFor(StampPattern pattern) => pattern switch
     {
         StampPattern.Square => Token("Stamp", "#B94047"),
-        // The red of the picture's date box
-        StampPattern.Journey => Token("StampInkJourneyRed", "#C1272D"),
         _ => InkFor(pattern),
     };
 
     // The colour from Colors.xaml, or its value when there is no app (unit tests).
-    static Color Token(string key, string fallback) =>
+    internal static Color Token(string key, string fallback) =>
         Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color
             ? color
             : Color.FromArgb(fallback);

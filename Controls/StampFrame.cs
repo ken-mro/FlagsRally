@@ -74,6 +74,7 @@ public class StampFrame : GraphicsView
                 case StampPattern.CompassSeal: CompassSeal(d, r); break;
                 case StampPattern.Triangle: Triangle(d, r); break;
                 case StampPattern.GlobePostmark: GlobePostmark(d, r); break;
+                case StampPattern.Journey: Journey(d, r); break;
                 case StampPattern.StarSeal: StarSeal(d, r); break;
                 default:
                     // The original stamp: a thick square with a dashed one inside
@@ -473,6 +474,72 @@ public class StampFrame : GraphicsView
             d.Canvas.FillPath(Diamond(new PointF(c.X, inner.Bottom - 9), 2.5f));
             Waves(d, new RectF(inner.Right - 20, c.Y - 4, r.Right + d.Outer - (inner.Right - 20), 28), 4);
         }
+
+        // A journey compass, traced from an illustration (Resources/Stamps/journey.txt): a double ring
+        // with arrowheads at the four points, and inside it a dotted arc, a rising sun, sparkles, and
+        // a train on its track, a ship on the waves, a car on a road and someone walking a path,
+        // swirling round a globe under the flag. The picture inside the ring is drawn a little
+        // smaller and higher, leaving room at the bottom for the name and, between two rules, the date.
+        static void Journey(Pen d, RectF r)
+        {
+            var ring = Round(r);
+            d.Canvas.FillColor = Paper;
+            d.Canvas.FillEllipse(ring);
+            JourneyPicture(d, ring, part => part is 'f' or 'd');
+            JourneyPicture(d, ring, part => part is '-' or 'g', JourneyShrink, JourneyShrinkAbout);
+        }
+
+        // How the picture inside the ring shrinks, about a point at its top (in the 1254 box). The
+        // flag's place in MainPage.xaml follows the globe's centre, (623, 615) before shrinking.
+        const float JourneyShrink = 0.86f;
+        static readonly PointF JourneyShrinkAbout = new(627, 87);
+
+        // Draws the traced shapes of the given parts into the ring, shrunk about a point when asked
+        static void JourneyPicture(Pen d, RectF ring, Func<char, bool> parts, float shrink = 1, PointF about = default)
+        {
+            // The traced outer ring spans 51..1203 of the 1254 box
+            var scale = ring.Width / 1152f;
+            d.Canvas.SaveState();
+            d.Canvas.Translate(ring.X - 51 * scale, ring.Y - 51 * scale);
+            d.Canvas.Scale(scale, scale);
+            if (shrink != 1)
+            {
+                d.Canvas.Translate(about.X * (1 - shrink), about.Y * (1 - shrink));
+                d.Canvas.Scale(shrink, shrink);
+            }
+            foreach (var (colour, part, path) in JourneyShapes.Value)
+            {
+                if (!parts(part)) continue;
+                d.Canvas.FillColor = colour switch
+                {
+                    "paper" => Paper,
+                    "red" => StampPatterns.Token("JourneyTrain", "#E74D36"),
+                    "orange" => StampPatterns.Token("JourneySun", "#EBA854"),
+                    "green" => StampPatterns.Token("JourneyRoad", "#21553E"),
+                    "tan" => StampPatterns.Token("JourneyPath", "#C6965F"),
+                    "blue" => StampPatterns.Token("JourneySea", "#125FA6"),
+                    _ => d.Ink,
+                };
+                d.Canvas.FillPath(path);
+            }
+            d.Canvas.RestoreState();
+        }
+
+        // Read once: about a hundred shapes
+        static readonly Lazy<(string Colour, char Part, PathF Path)[]> JourneyShapes = new(() =>
+        {
+            var assembly = typeof(StampFrame).Assembly;
+            using var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Resources.Stamps.journey.txt")!;
+            using var reader = new StreamReader(stream);
+            var shapes = new List<(string, char, PathF)>();
+            while (reader.ReadLine() is { } line)
+            {
+                if (line.Length == 0 || line[0] == '#') continue;
+                var parts = line.Split(' ', 3);
+                shapes.Add((parts[0], parts[1][0], PathBuilder.Build(parts[2])));
+            }
+            return [.. shapes];
+        });
 
         // ---------- motifs ----------
 

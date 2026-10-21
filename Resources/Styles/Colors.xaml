@@ -20,8 +20,13 @@
     <Color x:Key="StampInkOchre">#A86F17</Color>
     <Color x:Key="StampInkPink">#C9406F</Color>
     <Color x:Key="StampInkVermilion">#C4482B</Color>
-    <Color x:Key="StampInkJourney">#1C2B4A</Color>
-    <Color x:Key="StampInkJourneyRed">#C1272D</Color>
+    <Color x:Key="StampInkJourney">#173A6B</Color>
+    <!--  The colours of the journey compass's picture: train, sun, road, path, sea  -->
+    <Color x:Key="JourneyTrain">#E74D36</Color>
+    <Color x:Key="JourneySun">#EBA854</Color>
+    <Color x:Key="JourneyRoad">#21553E</Color>
+    <Color x:Key="JourneyPath">#C6965F</Color>
+    <Color x:Key="JourneySea">#125FA6</Color>
     <Color x:Key="Paper">#F4EEDF</Color>
     <Color x:Key="PaperCard">#FBF8F0</Color>
     <Color x:Key="PaperEdge">#DDD2BA</Color>
