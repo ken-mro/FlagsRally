@@ -605,16 +605,40 @@
   <data name="StampPatternSquare" xml:space="preserve">
     <value>四角（従来）</value>
   </data>
-  <data name="StampPatternCircle" xml:space="preserve">
-    <value>丸</value>
+  <data name="StampPatternGlobeSeal" xml:space="preserve">
+    <value>地球の丸印</value>
   </data>
-  <data name="StampPatternOval" xml:space="preserve">
-    <value>楕円</value>
+  <data name="StampPatternAirmail" xml:space="preserve">
+    <value>エアメール</value>
   </data>
-  <data name="StampPatternOctagon" xml:space="preserve">
-    <value>八角形</value>
+  <data name="StampPatternCompassHexagon" xml:space="preserve">
+    <value>コンパスの六角形</value>
   </data>
-  <data name="StampPatternPostage" xml:space="preserve">
-    <value>切手風</value>
+  <data name="StampPatternSunrise" xml:space="preserve">
+    <value>日の出</value>
+  </data>
+  <data name="StampPatternScallopedGlobe" xml:space="preserve">
+    <value>波縁の地球</value>
+  </data>
+  <data name="StampPatternWorldOval" xml:space="preserve">
+    <value>世界地図の楕円</value>
+  </data>
+  <data name="StampPatternTicket" xml:space="preserve">
+    <value>チケット</value>
+  </data>
+  <data name="StampPatternCompassSeal" xml:space="preserve">
+    <value>コンパスの丸印</value>
+  </data>
+  <data name="StampPatternPostcard" xml:space="preserve">
+    <value>絵はがき</value>
+  </data>
+  <data name="StampPatternTriangle" xml:space="preserve">
+    <value>三角</value>
+  </data>
+  <data name="StampPatternStarSeal" xml:space="preserve">
+    <value>星の飾り縁</value>
+  </data>
+  <data name="StampPatternOrbit" xml:space="preserve">
+    <value>世界一周</value>
   </data>
 </root>

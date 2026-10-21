@@ -17,10 +17,10 @@ public class StampPatternsTests
     [InlineData("Mixed")]
     [InlineData("ByCountry")]
     [InlineData("Square")]
-    [InlineData("Circle")]
-    [InlineData("Oval")]
-    [InlineData("Octagon")]
-    [InlineData("Postage")]
+    [InlineData("GlobeSeal")]
+    [InlineData("Airmail")]
+    [InlineData("Triangle")]
+    [InlineData("Orbit")]
     public void A_style_survives_being_saved(string key)
     {
         Assert.Equal(key, StampStyle.FromKey(key).Key);
@@ -29,12 +29,12 @@ public class StampPatternsTests
     [Fact]
     public void One_pattern_for_all_draws_every_stamp_upright_in_it()
     {
-        var style = StampStyle.Single(StampPattern.Oval);
+        var style = StampStyle.Single(StampPattern.WorldOval);
 
         foreach (var id in Enumerable.Range(1, 30))
         {
             var stamp = StampPatterns.Apply(Arrival(id, "JP"), style);
-            Assert.Equal(StampPattern.Oval, stamp.StampPattern);
+            Assert.Equal(StampPattern.WorldOval, stamp.StampPattern);
             Assert.Equal(0, stamp.StampTilt);
         }
     }
@@ -42,10 +42,10 @@ public class StampPatternsTests
     [Fact]
     public void A_mix_uses_every_pattern_and_keeps_each_stamp_the_same()
     {
-        var patterns = Enumerable.Range(1, 60).Select(id => StampPatterns.For(Arrival(id, "JP"), StampStyle.Mixed)).ToList();
+        var patterns = Enumerable.Range(1, 200).Select(id => StampPatterns.For(Arrival(id, "JP"), StampStyle.Mixed)).ToList();
 
         Assert.Equal(StampPatterns.All.Count, patterns.Distinct().Count());
-        Assert.Equal(patterns, Enumerable.Range(1, 60).Select(id => StampPatterns.For(Arrival(id, "JP"), StampStyle.Mixed)));
+        Assert.Equal(patterns, Enumerable.Range(1, 200).Select(id => StampPatterns.For(Arrival(id, "JP"), StampStyle.Mixed)));
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class StampPatternsTests
     [Fact]
     public void Mixed_stamps_lean_a_little_either_way()
     {
-        var tilts = Enumerable.Range(1, 60).Select(id => StampPatterns.TiltFor(Arrival(id, "JP"), StampStyle.Mixed)).ToList();
+        var tilts = Enumerable.Range(1, 200).Select(id => StampPatterns.TiltFor(Arrival(id, "JP"), StampStyle.Mixed)).ToList();
 
         Assert.All(tilts, t => Assert.InRange(t, -4, 4));
         Assert.Contains(tilts, t => t < 0);
@@ -72,6 +72,21 @@ public class StampPatternsTests
     {
         Assert.Equal(Color.FromArgb("#22252E"), StampPatterns.InkFor(StampPattern.Square));
         Assert.Equal(Color.FromArgb("#B94047"), StampPatterns.DateInkFor(StampPattern.Square));
-        Assert.Equal(StampPatterns.InkFor(StampPattern.Circle), StampPatterns.DateInkFor(StampPattern.Circle));
+        Assert.Equal(StampPatterns.InkFor(StampPattern.GlobeSeal), StampPatterns.DateInkFor(StampPattern.GlobeSeal));
+    }
+
+    [Fact]
+    public void An_old_saved_design_falls_back_to_the_square()
+    {
+        Assert.Equal(StampStyle.Default, StampStyle.FromKey("Octagon"));
+    }
+
+    [Fact]
+    public void Every_design_but_the_square_has_its_own_ink_and_room_for_its_motifs()
+    {
+        var shaped = StampPatterns.All.Where(p => p != StampPattern.Square).ToList();
+
+        Assert.Equal(shaped.Count, shaped.Select(StampPatterns.InkFor).Distinct().Count());
+        Assert.All(shaped, p => Assert.True(StampPatterns.PaddingFor(p).Top >= 24));
     }
 }

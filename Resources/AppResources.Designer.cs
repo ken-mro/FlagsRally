@@ -1519,38 +1519,110 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Circle.
+        ///   Looks up a localized string similar to Globe seal.
         /// </summary>
-        internal static string StampPatternCircle {
+        internal static string StampPatternGlobeSeal {
             get {
-                return ResourceManager.GetString("StampPatternCircle", resourceCulture);
+                return ResourceManager.GetString("StampPatternGlobeSeal", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Oval.
+        ///   Looks up a localized string similar to Airmail.
         /// </summary>
-        internal static string StampPatternOval {
+        internal static string StampPatternAirmail {
             get {
-                return ResourceManager.GetString("StampPatternOval", resourceCulture);
+                return ResourceManager.GetString("StampPatternAirmail", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Octagon.
+        ///   Looks up a localized string similar to Compass hexagon.
         /// </summary>
-        internal static string StampPatternOctagon {
+        internal static string StampPatternCompassHexagon {
             get {
-                return ResourceManager.GetString("StampPatternOctagon", resourceCulture);
+                return ResourceManager.GetString("StampPatternCompassHexagon", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Postage stamp.
+        ///   Looks up a localized string similar to Sunrise.
         /// </summary>
-        internal static string StampPatternPostage {
+        internal static string StampPatternSunrise {
             get {
-                return ResourceManager.GetString("StampPatternPostage", resourceCulture);
+                return ResourceManager.GetString("StampPatternSunrise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scalloped globe.
+        /// </summary>
+        internal static string StampPatternScallopedGlobe {
+            get {
+                return ResourceManager.GetString("StampPatternScallopedGlobe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to World map oval.
+        /// </summary>
+        internal static string StampPatternWorldOval {
+            get {
+                return ResourceManager.GetString("StampPatternWorldOval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket.
+        /// </summary>
+        internal static string StampPatternTicket {
+            get {
+                return ResourceManager.GetString("StampPatternTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compass seal.
+        /// </summary>
+        internal static string StampPatternCompassSeal {
+            get {
+                return ResourceManager.GetString("StampPatternCompassSeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Postcard.
+        /// </summary>
+        internal static string StampPatternPostcard {
+            get {
+                return ResourceManager.GetString("StampPatternPostcard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triangle.
+        /// </summary>
+        internal static string StampPatternTriangle {
+            get {
+                return ResourceManager.GetString("StampPatternTriangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Star seal.
+        /// </summary>
+        internal static string StampPatternStarSeal {
+            get {
+                return ResourceManager.GetString("StampPatternStarSeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Around the world.
+        /// </summary>
+        internal static string StampPatternOrbit {
+            get {
+                return ResourceManager.GetString("StampPatternOrbit", resourceCulture);
             }
         }
     }

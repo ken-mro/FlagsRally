@@ -28,9 +28,9 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
         List<StampStyleOption> options =
         [
             new(StampStyle.Mixed, AppResources.StampStyleMixed, AppResources.StampStyleMixedHint,
-                [StampPattern.Circle, StampPattern.Square, StampPattern.Postage]) { IsFirst = true },
+                [StampPattern.GlobeSeal, StampPattern.Airmail, StampPattern.CompassHexagon]) { IsFirst = true },
             new(StampStyle.PerCountry, AppResources.StampStyleByCountry, AppResources.StampStyleByCountryHint,
-                [StampPattern.Octagon, StampPattern.Octagon, StampPattern.Oval]),
+                [StampPattern.Ticket, StampPattern.Ticket, StampPattern.StarSeal]),
         ];
         foreach (var pattern in StampPatterns.All)
         {
@@ -41,10 +41,18 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
 
     static string TitleOf(StampPattern pattern) => pattern switch
     {
-        StampPattern.Circle => AppResources.StampPatternCircle,
-        StampPattern.Oval => AppResources.StampPatternOval,
-        StampPattern.Octagon => AppResources.StampPatternOctagon,
-        StampPattern.Postage => AppResources.StampPatternPostage,
+        StampPattern.GlobeSeal => AppResources.StampPatternGlobeSeal,
+        StampPattern.Airmail => AppResources.StampPatternAirmail,
+        StampPattern.CompassHexagon => AppResources.StampPatternCompassHexagon,
+        StampPattern.Sunrise => AppResources.StampPatternSunrise,
+        StampPattern.ScallopedGlobe => AppResources.StampPatternScallopedGlobe,
+        StampPattern.WorldOval => AppResources.StampPatternWorldOval,
+        StampPattern.Ticket => AppResources.StampPatternTicket,
+        StampPattern.CompassSeal => AppResources.StampPatternCompassSeal,
+        StampPattern.Postcard => AppResources.StampPatternPostcard,
+        StampPattern.Triangle => AppResources.StampPatternTriangle,
+        StampPattern.StarSeal => AppResources.StampPatternStarSeal,
+        StampPattern.Orbit => AppResources.StampPatternOrbit,
         _ => AppResources.StampPatternSquare,
     };
 }

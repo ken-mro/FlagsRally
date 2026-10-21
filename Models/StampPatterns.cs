@@ -1,7 +1,26 @@
 namespace FlagsRally.Models;
 
-/// <summary>The shapes a passport stamp can take. Square is the original design.</summary>
-public enum StampPattern { Square, Circle, Oval, Octagon, Postage }
+/// <summary>
+/// The designs a passport stamp can take. Square is the original; the others follow travel stamps
+/// and postmarks (globe, compass, airmail edge, world map). None shows one means of travel on its
+/// own: where travel appears, it is the whole row (plane, ship, train, car, on foot).
+/// </summary>
+public enum StampPattern
+{
+    Square,
+    GlobeSeal,
+    Airmail,
+    CompassHexagon,
+    Sunrise,
+    ScallopedGlobe,
+    WorldOval,
+    Ticket,
+    CompassSeal,
+    Postcard,
+    Triangle,
+    StarSeal,
+    Orbit,
+}
 
 /// <summary>
 /// How the passport picks each stamp's pattern (Settings > Passport stamps): every stamp the same
@@ -64,40 +83,47 @@ public static class StampPatterns
     /// <summary>The ink of a pattern. Square keeps the original black with a red date.</summary>
     public static Color InkFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.Circle => Token("Navy", "#182A52"),
-        StampPattern.Oval => Token("Stamp", "#B94047"),
-        StampPattern.Octagon => Token("StampGreen", "#2F6B4F"),
-        StampPattern.Postage => Token("StampPurple", "#5B4389"),
+        StampPattern.GlobeSeal => Token("StampInkNavy", "#1F3A6B"),
+        StampPattern.Airmail => Token("StampInkRed", "#B8333A"),
+        StampPattern.CompassHexagon => Token("StampInkGreen", "#2F6B4F"),
+        StampPattern.Sunrise => Token("StampInkBrown", "#8A5A2B"),
+        StampPattern.ScallopedGlobe => Token("StampInkPurple", "#5B4389"),
+        StampPattern.WorldOval => Token("StampInkTeal", "#23789A"),
+        StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
+        StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
+        StampPattern.Postcard => Token("StampInkOlive", "#5F6330"),
+        StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
+        StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
+        StampPattern.Orbit => Token("StampInkGray", "#45464B"),
         _ => Token("Ink", "#22252E"),
     };
 
     /// <summary>
-    /// Room between a shaped stamp's outline and its text: round shapes need more at the sides,
-    /// where the curve comes in.
+    /// Room between a stamp's outline and its text, where the pattern's motifs go: a globe or
+    /// compass at the top, the row of travel at the bottom, the narrow top of a triangle.
     /// </summary>
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
-        // Inside the ring of stars
-        StampPattern.Circle => new Thickness(35, 37),
-        // Clear of the planes at the ends
-        StampPattern.Oval => new Thickness(38, 16),
-        // Above the port number
-        StampPattern.Octagon => new Thickness(18, 14, 18, 22),
-        // Below the plane and the code block
-        StampPattern.Postage => new Thickness(18, 24, 18, 16),
+        StampPattern.GlobeSeal => new Thickness(30, 44, 30, 44),
+        StampPattern.Airmail => new Thickness(22, 26, 22, 36),
+        StampPattern.CompassHexagon => new Thickness(28, 52, 28, 50),
+        StampPattern.Sunrise => new Thickness(32, 44, 32, 32),
+        StampPattern.ScallopedGlobe => new Thickness(34, 50, 34, 40),
+        StampPattern.WorldOval => new Thickness(44, 26, 44, 26),
+        StampPattern.Ticket => new Thickness(24, 40, 24, 44),
+        StampPattern.CompassSeal => new Thickness(36, 44, 36, 34),
+        StampPattern.Postcard => new Thickness(24, 32, 24, 42),
+        StampPattern.Triangle => new Thickness(40, 84, 40, 34),
+        StampPattern.StarSeal => new Thickness(34, 44, 34, 36),
+        StampPattern.Orbit => new Thickness(24, 46, 24, 44),
         _ => new Thickness(0),
     };
 
-    public static double ArrivalFontSizeFor(StampPattern pattern) => pattern switch
-    {
-        StampPattern.Circle or StampPattern.Oval => 30,
-        StampPattern.Square => 40,
-        _ => 34,
-    };
+    public static double ArrivalFontSizeFor(StampPattern pattern) => pattern == StampPattern.Square ? 40 : 30;
 
-    // The dashed rules above and below the date: shorter where the shape narrows.
-    public static double LongLineFor(StampPattern pattern) => pattern is StampPattern.Circle or StampPattern.Oval ? 110 : 140;
-    public static double ShortLineFor(StampPattern pattern) => pattern is StampPattern.Circle or StampPattern.Oval ? 80 : 110;
+    // The dashed rules above and below the date
+    public static double LongLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 150 : 110;
+    public static double ShortLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 120 : 80;
 
     public static Color DateInkFor(StampPattern pattern) =>
         pattern == StampPattern.Square ? Token("Stamp", "#B94047") : InkFor(pattern);
