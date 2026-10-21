@@ -18,7 +18,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** The App Store files are complete: the listing text in English and Japanese, screenshots retaken on a simulator of each size (6.9", 6.5", 6.3", iPad 13" and both iPhone Duo screens, none scaled from another size), app previews for iPhone and iPad, and the iOS 27 header and search results images and videos. `docs/store/tools/check_ios.py` checks them against App Store Connect's sizes, formats and text limits.
 - **Development:** A new `/ios-release` skill prepares an iOS release: a clean Release build is launched on the simulator and checked for crashes, fixing and re-checking until it is clean, then the version and build number are set in `Info.plist` on a `release/ios-*` branch, the signed `.ipa` is built, and it is delivered to App Store Connect after the user confirms (or opened in Transporter when no API key is set up).
 - **Development:** App Store Connect API key files (`.p8`) are treated like the other local secrets: a commit with one staged is blocked.
-- **Development:** The iOS version is set to 1.2 (build 19) in `Info.plist`, so the next iOS release counts on from the last build sent to App Store Connect.
+- **Development:** The iOS version is set to 1.2.2 (build 20) in `Info.plist`, the build sent to App Store Connect for this release, so the next iOS release counts on from it.
 - **Development:** iOS and Mac Catalyst builds no longer stop when the installed Xcode is newer than the one the .NET for iOS SDK was made for.
 
 ### Fixed
