@@ -15,7 +15,6 @@ public enum StampPattern
     WorldOval,
     Ticket,
     CompassSeal,
-    Postcard,
     Triangle,
     StarSeal,
 }
@@ -88,7 +87,6 @@ public static class StampPatterns
         StampPattern.WorldOval => Token("StampInkTeal", "#23789A"),
         StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
         StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
-        StampPattern.Postcard => Token("StampInkOlive", "#5F6330"),
         StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         _ => Token("Ink", "#22252E"),
@@ -101,14 +99,13 @@ public static class StampPatterns
     /// </summary>
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.Airmail => new Thickness(20, 20, 20, 18),
+        StampPattern.Airmail => new Thickness(20, 34, 20, 14),
         StampPattern.CompassHexagon => new Thickness(40, 46, 40, 42),
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
         StampPattern.ScallopedGlobe => new Thickness(38, 40, 38, 42),
         StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
         StampPattern.Ticket => new Thickness(24, 36, 24, 46),
         StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
-        StampPattern.Postcard => new Thickness(20, 20, 20, 20),
         StampPattern.Triangle => new Thickness(40, 62, 40, 14),
         StampPattern.StarSeal => new Thickness(40, 36, 40, 30),
         _ => new Thickness(0),
@@ -119,7 +116,7 @@ public static class StampPatterns
     /// (a globe, a compass, the row of travel) leave it out to keep the original stamp's size.
     /// </summary>
     public static bool ShowsArrival(StampPattern pattern) =>
-        pattern is StampPattern.Square or StampPattern.Airmail or StampPattern.WorldOval or StampPattern.Postcard;
+        pattern is StampPattern.Square or StampPattern.Airmail or StampPattern.WorldOval;
 
     public static double ArrivalFontSizeFor(StampPattern pattern) => pattern == StampPattern.Square ? 40 : 28;
 

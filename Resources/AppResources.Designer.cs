@@ -1582,15 +1582,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Postcard.
-        /// </summary>
-        internal static string StampPatternPostcard {
-            get {
-                return ResourceManager.GetString("StampPatternPostcard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Triangle.
         /// </summary>
         internal static string StampPatternTriangle {

@@ -626,9 +626,6 @@
   <data name="StampPatternCompassSeal" xml:space="preserve">
     <value>コンパスの丸印</value>
   </data>
-  <data name="StampPatternPostcard" xml:space="preserve">
-    <value>絵はがき</value>
-  </data>
   <data name="StampPatternTriangle" xml:space="preserve">
     <value>三角</value>
   </data>

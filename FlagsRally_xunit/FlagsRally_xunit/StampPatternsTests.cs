@@ -80,6 +80,7 @@ public class StampPatternsTests
     {
         Assert.Equal(StampStyle.Default, StampStyle.FromKey("Octagon"));
         Assert.Equal(StampStyle.Default, StampStyle.FromKey("GlobeSeal"));
+        Assert.Equal(StampStyle.Default, StampStyle.FromKey("Postcard"));
     }
 
     [Fact]
@@ -96,6 +97,6 @@ public class StampPatternsTests
     {
         Assert.True(StampPatterns.ShowsArrival(StampPattern.Square));
         Assert.False(StampPatterns.ShowsArrival(StampPattern.ScallopedGlobe)); // globe above, travel row below
-        Assert.True(StampPatterns.ShowsArrival(StampPattern.Postcard));  // motifs in the corners only
+        Assert.True(StampPatterns.ShowsArrival(StampPattern.Airmail));   // motifs in the corners only
     }
 }

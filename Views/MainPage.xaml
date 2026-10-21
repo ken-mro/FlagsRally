@@ -57,23 +57,13 @@
                         IconImageSource="eraser.png"
                         Text="{x:Static strings:AppResources.Delete}" />
                 </SwipeView.LeftItems>
-                <Border
-                    Margin="{Binding StampMargin}"
-                    BackgroundColor="Transparent"
-                    Rotation="{Binding StampTilt}"
-                    Stroke="{StaticResource Ink}"
-                    StrokeShape="Rectangle"
-                    StrokeThickness="4">
-                    <Border.GestureRecognizers>
+                <!--  StampFrame draws the square and its dashed line with worn ink, like the other designs  -->
+                <Grid Margin="{Binding StampMargin}" Rotation="{Binding StampTilt}">
+                    <Grid.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
-                    </Border.GestureRecognizers>
-                    <Border
-                        Margin="2"
-                        BackgroundColor="Transparent"
-                        Stroke="{StaticResource Ink}"
-                        StrokeDashArray="2,2"
-                        StrokeShape="Rectangle"
-                        StrokeThickness="2">
+                    </Grid.GestureRecognizers>
+                    <controls:StampFrame Pattern="Square" Seed="{Binding Id}" />
+                    <Grid Padding="10">
                         <VerticalStackLayout VerticalOptions="Center">
                             <FlyoutBase.ContextFlyout>
                                 <MenuFlyout>
@@ -239,8 +229,8 @@
                                 TextColor="{StaticResource Ink}"
                                 VerticalOptions="Center" />
                         </VerticalStackLayout>
-                    </Border>
-                </Border>
+                    </Grid>
+                </Grid>
             </SwipeView>
         </DataTemplate>
         <!--  The other patterns: StampFrame draws the outline in the pattern's ink, the text sits on top  -->

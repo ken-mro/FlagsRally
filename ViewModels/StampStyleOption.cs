@@ -48,7 +48,6 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
         StampPattern.WorldOval => AppResources.StampPatternWorldOval,
         StampPattern.Ticket => AppResources.StampPatternTicket,
         StampPattern.CompassSeal => AppResources.StampPatternCompassSeal,
-        StampPattern.Postcard => AppResources.StampPatternPostcard,
         StampPattern.Triangle => AppResources.StampPatternTriangle,
         StampPattern.StarSeal => AppResources.StampPatternStarSeal,
         _ => AppResources.StampPatternSquare,

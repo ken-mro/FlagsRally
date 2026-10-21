@@ -626,9 +626,6 @@
   <data name="StampPatternCompassSeal" xml:space="preserve">
     <value>Compass seal</value>
   </data>
-  <data name="StampPatternPostcard" xml:space="preserve">
-    <value>Postcard</value>
-  </data>
   <data name="StampPatternTriangle" xml:space="preserve">
     <value>Triangle</value>
   </data>

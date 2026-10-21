@@ -72,16 +72,23 @@ public class StampFrame : GraphicsView
                 case StampPattern.WorldOval: WorldOval(d, r); break;
                 case StampPattern.Ticket: Ticket(d, r); break;
                 case StampPattern.CompassSeal: CompassSeal(d, r); break;
-                case StampPattern.Postcard: Postcard(d, r); break;
                 case StampPattern.Triangle: Triangle(d, r); break;
                 case StampPattern.StarSeal: StarSeal(d, r); break;
                 default:
-                    d.Stroke(d.Outer, () => canvas.DrawRectangle(r));
-                    d.Dashed(d.Inner, () => canvas.DrawRectangle(r.Inflate(-d.Gap, -d.Gap)));
+                    // The original stamp: a thick square with a dashed one inside
+                    var square = bounds.Inflate(-2, -2);
+                    d.FillTint(() => canvas.FillRectangle(square));
+                    d.Stroke(d.Small ? 1.6f : 4, () => canvas.DrawRectangle(square));
+                    d.Stroke(d.Small ? 0.8f : 2, () =>
+                    {
+                        canvas.StrokeDashPattern = [1, 1]; // dashes as long as the line is thick, as before
+                        canvas.DrawRectangle(square.Inflate(-5, -5));
+                        canvas.StrokeDashPattern = null;
+                    });
                     break;
             }
 
-            if (!frame.IsSmall && frame.Pattern != StampPattern.Square)
+            if (!frame.IsSmall)
             {
                 InkGaps(canvas, bounds, new Random(frame.Seed * 31 + (int)frame.Pattern));
             }
@@ -89,7 +96,8 @@ public class StampFrame : GraphicsView
 
         // ---------- the designs ----------
 
-        // An airmail envelope: the striped edge, a little postage stamp at the top left and postmark waves at the top right.
+        // An airmail envelope: the striped edge, and at the top right a postage stamp cancelled by a
+        // round postmark whose wavy lines run off to the left.
         static void Airmail(Pen d, RectF r)
         {
             d.FillTint(() => d.Canvas.FillRoundedRectangle(r, 8));
@@ -99,11 +107,36 @@ public class StampFrame : GraphicsView
             var inner = r.Inflate(-stripe - d.Inner * 2, -stripe - d.Inner * 2);
             d.Stroke(d.Inner, () => d.Canvas.DrawRectangle(inner));
             if (d.Small) return;
-            Waves(d, new RectF(inner.Right - 48, inner.Top + 4, 42, 12), 3);
-            // A little postage stamp in the top left corner, with a sparkle on it
-            var stamp = new RectF(inner.Left + 5, inner.Top + 5, 17, 20);
-            d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawPath(Perforated(stamp, 3.4f)));
-            Sparkle(d, stamp.Center, 5);
+
+            // The postage stamp: a perforated paper square with a frame and a little mountain and sun
+            var stamp = new RectF(inner.Right - 27, inner.Top + 5, 22, 26);
+            var edge = Perforated(stamp, 3.2f);
+            d.Canvas.FillColor = Color.FromArgb("#FFFDF7");
+            d.Canvas.FillPath(edge);
+            d.Stroke(d.Inner * 0.7f, () => d.Canvas.DrawPath(edge));
+            var picture = stamp.Inflate(-3.5f, -3.5f);
+            d.Stroke(d.Inner * 0.7f, () => d.Canvas.DrawRectangle(picture));
+            var hill = new PathF();
+            hill.MoveTo(picture.Left, picture.Bottom);
+            hill.LineTo(picture.Left + picture.Width * 0.38f, picture.Top + picture.Height * 0.45f);
+            hill.LineTo(picture.Left + picture.Width * 0.62f, picture.Top + picture.Height * 0.7f);
+            hill.LineTo(picture.Left + picture.Width * 0.78f, picture.Top + picture.Height * 0.55f);
+            hill.LineTo(picture.Right, picture.Bottom);
+            hill.Close();
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(hill);
+            d.Canvas.FillCircle(picture.Right - 4, picture.Top + 4, 2);
+
+            // The postmark over the stamp's lower left corner, and its waves to the left
+            var mark = new PointF(stamp.Left - 2, stamp.Bottom - 4);
+            d.Stroke(d.Inner * 0.9f, () =>
+            {
+                d.Canvas.DrawCircle(mark, 10);
+                d.Canvas.DrawCircle(mark, 7.5f);
+            });
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(StarPoints(mark, 4, 4));
+            Waves(d, new RectF(mark.X - 44, mark.Y - 6, 32, 12), 3);
         }
 
         // A hexagon on its point: a compass rose in a ring with N, W and E at the top, a dashed orbit
@@ -121,7 +154,7 @@ public class StampFrame : GraphicsView
             var orbit = new RectF(c.X - hexWidth / 2 + 15, r.Top + 30, hexWidth - 30, r.Height - 58);
             // Gaps for the plane and the rose at the top; the bottom is left to the date and the travel row
             Orbit(d, orbit, (140, 205), (245, 252), (288, 400));
-            CompassRose(d, new PointF(c.X, r.Top + 30), 12, letters: true, ring: true);
+            CompassRose(d, new PointF(c.X, r.Top + 30), 12, letters: false, ring: true);
             Sparkle(d, new PointF(c.X - hexWidth / 2 + 10, c.Y), 4.5f);
             Sparkle(d, new PointF(c.X + hexWidth / 2 - 10, c.Y), 4.5f);
             TravelRow(d, new PointF(c.X, r.Bottom - 30), 12, 20, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
@@ -165,9 +198,9 @@ public class StampFrame : GraphicsView
             Waves(d, new RectF(ring.Right - 26, c.Y - 18, right - (ring.Right - 26), 30), 5);
         }
 
-        // A bumpy edge and a ring; inside, a globe at the top, a dashed orbit round the text with a
-        // plane flying along its upper left, sparkles at the sides, and ship, train, car and someone on
-        // foot along the bottom.
+        // A bumpy edge and a ring; inside, a dashed orbit round the text with sparkles at its top and
+        // sides and a plane flying along its upper left, and ship, train, car and someone on foot along
+        // the bottom.
         static void ScallopedGlobe(Pen d, RectF r)
         {
             var edge = Scalloped(r, d.Small ? 12 : 18, d.Small ? 1.5f : 4.5f);
@@ -177,12 +210,15 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(ring));
             if (d.Small) return;
             var c = ring.Center;
-            var orbit = ring.Inflate(-9, -9);
-            Orbit(d, orbit, (140, 205), (245, 256), (284, 400));
-            Globe(d, new PointF(c.X, ring.Top + 22), 11);
-            Sparkle(d, new PointF(orbit.Left, c.Y), 5);
-            Sparkle(d, new PointF(orbit.Right, c.Y), 5);
-            TravelRow(d, new PointF(c.X, ring.Bottom - 20), 12, 20, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
+            var orbit = ring.Inflate(-16, -16);
+            Orbit(d, orbit, (140, 205), (245, 258), (282, 400));
+            // A large sparkle with two small ones at the top of the orbit
+            Sparkle(d, new PointF(c.X, orbit.Top), 7);
+            Sparkle(d, new PointF(c.X - 11, orbit.Top + 4), 3);
+            Sparkle(d, new PointF(c.X + 11, orbit.Top + 4), 3);
+            Sparkle(d, new PointF(orbit.Left, c.Y), 4.5f);
+            Sparkle(d, new PointF(orbit.Right, c.Y), 4.5f);
+            TravelRow(d, new PointF(c.X, ring.Bottom - 24), 12, 20, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
         }
 
         // An oval with the world's lands in dots at the sides, postmark waves and a dotted route.
@@ -193,7 +229,12 @@ public class StampFrame : GraphicsView
             var inner = r.Inflate(-d.Gap, -d.Gap);
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(inner));
             if (d.Small) return;
-            WorldMap(d, new RectF(inner.Left + 4, inner.Top + inner.Height * 0.08f, inner.Width - 8, inner.Height * 0.62f), clearCentre: 0.4f);
+            d.Canvas.SaveState();
+            var clip = new PathF();
+            clip.AppendEllipse(inner.Inflate(-3, -3));
+            d.Canvas.ClipPath(clip);
+            WorldMap(d, new RectF(inner.Left + 2, inner.Top + 6, inner.Width - 4, inner.Height - 18), faintCentre: 0.42f);
+            d.Canvas.RestoreState();
             Waves(d, new RectF(inner.Left + 12, inner.Center.Y + 12, 22, 12), 3);
             Waves(d, new RectF(inner.Right - 34, inner.Center.Y + 12, 22, 12), 3);
             Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3);
@@ -204,12 +245,12 @@ public class StampFrame : GraphicsView
         // row of ways to travel.
         static void Ticket(Pen d, RectF r)
         {
-            var edge = TicketEdge(r, d.Small ? 3 : 10, d.Small ? 2.5f : 7, 0);
+            var edge = TicketEdge(r, d.Small ? 4 : 12, d.Small ? 3 : 10, 0);
             d.FillTint(() => d.Canvas.FillPath(edge));
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(edge));
             if (d.Small) return;
             var inner = r.Inflate(-d.Gap * 1.3f, -d.Gap * 1.3f);
-            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 6, 4, 0)));
+            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 7, 7, 0)));
             Globe(d, new PointF(inner.Center.X, inner.Top + 16), 11);
             d.Canvas.FillColor = d.Ink;
             foreach (var x in new[] { -46f, -30f, 30f, 46f })
@@ -288,28 +329,6 @@ public class StampFrame : GraphicsView
             d.Canvas.FillPath(Arrow(new PointF(inner.Right - 21, c.Y), 1));
             // A star over the S
             d.Canvas.FillPath(StarPoints(new PointF(c.X, inner.Bottom - 24), 6, 4));
-        }
-
-        // A postcard: a frame, postmark waves at the top right and bottom left, and address lines.
-        static void Postcard(Pen d, RectF r)
-        {
-            d.FillTint(() => d.Canvas.FillRoundedRectangle(r, 10));
-            d.Stroke(d.Outer, () => d.Canvas.DrawRoundedRectangle(r, 10));
-            var inner = r.Inflate(-d.Gap, -d.Gap);
-            d.Stroke(d.Inner, () => d.Canvas.DrawRoundedRectangle(inner, 7));
-            if (d.Small) return;
-            Waves(d, new RectF(inner.Right - 6 - inner.Width * 0.3f, inner.Top + 4, inner.Width * 0.3f, 10), 3);
-            Waves(d, new RectF(inner.Left + 6, inner.Bottom - 14, inner.Width * 0.3f, 10), 3);
-            d.Stroke(d.Inner, () =>
-            {
-                for (var i = 0; i < 3; i++)
-                {
-                    var y = inner.Top + 5 + i * 4.5f;
-                    d.Canvas.DrawLine(inner.Left + 8, y, inner.Left + 8 + inner.Width * 0.24f, y);
-                    var y2 = inner.Bottom - 14 + i * 4.5f;
-                    d.Canvas.DrawLine(inner.Right - 8 - inner.Width * 0.24f, y2, inner.Right - 8, y2);
-                }
-            });
         }
 
         // A triangle with a double line: a globe near the top with dashed routes curving down both
@@ -600,39 +619,49 @@ public class StampFrame : GraphicsView
             return path;
         }
 
-        // The lands of the world as dots, from a few rough shapes; clearCentre leaves room for the text.
-        static void WorldMap(Pen d, RectF area, float clearCentre)
+        // A rough map of the world, west to east and north to south ('#' is land).
+        static readonly string[] Land =
+        [
+            "                       #######                              ",
+            "      ###############  ######        ####  ##############   ",
+            "  ########################        #  ######################  ",
+            "   #######################       #########################   ",
+            "     ####################       ##########################   ",
+            "       #################       ########################      ",
+            "        ##############        ## #####################       ",
+            "         ###########         #######  ###############  #     ",
+            "          ########           ########  ###########  ##       ",
+            "            #####            ###########   #####   ###       ",
+            "             ####            ############   ###     ##       ",
+            "              ######          ##########    ##      #  ##    ",
+            "               ########        ########          ### ####    ",
+            "               #########         ######          ########    ",
+            "                #######          #####            ########   ",
+            "                 #####           #####             ######    ",
+            "                 ####             ###                 ##     ",
+            "                 ###              ##                   #     ",
+            "                 ##                                          ",
+            "                 #                                           ",
+        ];
+
+        // The lands of the world as dots; the middle share given by faintCentre is drawn faintly, so
+        // the text over it stays easy to read.
+        static void WorldMap(Pen d, RectF area, float faintCentre)
         {
-            // Rough continents, each a few overlapping ellipses: the Americas, Europe and Africa, Asia, Australia
-            (float x, float y, float rx, float ry)[] lands =
-            [
-                (0.08f, 0.2f, 0.05f, 0.08f), (0.14f, 0.28f, 0.08f, 0.12f), (0.21f, 0.2f, 0.06f, 0.08f),
-                (0.22f, 0.42f, 0.04f, 0.09f), (0.34f, 0.1f, 0.04f, 0.06f),
-                (0.3f, 0.62f, 0.05f, 0.11f), (0.28f, 0.8f, 0.025f, 0.09f),
-                (0.48f, 0.24f, 0.035f, 0.07f), (0.53f, 0.18f, 0.04f, 0.05f),
-                (0.52f, 0.48f, 0.06f, 0.1f), (0.55f, 0.66f, 0.035f, 0.1f),
-                (0.64f, 0.22f, 0.09f, 0.11f), (0.76f, 0.24f, 0.09f, 0.1f), (0.7f, 0.42f, 0.035f, 0.07f),
-                (0.8f, 0.44f, 0.03f, 0.06f), (0.88f, 0.3f, 0.025f, 0.06f), (0.85f, 0.72f, 0.06f, 0.07f),
-            ];
-            d.Canvas.FillColor = d.Ink.WithAlpha(0.8f);
-            const float step = 2.2f;
-            for (var y = area.Top; y < area.Bottom; y += step)
+            var columns = Land[0].Length;
+            var rows = Land.Length;
+            var cellWidth = area.Width / columns;
+            var cellHeight = area.Height / rows;
+            for (var row = 0; row < rows; row++)
             {
-                for (var x = area.Left; x < area.Right; x += step)
+                for (var column = 0; column < columns; column++)
                 {
-                    var u = (x - area.Left) / area.Width;
-                    var v = (y - area.Top) / area.Height;
-                    if (clearCentre > 0 && Math.Abs(u - 0.5f) < clearCentre / 2) continue;
-                    foreach (var (lx, ly, rx, ry) in lands)
-                    {
-                        var dx = (u - lx) / rx;
-                        var dy = (v - ly) / ry;
-                        if (dx * dx + dy * dy <= 1)
-                        {
-                            d.Canvas.FillCircle(x, y, 0.8f);
-                            break;
-                        }
-                    }
+                    if (Land[row][column] != '#') continue;
+                    var u = (column + 0.5f) / columns;
+                    var faint = Math.Abs(u - 0.5f) < faintCentre / 2;
+                    d.Canvas.FillColor = d.Ink.WithAlpha(faint ? 0.25f : 0.85f);
+                    d.Canvas.FillCircle(area.Left + (column + 0.5f) * cellWidth, area.Top + (row + 0.5f) * cellHeight,
+                        Math.Min(cellWidth, cellHeight) * 0.42f);
                 }
             }
         }
@@ -861,19 +890,27 @@ public class StampFrame : GraphicsView
         {
             var path = new PathF();
             var midY = notchY > 0 ? notchY : r.Center.Y;
+            // A quarter or half circle bitten out of the edge, centred on the given point
+            void Bite(PointF centre, float radius, float from, float to)
+            {
+                const int steps = 12;
+                for (var i = 0; i <= steps; i++)
+                {
+                    var a = (from + (to - from) * i / steps) * MathF.PI / 180;
+                    path.LineTo(centre.X + radius * MathF.Cos(a), centre.Y + radius * MathF.Sin(a));
+                }
+            }
             path.MoveTo(r.Left + corner, r.Top);
             path.LineTo(r.Right - corner, r.Top);
-            path.QuadTo(r.Right - corner, r.Top + corner, r.Right, r.Top + corner);
-            path.LineTo(r.Right, midY - notch);
-            path.QuadTo(r.Right - notch * 1.4f, midY, r.Right, midY + notch);
+            Bite(new PointF(r.Right, r.Top), corner, 180, 90);
+            if (notch > 0) { path.LineTo(r.Right, midY - notch); Bite(new PointF(r.Right, midY), notch, 270, 90); }
             path.LineTo(r.Right, r.Bottom - corner);
-            path.QuadTo(r.Right - corner, r.Bottom - corner, r.Right - corner, r.Bottom);
+            Bite(new PointF(r.Right, r.Bottom), corner, 270, 180);
             path.LineTo(r.Left + corner, r.Bottom);
-            path.QuadTo(r.Left + corner, r.Bottom - corner, r.Left, r.Bottom - corner);
-            path.LineTo(r.Left, midY + notch);
-            path.QuadTo(r.Left + notch * 1.4f, midY, r.Left, midY - notch);
+            Bite(new PointF(r.Left, r.Bottom), corner, 0, -90);
+            if (notch > 0) { path.LineTo(r.Left, midY + notch); Bite(new PointF(r.Left, midY), notch, 90, -90); }
             path.LineTo(r.Left, r.Top + corner);
-            path.QuadTo(r.Left + corner, r.Top + corner, r.Left + corner, r.Top);
+            Bite(new PointF(r.Left, r.Top), corner, 90, 0);
             path.Close();
             return path;
         }
