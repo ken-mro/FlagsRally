@@ -78,13 +78,13 @@ public static class StampPatterns
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
         // Inside the ring of stars
-        StampPattern.Circle => new Thickness(32, 34),
+        StampPattern.Circle => new Thickness(35, 37),
         // Clear of the planes at the ends
-        StampPattern.Oval => new Thickness(34, 16),
+        StampPattern.Oval => new Thickness(38, 16),
         // Above the port number
         StampPattern.Octagon => new Thickness(18, 14, 18, 22),
         // Below the plane and the code block
-        StampPattern.Postage => new Thickness(18, 20, 18, 16),
+        StampPattern.Postage => new Thickness(18, 24, 18, 16),
         _ => new Thickness(0),
     };
 
