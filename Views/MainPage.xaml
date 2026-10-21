@@ -275,7 +275,7 @@
                                 <On Platform="MacCatalyst, iOS, Android">
                                     <Label
                                         Margin="-2"
-                                        FontSize="47"
+                                        FontSize="38"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Text="{Binding CountryFlagSource}"
@@ -292,7 +292,7 @@
                                 </On>
                                 <On Platform="Android">
                                     <Label
-                                        FontSize="45"
+                                        FontSize="36"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Text="{Binding CountryFlagSource}"
@@ -319,13 +319,13 @@
                             </OnPlatform>
                             <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the stamp again  -->
                             <Image
-                                Margin="10"
-                                HeightRequest="40"
+                                Margin="6"
+                                HeightRequest="32"
                                 HorizontalOptions="Center"
                                 IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 Source="{Binding AdminAreaFlagSource}"
                                 VerticalOptions="Center"
-                                WidthRequest="80">
+                                WidthRequest="64">
                                 <Image.Triggers>
                                     <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
                                     <DataTrigger
@@ -342,11 +342,13 @@
                                     </DataTrigger>
                                 </Image.Triggers>
                             </Image>
-                            <Label
+                            <!--  Shrinks to stay on one line, so a long name is not broken mid-word inside a round stamp  -->
+                            <controls:OneLineFittingLabel
+                                MinFontSize="11"
                                 Padding="2,0"
                                 FontAttributes="Bold"
                                 FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
-                                FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
+                                FontSize="18"
                                 HorizontalOptions="Center"
                                 HorizontalTextAlignment="Center"
                                 IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
@@ -356,11 +358,13 @@
                                 Text="{Binding CountryName}"
                                 TextColor="{Binding StampInk}"
                                 VerticalOptions="Center" />
-                            <Label
+                            <!--  Shrinks to stay on one line, so a long name is not broken mid-word inside a round stamp  -->
+                            <controls:OneLineFittingLabel
+                                MinFontSize="11"
                                 Padding="2,0"
                                 FontAttributes="Bold"
                                 FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
-                                FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
+                                FontSize="18"
                                 HorizontalOptions="Center"
                                 HorizontalTextAlignment="Center"
                                 IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
@@ -383,7 +387,7 @@
                                 Margin="8,0"
                                 FontAttributes="Bold"
                                 FontFamily="craftmincho"
-                                FontSize="Body"
+                                FontSize="14"
                                 HorizontalOptions="Center"
                                 IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 HorizontalTextAlignment="Center"
@@ -396,7 +400,7 @@
                                 Margin="8,0"
                                 FontAttributes="Bold"
                                 FontFamily="craftmincho"
-                                FontSize="Body"
+                                FontSize="14"
                                 HorizontalOptions="Center"
                                 IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 HorizontalTextAlignment="Center"
@@ -421,6 +425,7 @@
                                 FontSize="{Binding StampArrivalFontSize}"
                                 HorizontalOptions="Center"
                                 LineBreakMode="NoWrap"
+                                IsVisible="{Binding StampShowsArrival}"
                                 Text="ARRIVAL"
                                 TextColor="{Binding StampInk}"
                                 VerticalOptions="Center" />

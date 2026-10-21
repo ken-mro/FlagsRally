@@ -99,31 +99,39 @@ public static class StampPatterns
     };
 
     /// <summary>
-    /// Room between a stamp's outline and its text, where the pattern's motifs go: a globe or
-    /// compass at the top, the row of travel at the bottom, the narrow top of a triangle.
+    /// Room between a stamp's outline and its text, where the pattern's motifs go. With the
+    /// smaller flag of these designs, each comes out about as tall as the original square
+    /// (about 160 points at the standard text size).
     /// </summary>
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.GlobeSeal => new Thickness(30, 44, 30, 44),
-        StampPattern.Airmail => new Thickness(22, 26, 22, 36),
-        StampPattern.CompassHexagon => new Thickness(28, 52, 28, 50),
-        StampPattern.Sunrise => new Thickness(32, 44, 32, 32),
-        StampPattern.ScallopedGlobe => new Thickness(34, 50, 34, 40),
-        StampPattern.WorldOval => new Thickness(44, 26, 44, 26),
-        StampPattern.Ticket => new Thickness(24, 40, 24, 44),
-        StampPattern.CompassSeal => new Thickness(36, 44, 36, 34),
-        StampPattern.Postcard => new Thickness(24, 32, 24, 42),
-        StampPattern.Triangle => new Thickness(40, 84, 40, 34),
-        StampPattern.StarSeal => new Thickness(34, 44, 34, 36),
-        StampPattern.Orbit => new Thickness(24, 46, 24, 44),
+        StampPattern.GlobeSeal => new Thickness(40, 34, 40, 36),
+        StampPattern.Airmail => new Thickness(20, 20, 20, 18),
+        StampPattern.CompassHexagon => new Thickness(32, 40, 32, 36),
+        StampPattern.Sunrise => new Thickness(40, 36, 40, 30),
+        StampPattern.ScallopedGlobe => new Thickness(34, 36, 34, 34),
+        StampPattern.WorldOval => new Thickness(40, 18, 40, 18),
+        StampPattern.Ticket => new Thickness(22, 30, 22, 36),
+        StampPattern.CompassSeal => new Thickness(42, 34, 42, 32),
+        StampPattern.Postcard => new Thickness(20, 20, 20, 20),
+        StampPattern.Triangle => new Thickness(36, 56, 36, 12),
+        StampPattern.StarSeal => new Thickness(34, 40, 34, 28),
+        StampPattern.Orbit => new Thickness(22, 36, 22, 26),
         _ => new Thickness(0),
     };
 
-    public static double ArrivalFontSizeFor(StampPattern pattern) => pattern == StampPattern.Square ? 40 : 30;
+    /// <summary>
+    /// Whether the stamp says ARRIVAL. The designs whose motifs need room above and below the text
+    /// (a globe, a compass, the row of travel) leave it out to keep the original stamp's size.
+    /// </summary>
+    public static bool ShowsArrival(StampPattern pattern) =>
+        pattern is StampPattern.Square or StampPattern.Airmail or StampPattern.WorldOval or StampPattern.Postcard;
+
+    public static double ArrivalFontSizeFor(StampPattern pattern) => pattern == StampPattern.Square ? 40 : 28;
 
     // The dashed rules above and below the date
-    public static double LongLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 150 : 110;
-    public static double ShortLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 120 : 80;
+    public static double LongLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 150 : 90;
+    public static double ShortLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 120 : 70;
 
     public static Color DateInkFor(StampPattern pattern) =>
         pattern == StampPattern.Square ? Token("Stamp", "#B94047") : InkFor(pattern);

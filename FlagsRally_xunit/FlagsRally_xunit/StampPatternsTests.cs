@@ -87,6 +87,14 @@ public class StampPatternsTests
         var shaped = StampPatterns.All.Where(p => p != StampPattern.Square).ToList();
 
         Assert.Equal(shaped.Count, shaped.Select(StampPatterns.InkFor).Distinct().Count());
-        Assert.All(shaped, p => Assert.True(StampPatterns.PaddingFor(p).Top >= 24));
+        Assert.All(shaped, p => Assert.True(StampPatterns.PaddingFor(p).Top >= 12 && StampPatterns.PaddingFor(p).Left >= 20));
+    }
+
+    [Fact]
+    public void Only_designs_with_room_for_it_say_arrival()
+    {
+        Assert.True(StampPatterns.ShowsArrival(StampPattern.Square));
+        Assert.False(StampPatterns.ShowsArrival(StampPattern.GlobeSeal)); // globe above, travel row below
+        Assert.True(StampPatterns.ShowsArrival(StampPattern.Postcard));  // motifs in the corners only
     }
 }

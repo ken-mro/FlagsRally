@@ -33,6 +33,7 @@ public record ArrivalLocation
     public Color StampDateInk => StampPatterns.DateInkFor(StampPattern);
     public Thickness StampPadding => StampPatterns.PaddingFor(StampPattern);
     public double StampArrivalFontSize => StampPatterns.ArrivalFontSizeFor(StampPattern);
+    public bool StampShowsArrival => StampPatterns.ShowsArrival(StampPattern);
     public double StampLongLine => StampPatterns.LongLineFor(StampPattern);
     public double StampShortLine => StampPatterns.ShortLineFor(StampPattern);
 }
