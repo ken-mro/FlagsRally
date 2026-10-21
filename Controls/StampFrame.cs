@@ -106,8 +106,9 @@ public class StampFrame : GraphicsView
             Sparkle(d, stamp.Center, 5);
         }
 
-        // A hexagon on its point: a compass rose in a ring with N, W and E at the top, a dashed ring
-        // round the text, sparkles at the sides, a row of ways to travel and a sparkle at the bottom.
+        // A hexagon on its point: a compass rose in a ring with N, W and E at the top, a dashed orbit
+        // round the text with a plane flying along its upper left, sparkles at the sides, and ship,
+        // train, car and someone on foot along the bottom.
         static void CompassHexagon(Pen d, RectF r)
         {
             var outer = Hexagon(r);
@@ -116,19 +117,14 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Inner, () => d.Canvas.DrawPath(Hexagon(r.Inflate(-d.Gap, -d.Gap))));
             if (d.Small) return;
             var c = r.Center;
-            var rose = new PointF(c.X, r.Top + 30);
-            // Dashed arcs either side of the flag, like a ring round it, clear of the date below
             var hexWidth = Math.Min(r.Width, r.Height * 0.866f);
-            var around = new RectF(c.X - hexWidth / 2 + 16, r.Top + 30, hexWidth - 32, r.Height - 64);
-            d.Dashed(d.Inner, () =>
-            {
-                d.Canvas.DrawPath(ArcPath(around, 160, 245));
-                d.Canvas.DrawPath(ArcPath(around, -65, 20));
-            });
-            CompassRose(d, rose, 12, letters: true, ring: true);
+            var orbit = new RectF(c.X - hexWidth / 2 + 15, r.Top + 30, hexWidth - 30, r.Height - 58);
+            // Gaps for the plane and the rose at the top; the bottom is left to the date and the travel row
+            Orbit(d, orbit, (140, 205), (245, 252), (288, 400));
+            CompassRose(d, new PointF(c.X, r.Top + 30), 12, letters: true, ring: true);
             Sparkle(d, new PointF(c.X - hexWidth / 2 + 10, c.Y), 4.5f);
             Sparkle(d, new PointF(c.X + hexWidth / 2 - 10, c.Y), 4.5f);
-            TravelRow(d, new PointF(c.X, r.Bottom - 30), 12, 19, TravelMode.Plane, TravelMode.Ship, TravelMode.Car, TravelMode.Walk);
+            TravelRow(d, new PointF(c.X, r.Bottom - 30), 12, 20, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
             Sparkle(d, new PointF(c.X, r.Bottom - 13), 3.5f);
         }
 
@@ -169,8 +165,9 @@ public class StampFrame : GraphicsView
             Waves(d, new RectF(ring.Right - 26, c.Y - 18, right - (ring.Right - 26), 30), 5);
         }
 
-        // A bumpy edge and a ring round a large globe at the top, sparkles at the sides, a row of
-        // ways to travel and a small diamond at the bottom.
+        // A bumpy edge and a ring; inside, a globe at the top, a dashed orbit round the text with a
+        // plane flying along its upper left, sparkles at the sides, and ship, train, car and someone on
+        // foot along the bottom.
         static void ScallopedGlobe(Pen d, RectF r)
         {
             var edge = Scalloped(r, d.Small ? 12 : 18, d.Small ? 1.5f : 4.5f);
@@ -180,17 +177,12 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(ring));
             if (d.Small) return;
             var c = ring.Center;
-            // The top of a big globe, cut off by the text below it
-            var globe = new PointF(c.X, ring.Top + 36);
-            d.Canvas.SaveState();
-            d.Canvas.ClipRectangle(ring.Left, ring.Top, ring.Width, 38);
-            WideGlobe(d, globe, ring.Width * 0.3f, 28);
-            d.Canvas.RestoreState();
-            Sparkle(d, new PointF(ring.Left + 13, c.Y), 4.5f);
-            Sparkle(d, new PointF(ring.Right - 13, c.Y), 4.5f);
-            TravelRow(d, new PointF(c.X, ring.Bottom - 20), 12, 19, TravelMode.Plane, TravelMode.Ship, TravelMode.Car, TravelMode.Walk);
-            d.Canvas.FillColor = d.Ink;
-            d.Canvas.FillPath(Diamond(new PointF(c.X, ring.Bottom - 7), 2.5f));
+            var orbit = ring.Inflate(-9, -9);
+            Orbit(d, orbit, (140, 205), (245, 256), (284, 400));
+            Globe(d, new PointF(c.X, ring.Top + 22), 11);
+            Sparkle(d, new PointF(orbit.Left, c.Y), 5);
+            Sparkle(d, new PointF(orbit.Right, c.Y), 5);
+            TravelRow(d, new PointF(c.X, ring.Bottom - 20), 12, 20, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
         }
 
         // An oval with the world's lands in dots at the sides, postmark waves and a dotted route.
@@ -207,46 +199,36 @@ public class StampFrame : GraphicsView
             Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3);
         }
 
-        // A ticket: a double edge with corners cut in, stars round a globe at the top, speed lines down
-        // the sides, and a stub below a perforation, with notches in the edge either side of it, holding
-        // a row of ways to travel.
+        // A ticket: a thick edge with corners cut in and a notch in each side, a thin line inside it,
+        // stars round a globe at the top, speed lines either side of the notches, and below a line the
+        // row of ways to travel.
         static void Ticket(Pen d, RectF r)
         {
-            var stubHeight = d.Small ? 6f : 28f;
-            var tear = r.Bottom - stubHeight;
-            var edge = TicketEdge(r, d.Small ? 3 : 9, d.Small ? 2.5f : 6, tear);
+            var edge = TicketEdge(r, d.Small ? 3 : 10, d.Small ? 2.5f : 7, 0);
             d.FillTint(() => d.Canvas.FillPath(edge));
-            // The stub a shade darker, like card stock torn off along the line
-            d.Canvas.SaveState();
-            d.Canvas.ClipRectangle(r.Left, tear, r.Width, stubHeight);
-            d.FillTint(() => d.Canvas.FillPath(edge));
-            d.Canvas.RestoreState();
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(edge));
             if (d.Small) return;
-            var inner = r.Inflate(-d.Gap * 1.4f, -d.Gap * 1.4f);
-            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 6, 0, 0)));
-            // The perforation: a row of holes between the notches
+            var inner = r.Inflate(-d.Gap * 1.3f, -d.Gap * 1.3f);
+            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 6, 4, 0)));
+            Globe(d, new PointF(inner.Center.X, inner.Top + 16), 11);
             d.Canvas.FillColor = d.Ink;
-            for (var x = r.Left + 12; x < r.Right - 10; x += 5)
+            foreach (var x in new[] { -46f, -30f, 30f, 46f })
             {
-                d.Canvas.FillCircle(x, tear, 1.1f);
+                d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 16), 5.5f));
             }
-            Globe(d, new PointF(inner.Center.X, inner.Top + 13), 9);
-            foreach (var x in new[] { -40f, -27f, 27f, 40f })
-            {
-                d.Canvas.FillColor = d.Ink;
-                d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 13), 4.5f));
-            }
-            // Speed lines down both sides of the main part
+            // Speed lines either side of the notches, inside the thin line
             d.Stroke(d.Inner * 0.8f, () =>
             {
-                for (var y = inner.Top + 30; y < tear - 12; y += 5)
+                foreach (var dy in new[] { -24f, -19f, -14f, 14f, 19f, 24f })
                 {
-                    d.Canvas.DrawLine(inner.Left + 3, y, inner.Left + 9, y);
-                    d.Canvas.DrawLine(inner.Right - 9, y, inner.Right - 3, y);
+                    var y = inner.Center.Y + dy;
+                    d.Canvas.DrawLine(inner.Left + 3, y, inner.Left + 10, y);
+                    d.Canvas.DrawLine(inner.Right - 10, y, inner.Right - 3, y);
                 }
             });
-            TravelRow(d, new PointF(inner.Center.X, tear + stubHeight / 2 - 1), 12, 20,
+            var line = inner.Bottom - 30;
+            d.Stroke(d.Inner, () => d.Canvas.DrawLine(inner.Left + 2, line, inner.Right - 2, line));
+            TravelRow(d, new PointF(inner.Center.X, inner.Bottom - 15), 16, 26,
                 TravelMode.Plane, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
         }
 
@@ -537,6 +519,28 @@ public class StampFrame : GraphicsView
                 if (i == 0) path.MoveTo(point); else path.LineTo(point);
             }
             return path;
+        }
+
+        // A dashed orbit: the given arcs of an ellipse (in degrees, 0 at the right, going down), with a
+        // plane flying clockwise along it at the upper left, where the first gap is.
+        static void Orbit(Pen d, RectF ellipse, params (float From, float To)[] arcs)
+        {
+            d.Dashed(d.Inner, () =>
+            {
+                foreach (var (from, to) in arcs)
+                {
+                    if (to > from) d.Canvas.DrawPath(ArcPath(ellipse, from, to));
+                }
+            });
+            const float at = 225 * MathF.PI / 180;
+            var point = new PointF(ellipse.Center.X + ellipse.Width / 2 * MathF.Cos(at), ellipse.Center.Y + ellipse.Height / 2 * MathF.Sin(at));
+            // Pointing along the orbit, the way it goes round
+            var heading = MathF.Atan2(ellipse.Height / 2 * MathF.Cos(at), -ellipse.Width / 2 * MathF.Sin(at)) * 180 / MathF.PI;
+            d.Canvas.SaveState();
+            d.Canvas.Translate(point.X, point.Y);
+            d.Canvas.Rotate(heading);
+            Plane(d, PointF.Zero, 17);
+            d.Canvas.RestoreState();
         }
 
         // A ring of dots.
