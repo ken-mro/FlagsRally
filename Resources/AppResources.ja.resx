@@ -635,4 +635,7 @@
   <data name="StampPatternGlobePostmark" xml:space="preserve">
     <value>地球の消印</value>
   </data>
+  <data name="StampPatternJourney" xml:space="preserve">
+    <value>旅のコンパス</value>
+  </data>
 </root>

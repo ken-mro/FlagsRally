@@ -18,6 +18,7 @@ public enum StampPattern
     Triangle,
     StarSeal,
     GlobePostmark,
+    Journey,
 }
 
 /// <summary>
@@ -89,6 +90,7 @@ public static class StampPatterns
         StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
         StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
         StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
+        StampPattern.Journey => Token("StampInkJourney", "#1C2B4A"),
         StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         _ => Token("Ink", "#22252E"),
@@ -106,6 +108,8 @@ public static class StampPatterns
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
         StampPattern.ScallopedGlobe => new Thickness(46, 44, 46, 40),
         StampPattern.GlobePostmark => new Thickness(30, 40, 30, 32),
+        // Not used: the journey stamp has its own template with the picture
+        StampPattern.Journey => new Thickness(20, 12),
         StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
         StampPattern.Ticket => new Thickness(24, 36, 24, 46),
         StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
@@ -130,8 +134,13 @@ public static class StampPatterns
     public static double LongLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 150 : 90;
     public static double ShortLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 120 : 70;
 
-    public static Color DateInkFor(StampPattern pattern) =>
-        pattern == StampPattern.Square ? Token("Stamp", "#B94047") : InkFor(pattern);
+    public static Color DateInkFor(StampPattern pattern) => pattern switch
+    {
+        StampPattern.Square => Token("Stamp", "#B94047"),
+        // The red of the picture's date box
+        StampPattern.Journey => Token("StampInkJourneyRed", "#C1272D"),
+        _ => InkFor(pattern),
+    };
 
     // The colour from Colors.xaml, or its value when there is no app (unit tests).
     static Color Token(string key, string fallback) =>

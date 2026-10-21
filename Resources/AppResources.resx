@@ -635,4 +635,7 @@
   <data name="StampPatternGlobePostmark" xml:space="preserve">
     <value>Globe postmark</value>
   </data>
+  <data name="StampPatternJourney" xml:space="preserve">
+    <value>Journey compass</value>
+  </data>
 </root>

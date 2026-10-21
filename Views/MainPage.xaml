@@ -424,6 +424,153 @@
                 </Grid>
             </SwipeView>
         </DataTemplate>
+
+        <!--  The journey compass: an illustration (Resources/Images/stamp_journey.png) with the flag laid
+              over its middle and the date in the box at the bottom; no name, the picture says the rest  -->
+        <DataTemplate x:Key="JourneyStamp" x:DataType="{x:Type models:ArrivalLocation}">
+            <SwipeView>
+                <SwipeView.LeftItems>
+                    <SwipeItem
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                        CommandParameter="{Binding .}"
+                        IconImageSource="eraser.png"
+                        Text="{x:Static strings:AppResources.Delete}" />
+                </SwipeView.LeftItems>
+                <Grid Margin="{Binding StampMargin}" Rotation="{Binding StampTilt}">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
+                    </Grid.GestureRecognizers>
+                    <AbsoluteLayout
+                        HeightRequest="172"
+                        HorizontalOptions="Center"
+                        WidthRequest="172">
+                        <FlyoutBase.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem
+                                    Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    CommandParameter="{Binding .}"
+                                    IconImageSource="eraser.png"
+                                    IsDestructive="True"
+                                    Text="{x:Static strings:AppResources.Delete}" />
+                            </MenuFlyout>
+                        </FlyoutBase.ContextFlyout>
+                        <Image
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            Aspect="AspectFit"
+                            Source="stamp_journey.png" />
+                        <!--  The flag over the middle of the picture  -->
+                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.45,0.6,0.36" AbsoluteLayout.LayoutFlags="All">
+                            <OnPlatform x:TypeArguments="View">
+                                <On Platform="MacCatalyst, iOS, Android">
+                                    <Label
+                                        Margin="-2"
+                                        FontAutoScalingEnabled="False"
+                                        FontSize="56"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        Text="{Binding CountryFlagSource}"
+                                        VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding AdminAreaFlagSource}"
+                                                TargetType="Label"
+                                                Value="">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </On>
+                                <On Platform="Android">
+                                    <Label
+                                        FontAutoScalingEnabled="False"
+                                        FontSize="54"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        Text="{Binding CountryFlagSource}"
+                                        VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding AdminAreaFlagSource}"
+                                                TargetType="Label"
+                                                Value="">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </On>
+                                <On Platform="WinUI">
+                                    <Image
+                                        Margin="10"
+                                        HeightRequest="40"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        Source="{Binding CountryFlagSource}"
+                                        VerticalOptions="Center" />
+                                </On>
+                            </OnPlatform>
+                            <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the stamp again  -->
+                            <Image
+                                Margin="6"
+                                HeightRequest="44"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                Source="{Binding AdminAreaFlagSource}"
+                                VerticalOptions="Center"
+                                WidthRequest="88">
+                                <Image.Triggers>
+                                    <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
+                                    <DataTrigger
+                                        Binding="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        TargetType="Image"
+                                        Value="True">
+                                        <Setter Property="Source" Value="{x:Null}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding AdminAreaFlagSource}"
+                                        TargetType="Image"
+                                        Value="">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                        </Grid>
+                        <!--  The date in the box at the bottom (its inside is about 46% wide and 6.5% tall)  -->
+                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.871,0.44,0.07" AbsoluteLayout.LayoutFlags="All">
+                            <controls:OneLineFittingLabel
+                                MinFontSize="7"
+                                Margin="2,0"
+                                FontAttributes="Bold"
+                                FontFamily="craftmincho"
+                                FontSize="13"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                HorizontalTextAlignment="Center"
+                                LineBreakMode="WordWrap"
+                                LineHeight="1"
+                                Text="{Binding ArrivalDateString}"
+                                TextColor="{Binding StampDateInk}"
+                                VerticalOptions="Center" />
+                            <controls:OneLineFittingLabel
+                                MinFontSize="7"
+                                Margin="2,0"
+                                FontAttributes="Bold"
+                                FontFamily="craftmincho"
+                                FontSize="13"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                HorizontalTextAlignment="Center"
+                                LineBreakMode="WordWrap"
+                                LineHeight="1"
+                                Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
+                                TextColor="{Binding StampDateInk}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </AbsoluteLayout>
+                </Grid>
+            </SwipeView>
+        </DataTemplate>
     </ContentPage.Resources>
     <!--  Once the passport has scrolled away, its numbers move up beside the title as icon + number
           pairs (the same icons as in the passport header), which stay on one line in any language.  -->
@@ -618,7 +765,10 @@
 
             <!--  The original square stamp, or one drawn in another shape (Settings > Passport stamps)  -->
             <CollectionView.ItemTemplate>
-                <views:StampTemplateSelector ShapedStamp="{StaticResource ShapedStamp}" SquareStamp="{StaticResource SquareStamp}" />
+                <views:StampTemplateSelector
+                    JourneyStamp="{StaticResource JourneyStamp}"
+                    ShapedStamp="{StaticResource ShapedStamp}"
+                    SquareStamp="{StaticResource SquareStamp}" />
             </CollectionView.ItemTemplate>
         </CollectionView>
 

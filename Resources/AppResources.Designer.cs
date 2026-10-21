@@ -1608,5 +1608,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StampPatternGlobePostmark", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Journey compass.
+        /// </summary>
+        internal static string StampPatternJourney {
+            get {
+                return ResourceManager.GetString("StampPatternJourney", resourceCulture);
+            }
+        }
     }
 }

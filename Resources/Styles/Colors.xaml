@@ -20,6 +20,8 @@
     <Color x:Key="StampInkOchre">#A86F17</Color>
     <Color x:Key="StampInkPink">#C9406F</Color>
     <Color x:Key="StampInkVermilion">#C4482B</Color>
+    <Color x:Key="StampInkJourney">#1C2B4A</Color>
+    <Color x:Key="StampInkJourneyRed">#C1272D</Color>
     <Color x:Key="Paper">#F4EEDF</Color>
     <Color x:Key="PaperCard">#FBF8F0</Color>
     <Color x:Key="PaperEdge">#DDD2BA</Color>
