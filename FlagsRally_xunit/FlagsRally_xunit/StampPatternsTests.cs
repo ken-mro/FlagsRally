@@ -17,10 +17,10 @@ public class StampPatternsTests
     [InlineData("Mixed")]
     [InlineData("ByCountry")]
     [InlineData("Square")]
-    [InlineData("GlobeSeal")]
+    [InlineData("Sunrise")]
     [InlineData("Airmail")]
     [InlineData("Triangle")]
-    [InlineData("Orbit")]
+    [InlineData("Ticket")]
     public void A_style_survives_being_saved(string key)
     {
         Assert.Equal(key, StampStyle.FromKey(key).Key);
@@ -72,13 +72,14 @@ public class StampPatternsTests
     {
         Assert.Equal(Color.FromArgb("#22252E"), StampPatterns.InkFor(StampPattern.Square));
         Assert.Equal(Color.FromArgb("#B94047"), StampPatterns.DateInkFor(StampPattern.Square));
-        Assert.Equal(StampPatterns.InkFor(StampPattern.GlobeSeal), StampPatterns.DateInkFor(StampPattern.GlobeSeal));
+        Assert.Equal(StampPatterns.InkFor(StampPattern.ScallopedGlobe), StampPatterns.DateInkFor(StampPattern.ScallopedGlobe));
     }
 
     [Fact]
     public void An_old_saved_design_falls_back_to_the_square()
     {
         Assert.Equal(StampStyle.Default, StampStyle.FromKey("Octagon"));
+        Assert.Equal(StampStyle.Default, StampStyle.FromKey("GlobeSeal"));
     }
 
     [Fact]
@@ -94,7 +95,7 @@ public class StampPatternsTests
     public void Only_designs_with_room_for_it_say_arrival()
     {
         Assert.True(StampPatterns.ShowsArrival(StampPattern.Square));
-        Assert.False(StampPatterns.ShowsArrival(StampPattern.GlobeSeal)); // globe above, travel row below
+        Assert.False(StampPatterns.ShowsArrival(StampPattern.ScallopedGlobe)); // globe above, travel row below
         Assert.True(StampPatterns.ShowsArrival(StampPattern.Postcard));  // motifs in the corners only
     }
 }

@@ -65,7 +65,6 @@ public class StampFrame : GraphicsView
 
             switch (frame.Pattern)
             {
-                case StampPattern.GlobeSeal: GlobeSeal(d, r); break;
                 case StampPattern.Airmail: Airmail(d, r); break;
                 case StampPattern.CompassHexagon: CompassHexagon(d, r); break;
                 case StampPattern.Sunrise: Sunrise(d, r); break;
@@ -76,7 +75,6 @@ public class StampFrame : GraphicsView
                 case StampPattern.Postcard: Postcard(d, r); break;
                 case StampPattern.Triangle: Triangle(d, r); break;
                 case StampPattern.StarSeal: StarSeal(d, r); break;
-                case StampPattern.Orbit: Orbit(d, r); break;
                 default:
                     d.Stroke(d.Outer, () => canvas.DrawRectangle(r));
                     d.Dashed(d.Inner, () => canvas.DrawRectangle(r.Inflate(-d.Gap, -d.Gap)));
@@ -90,21 +88,6 @@ public class StampFrame : GraphicsView
         }
 
         // ---------- the designs ----------
-
-        // A double ring with a globe at the top, sparkles at the sides and the travel row at the bottom.
-        static void GlobeSeal(Pen d, RectF r)
-        {
-            var ring = Round(r);
-            d.FillTint(() => d.Canvas.FillEllipse(ring));
-            d.Stroke(d.Outer, () => d.Canvas.DrawEllipse(ring));
-            d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(ring.Inflate(-d.Gap, -d.Gap)));
-            if (d.Small) return;
-            d.Dashed(d.Inner, () => d.Canvas.DrawEllipse(ring.Inflate(-d.Gap - 6, -d.Gap - 6)));
-            Globe(d, new PointF(ring.Center.X, ring.Top + 24), 10);
-            Sparkle(d, new PointF(ring.Left + 15, ring.Center.Y), 4.5f);
-            Sparkle(d, new PointF(ring.Right - 15, ring.Center.Y), 4.5f);
-            TravelRow(d, new PointF(ring.Center.X, ring.Bottom - 22), 10, 13);
-        }
 
         // An airmail envelope: the striped edge, postmark waves at the top right and a globe below.
         static void Airmail(Pen d, RectF r)
@@ -120,7 +103,8 @@ public class StampFrame : GraphicsView
             Globe(d, new PointF(inner.Left + 12, inner.Top + 12), 7);
         }
 
-        // A hexagon standing on a point, a compass rose at the top and the travel row at the bottom.
+        // A hexagon on its point: a compass rose in a ring with N, W and E at the top, a dashed ring
+        // round the text, sparkles at the sides, a row of ways to travel and a sparkle at the bottom.
         static void CompassHexagon(Pen d, RectF r)
         {
             var outer = Hexagon(r);
@@ -128,14 +112,24 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(outer));
             d.Stroke(d.Inner, () => d.Canvas.DrawPath(Hexagon(r.Inflate(-d.Gap, -d.Gap))));
             if (d.Small) return;
-            d.Dashed(d.Inner, () => d.Canvas.DrawPath(Hexagon(r.Inflate(-d.Gap - 6, -d.Gap - 6))));
-            CompassRose(d, new PointF(r.Center.X, r.Top + 27), 11, letters: true);
-            Sparkle(d, new PointF(r.Left + 13, r.Center.Y), 4);
-            Sparkle(d, new PointF(r.Right - 13, r.Center.Y), 4);
-            TravelRow(d, new PointF(r.Center.X, r.Bottom - 22), 10, 13);
+            var c = r.Center;
+            var rose = new PointF(c.X, r.Top + 30);
+            // Dashed arcs either side of the text, like a ring round it
+            var around = new RectF(r.Left + 22, r.Top + 30, r.Width - 44, r.Height - 64);
+            d.Dashed(d.Inner, () =>
+            {
+                d.Canvas.DrawPath(ArcPath(around, 140, 220));
+                d.Canvas.DrawPath(ArcPath(around, -40, 40));
+            });
+            CompassRose(d, rose, 12, letters: true, ring: true);
+            Sparkle(d, new PointF(r.Left + 14, c.Y), 4.5f);
+            Sparkle(d, new PointF(r.Right - 14, c.Y), 4.5f);
+            TravelRow(d, new PointF(c.X, r.Bottom - 30), 13, 21, TravelMode.Plane, TravelMode.Ship, TravelMode.Car, TravelMode.Walk);
+            Sparkle(d, new PointF(c.X, r.Bottom - 13), 3.5f);
         }
 
-        // A ring with the sun's rays at the top, sparkles above and below, and postmark waves at the right.
+        // A double ring with a sparkle at the top and a fan of rays below it, a dotted ring, a sparkle
+        // at the left and the bottom, and postmark waves running off the right side.
         static void Sunrise(Pen d, RectF r)
         {
             var ring = Round(r);
@@ -144,43 +138,55 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(ring.Inflate(-d.Gap, -d.Gap)));
             if (d.Small) return;
             var c = ring.Center;
-            // The sun rising over a line, its rays fanning out
-            var sun = new PointF(c.X, ring.Top + 28);
-            d.Canvas.FillColor = d.Ink;
-            var disc = new PathF();
-            disc.MoveTo(sun.X - 7, sun.Y);
-            disc.CurveTo(sun.X - 7, sun.Y - 9.3f, sun.X + 7, sun.Y - 9.3f, sun.X + 7, sun.Y);
-            disc.Close();
-            d.Canvas.FillPath(disc);
-            d.Stroke(d.Inner, () =>
+            var inner = ring.Inflate(-d.Gap - 6, -d.Gap - 6);
+            Dotted(d, inner, 44, 0.9f);
+            // Rays fanning out round the top, as if from the middle of the stamp
+            d.Stroke(d.Inner * 0.8f, () =>
             {
-                d.Canvas.DrawLine(sun.X - 17, sun.Y + 1, sun.X + 17, sun.Y + 1);
-                for (var i = 0; i <= 8; i++)
+                for (var i = 0; i <= 12; i++)
                 {
-                    var angle = MathF.PI + i * MathF.PI / 8;
-                    var to = i % 2 == 0 ? 16f : 13f;
-                    d.Canvas.DrawLine(sun.X + 10 * MathF.Cos(angle), sun.Y + 10 * MathF.Sin(angle),
-                                      sun.X + to * MathF.Cos(angle), sun.Y + to * MathF.Sin(angle));
+                    var angle = -MathF.PI / 2 + (i - 6) * 0.13f;
+                    var (cos, sin) = (MathF.Cos(angle), MathF.Sin(angle));
+                    var from = inner.Height / 2 - (i % 2 == 0 ? 20 : 15);
+                    var to = inner.Height / 2 - 6;
+                    d.Canvas.DrawLine(c.X + from * cos, c.Y + from * sin, c.X + to * cos, c.Y + to * sin);
                 }
             });
-            Sparkle(d, new PointF(c.X, ring.Bottom - 16), 5);
-            Sparkle(d, new PointF(ring.Left + 15, c.Y), 4);
-            Waves(d, new RectF(ring.Right - 24, c.Y - 14, 22, 24), 4);
+            Sparkle(d, new PointF(c.X, ring.Top + 15), 6);
+            Sparkle(d, new PointF(ring.Left + 17, c.Y), 4.5f);
+            Sparkle(d, new PointF(c.X, ring.Bottom - 15), 6);
+            d.Stroke(d.Inner, () =>
+            {
+                d.Canvas.DrawLine(c.X - 22, ring.Bottom - 15, c.X - 12, ring.Bottom - 15);
+                d.Canvas.DrawLine(c.X + 12, ring.Bottom - 15, c.X + 22, ring.Bottom - 15);
+            });
+            // The postmark's waves start inside the ring and run past its edge
+            var right = Math.Min(r.Right + d.Outer, ring.Right + 22);
+            Waves(d, new RectF(ring.Right - 26, c.Y - 18, right - (ring.Right - 26), 30), 5);
         }
 
-        // A scalloped edge round a big globe at the top, sparkles at the sides and the travel row below.
+        // A bumpy edge and a ring round a large globe at the top, sparkles at the sides, a row of
+        // ways to travel and a small diamond at the bottom.
         static void ScallopedGlobe(Pen d, RectF r)
         {
-            var edge = Scalloped(r, d.Small ? 14 : 26, d.Small ? 1.5f : 4f);
+            var edge = Scalloped(r, d.Small ? 12 : 18, d.Small ? 1.5f : 4.5f);
             d.FillTint(() => d.Canvas.FillPath(edge));
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(edge));
-            var ring = r.Inflate(-d.Gap * 1.6f, -d.Gap * 1.6f);
+            var ring = r.Inflate(-d.Gap * 2, -d.Gap * 2);
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(ring));
             if (d.Small) return;
-            Globe(d, new PointF(ring.Center.X, ring.Top + 20), 13, lines: 4);
-            Sparkle(d, new PointF(ring.Left + 13, ring.Center.Y), 4);
-            Sparkle(d, new PointF(ring.Right - 13, ring.Center.Y), 4);
-            TravelRow(d, new PointF(ring.Center.X, ring.Bottom - 17), 10, 13);
+            var c = ring.Center;
+            // The top of a big globe, cut off by the text below it
+            var globe = new PointF(c.X, ring.Top + 30);
+            d.Canvas.SaveState();
+            d.Canvas.ClipRectangle(ring.Left, ring.Top, ring.Width, 34);
+            Globe(d, globe, 24, lines: 4);
+            d.Canvas.RestoreState();
+            Sparkle(d, new PointF(ring.Left + 13, c.Y), 4.5f);
+            Sparkle(d, new PointF(ring.Right - 13, c.Y), 4.5f);
+            TravelRow(d, new PointF(c.X, ring.Bottom - 20), 12, 19, TravelMode.Plane, TravelMode.Ship, TravelMode.Car, TravelMode.Walk);
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(Diamond(new PointF(c.X, ring.Bottom - 7), 2.5f));
         }
 
         // An oval with the world's lands in dots at the sides, postmark waves and a dotted route.
@@ -197,26 +203,38 @@ public class StampFrame : GraphicsView
             Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3);
         }
 
-        // A ticket: notched corners and sides, stars and a globe at the top, the travel row below.
+        // A ticket: notched corners and sides, speed lines along the edges, stars round a globe at the
+        // top, the date between dashes, and below a line the row of ways to travel.
         static void Ticket(Pen d, RectF r)
         {
-            var edge = TicketEdge(r, d.Small ? 3 : 8, d.Small ? 2.5f : 6);
+            var edge = TicketEdge(r, d.Small ? 3 : 9, d.Small ? 2.5f : 6);
             d.FillTint(() => d.Canvas.FillPath(edge));
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(edge));
-            var inner = r.Inflate(-d.Gap * 1.8f, -d.Gap * 1.8f);
-            d.Stroke(d.Inner, () => d.Canvas.DrawRectangle(inner));
+            var inner = r.Inflate(-d.Gap * 1.6f, -d.Gap * 1.6f);
+            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 6, 0)));
             if (d.Small) return;
-            Globe(d, new PointF(inner.Center.X, inner.Top + 12), 8);
-            foreach (var x in new[] { -36f, -24f, 24f, 36f })
+            Globe(d, new PointF(inner.Center.X, inner.Top + 13), 9);
+            foreach (var x in new[] { -40f, -27f, 27f, 40f })
             {
                 d.Canvas.FillColor = d.Ink;
-                d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 12), 4));
+                d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 13), 4.5f));
             }
-            d.Dashed(d.Inner, () => d.Canvas.DrawLine(inner.Left + 8, inner.Bottom - 23, inner.Right - 8, inner.Bottom - 23));
-            TravelRow(d, new PointF(inner.Center.X, inner.Bottom - 11), 10, 13);
+            // Speed lines on both edges, above and below the notches
+            d.Stroke(d.Inner * 0.8f, () =>
+            {
+                foreach (var y in new[] { inner.Top + 30, inner.Top + 34, inner.Top + 38, inner.Bottom - 46, inner.Bottom - 42, inner.Bottom - 38 })
+                {
+                    d.Canvas.DrawLine(inner.Left + 3, y, inner.Left + 11, y);
+                    d.Canvas.DrawLine(inner.Right - 11, y, inner.Right - 3, y);
+                }
+            });
+            d.Stroke(d.Inner, () => d.Canvas.DrawLine(inner.Left + 4, inner.Bottom - 26, inner.Right - 4, inner.Bottom - 26));
+            TravelRow(d, new PointF(inner.Center.X, inner.Bottom - 13), 13, 20,
+                TravelMode.Plane, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
         }
 
-        // A compass card: the ring with tick marks, a needle at the top, the four points round the edge.
+        // A compass card: a double ring with ticks, a tall needle under the N, lines to the corners,
+        // arrows out to W and E, and a star over the S.
         static void CompassSeal(Pen d, RectF r)
         {
             var ring = Round(r);
@@ -228,23 +246,49 @@ public class StampFrame : GraphicsView
             var c = ring.Center;
             var rx = inner.Width / 2;
             var ry = inner.Height / 2;
-            d.Stroke(d.Inner, () =>
+            d.Stroke(d.Inner * 0.8f, () =>
             {
-                for (var i = 0; i < 72; i++)
+                for (var i = 0; i < 48; i++)
                 {
-                    var angle = i * MathF.PI * 2 / 72;
-                    var length = i % 9 == 0 ? 7f : 3.5f;
+                    var angle = i * MathF.PI * 2 / 48;
+                    var length = i % 6 == 0 ? 6f : 3f;
                     var (cos, sin) = (MathF.Cos(angle), MathF.Sin(angle));
                     d.Canvas.DrawLine(c.X + rx * cos, c.Y + ry * sin, c.X + (rx - length) * cos, c.Y + (ry - length) * sin);
                 }
+                // Lines out to the corners, between the ticks and the text
+                foreach (var angle in new[] { -0.75f, -2.39f, 0.75f, 2.39f })
+                {
+                    var (cos, sin) = (MathF.Cos(angle), MathF.Sin(angle));
+                    var from = angle < 0 ? 28 : 16; // the lower ones stay clear of the date
+                    d.Canvas.DrawLine(c.X + (rx - from) * cos, c.Y + (ry - from) * sin, c.X + (rx - 9) * cos, c.Y + (ry - 9) * sin);
+                }
             });
-            Letter(d, "N", new PointF(c.X, inner.Top + 13), 11);
-            Letter(d, "S", new PointF(c.X, inner.Bottom - 13), 11);
-            Letter(d, "W", new PointF(inner.Left + 14, c.Y), 11);
-            Letter(d, "E", new PointF(inner.Right - 14, c.Y), 11);
-            // The needle, pointing at the N above the text
+            Letter(d, "N", new PointF(c.X, inner.Top + 11), 12);
+            Letter(d, "W", new PointF(inner.Left + 11, c.Y), 12);
+            Letter(d, "E", new PointF(inner.Right - 11, c.Y), 12);
+            Letter(d, "S", new PointF(c.X, inner.Bottom - 10), 12);
+            // The needle, half solid like a printed compass
+            var tip = new PointF(c.X, inner.Top + 19);
+            var foot = inner.Top + 36;
+            var solid = new PathF();
+            solid.MoveTo(tip);
+            solid.LineTo(c.X + 4, foot);
+            solid.LineTo(c.X, foot - 2);
+            solid.Close();
             d.Canvas.FillColor = d.Ink;
-            d.Canvas.FillPath(Needle(new PointF(c.X, inner.Top + 31), 10, up: true));
+            d.Canvas.FillPath(solid);
+            var open = new PathF();
+            open.MoveTo(tip);
+            open.LineTo(c.X - 4, foot);
+            open.LineTo(c.X, foot - 2);
+            open.Close();
+            d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawPath(open));
+            // Arrowheads pointing out to W and E
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(Arrow(new PointF(inner.Left + 21, c.Y), -1));
+            d.Canvas.FillPath(Arrow(new PointF(inner.Right - 21, c.Y), 1));
+            // A star over the S
+            d.Canvas.FillPath(StarPoints(new PointF(c.X, inner.Bottom - 24), 6, 4));
         }
 
         // A postcard: a frame, postmark waves at the top right and bottom left, and address lines.
@@ -269,7 +313,8 @@ public class StampFrame : GraphicsView
             });
         }
 
-        // A triangle with a globe near its top and sparkles beside the flag; the text fills the wide base.
+        // A triangle with a double line: a globe near the top with dashed routes curving down both
+        // sides and sparkles along them. The text fills the wide lower half, so there is no travel row.
         static void Triangle(Pen d, RectF r)
         {
             var outer = TriangleEdge(r);
@@ -278,48 +323,44 @@ public class StampFrame : GraphicsView
             var inner = TriangleEdge(r.Inflate(-d.Gap * 1.6f, -d.Gap * 1.6f), top: d.Gap * 1.2f);
             d.Stroke(d.Inner, () => d.Canvas.DrawPath(inner));
             if (d.Small) return;
-            Globe(d, new PointF(r.Center.X, r.Top + 38), 8);
-            Sparkle(d, new PointF(r.Center.X - 26, r.Top + 64), 3.5f);
-            Sparkle(d, new PointF(r.Center.X + 26, r.Top + 64), 3.5f);
+            var c = r.Center;
+            var globe = new PointF(c.X, r.Top + 40);
+            Globe(d, globe, 9);
+            // Routes from the globe down the sides
+            d.Dashed(d.Inner, () =>
+            {
+                var left = new PathF();
+                left.MoveTo(globe.X - 13, globe.Y + 2);
+                left.QuadTo(c.X - r.Width * 0.2f, r.Top + r.Height * 0.3f, c.X - r.Width * 0.24f, r.Top + r.Height * 0.52f);
+                d.Canvas.DrawPath(left);
+                var right = new PathF();
+                right.MoveTo(globe.X + 13, globe.Y + 2);
+                right.QuadTo(c.X + r.Width * 0.2f, r.Top + r.Height * 0.3f, c.X + r.Width * 0.24f, r.Top + r.Height * 0.52f);
+                d.Canvas.DrawPath(right);
+            });
+            Sparkle(d, new PointF(c.X - 24, r.Top + 30), 3);
+            Sparkle(d, new PointF(c.X - r.Width * 0.24f, r.Top + r.Height * 0.58f), 3.5f);
+            Sparkle(d, new PointF(c.X + r.Width * 0.24f, r.Top + r.Height * 0.58f), 3.5f);
+            Sparkle(d, new PointF(r.Left + 26, r.Bottom - 12), 3);
+            Sparkle(d, new PointF(r.Right - 26, r.Bottom - 12), 3);
         }
 
-        // A seal with a pinked edge, a compass star at the top and sparkles at the sides.
+        // A seal with a finely pinked edge, a solid ring and a dashed one, an eight-pointed star at the
+        // top and sparkles at the sides and the bottom.
         static void StarSeal(Pen d, RectF r)
         {
-            var edge = Scalloped(r, d.Small ? 18 : 40, d.Small ? 1.2f : 2.5f);
+            var edge = Scalloped(r, d.Small ? 20 : 34, d.Small ? 1.2f : 2.6f);
             d.FillTint(() => d.Canvas.FillPath(edge));
-            d.Stroke(d.Inner * 1.4f, () => d.Canvas.DrawPath(edge));
-            var ring = r.Inflate(-d.Gap * 1.4f, -d.Gap * 1.4f);
+            d.Stroke(d.Outer * 0.9f, () => d.Canvas.DrawPath(edge));
+            var ring = r.Inflate(-d.Gap * 1.6f, -d.Gap * 1.6f);
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(ring));
             if (d.Small) return;
-            d.Dashed(d.Inner, () => d.Canvas.DrawEllipse(ring.Inflate(-7, -7)));
-            CompassRose(d, new PointF(ring.Center.X, ring.Top + 21), 10, letters: false);
-            Sparkle(d, new PointF(ring.Left + 14, ring.Center.Y), 4);
-            Sparkle(d, new PointF(ring.Right - 14, ring.Center.Y), 4);
-            Sparkle(d, new PointF(ring.Center.X, ring.Bottom - 14), 4.5f);
-        }
-
-        // A round-cornered frame with the world map at the top and routes circling round the text.
-        static void Orbit(Pen d, RectF r)
-        {
-            d.FillTint(() => d.Canvas.FillRoundedRectangle(r, 14));
-            d.Stroke(d.Outer, () => d.Canvas.DrawRoundedRectangle(r, 14));
-            var inner = r.Inflate(-d.Gap, -d.Gap);
-            if (d.Small) return;
-            WorldMap(d, new RectF(inner.Left + inner.Width * 0.24f, inner.Top + 3, inner.Width * 0.52f, 26), clearCentre: 0);
-            var orbit = new RectF(inner.Left + 4, inner.Top + 24, inner.Width - 8, inner.Height - 32);
-            d.Stroke(d.Inner, () =>
-            {
-                d.Canvas.StrokeColor = d.Ink.WithAlpha(0.55f);
-                d.Canvas.DrawEllipse(orbit);
-            });
-            d.Canvas.FillColor = d.Ink;
-            for (var i = 0; i < 8; i++)
-            {
-                var angle = i * MathF.PI / 4 + 0.3f;
-                d.Canvas.FillCircle(orbit.Center.X + orbit.Width / 2 * MathF.Cos(angle), orbit.Center.Y + orbit.Height / 2 * MathF.Sin(angle), 2.2f);
-            }
-            Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 5), 4);
+            d.Dashed(d.Inner, () => d.Canvas.DrawEllipse(ring.Inflate(-6, -6)));
+            var c = ring.Center;
+            CompassStar(d, new PointF(c.X, ring.Top + 21), 11);
+            Sparkle(d, new PointF(ring.Left + 14, c.Y), 4.5f);
+            Sparkle(d, new PointF(ring.Right - 14, c.Y), 4.5f);
+            Sparkle(d, new PointF(c.X, ring.Bottom - 14), 6);
         }
 
         // ---------- motifs ----------
@@ -347,7 +388,7 @@ public class StampFrame : GraphicsView
         }
 
         // An eight-pointed compass rose, with N, E and W round it when asked.
-        static void CompassRose(Pen d, PointF c, float radius, bool letters)
+        static void CompassRose(Pen d, PointF c, float radius, bool letters, bool ring = false)
         {
             for (var i = 0; i < 8; i++)
             {
@@ -373,6 +414,14 @@ public class StampFrame : GraphicsView
                 d.Stroke(d.Inner * 0.7f, () => d.Canvas.DrawPath(outline));
             }
             d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawCircle(c, radius * 0.62f));
+            if (ring)
+            {
+                d.Stroke(d.Inner * 0.8f, () =>
+                {
+                    d.Canvas.DrawCircle(c, radius * 0.88f);
+                    d.Canvas.DrawCircle(c, radius * 0.98f);
+                });
+            }
             if (!letters) return;
             Letter(d, "N", new PointF(c.X, c.Y - radius - 6), 9);
             Letter(d, "W", new PointF(c.X - radius - 7, c.Y), 9);
@@ -418,22 +467,95 @@ public class StampFrame : GraphicsView
             });
         }
 
-        // Every way of travelling in a row: plane, ship, train, car and on foot.
-        static void TravelRow(Pen d, PointF centre, float size, float spacing)
+        enum TravelMode { Plane, Ship, Train, Car, Walk }
+
+        // Several ways of travelling in a row, never one on its own: the app does not know which it was.
+        static void TravelRow(Pen d, PointF centre, float size, float spacing, params TravelMode[] modes)
         {
-            var symbols = new Action<PointF>[]
+            var start = centre.X - spacing * (modes.Length - 1) / 2f;
+            for (var i = 0; i < modes.Length; i++)
             {
-                p => Plane(d, p, size),
-                p => Ship(d, p, size),
-                p => Train(d, p, size),
-                p => Car(d, p, size),
-                p => Walker(d, p, size),
-            };
-            var start = centre.X - spacing * (symbols.Length - 1) / 2f;
-            for (var i = 0; i < symbols.Length; i++)
-            {
-                symbols[i](new PointF(start + i * spacing, centre.Y));
+                var p = new PointF(start + i * spacing, centre.Y);
+                switch (modes[i])
+                {
+                    case TravelMode.Plane: Plane(d, p, size); break;
+                    case TravelMode.Ship: Ship(d, p, size); break;
+                    case TravelMode.Train: Train(d, p, size); break;
+                    case TravelMode.Car: Car(d, p, size); break;
+                    default: Walker(d, p, size); break;
+                }
             }
+        }
+
+        // Part of an ellipse, from one angle to another in degrees (0 at the right, going down).
+        static PathF ArcPath(RectF ellipse, float from, float to)
+        {
+            var path = new PathF();
+            var steps = 24;
+            for (var i = 0; i <= steps; i++)
+            {
+                var a = (from + (to - from) * i / steps) * MathF.PI / 180;
+                var point = new PointF(ellipse.Center.X + ellipse.Width / 2 * MathF.Cos(a), ellipse.Center.Y + ellipse.Height / 2 * MathF.Sin(a));
+                if (i == 0) path.MoveTo(point); else path.LineTo(point);
+            }
+            return path;
+        }
+
+        // A ring of dots.
+        static void Dotted(Pen d, RectF ellipse, int count, float radius)
+        {
+            d.Canvas.FillColor = d.Ink;
+            for (var i = 0; i < count; i++)
+            {
+                var a = i * MathF.PI * 2 / count;
+                d.Canvas.FillCircle(ellipse.Center.X + ellipse.Width / 2 * MathF.Cos(a), ellipse.Center.Y + ellipse.Height / 2 * MathF.Sin(a), radius);
+            }
+        }
+
+        // An eight-pointed star of thin rays with a solid centre, as on a compass card.
+        static void CompassStar(Pen d, PointF c, float radius)
+        {
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(StarPoints(c, radius, 8, inner: 0.22f));
+            d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawCircle(c, radius * 0.45f));
+        }
+
+        // A star with the given number of points; inner is the waist as a share of the radius.
+        static PathF StarPoints(PointF c, float radius, int points, float inner = 0.3f)
+        {
+            var path = new PathF();
+            for (var i = 0; i < points * 2; i++)
+            {
+                var r = i % 2 == 0 ? radius : radius * inner;
+                var angle = -MathF.PI / 2 + i * MathF.PI / points;
+                var point = new PointF(c.X + r * MathF.Cos(angle), c.Y + r * MathF.Sin(angle));
+                if (i == 0) path.MoveTo(point); else path.LineTo(point);
+            }
+            path.Close();
+            return path;
+        }
+
+        static PathF Diamond(PointF c, float radius)
+        {
+            var path = new PathF();
+            path.MoveTo(c.X, c.Y - radius * 1.4f);
+            path.LineTo(c.X + radius, c.Y);
+            path.LineTo(c.X, c.Y + radius * 1.4f);
+            path.LineTo(c.X - radius, c.Y);
+            path.Close();
+            return path;
+        }
+
+        // A small arrowhead pointing left (-1) or right (1), its tip at the point.
+        static PathF Arrow(PointF tip, int direction)
+        {
+            var path = new PathF();
+            path.MoveTo(tip);
+            path.LineTo(tip.X - direction * 7, tip.Y - 3.5f);
+            path.LineTo(tip.X - direction * 5, tip.Y);
+            path.LineTo(tip.X - direction * 7, tip.Y + 3.5f);
+            path.Close();
+            return path;
         }
 
         // The lands of the world as dots, from a few rough shapes; clearCentre leaves room for the text.

@@ -8,7 +8,6 @@ namespace FlagsRally.Models;
 public enum StampPattern
 {
     Square,
-    GlobeSeal,
     Airmail,
     CompassHexagon,
     Sunrise,
@@ -19,7 +18,6 @@ public enum StampPattern
     Postcard,
     Triangle,
     StarSeal,
-    Orbit,
 }
 
 /// <summary>
@@ -83,7 +81,6 @@ public static class StampPatterns
     /// <summary>The ink of a pattern. Square keeps the original black with a red date.</summary>
     public static Color InkFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.GlobeSeal => Token("StampInkNavy", "#1F3A6B"),
         StampPattern.Airmail => Token("StampInkRed", "#B8333A"),
         StampPattern.CompassHexagon => Token("StampInkGreen", "#2F6B4F"),
         StampPattern.Sunrise => Token("StampInkBrown", "#8A5A2B"),
@@ -94,7 +91,6 @@ public static class StampPatterns
         StampPattern.Postcard => Token("StampInkOlive", "#5F6330"),
         StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
-        StampPattern.Orbit => Token("StampInkGray", "#45464B"),
         _ => Token("Ink", "#22252E"),
     };
 
@@ -105,18 +101,16 @@ public static class StampPatterns
     /// </summary>
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.GlobeSeal => new Thickness(40, 34, 40, 36),
         StampPattern.Airmail => new Thickness(20, 20, 20, 18),
-        StampPattern.CompassHexagon => new Thickness(32, 40, 32, 36),
-        StampPattern.Sunrise => new Thickness(40, 36, 40, 30),
-        StampPattern.ScallopedGlobe => new Thickness(34, 36, 34, 34),
+        StampPattern.CompassHexagon => new Thickness(26, 44, 26, 42),
+        StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
+        StampPattern.ScallopedGlobe => new Thickness(34, 44, 34, 44),
         StampPattern.WorldOval => new Thickness(40, 18, 40, 18),
-        StampPattern.Ticket => new Thickness(22, 30, 22, 36),
-        StampPattern.CompassSeal => new Thickness(42, 34, 42, 32),
+        StampPattern.Ticket => new Thickness(22, 34, 22, 42),
+        StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
         StampPattern.Postcard => new Thickness(20, 20, 20, 20),
-        StampPattern.Triangle => new Thickness(36, 56, 36, 12),
-        StampPattern.StarSeal => new Thickness(34, 40, 34, 28),
-        StampPattern.Orbit => new Thickness(22, 36, 22, 26),
+        StampPattern.Triangle => new Thickness(40, 62, 40, 14),
+        StampPattern.StarSeal => new Thickness(40, 36, 40, 30),
         _ => new Thickness(0),
     };
 

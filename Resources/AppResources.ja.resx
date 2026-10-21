@@ -605,9 +605,6 @@
   <data name="StampPatternSquare" xml:space="preserve">
     <value>四角（従来）</value>
   </data>
-  <data name="StampPatternGlobeSeal" xml:space="preserve">
-    <value>地球の丸印</value>
-  </data>
   <data name="StampPatternAirmail" xml:space="preserve">
     <value>エアメール</value>
   </data>
@@ -637,8 +634,5 @@
   </data>
   <data name="StampPatternStarSeal" xml:space="preserve">
     <value>星の飾り縁</value>
-  </data>
-  <data name="StampPatternOrbit" xml:space="preserve">
-    <value>世界一周</value>
   </data>
 </root>

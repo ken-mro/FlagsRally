@@ -28,7 +28,7 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
         List<StampStyleOption> options =
         [
             new(StampStyle.Mixed, AppResources.StampStyleMixed, AppResources.StampStyleMixedHint,
-                [StampPattern.GlobeSeal, StampPattern.Airmail, StampPattern.CompassHexagon]) { IsFirst = true },
+                [StampPattern.Sunrise, StampPattern.Airmail, StampPattern.CompassHexagon]) { IsFirst = true },
             new(StampStyle.PerCountry, AppResources.StampStyleByCountry, AppResources.StampStyleByCountryHint,
                 [StampPattern.Ticket, StampPattern.Ticket, StampPattern.StarSeal]),
         ];
@@ -41,7 +41,6 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
 
     static string TitleOf(StampPattern pattern) => pattern switch
     {
-        StampPattern.GlobeSeal => AppResources.StampPatternGlobeSeal,
         StampPattern.Airmail => AppResources.StampPatternAirmail,
         StampPattern.CompassHexagon => AppResources.StampPatternCompassHexagon,
         StampPattern.Sunrise => AppResources.StampPatternSunrise,
@@ -52,7 +51,6 @@ public partial class StampStyleOption(StampStyle style, string title, string hin
         StampPattern.Postcard => AppResources.StampPatternPostcard,
         StampPattern.Triangle => AppResources.StampPatternTriangle,
         StampPattern.StarSeal => AppResources.StampPatternStarSeal,
-        StampPattern.Orbit => AppResources.StampPatternOrbit,
         _ => AppResources.StampPatternSquare,
     };
 }

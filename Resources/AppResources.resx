@@ -605,9 +605,6 @@
   <data name="StampPatternSquare" xml:space="preserve">
     <value>Square (original)</value>
   </data>
-  <data name="StampPatternGlobeSeal" xml:space="preserve">
-    <value>Globe seal</value>
-  </data>
   <data name="StampPatternAirmail" xml:space="preserve">
     <value>Airmail</value>
   </data>
@@ -637,8 +634,5 @@
   </data>
   <data name="StampPatternStarSeal" xml:space="preserve">
     <value>Star seal</value>
-  </data>
-  <data name="StampPatternOrbit" xml:space="preserve">
-    <value>Around the world</value>
   </data>
 </root>

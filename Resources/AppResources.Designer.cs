@@ -1519,15 +1519,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Globe seal.
-        /// </summary>
-        internal static string StampPatternGlobeSeal {
-            get {
-                return ResourceManager.GetString("StampPatternGlobeSeal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Airmail.
         /// </summary>
         internal static string StampPatternAirmail {
@@ -1617,13 +1608,5 @@ namespace FlagsRally.Resources {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Around the world.
-        /// </summary>
-        internal static string StampPatternOrbit {
-            get {
-                return ResourceManager.GetString("StampPatternOrbit", resourceCulture);
-            }
-        }
     }
 }
