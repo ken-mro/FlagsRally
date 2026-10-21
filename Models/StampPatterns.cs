@@ -102,10 +102,10 @@ public static class StampPatterns
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
         StampPattern.Airmail => new Thickness(20, 20, 20, 18),
-        StampPattern.CompassHexagon => new Thickness(26, 44, 26, 42),
+        StampPattern.CompassHexagon => new Thickness(40, 44, 40, 42),
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
-        StampPattern.ScallopedGlobe => new Thickness(34, 44, 34, 44),
-        StampPattern.WorldOval => new Thickness(40, 18, 40, 18),
+        StampPattern.ScallopedGlobe => new Thickness(34, 48, 34, 44),
+        StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
         StampPattern.Ticket => new Thickness(22, 34, 22, 42),
         StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
         StampPattern.Postcard => new Thickness(20, 20, 20, 20),

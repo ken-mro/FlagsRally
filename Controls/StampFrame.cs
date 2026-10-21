@@ -89,7 +89,7 @@ public class StampFrame : GraphicsView
 
         // ---------- the designs ----------
 
-        // An airmail envelope: the striped edge, postmark waves at the top right and a globe below.
+        // An airmail envelope: the striped edge, a little postage stamp at the top left and postmark waves at the top right.
         static void Airmail(Pen d, RectF r)
         {
             d.FillTint(() => d.Canvas.FillRoundedRectangle(r, 8));
@@ -100,7 +100,10 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Inner, () => d.Canvas.DrawRectangle(inner));
             if (d.Small) return;
             Waves(d, new RectF(inner.Right - 48, inner.Top + 4, 42, 12), 3);
-            Globe(d, new PointF(inner.Left + 12, inner.Top + 12), 7);
+            // A little postage stamp in the top left corner, with a sparkle on it
+            var stamp = new RectF(inner.Left + 5, inner.Top + 5, 17, 20);
+            d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawPath(Perforated(stamp, 3.4f)));
+            Sparkle(d, stamp.Center, 5);
         }
 
         // A hexagon on its point: a compass rose in a ring with N, W and E at the top, a dashed ring
@@ -114,17 +117,18 @@ public class StampFrame : GraphicsView
             if (d.Small) return;
             var c = r.Center;
             var rose = new PointF(c.X, r.Top + 30);
-            // Dashed arcs either side of the text, like a ring round it
-            var around = new RectF(r.Left + 22, r.Top + 30, r.Width - 44, r.Height - 64);
+            // Dashed arcs either side of the flag, like a ring round it, clear of the date below
+            var hexWidth = Math.Min(r.Width, r.Height * 0.866f);
+            var around = new RectF(c.X - hexWidth / 2 + 16, r.Top + 30, hexWidth - 32, r.Height - 64);
             d.Dashed(d.Inner, () =>
             {
-                d.Canvas.DrawPath(ArcPath(around, 140, 220));
-                d.Canvas.DrawPath(ArcPath(around, -40, 40));
+                d.Canvas.DrawPath(ArcPath(around, 160, 245));
+                d.Canvas.DrawPath(ArcPath(around, -65, 20));
             });
             CompassRose(d, rose, 12, letters: true, ring: true);
-            Sparkle(d, new PointF(r.Left + 14, c.Y), 4.5f);
-            Sparkle(d, new PointF(r.Right - 14, c.Y), 4.5f);
-            TravelRow(d, new PointF(c.X, r.Bottom - 30), 13, 21, TravelMode.Plane, TravelMode.Ship, TravelMode.Car, TravelMode.Walk);
+            Sparkle(d, new PointF(c.X - hexWidth / 2 + 10, c.Y), 4.5f);
+            Sparkle(d, new PointF(c.X + hexWidth / 2 - 10, c.Y), 4.5f);
+            TravelRow(d, new PointF(c.X, r.Bottom - 30), 12, 19, TravelMode.Plane, TravelMode.Ship, TravelMode.Car, TravelMode.Walk);
             Sparkle(d, new PointF(c.X, r.Bottom - 13), 3.5f);
         }
 
@@ -177,10 +181,10 @@ public class StampFrame : GraphicsView
             if (d.Small) return;
             var c = ring.Center;
             // The top of a big globe, cut off by the text below it
-            var globe = new PointF(c.X, ring.Top + 30);
+            var globe = new PointF(c.X, ring.Top + 36);
             d.Canvas.SaveState();
-            d.Canvas.ClipRectangle(ring.Left, ring.Top, ring.Width, 34);
-            Globe(d, globe, 24, lines: 4);
+            d.Canvas.ClipRectangle(ring.Left, ring.Top, ring.Width, 38);
+            WideGlobe(d, globe, ring.Width * 0.3f, 28);
             d.Canvas.RestoreState();
             Sparkle(d, new PointF(ring.Left + 13, c.Y), 4.5f);
             Sparkle(d, new PointF(ring.Right - 13, c.Y), 4.5f);
@@ -197,39 +201,52 @@ public class StampFrame : GraphicsView
             var inner = r.Inflate(-d.Gap, -d.Gap);
             d.Stroke(d.Inner, () => d.Canvas.DrawEllipse(inner));
             if (d.Small) return;
-            WorldMap(d, new RectF(inner.Left + 4, inner.Top + inner.Height * 0.14f, inner.Width - 8, inner.Height * 0.5f), clearCentre: 0.6f);
+            WorldMap(d, new RectF(inner.Left + 4, inner.Top + inner.Height * 0.08f, inner.Width - 8, inner.Height * 0.62f), clearCentre: 0.4f);
             Waves(d, new RectF(inner.Left + 12, inner.Center.Y + 12, 22, 12), 3);
             Waves(d, new RectF(inner.Right - 34, inner.Center.Y + 12, 22, 12), 3);
             Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3);
         }
 
-        // A ticket: notched corners and sides, speed lines along the edges, stars round a globe at the
-        // top, the date between dashes, and below a line the row of ways to travel.
+        // A ticket: a double edge with corners cut in, stars round a globe at the top, speed lines down
+        // the sides, and a stub below a perforation, with notches in the edge either side of it, holding
+        // a row of ways to travel.
         static void Ticket(Pen d, RectF r)
         {
-            var edge = TicketEdge(r, d.Small ? 3 : 9, d.Small ? 2.5f : 6);
+            var stubHeight = d.Small ? 6f : 28f;
+            var tear = r.Bottom - stubHeight;
+            var edge = TicketEdge(r, d.Small ? 3 : 9, d.Small ? 2.5f : 6, tear);
             d.FillTint(() => d.Canvas.FillPath(edge));
+            // The stub a shade darker, like card stock torn off along the line
+            d.Canvas.SaveState();
+            d.Canvas.ClipRectangle(r.Left, tear, r.Width, stubHeight);
+            d.FillTint(() => d.Canvas.FillPath(edge));
+            d.Canvas.RestoreState();
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(edge));
-            var inner = r.Inflate(-d.Gap * 1.6f, -d.Gap * 1.6f);
-            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 6, 0)));
             if (d.Small) return;
+            var inner = r.Inflate(-d.Gap * 1.4f, -d.Gap * 1.4f);
+            d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(inner, 6, 0, 0)));
+            // The perforation: a row of holes between the notches
+            d.Canvas.FillColor = d.Ink;
+            for (var x = r.Left + 12; x < r.Right - 10; x += 5)
+            {
+                d.Canvas.FillCircle(x, tear, 1.1f);
+            }
             Globe(d, new PointF(inner.Center.X, inner.Top + 13), 9);
             foreach (var x in new[] { -40f, -27f, 27f, 40f })
             {
                 d.Canvas.FillColor = d.Ink;
                 d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 13), 4.5f));
             }
-            // Speed lines on both edges, above and below the notches
+            // Speed lines down both sides of the main part
             d.Stroke(d.Inner * 0.8f, () =>
             {
-                foreach (var y in new[] { inner.Top + 30, inner.Top + 34, inner.Top + 38, inner.Bottom - 46, inner.Bottom - 42, inner.Bottom - 38 })
+                for (var y = inner.Top + 30; y < tear - 12; y += 5)
                 {
-                    d.Canvas.DrawLine(inner.Left + 3, y, inner.Left + 11, y);
-                    d.Canvas.DrawLine(inner.Right - 11, y, inner.Right - 3, y);
+                    d.Canvas.DrawLine(inner.Left + 3, y, inner.Left + 9, y);
+                    d.Canvas.DrawLine(inner.Right - 9, y, inner.Right - 3, y);
                 }
             });
-            d.Stroke(d.Inner, () => d.Canvas.DrawLine(inner.Left + 4, inner.Bottom - 26, inner.Right - 4, inner.Bottom - 26));
-            TravelRow(d, new PointF(inner.Center.X, inner.Bottom - 13), 13, 20,
+            TravelRow(d, new PointF(inner.Center.X, tear + stubHeight / 2 - 1), 12, 20,
                 TravelMode.Plane, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
         }
 
@@ -320,7 +337,7 @@ public class StampFrame : GraphicsView
             var outer = TriangleEdge(r);
             d.FillTint(() => d.Canvas.FillPath(outer));
             d.Stroke(d.Outer, () => d.Canvas.DrawPath(outer));
-            var inner = TriangleEdge(r.Inflate(-d.Gap * 1.6f, -d.Gap * 1.6f), top: d.Gap * 1.2f);
+            var inner = TriangleEdge(r, inset: d.Gap + d.Outer / 2);
             d.Stroke(d.Inner, () => d.Canvas.DrawPath(inner));
             if (d.Small) return;
             var c = r.Center;
@@ -383,6 +400,27 @@ public class StampFrame : GraphicsView
                 {
                     var w = radius * 2 * i / (lines / 2 + 1);
                     d.Canvas.DrawEllipse(c.X - w / 2, c.Y - radius, w, radius * 2);
+                }
+            });
+        }
+
+        // A globe wider than it is tall, with parallels and meridians, for the dome over a stamp's text.
+        static void WideGlobe(Pen d, PointF c, float rx, float ry)
+        {
+            d.Stroke(d.Inner * 1.1f, () =>
+            {
+                d.Canvas.DrawEllipse(c.X - rx, c.Y - ry, rx * 2, ry * 2);
+                foreach (var f in new[] { -0.66f, -0.33f, 0f })
+                {
+                    var y = c.Y + f * ry;
+                    var half = rx * MathF.Sqrt(1 - f * f);
+                    d.Canvas.DrawLine(c.X - half, y, c.X + half, y);
+                }
+                d.Canvas.DrawLine(c.X, c.Y - ry, c.X, c.Y + ry);
+                foreach (var share in new[] { 0.36f, 0.7f })
+                {
+                    var w = rx * 2 * share;
+                    d.Canvas.DrawEllipse(c.X - w / 2, c.Y - ry, w, ry * 2);
                 }
             });
         }
@@ -775,7 +813,10 @@ public class StampFrame : GraphicsView
         // Standing on a point, with upright sides.
         static PathF Hexagon(RectF r)
         {
-            var dy = r.Height * 0.2f;
+            // As near a regular hexagon as the stamp allows: as wide as it is tall times sin 60°
+            var width = Math.Min(r.Width, r.Height * 0.866f);
+            r = new RectF(r.Center.X - width / 2, r.Top, width, r.Height);
+            var dy = Math.Min(r.Height * 0.25f, r.Width * 0.2887f);
             var path = new PathF();
             path.MoveTo(r.Center.X, r.Top);
             path.LineTo(r.Right, r.Top + dy);
@@ -812,10 +853,10 @@ public class StampFrame : GraphicsView
         }
 
         // A ticket: corners cut in with quarter circles and a half circle out of each side.
-        static PathF TicketEdge(RectF r, float corner, float notch)
+        static PathF TicketEdge(RectF r, float corner, float notch, float notchY)
         {
             var path = new PathF();
-            var midY = r.Center.Y;
+            var midY = notchY > 0 ? notchY : r.Center.Y;
             path.MoveTo(r.Left + corner, r.Top);
             path.LineTo(r.Right - corner, r.Top);
             path.QuadTo(r.Right - corner, r.Top + corner, r.Right, r.Top + corner);
@@ -834,11 +875,25 @@ public class StampFrame : GraphicsView
         }
 
         // A triangle with softened corners; top moves the apex down for an inner line.
-        static PathF TriangleEdge(RectF r, float top = 0)
+        static PathF TriangleEdge(RectF r, float inset = 0)
         {
-            var apex = new PointF(r.Center.X, r.Top + top);
+            var apex = new PointF(r.Center.X, r.Top);
             var left = new PointF(r.Left, r.Bottom);
             var right = new PointF(r.Right, r.Bottom);
+            if (inset > 0)
+            {
+                // Move each corner toward the incentre, so every side moves in by the same distance
+                var a = Distance(left, right);
+                var b = Distance(apex, right);
+                var cc = Distance(apex, left);
+                var perimeter = a + b + cc;
+                var centre = new PointF((a * apex.X + b * left.X + cc * right.X) / perimeter, (a * apex.Y + b * left.Y + cc * right.Y) / perimeter);
+                var area = MathF.Abs((left.X - apex.X) * (right.Y - apex.Y) - (right.X - apex.X) * (left.Y - apex.Y)) / 2;
+                var inradius = 2 * area / perimeter;
+                var k = 1 - inset / inradius;
+                PointF In(PointF v) => new(centre.X + (v.X - centre.X) * k, centre.Y + (v.Y - centre.Y) * k);
+                (apex, left, right) = (In(apex), In(left), In(right));
+            }
             static PointF Toward(PointF from, PointF to, float t) => new(from.X + (to.X - from.X) * t, from.Y + (to.Y - from.Y) * t);
             const float t = 0.06f;
             var path = new PathF();
@@ -851,6 +906,35 @@ public class StampFrame : GraphicsView
             path.Close();
             return path;
         }
+
+        // A postage stamp's edge: little half-round bites all the way round.
+        static PathF Perforated(RectF r, float step)
+        {
+            var path = new PathF();
+            var depth = step * 0.45f;
+            void Edge(PointF from, PointF to, PointF inward)
+            {
+                var count = Math.Max(1, (int)MathF.Round(Distance(from, to) / step));
+                for (var i = 0; i < count; i++)
+                {
+                    var t1 = (float)(i + 1) / count;
+                    var mid = (i + 0.5f) / count;
+                    var end = new PointF(from.X + (to.X - from.X) * t1, from.Y + (to.Y - from.Y) * t1);
+                    var control = new PointF(from.X + (to.X - from.X) * mid + inward.X * depth * 2,
+                                             from.Y + (to.Y - from.Y) * mid + inward.Y * depth * 2);
+                    path.QuadTo(control, end);
+                }
+            }
+            path.MoveTo(r.Left, r.Top);
+            Edge(new PointF(r.Left, r.Top), new PointF(r.Right, r.Top), new PointF(0, 1));
+            Edge(new PointF(r.Right, r.Top), new PointF(r.Right, r.Bottom), new PointF(-1, 0));
+            Edge(new PointF(r.Right, r.Bottom), new PointF(r.Left, r.Bottom), new PointF(0, -1));
+            Edge(new PointF(r.Left, r.Bottom), new PointF(r.Left, r.Top), new PointF(1, 0));
+            path.Close();
+            return path;
+        }
+
+        static float Distance(PointF a, PointF b) => MathF.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
 
         static PathF Star(PointF centre, float radius)
         {
