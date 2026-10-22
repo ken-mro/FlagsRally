@@ -3,6 +3,7 @@
     x:Class="FlagsRally.Views.ArrivalStampPopupView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -45,22 +46,26 @@
                             VerticalOptions="Center"
                             WidthRequest="96" />
                     </HorizontalStackLayout>
-                    <Label
+                    <!--  Shrinks to stay on one line, or goes onto two even lines, never broken mid-word  -->
+                    <controls:StampNameLabel
                         FontAttributes="Bold"
                         FontFamily="{Binding Arrival.CountryName, Converter={StaticResource FontFamilyConverter}}"
                         FontSize="24"
                         HorizontalTextAlignment="Center"
-                        LineBreakMode="WordWrap"
-                        Text="{Binding Arrival.CountryName}"
+                        MinFontSize="18"
+                        Name="{Binding Arrival.CountryName}"
+                        TwoLineMinFontSize="14"
                         TextColor="{StaticResource Ink}" />
-                    <Label
+                    <!--  Shrinks to stay on one line, or goes onto two even lines, never broken mid-word  -->
+                    <controls:StampNameLabel
                         FontAttributes="Bold"
                         FontFamily="{Binding Arrival.AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
                         FontSize="20"
                         HorizontalTextAlignment="Center"
+                        MinFontSize="15"
+                        Name="{Binding Arrival.AdminAreaName}"
+                        TwoLineMinFontSize="12"
                         IsVisible="{Binding HasAdminAreaName}"
-                        LineBreakMode="WordWrap"
-                        Text="{Binding Arrival.AdminAreaName}"
                         TextColor="{StaticResource Ink}" />
                     <Line
                         HorizontalOptions="Center"
