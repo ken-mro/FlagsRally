@@ -635,6 +635,7 @@
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\RegionCode\jp.json" />
 	  <EmbeddedResource Include="Resources\Stamps\journey.txt" />
+	  <EmbeddedResource Include="Resources\Stamps\globe_land.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
