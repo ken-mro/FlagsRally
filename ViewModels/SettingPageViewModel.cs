@@ -68,7 +68,21 @@ namespace FlagsRally.ViewModels
 
         // Settings > Passport stamps: the design (a mix, one per country, or the same for every stamp,
         // chosen in a dropdown) and, apart from it, whether the stamps lean a little.
-        public IReadOnlyList<StampDesignChoice> StampDesignChoices => StampDesignChoice.All;
+        public IReadOnlyList<StampDesignChoice> StampDesignChoices { get; } = StampDesignChoice.All();
+
+        // The dropdown's list, open below its button
+        [ObservableProperty]
+        private bool _isStampDesignListOpen;
+
+        [RelayCommand]
+        void ToggleStampDesignList() => IsStampDesignListOpen = !IsStampDesignListOpen;
+
+        [RelayCommand]
+        void PickStampDesign(StampDesignChoice choice)
+        {
+            SelectedStampDesign = choice;
+            IsStampDesignListOpen = false;
+        }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsStampMixed), nameof(IsStampByCountry), nameof(IsStampSame))]
@@ -83,6 +97,7 @@ namespace FlagsRally.ViewModels
 
         partial void OnSelectedStampDesignChanged(StampDesignChoice value)
         {
+            foreach (var choice in StampDesignChoices) choice.IsSelected = choice == value;
             // Picking a design is choosing the same design for every stamp
             _settingPreferences.SetStampSamePattern(value.Pattern);
             SetStampStyle(StampStyle.Single(value.Pattern));
@@ -136,7 +151,8 @@ namespace FlagsRally.ViewModels
             _stampStyle = _settingPreferences.GetStampStyle();
             _stampTilt = _settingPreferences.GetStampTilt();
             var samePattern = _settingPreferences.GetStampSamePattern();
-            _selectedStampDesign = StampDesignChoice.All.First(choice => choice.Pattern == samePattern);
+            _selectedStampDesign = StampDesignChoices.First(choice => choice.Pattern == samePattern);
+            _selectedStampDesign.IsSelected = true;
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;
