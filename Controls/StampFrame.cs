@@ -76,6 +76,7 @@ public class StampFrame : GraphicsView
                 case StampPattern.GlobePostmark: GlobePostmark(d, r); break;
                 case StampPattern.Journey: Journey(d, r); break;
                 case StampPattern.StarSeal: StarSeal(d, r); break;
+                case StampPattern.PostageStamp: PostageStamp(d, r, frame.Seed); break;
                 default:
                     // The original stamp: a thick square with a dashed one inside
                     var square = bounds.Inflate(-2, -2);
@@ -473,6 +474,37 @@ public class StampFrame : GraphicsView
             d.Canvas.FillColor = d.Ink;
             d.Canvas.FillPath(Diamond(new PointF(c.X, inner.Bottom - 9), 2.5f));
             Waves(d, new RectF(inner.Right - 20, c.Y - 4, r.Right + d.Outer - (inner.Right - 20), 28), 4);
+        }
+
+        // A postage stamp: a solid border in the ink with perforated edges, round a pale picture area
+        // with a thin line, a small value at the top right and a little globe at the top left.
+        static void PostageStamp(Pen d, RectF r, int seed)
+        {
+            var paper = r.Inflate(-1, -1);
+            var edge = Perforated(paper, d.Small ? 3.2f : 7f);
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillPath(edge);
+            var window = paper.Inflate(d.Small ? -4.5f : -10, d.Small ? -4.5f : -10);
+            d.Canvas.FillColor = Paper;
+            d.Canvas.FillRectangle(window);
+            d.FillTint(() => d.Canvas.FillRectangle(window));
+            if (d.Small) return;
+            var inner = window.Inflate(-4, -4);
+            d.Stroke(d.Inner * 0.8f, () => d.Canvas.DrawRectangle(inner));
+            // The value, a number of its own for each stamp
+            d.Canvas.FontColor = d.Ink;
+            d.Canvas.Font = Microsoft.Maui.Graphics.Font.DefaultBold;
+            d.Canvas.FontSize = 17;
+            var value = 10 + (int)((uint)seed * 2654435761u % 90);
+            d.Canvas.DrawString(value.ToString(), inner.Right - 40, inner.Top + 1, 36, 24, HorizontalAlignment.Right, VerticalAlignment.Center);
+            Globe(d, new PointF(inner.Left + 13, inner.Top + 12), 8, lines: 1);
+            d.Stroke(d.Inner * 0.8f, () =>
+            {
+                d.Canvas.DrawLine(inner.Left + 26, inner.Top + 12, inner.Right - 38, inner.Top + 12);
+                d.Canvas.DrawLine(inner.Left + 10, inner.Bottom - 6, inner.Center.X - 10, inner.Bottom - 6);
+                d.Canvas.DrawLine(inner.Center.X + 10, inner.Bottom - 6, inner.Right - 10, inner.Bottom - 6);
+            });
+            Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3.5f);
         }
 
         // A journey compass, traced from an illustration (Resources/Stamps/journey.txt): a double ring

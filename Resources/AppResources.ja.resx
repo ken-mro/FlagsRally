@@ -656,4 +656,7 @@
   <data name="StampTiltHint" xml:space="preserve">
     <value>スタンプごとに少しずつ違う向きになります。</value>
   </data>
+  <data name="StampPatternPostageStamp" xml:space="preserve">
+    <value>切手</value>
+  </data>
 </root>

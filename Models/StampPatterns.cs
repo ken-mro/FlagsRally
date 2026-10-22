@@ -19,6 +19,7 @@ public enum StampPattern
     StarSeal,
     GlobePostmark,
     Journey,
+    PostageStamp,
 }
 
 /// <summary>
@@ -96,6 +97,7 @@ public static class StampPatterns
         StampPattern.Journey => Token("StampInkJourney", "#063665"),
         StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
+        StampPattern.PostageStamp => Token("StampInkOlive", "#4E6B2A"),
         _ => Token("Ink", "#22252E"),
     };
 
@@ -118,6 +120,7 @@ public static class StampPatterns
         StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
         StampPattern.Triangle => new Thickness(40, 62, 40, 14),
         StampPattern.StarSeal => new Thickness(40, 36, 40, 30),
+        StampPattern.PostageStamp => new Thickness(28, 36, 28, 32),
         _ => new Thickness(0),
     };
 

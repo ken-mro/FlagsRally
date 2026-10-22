@@ -656,4 +656,7 @@
   <data name="StampTiltHint" xml:space="preserve">
     <value>Each stamp leans its own way, by a few degrees.</value>
   </data>
+  <data name="StampPatternPostageStamp" xml:space="preserve">
+    <value>Postage stamp</value>
+  </data>
 </root>

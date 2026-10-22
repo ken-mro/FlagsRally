@@ -1671,5 +1671,16 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StampTiltHint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Postage stamp.
+        /// </summary>
+        internal static string StampPatternPostageStamp {
+            get {
+                return ResourceManager.GetString("StampPatternPostageStamp", resourceCulture);
+            }
+        }
+        
+        
     }
 }
