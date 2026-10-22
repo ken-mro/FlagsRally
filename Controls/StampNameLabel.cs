@@ -46,6 +46,9 @@ public class StampNameLabel : Label
     public double LastFontSize { get; set; } = 6;
 
     // The size set in XAML, so a recycled cell starts again from it for a shorter name.
+    // A width within 2 points of the last one keeps the fit, and so does a wider one the name already
+    // fits: a popup sized by its content measures it at two widths, and refitting at each would
+    // change its size, then the widths, and lay it out again without end.
     double _maxFontSize = -1;
     double _fittedWidth = -1;
 
@@ -63,7 +66,8 @@ public class StampNameLabel : Label
 
     protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
     {
-        if (double.IsFinite(widthConstraint) && widthConstraint > 0 && Math.Abs(widthConstraint - _fittedWidth) > 0.5)
+        if (double.IsFinite(widthConstraint) && widthConstraint > 0 && Math.Abs(widthConstraint - _fittedWidth) > 2
+            && !(widthConstraint > _fittedWidth && _fittedWidth > 0 && FitsAsIs(widthConstraint)))
         {
             _fittedWidth = widthConstraint;
             Fit(widthConstraint);
@@ -100,6 +104,9 @@ public class StampNameLabel : Label
         Text = $"{split.Value.First}\n{split.Value.Second}";
         Shrink(Math.Min(MinFontSize, _maxFontSize), LastFontSize, width);
     }
+
+    bool FitsAsIs(double width) =>
+        Handler is not null && base.MeasureOverride(double.PositiveInfinity, double.PositiveInfinity).Width <= width;
 
     // Whether the text fits the width at some size from largest down to smallest; left at smallest if not
     bool Shrink(double largest, double smallest, double width)

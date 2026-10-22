@@ -4,7 +4,7 @@ namespace FlagsRally.Helpers;
 
 /// <summary>
 /// Where a place name that does not fit on one line is broken into two: at a space or after a
-/// hyphen or "・" / "＝", whichever gives the most even lines, so a word is never cut in the
+/// hyphen, "・" / "＝" or "及び" / "および", whichever gives the most even lines, so a word is never cut in the
 /// middle ("Grena / dines") and no line is left with a single character ("ヘルツェゴビ / ナ").
 /// A Japanese name without such a mark is broken near its middle, keeping a long-vowel mark or a
 /// small kana with the character before it.
@@ -37,7 +37,7 @@ public static class NameLineBreak
         {
             if (text[i] == ' ') Consider(text[..i], text[(i + 1)..]);
             else if (BreakAfter.Contains(text[i - 1]) && text[i] != ' ') Consider(text[..i], text[i..]);
-            else if (i >= 2 && text[(i - 2)..i] == "及び") Consider(text[..i], text[i..]);
+            else if (text[..i].EndsWith("及び") || text[..i].EndsWith("および")) Consider(text[..i], text[i..]);
         }
         if (best is { } atMark) return (atMark.Item1, atMark.Item2, false);
         if (!text.ContainsJapaneseCharacters()) return null;
