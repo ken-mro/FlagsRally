@@ -7,20 +7,23 @@ namespace FlagsRally.Models;
 /// </summary>
 public enum StampPattern
 {
+    // The order of Settings' design list: the original square, then paper (a stamp, an envelope,
+    // tickets), postmarks and seals, round and oval, and last the polygons. Kept in preferences by
+    // name, so reordering does not change anyone's choice.
     Square,
+    PostageStamp,
     Airmail,
-    CompassHexagon,
+    Ticket,
+    MovieTicket,
+    GlobePostmark,
+    CompassSeal,
     Sunrise,
     ScallopedGlobe,
-    WorldOval,
-    Ticket,
-    CompassSeal,
-    Triangle,
     StarSeal,
-    GlobePostmark,
+    WorldOval,
     Journey,
-    PostageStamp,
-    MovieTicket,
+    CompassHexagon,
+    Triangle,
 }
 
 /// <summary>
