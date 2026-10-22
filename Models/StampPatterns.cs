@@ -90,7 +90,7 @@ public static class StampPatterns
         StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
         StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
         StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
-        StampPattern.Journey => Token("StampInkJourney", "#173A6B"),
+        StampPattern.Journey => Token("StampInkJourney", "#063665"),
         StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         _ => Token("Ink", "#22252E"),
@@ -141,7 +141,7 @@ public static class StampPatterns
     };
 
     // The colour from Colors.xaml, or its value when there is no app (unit tests).
-    internal static Color Token(string key, string fallback) =>
+    static Color Token(string key, string fallback) =>
         Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color
             ? color
             : Color.FromArgb(fallback);

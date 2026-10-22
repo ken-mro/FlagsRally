@@ -461,7 +461,7 @@
                             Pattern="{Binding StampPattern}"
                             Seed="{Binding Id}" />
                         <!--  The flag on the globe  -->
-                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.402,0.36,0.27" AbsoluteLayout.LayoutFlags="All">
+                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.453,0.36,0.27" AbsoluteLayout.LayoutFlags="All">
                             <OnPlatform x:TypeArguments="View">
                                 <On Platform="MacCatalyst, iOS, Android">
                                     <Label
@@ -485,7 +485,7 @@
                                 <On Platform="Android">
                                     <Label
                                         FontAutoScalingEnabled="False"
-                                        FontSize="34"
+                                        FontSize="30"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
                                         Text="{Binding CountryFlagSource}"
@@ -512,12 +512,12 @@
                             </OnPlatform>
                             <!--  A fixed box about the globe's size (flags up to 2:1 keep their height), so a flag arriving does not lay out the stamp again  -->
                             <Image
-                                HeightRequest="30"
+                                HeightRequest="24"
                                 HorizontalOptions="Center"
                                 IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
                                 Source="{Binding AdminAreaFlagSource}"
                                 VerticalOptions="Center"
-                                WidthRequest="60">
+                                WidthRequest="48">
                                 <Image.Triggers>
                                     <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
                                     <DataTrigger
@@ -536,7 +536,7 @@
                             </Image>
                         </Grid>
                         <!--  The name above the date, shrinking to stay on one line  -->
-                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.717,0.55,0.09" AbsoluteLayout.LayoutFlags="All">
+                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.74,0.55,0.09" AbsoluteLayout.LayoutFlags="All">
                             <controls:OneLineFittingLabel
                                 MinFontSize="6"
                                 Margin="2,0"
@@ -566,8 +566,8 @@
                                 TextColor="{Binding StampInk}"
                                 VerticalOptions="Center" />
                         </Grid>
-                        <!--  The date between the rules near the bottom  -->
-                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.828,0.42,0.09" AbsoluteLayout.LayoutFlags="All">
+                        <!--  The date near the bottom  -->
+                        <Grid AbsoluteLayout.LayoutBounds="0.5,0.834,0.5,0.09" AbsoluteLayout.LayoutFlags="All">
                             <controls:OneLineFittingLabel
                                 MinFontSize="7"
                                 Margin="2,0"

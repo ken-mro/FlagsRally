@@ -476,22 +476,24 @@ public class StampFrame : GraphicsView
         }
 
         // A journey compass, traced from an illustration (Resources/Stamps/journey.txt): a double ring
-        // with arrowheads at the four points, and inside it a dotted arc, a rising sun, sparkles, and
-        // a train on its track, a ship on the waves, a car on a road and someone walking a path,
-        // swirling round a globe under the flag. The picture inside the ring is drawn a little
-        // smaller and higher, leaving room at the bottom for the name and, between two rules, the date.
+        // with arrowheads at the four points, a dotted circle and sparkles, and inside it a rising sun
+        // with clouds, a plane, a train on its track past mountains and trees, a ship on the waves,
+        // a car on a road and someone walking a path, swirling round a globe under the flag. The
+        // picture inside the ring is drawn a little smaller and higher, and its colours faded, leaving
+        // room at the bottom for the name and the date and letting the flag stand out.
         static void Journey(Pen d, RectF r)
         {
             var ring = Round(r);
             d.Canvas.FillColor = Paper;
             d.Canvas.FillEllipse(ring);
-            JourneyPicture(d, ring, part => part is 'f' or 'd');
-            JourneyPicture(d, ring, part => part is '-' or 'g', JourneyShrink, JourneyShrinkAbout);
+            JourneyPicture(d, ring, part => part == 'f');
+            JourneyPicture(d, ring, part => part != 'f', JourneyShrink, JourneyShrinkAbout);
         }
 
         // How the picture inside the ring shrinks, about a point at its top (in the 1254 box). The
-        // flag's place in MainPage.xaml follows the globe's centre, (623, 615) before shrinking.
+        // flag's place in MainPage.xaml follows the globe's centre, (627, 654) before shrinking.
         const float JourneyShrink = 0.86f;
+        static readonly PointF JourneyShrinkAbout = new(625, 140);
 
         // How far the picture's colours fade towards the paper, so the flag stands out
         const float JourneyFade = 0.6f;
@@ -500,15 +502,14 @@ public class StampFrame : GraphicsView
             colour.Red + (Paper.Red - colour.Red) * amount,
             colour.Green + (Paper.Green - colour.Green) * amount,
             colour.Blue + (Paper.Blue - colour.Blue) * amount);
-        static readonly PointF JourneyShrinkAbout = new(627, 87);
 
         // Draws the traced shapes of the given parts into the ring, shrunk about a point when asked
         static void JourneyPicture(Pen d, RectF ring, Func<char, bool> parts, float shrink = 1, PointF about = default)
         {
-            // The traced outer ring spans 51..1203 of the 1254 box
-            var scale = ring.Width / 1152f;
+            // The traced outer ring spans 22..1228 of the 1254 box
+            var scale = ring.Width / 1206f;
             d.Canvas.SaveState();
-            d.Canvas.Translate(ring.X - 51 * scale, ring.Y - 51 * scale);
+            d.Canvas.Translate(ring.X - 22 * scale, ring.Y - 22 * scale);
             d.Canvas.Scale(scale, scale);
             if (shrink != 1)
             {
@@ -518,34 +519,30 @@ public class StampFrame : GraphicsView
             foreach (var (colour, part, path) in JourneyShapes.Value)
             {
                 if (!parts(part)) continue;
-                var fill = colour switch
-                {
-                    "paper" => Paper,
-                    "red" => StampPatterns.Token("JourneyTrain", "#E74D36"),
-                    "orange" => StampPatterns.Token("JourneySun", "#EBA854"),
-                    "green" => StampPatterns.Token("JourneyRoad", "#21553E"),
-                    "tan" => StampPatterns.Token("JourneyPath", "#C6965F"),
-                    "blue" => StampPatterns.Token("JourneySea", "#125FA6"),
-                    _ => d.Ink,
-                };
-                d.Canvas.FillColor = Fade(fill, JourneyFade);
+                d.Canvas.FillColor = Fade(colour ?? d.Ink, JourneyFade);
                 d.Canvas.FillPath(path);
             }
             d.Canvas.RestoreState();
         }
 
-        // Read once: about a hundred shapes
-        static readonly Lazy<(string Colour, char Part, PathF Path)[]> JourneyShapes = new(() =>
+        // Read once: about two hundred shapes. A null colour is the stamp's ink.
+        static readonly Lazy<(Color? Colour, char Part, PathF Path)[]> JourneyShapes = new(() =>
         {
             var assembly = typeof(StampFrame).Assembly;
             using var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Resources.Stamps.journey.txt")!;
             using var reader = new StreamReader(stream);
-            var shapes = new List<(string, char, PathF)>();
+            var shapes = new List<(Color?, char, PathF)>();
             while (reader.ReadLine() is { } line)
             {
                 if (line.Length == 0 || line[0] == '#') continue;
                 var parts = line.Split(' ', 3);
-                shapes.Add((parts[0], parts[1][0], PathBuilder.Build(parts[2])));
+                Color? colour = parts[0] switch
+                {
+                    "ink" => null,
+                    "paper" => Paper,
+                    _ => Color.FromArgb("#" + parts[0]),
+                };
+                shapes.Add((colour, parts[1][0], PathBuilder.Build(parts[2])));
             }
             return [.. shapes];
         });
