@@ -893,7 +893,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
-            var popup = new ArrivalStampPopupView(new ArrivalStampPopupViewModel(arrival));
+            var popup = new ArrivalStampPopupView(new ArrivalStampPopupViewModel(arrival, _settingsPreferences.GetStampStyle()));
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
         catch (Exception ex)

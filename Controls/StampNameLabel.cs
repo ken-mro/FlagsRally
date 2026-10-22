@@ -28,6 +28,20 @@ public class StampNameLabel : Label
 
     public double TwoLineMinFontSize { get; set; } = 8;
 
+    /// <summary>
+    /// False keeps the name on one line, shrinking down to <see cref="LastFontSize"/>; only a name
+    /// too long even at that size goes onto two lines, still broken between words.
+    /// </summary>
+    public static readonly BindableProperty AllowTwoLinesProperty = BindableProperty.Create(
+        nameof(AllowTwoLines), typeof(bool), typeof(StampNameLabel), true,
+        propertyChanged: (view, _, _) => ((StampNameLabel)view).NameChanged(((StampNameLabel)view).Name));
+
+    public bool AllowTwoLines
+    {
+        get => (bool)GetValue(AllowTwoLinesProperty);
+        set => SetValue(AllowTwoLinesProperty, value);
+    }
+
     /// <summary>How small two lines may get for the longest names, rather than a third line.</summary>
     public double LastFontSize { get; set; } = 6;
 
@@ -65,6 +79,15 @@ public class StampNameLabel : Label
 
         Text = name;
         var split = NameLineBreak.SplitInTwo(name);
+        if (!AllowTwoLines)
+        {
+            // One line down to the smallest size; only a name too long even for that takes two
+            if (Shrink(_maxFontSize, LastFontSize, width) || split is null) return;
+            Text = $"{split.Value.First}\n{split.Value.Second}";
+            Shrink(LastFontSize, LastFontSize, width);
+            return;
+        }
+
         // One line; a name that cannot be broken well keeps shrinking on its line
         var smallest = split is null or { InWord: true } ? TwoLineMinFontSize : MinFontSize;
         if (Shrink(_maxFontSize, smallest, width)) return;
