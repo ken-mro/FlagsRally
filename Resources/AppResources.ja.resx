@@ -594,7 +594,7 @@
     <value>いろいろなデザインを混ぜる</value>
   </data>
   <data name="StampStyleMixedHint" xml:space="preserve">
-    <value>スタンプごとに、下のデザインから自動で選びます。</value>
+    <value>スタンプごとに、すべてのデザインから自動で選びます。</value>
   </data>
   <data name="StampStyleByCountry" xml:space="preserve">
     <value>国ごとにデザインをそろえる</value>
@@ -637,5 +637,23 @@
   </data>
   <data name="StampPatternJourney" xml:space="preserve">
     <value>旅のコンパス</value>
+  </data>
+  <data name="StampDesign" xml:space="preserve">
+    <value>デザイン</value>
+  </data>
+  <data name="StampStyleSame" xml:space="preserve">
+    <value>すべて同じデザインにする</value>
+  </data>
+  <data name="StampStyleSameHint" xml:space="preserve">
+    <value>ここで選んだデザインにそろえます。</value>
+  </data>
+  <data name="StampTilt" xml:space="preserve">
+    <value>傾き</value>
+  </data>
+  <data name="StampTiltOn" xml:space="preserve">
+    <value>手で押したように少し傾ける</value>
+  </data>
+  <data name="StampTiltHint" xml:space="preserve">
+    <value>スタンプごとに少しずつ違う向きになります。</value>
   </data>
 </root>

@@ -50,7 +50,7 @@ public static class StampPatterns
 {
     public static IReadOnlyList<StampPattern> All { get; } = Enum.GetValues<StampPattern>();
 
-    // A stamp leans by up to this much when the patterns are mixed, like one pressed by hand.
+    // A tilted stamp leans by up to this much, like one pressed by hand.
     const double MaxTilt = 4;
 
     /// <summary>
@@ -64,11 +64,14 @@ public static class StampPatterns
         return All[(int)(StableHash(seed) % (uint)All.Count)];
     }
 
-    /// <summary>How far the stamp leans, in degrees: none when every stamp has the same pattern.</summary>
-    public static double TiltFor(ArrivalLocation arrival, StampStyle style)
+    /// <summary>
+    /// How far the stamp leans, in degrees (-4..+4, worked out from the arrival so it keeps its
+    /// angle): none unless Settings > Passport stamps asks for stamps tilted as if pressed by hand.
+    /// </summary>
+    public static double TiltFor(ArrivalLocation arrival, bool tilted)
     {
-        if (style.Pattern is not null) return 0;
-        var steps = StableHash($"tilt-{arrival.Id}") % 9; // -4..+4 degrees
+        if (!tilted) return 0;
+        var steps = StableHash($"tilt-{arrival.Id}") % 9;
         return (int)steps - MaxTilt;
     }
 
@@ -76,8 +79,8 @@ public static class StampPatterns
     public static Thickness MarginFor(double tilt) => tilt == 0 ? new Thickness(2) : new Thickness(8);
 
     /// <summary>The arrival with the pattern and tilt the passport draws it with.</summary>
-    public static ArrivalLocation Apply(ArrivalLocation arrival, StampStyle style) =>
-        arrival with { StampPattern = For(arrival, style), StampTilt = TiltFor(arrival, style) };
+    public static ArrivalLocation Apply(ArrivalLocation arrival, StampStyle style, bool tilted) =>
+        arrival with { StampPattern = For(arrival, style), StampTilt = TiltFor(arrival, tilted) };
 
     /// <summary>The ink of a pattern. Square keeps the original black with a red date.</summary>
     public static Color InkFor(StampPattern pattern) => pattern switch

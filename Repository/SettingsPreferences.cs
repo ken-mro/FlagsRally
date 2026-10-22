@@ -14,6 +14,8 @@ public partial class SettingsPreferences : ObservableObject
     private string _customBoardSort = "CustomBoardSort";
     private string _pinStyle = "PinStyle";
     private string _stampStyle = "StampStyle";
+    private string _stampTilt = "StampTilt";
+    private string _stampSamePattern = "StampSamePattern";
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
     private string _hidesEmptyCollections = "HidesEmptyCollections";
     private string _hasSeenOnboarding = "HasSeenOnboarding";
@@ -126,6 +128,23 @@ public partial class SettingsPreferences : ObservableObject
     public StampStyle GetStampStyle() => StampStyle.FromKey(_defaultPreferences.Get(_stampStyle, StampStyle.Default.Key));
 
     public void SetStampStyle(StampStyle style) => _defaultPreferences.Set(_stampStyle, style.Key);
+
+    // Whether the stamps lean a little, as if pressed by hand. Until it is chosen, a mix leans as it
+    // did before tilting was a setting of its own, and the other styles stand upright.
+    public bool GetStampTilt() => _defaultPreferences.ContainsKey(_stampTilt)
+        ? _defaultPreferences.Get(_stampTilt, false)
+        : GetStampStyle().IsMixed;
+
+    public void SetStampTilt(bool tilted) => _defaultPreferences.Set(_stampTilt, tilted);
+
+    // The design picked for "Same design for every stamp", kept while a mix or per-country is chosen.
+    public StampPattern GetStampSamePattern() =>
+        Enum.TryParse<StampPattern>(_defaultPreferences.Get(_stampSamePattern, string.Empty), out var pattern) && Enum.IsDefined(pattern)
+            ? pattern
+            : GetStampStyle().Pattern ?? StampPattern.Square;
+
+    public void SetStampSamePattern(StampPattern pattern) => _defaultPreferences.Set(_stampSamePattern, pattern.ToString());
+
 
     public bool GetRegionalFlagsExpanded()
     {

@@ -1483,7 +1483,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Each stamp gets one of the designs below..
+        ///   Looks up a localized string similar to Each stamp gets one of the designs, picked automatically..
         /// </summary>
         internal static string StampStyleMixedHint {
             get {
@@ -1615,6 +1615,60 @@ namespace FlagsRally.Resources {
         internal static string StampPatternJourney {
             get {
                 return ResourceManager.GetString("StampPatternJourney", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Design.
+        /// </summary>
+        internal static string StampDesign {
+            get {
+                return ResourceManager.GetString("StampDesign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same design for every stamp.
+        /// </summary>
+        internal static string StampStyleSame {
+            get {
+                return ResourceManager.GetString("StampStyleSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every stamp uses the design chosen here..
+        /// </summary>
+        internal static string StampStyleSameHint {
+            get {
+                return ResourceManager.GetString("StampStyleSameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tilt.
+        /// </summary>
+        internal static string StampTilt {
+            get {
+                return ResourceManager.GetString("StampTilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tilt a little, as if pressed by hand.
+        /// </summary>
+        internal static string StampTiltOn {
+            get {
+                return ResourceManager.GetString("StampTiltOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each stamp leans its own way, by a few degrees..
+        /// </summary>
+        internal static string StampTiltHint {
+            get {
+                return ResourceManager.GetString("StampTiltHint", resourceCulture);
             }
         }
     }

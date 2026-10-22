@@ -33,7 +33,7 @@ public class StampPatternsTests
 
         foreach (var id in Enumerable.Range(1, 30))
         {
-            var stamp = StampPatterns.Apply(Arrival(id, "JP"), style);
+            var stamp = StampPatterns.Apply(Arrival(id, "JP"), style, tilted: false);
             Assert.Equal(StampPattern.WorldOval, stamp.StampPattern);
             Assert.Equal(0, stamp.StampTilt);
         }
@@ -58,13 +58,27 @@ public class StampPatternsTests
     }
 
     [Fact]
-    public void Mixed_stamps_lean_a_little_either_way()
+    public void Tilted_stamps_lean_a_little_either_way()
     {
-        var tilts = Enumerable.Range(1, 200).Select(id => StampPatterns.TiltFor(Arrival(id, "JP"), StampStyle.Mixed)).ToList();
+        var tilts = Enumerable.Range(1, 200).Select(id => StampPatterns.TiltFor(Arrival(id, "JP"), tilted: true)).ToList();
 
         Assert.All(tilts, t => Assert.InRange(t, -4, 4));
         Assert.Contains(tilts, t => t < 0);
         Assert.Contains(tilts, t => t > 0);
+    }
+
+    [Theory]
+    [InlineData("Mixed")]
+    [InlineData("ByCountry")]
+    [InlineData("Ticket")]
+    public void Any_design_can_be_tilted_or_upright(string key)
+    {
+        var style = StampStyle.FromKey(key);
+        var tilted = Enumerable.Range(1, 30).Select(id => StampPatterns.Apply(Arrival(id, "JP"), style, tilted: true).StampTilt);
+        var upright = Enumerable.Range(1, 30).Select(id => StampPatterns.Apply(Arrival(id, "JP"), style, tilted: false).StampTilt);
+
+        Assert.Contains(tilted, t => t != 0);
+        Assert.All(upright, t => Assert.Equal(0, t));
     }
 
     [Fact]

@@ -66,22 +66,48 @@ namespace FlagsRally.ViewModels
             PinStyle = Enum.Parse<PinStyle>(style);
         }
 
-        // Settings > Passport stamps: how the passport picks each stamp's pattern.
-        public IReadOnlyList<StampStyleOption> StampStyleOptions { get; } = StampStyleOption.All();
+        // Settings > Passport stamps: the design (a mix, one per country, or the same for every stamp,
+        // chosen in a dropdown) and, apart from it, whether the stamps lean a little.
+        public IReadOnlyList<StampDesignChoice> StampDesignChoices => StampDesignChoice.All;
 
-        [RelayCommand]
-        void SetStampStyle(StampStyleOption option)
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsStampMixed), nameof(IsStampByCountry), nameof(IsStampSame))]
+        private StampStyle _stampStyle;
+
+        public bool IsStampMixed => StampStyle.IsMixed;
+        public bool IsStampByCountry => StampStyle.ByCountry;
+        public bool IsStampSame => StampStyle.Pattern is not null;
+
+        [ObservableProperty]
+        private StampDesignChoice _selectedStampDesign;
+
+        partial void OnSelectedStampDesignChanged(StampDesignChoice value)
         {
-            _settingPreferences.SetStampStyle(option.Style);
-            MarkStampStyle(option.Style);
+            // Picking a design is choosing the same design for every stamp
+            _settingPreferences.SetStampSamePattern(value.Pattern);
+            SetStampStyle(StampStyle.Single(value.Pattern));
         }
 
-        void MarkStampStyle(StampStyle style)
+        [ObservableProperty]
+        private bool _stampTilt;
+
+        partial void OnStampTiltChanged(bool value) => _settingPreferences.SetStampTilt(value);
+
+        [RelayCommand]
+        void SetStampMode(string mode)
         {
-            foreach (var option in StampStyleOptions)
+            SetStampStyle(mode switch
             {
-                option.IsSelected = option.Style == style;
-            }
+                "Mixed" => StampStyle.Mixed,
+                "ByCountry" => StampStyle.PerCountry,
+                _ => StampStyle.Single(SelectedStampDesign.Pattern),
+            });
+        }
+
+        void SetStampStyle(StampStyle style)
+        {
+            _settingPreferences.SetStampStyle(style);
+            StampStyle = style;
         }
 
         // The pin previews leave out custom board pins while there are no custom boards.
@@ -107,7 +133,10 @@ namespace FlagsRally.ViewModels
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
             _pinStyle = _settingPreferences.GetPinStyle();
-            MarkStampStyle(_settingPreferences.GetStampStyle());
+            _stampStyle = _settingPreferences.GetStampStyle();
+            _stampTilt = _settingPreferences.GetStampTilt();
+            var samePattern = _settingPreferences.GetStampSamePattern();
+            _selectedStampDesign = StampDesignChoice.All.First(choice => choice.Pattern == samePattern);
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;

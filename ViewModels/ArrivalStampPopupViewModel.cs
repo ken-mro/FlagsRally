@@ -31,7 +31,7 @@ public partial class ArrivalStampPopupViewModel : BaseViewModel
     public ArrivalStampPopupViewModel(ArrivalLocation arrival, StampStyle? style = null)
     {
         Arrival = style is { } chosen
-            ? StampPatterns.Apply(arrival, chosen) with { StampTilt = 0 }
+            ? StampPatterns.Apply(arrival, chosen, tilted: false)
             : arrival;
     }
 

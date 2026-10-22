@@ -86,4 +86,26 @@ public class SettingsPreferencesTests
     {
         Assert.Equal(expected, SettingsPreferences.PickCountryCode(first, second, last));
     }
+    [Theory]
+    [InlineData("Mixed", true)]
+    [InlineData("ByCountry", false)]
+    [InlineData("Square", false)]
+    public void Until_tilt_is_chosen_only_a_mix_leans_as_before(string style, bool tilted)
+    {
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.ContainsKey("StampTilt", null)).Returns(false);
+        preferences.Setup(p => p.Get("StampStyle", It.IsAny<string>(), null)).Returns(style);
+
+        Assert.Equal(tilted, new SettingsPreferences(preferences.Object).GetStampTilt());
+    }
+
+    [Fact]
+    public void The_same_design_defaults_to_the_one_already_chosen_for_every_stamp()
+    {
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get("StampSamePattern", It.IsAny<string>(), null)).Returns(string.Empty);
+        preferences.Setup(p => p.Get("StampStyle", It.IsAny<string>(), null)).Returns("Ticket");
+
+        Assert.Equal(FlagsRally.Models.StampPattern.Ticket, new SettingsPreferences(preferences.Object).GetStampSamePattern());
+    }
 }
