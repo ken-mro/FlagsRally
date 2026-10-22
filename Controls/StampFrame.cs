@@ -515,7 +515,9 @@ public class StampFrame : GraphicsView
         {
             var ticket = r.Inflate(-1, -(r.Height * 0.04f));
             var notch = d.Small ? 3.5f : 9f;
-            var edge = MovieTicketEdge(ticket, d.Small ? 3 : 8, notch);
+            var corner = d.Small ? 3f : 8f;
+            var midY = ticket.Center.Y;
+            var edge = MovieTicketEdge(ticket, corner, notch, ticket.Left, ticket.Right);
             var stubX = ticket.Right - ticket.Width * StampPatterns.MovieTicketStub;
 
             d.Canvas.SaveState();
@@ -534,60 +536,77 @@ public class StampFrame : GraphicsView
             d.Canvas.DrawLine(stubX, ticket.Top, stubX, ticket.Bottom);
             d.Canvas.StrokeDashPattern = null;
 
-            // The barcode across the stub, its bars running across it, the same for each stamp
+            // The barcode across the stub, its bars running across it, the same for each stamp. Bars
+            // level with the notch stop short of it.
             var margin = d.Small ? 2.5f : 7f;
             var left = stubX + margin;
-            var right = ticket.Right - margin - (d.Small ? 0 : 2);
+            var right = ticket.Right - margin;
             var top = ticket.Top + (d.Small ? 3 : 12);
             var bottom = ticket.Bottom - (d.Small ? 3 : 12);
+            var clearance = notch + (d.Small ? 1.5f : 4f);
             var random = new Random(seed * 7919 + 13);
             d.Canvas.FillColor = d.Ink;
             for (var y = top; y < bottom;)
             {
-                var bar = (d.Small ? 0.6f : 1.1f) * (1 + random.Next(3));
+                var bar = Math.Min((d.Small ? 0.6f : 1.1f) * (1 + random.Next(3)), bottom - y);
                 var gap = (d.Small ? 0.6f : 1.1f) * (1 + random.Next(2));
-                d.Canvas.FillRectangle(left, y, right - left, Math.Min(bar, bottom - y));
+                // The furthest the bar may reach: clear of the notch's circle at the bar's nearer edge
+                var dy = Math.Min(Math.Abs(y - midY), Math.Abs(y + bar - midY));
+                if (y < midY && y + bar > midY) dy = 0;
+                var end = dy < clearance ? ticket.Right - MathF.Sqrt(clearance * clearance - dy * dy) : right;
+                end = Math.Min(end, right);
+                if (end - left > 2) d.Canvas.FillRectangle(left, y, end - left, bar);
                 y += bar + gap;
             }
             if (d.Small) return;
 
-            // A thin frame inside the ink, in the paper's colour, with stars at its top
-            var main = new RectF(ticket.Left, ticket.Top, stubX - ticket.Left, ticket.Height);
-            var frame = main.Inflate(-6, -6);
+            // A thin frame inside the ink in the paper's colour, the same distance from the edge all
+            // the way round, notch included; its right side runs along the perforation
+            const float inset = 6;
+            var frame = new RectF(ticket.Left + inset, ticket.Top + inset, stubX - inset - (ticket.Left + inset), ticket.Height - inset * 2);
             d.Canvas.StrokeColor = Paper;
             d.Canvas.StrokeSize = d.Inner * 0.8f;
-            d.Canvas.DrawPath(MovieTicketEdge(frame, 5, notch, leftOnly: true));
+            d.Canvas.DrawPath(MovieTicketEdge(frame, Math.Max(corner - inset, 2), notch + inset, ticket.Left, null));
             d.Canvas.FillColor = Paper;
             foreach (var x in new[] { -14f, 0f, 14f })
             {
-                d.Canvas.FillPath(Star(new PointF(main.Center.X + x, frame.Top + 10), x == 0 ? 4.5f : 3.5f));
+                d.Canvas.FillPath(Star(new PointF(frame.Center.X + x, frame.Top + 10), x == 0 ? 4.5f : 3.5f));
             }
         }
 
-        // A rectangle with rounded corners and a half-round notch in the middle of each end (only the
-        // left one with leftOnly: the frame inside the main part, whose right side is the perforation).
-        static PathF MovieTicketEdge(RectF r, float corner, float notch, bool leftOnly = false)
+        // A rectangle with rounded corners and round notches bitten out of its ends: each notch is a
+        // circle of the given radius centred at notchLeft / notchRight (an x on the middle line), so a
+        // frame inset from the ticket can take the same centres and a radius grown by the inset and
+        // stay parallel to it. No notchRight: a straight right side.
+        static PathF MovieTicketEdge(RectF r, float corner, float radius, float notchLeft, float? notchRight)
         {
             var path = new PathF();
             var midY = r.Center.Y;
-            path.MoveTo(r.Left + corner, r.Top);
-            path.LineTo(r.Right - corner, r.Top);
-            path.QuadTo(r.Right, r.Top, r.Right, r.Top + corner);
-            if (!leftOnly)
+            void Arc(PointF centre, float rad, float from, float to, bool move = false)
             {
-                path.LineTo(r.Right, midY - notch);
-                path.QuadTo(r.Right - notch * 1.3f, midY - notch, r.Right - notch * 1.3f, midY);
-                path.QuadTo(r.Right - notch * 1.3f, midY + notch, r.Right, midY + notch);
+                const int steps = 12;
+                for (var i = 0; i <= steps; i++)
+                {
+                    var angle = (from + (to - from) * i / steps) * MathF.PI / 180;
+                    var point = new PointF(centre.X + rad * MathF.Cos(angle), centre.Y + rad * MathF.Sin(angle));
+                    if (move && i == 0) path.MoveTo(point); else path.LineTo(point);
+                }
             }
-            path.LineTo(r.Right, r.Bottom - corner);
-            path.QuadTo(r.Right, r.Bottom, r.Right - corner, r.Bottom);
-            path.LineTo(r.Left + corner, r.Bottom);
-            path.QuadTo(r.Left, r.Bottom, r.Left, r.Bottom - corner);
-            path.LineTo(r.Left, midY + notch);
-            path.QuadTo(r.Left + notch * 1.3f, midY + notch, r.Left + notch * 1.3f, midY);
-            path.QuadTo(r.Left + notch * 1.3f, midY - notch, r.Left, midY - notch);
-            path.LineTo(r.Left, r.Top + corner);
-            path.QuadTo(r.Left, r.Top, r.Left + corner, r.Top);
+            // Where a notch circle meets a side, as an angle from its centre
+            float Meet(float side, float centreX, float rad) =>
+                MathF.Acos(Math.Clamp((side - centreX) / rad, -1, 1)) * 180 / MathF.PI;
+
+            Arc(new PointF(r.Left + corner, r.Top + corner), corner, 180, 270, move: true);
+            Arc(new PointF(r.Right - corner, r.Top + corner), corner, 270, 360);
+            if (notchRight is float right)
+            {
+                var a = Meet(r.Right, right, radius);
+                Arc(new PointF(right, midY), radius, -a, -(360 - a));
+            }
+            Arc(new PointF(r.Right - corner, r.Bottom - corner), corner, 0, 90);
+            Arc(new PointF(r.Left + corner, r.Bottom - corner), corner, 90, 180);
+            var b = Meet(r.Left, notchLeft, radius);
+            Arc(new PointF(notchLeft, midY), radius, b, -b);
             path.Close();
             return path;
         }
