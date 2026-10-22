@@ -492,6 +492,14 @@ public class StampFrame : GraphicsView
         // How the picture inside the ring shrinks, about a point at its top (in the 1254 box). The
         // flag's place in MainPage.xaml follows the globe's centre, (623, 615) before shrinking.
         const float JourneyShrink = 0.86f;
+
+        // How far the picture's colours fade towards the paper, so the flag stands out
+        const float JourneyFade = 0.6f;
+
+        static Color Fade(Color colour, float amount) => new(
+            colour.Red + (Paper.Red - colour.Red) * amount,
+            colour.Green + (Paper.Green - colour.Green) * amount,
+            colour.Blue + (Paper.Blue - colour.Blue) * amount);
         static readonly PointF JourneyShrinkAbout = new(627, 87);
 
         // Draws the traced shapes of the given parts into the ring, shrunk about a point when asked
@@ -510,7 +518,7 @@ public class StampFrame : GraphicsView
             foreach (var (colour, part, path) in JourneyShapes.Value)
             {
                 if (!parts(part)) continue;
-                d.Canvas.FillColor = colour switch
+                var fill = colour switch
                 {
                     "paper" => Paper,
                     "red" => StampPatterns.Token("JourneyTrain", "#E74D36"),
@@ -520,6 +528,7 @@ public class StampFrame : GraphicsView
                     "blue" => StampPatterns.Token("JourneySea", "#125FA6"),
                     _ => d.Ink,
                 };
+                d.Canvas.FillColor = Fade(fill, JourneyFade);
                 d.Canvas.FillPath(path);
             }
             d.Canvas.RestoreState();
