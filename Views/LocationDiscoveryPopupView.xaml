@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -13,6 +14,9 @@
     Margin="0,1,0,0"
     HorizontalOptions="Fill"
     VerticalOptions="Center">
+    <toolkit:Popup.Resources>
+        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+    </toolkit:Popup.Resources>
     <Grid
         Padding="20"
         BackgroundColor="Transparent"
@@ -23,14 +27,27 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <controls:StampLabel
-            Grid.Row="0"
-            FontAutoScalingEnabled="True"
-            FontSize="Title"
-            HorizontalOptions="Center"
-            HorizontalTextAlignment="Center"
-            Style="{StaticResource StampHeading}"
-            Text="{Binding LocationTitle}" />
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <controls:StampLabel
+                FontAutoScalingEnabled="True"
+                FontSize="Title"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Style="{StaticResource StampHeading}"
+                Text="{Binding Heading}" />
+            <!--  The place: smaller to stay on one line, or two even lines broken between words. It fills
+                  the width, so the popup's size does not follow the name it is fitting.  -->
+            <controls:StampNameLabel
+                CharacterSpacing="1"
+                FontFamily="{Binding LocationName, Converter={StaticResource FontFamilyConverter}}"
+                FontSize="24"
+                HorizontalOptions="Fill"
+                HorizontalTextAlignment="Center"
+                MinFontSize="20"
+                Name="{Binding LocationName}"
+                TextColor="{StaticResource Navy}"
+                TwoLineMinFontSize="20" />
+        </VerticalStackLayout>
 
         <Image
             Grid.Row="1"

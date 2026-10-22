@@ -11,8 +11,12 @@ public partial class LocationDiscoveryPopupViewModel : BaseViewModel
     [ObservableProperty]
     private string _imageSource = string.Empty;
 
+    // "New country" / "New region", and on its own line the place, so a long name breaks between words
     [ObservableProperty]
-    private string _locationTitle = string.Empty;
+    private string _heading = string.Empty;
+
+    [ObservableProperty]
+    private string _locationName = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsSupportedAdminArea))]
@@ -21,11 +25,12 @@ public partial class LocationDiscoveryPopupViewModel : BaseViewModel
     public bool IsSupportedAdminArea => !IsCountry;
 
 
-    public LocationDiscoveryPopupViewModel(string imageSource, bool isCountry, string locationTitle)
+    public LocationDiscoveryPopupViewModel(string imageSource, bool isCountry, string heading, string locationName)
     {
         ImageSource = imageSource;
         IsCountry = isCountry;
-        LocationTitle = locationTitle;
+        Heading = heading;
+        LocationName = locationName;
     }
 
     [RelayCommand]

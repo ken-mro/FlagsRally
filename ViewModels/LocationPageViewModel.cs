@@ -909,14 +909,11 @@ public partial class LocationPageViewModel : BaseViewModel
         try
         {
             string imageSource = arrivalLocation.CountryFlagSource;
-            string title = string.Empty;
-
-            title = $"{AppResources.NewCountry}: {arrivalLocation.CountryName}";
 
             // Only show popup if we have an image to display
             if (string.IsNullOrEmpty(imageSource)) return;
 
-            var popupViewModel = new LocationDiscoveryPopupViewModel(imageSource, true, title);
+            var popupViewModel = new LocationDiscoveryPopupViewModel(imageSource, true, AppResources.NewCountry, arrivalLocation.CountryName);
             var popup = new LocationDiscoveryPopupView(popupViewModel);
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
@@ -934,19 +931,17 @@ public partial class LocationPageViewModel : BaseViewModel
         try
         {
             string imageUrl = string.Empty;
-            string title = string.Empty;
 
             if (Constants.SupportedSubRegionCountryCodeList.Contains(subRegionCode.CountryCode.ToLower()))
             {
                 // Show emblem for supported sub-region
                 imageUrl = SubRegion.GetFlagSource(subRegionCode);
-                title = $"{AppResources.NewRegion}: {subRegionTitle}";
             }
 
             // Only show popup if we have an image to display
             if (string.IsNullOrEmpty(imageUrl)) return;
 
-            var popupViewModel = new LocationDiscoveryPopupViewModel(imageUrl, false, title);
+            var popupViewModel = new LocationDiscoveryPopupViewModel(imageUrl, false, AppResources.NewRegion, subRegionTitle);
             var popup = new LocationDiscoveryPopupView(popupViewModel);
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
