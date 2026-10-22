@@ -77,6 +77,7 @@ public class StampFrame : GraphicsView
                 case StampPattern.Journey: Journey(d, r); break;
                 case StampPattern.StarSeal: StarSeal(d, r); break;
                 case StampPattern.PostageStamp: PostageStamp(d, r, frame.Seed); break;
+                case StampPattern.MovieTicket: MovieTicket(d, r, frame.Seed); break;
                 default:
                     // The original stamp: a thick square with a dashed one inside
                     var square = bounds.Inflate(-2, -2);
@@ -505,6 +506,90 @@ public class StampFrame : GraphicsView
                 d.Canvas.DrawLine(inner.Center.X + 10, inner.Bottom - 6, inner.Right - 10, inner.Bottom - 6);
             });
             Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3.5f);
+        }
+
+        // A movie ticket: rounded corners and a round notch in each end. The main part is solid ink,
+        // the country's text standing out of it in the paper's colour (see StampPatterns.TextInkFor);
+        // past a perforated line at the right, a pale stub carries a barcode.
+        static void MovieTicket(Pen d, RectF r, int seed)
+        {
+            var ticket = r.Inflate(-1, -(r.Height * 0.04f));
+            var notch = d.Small ? 3.5f : 9f;
+            var edge = MovieTicketEdge(ticket, d.Small ? 3 : 8, notch);
+            var stubX = ticket.Right - ticket.Width * StampPatterns.MovieTicketStub;
+
+            d.Canvas.SaveState();
+            d.Canvas.ClipPath(edge);
+            d.Canvas.FillColor = d.Ink;
+            d.Canvas.FillRectangle(ticket.Left, ticket.Top, stubX - ticket.Left, ticket.Height);
+            d.Canvas.FillColor = Paper;
+            d.Canvas.FillRectangle(stubX, ticket.Top, ticket.Right - stubX, ticket.Height);
+            d.FillTint(() => d.Canvas.FillRectangle(stubX, ticket.Top, ticket.Right - stubX, ticket.Height));
+            d.Canvas.RestoreState();
+            d.Stroke(d.Small ? d.Inner : d.Inner * 1.3f, () => d.Canvas.DrawPath(edge));
+            // The perforation between the ticket and its stub
+            d.Canvas.StrokeColor = d.Ink;
+            d.Canvas.StrokeSize = d.Small ? 0.8f : 1.4f;
+            d.Canvas.StrokeDashPattern = d.Small ? [1.5f, 1.5f] : [3, 3];
+            d.Canvas.DrawLine(stubX, ticket.Top, stubX, ticket.Bottom);
+            d.Canvas.StrokeDashPattern = null;
+
+            // The barcode across the stub, its bars running across it, the same for each stamp
+            var margin = d.Small ? 2.5f : 7f;
+            var left = stubX + margin;
+            var right = ticket.Right - margin - (d.Small ? 0 : 2);
+            var top = ticket.Top + (d.Small ? 3 : 12);
+            var bottom = ticket.Bottom - (d.Small ? 3 : 12);
+            var random = new Random(seed * 7919 + 13);
+            d.Canvas.FillColor = d.Ink;
+            for (var y = top; y < bottom;)
+            {
+                var bar = (d.Small ? 0.6f : 1.1f) * (1 + random.Next(3));
+                var gap = (d.Small ? 0.6f : 1.1f) * (1 + random.Next(2));
+                d.Canvas.FillRectangle(left, y, right - left, Math.Min(bar, bottom - y));
+                y += bar + gap;
+            }
+            if (d.Small) return;
+
+            // A thin frame inside the ink, in the paper's colour, with stars at its top
+            var main = new RectF(ticket.Left, ticket.Top, stubX - ticket.Left, ticket.Height);
+            var frame = main.Inflate(-6, -6);
+            d.Canvas.StrokeColor = Paper;
+            d.Canvas.StrokeSize = d.Inner * 0.8f;
+            d.Canvas.DrawPath(MovieTicketEdge(frame, 5, notch, leftOnly: true));
+            d.Canvas.FillColor = Paper;
+            foreach (var x in new[] { -14f, 0f, 14f })
+            {
+                d.Canvas.FillPath(Star(new PointF(main.Center.X + x, frame.Top + 10), x == 0 ? 4.5f : 3.5f));
+            }
+        }
+
+        // A rectangle with rounded corners and a half-round notch in the middle of each end (only the
+        // left one with leftOnly: the frame inside the main part, whose right side is the perforation).
+        static PathF MovieTicketEdge(RectF r, float corner, float notch, bool leftOnly = false)
+        {
+            var path = new PathF();
+            var midY = r.Center.Y;
+            path.MoveTo(r.Left + corner, r.Top);
+            path.LineTo(r.Right - corner, r.Top);
+            path.QuadTo(r.Right, r.Top, r.Right, r.Top + corner);
+            if (!leftOnly)
+            {
+                path.LineTo(r.Right, midY - notch);
+                path.QuadTo(r.Right - notch * 1.3f, midY - notch, r.Right - notch * 1.3f, midY);
+                path.QuadTo(r.Right - notch * 1.3f, midY + notch, r.Right, midY + notch);
+            }
+            path.LineTo(r.Right, r.Bottom - corner);
+            path.QuadTo(r.Right, r.Bottom, r.Right - corner, r.Bottom);
+            path.LineTo(r.Left + corner, r.Bottom);
+            path.QuadTo(r.Left, r.Bottom, r.Left, r.Bottom - corner);
+            path.LineTo(r.Left, midY + notch);
+            path.QuadTo(r.Left + notch * 1.3f, midY + notch, r.Left + notch * 1.3f, midY);
+            path.QuadTo(r.Left + notch * 1.3f, midY - notch, r.Left, midY - notch);
+            path.LineTo(r.Left, r.Top + corner);
+            path.QuadTo(r.Left, r.Top, r.Left + corner, r.Top);
+            path.Close();
+            return path;
         }
 
         // A journey compass, traced from an illustration (Resources/Stamps/journey.txt): a double ring

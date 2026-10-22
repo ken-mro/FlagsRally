@@ -29,7 +29,8 @@ public record ArrivalLocation
     public StampPattern StampPattern { get; init; } = StampPattern.Square;
     public double StampTilt { get; init; }
     public Thickness StampMargin => StampPatterns.MarginFor(StampTilt);
-    public Color StampInk => StampPatterns.InkFor(StampPattern);
+    // The text's colour: the pattern's ink, or the paper's where the text stands out of solid ink
+    public Color StampInk => StampPatterns.TextInkFor(StampPattern);
     public Color StampDateInk => StampPatterns.DateInkFor(StampPattern);
     public Thickness StampPadding => StampPatterns.PaddingFor(StampPattern);
     public double StampArrivalFontSize => StampPatterns.ArrivalFontSizeFor(StampPattern);

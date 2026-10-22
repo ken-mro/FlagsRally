@@ -20,6 +20,7 @@ public enum StampPattern
     GlobePostmark,
     Journey,
     PostageStamp,
+    MovieTicket,
 }
 
 /// <summary>
@@ -98,6 +99,7 @@ public static class StampPatterns
         StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         StampPattern.PostageStamp => Token("StampInkOlive", "#4E6B2A"),
+        StampPattern.MovieTicket => Token("StampInkBurgundy", "#7A2638"),
         _ => Token("Ink", "#22252E"),
     };
 
@@ -121,6 +123,8 @@ public static class StampPatterns
         StampPattern.Triangle => new Thickness(40, 62, 40, 14),
         StampPattern.StarSeal => new Thickness(40, 36, 40, 30),
         StampPattern.PostageStamp => new Thickness(28, 36, 28, 32),
+        // The text keeps to the main part, left of the stub
+        StampPattern.MovieTicket => new Thickness(22, 34, 22 + 180 * MovieTicketStub, 22),
         _ => new Thickness(0),
     };
 
@@ -143,8 +147,21 @@ public static class StampPatterns
     public static Color DateInkFor(StampPattern pattern) => pattern switch
     {
         StampPattern.Square => Token("Stamp", "#B94047"),
+        _ => TextInkFor(pattern),
+    };
+
+    /// <summary>
+    /// The colour of a stamp's text and rules: its ink, except on the movie ticket, where the text
+    /// stands out of the solid ink in the paper's colour.
+    /// </summary>
+    public static Color TextInkFor(StampPattern pattern) => pattern switch
+    {
+        StampPattern.MovieTicket => Token("Paper", "#F4EEDF"),
         _ => InkFor(pattern),
     };
+
+    /// <summary>The share of the movie ticket's width taken by the stub with the barcode.</summary>
+    public const float MovieTicketStub = 0.25f;
 
     // The colour from Colors.xaml, or its value when there is no app (unit tests).
     static Color Token(string key, string fallback) =>

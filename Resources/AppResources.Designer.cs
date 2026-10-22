@@ -1682,5 +1682,14 @@ namespace FlagsRally.Resources {
         }
         
         
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie ticket.
+        /// </summary>
+        internal static string StampPatternMovieTicket {
+            get {
+                return ResourceManager.GetString("StampPatternMovieTicket", resourceCulture);
+            }
+        }
     }
 }

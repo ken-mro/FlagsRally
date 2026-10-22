@@ -659,4 +659,7 @@
   <data name="StampPatternPostageStamp" xml:space="preserve">
     <value>切手</value>
   </data>
+  <data name="StampPatternMovieTicket" xml:space="preserve">
+    <value>映画のチケット</value>
+  </data>
 </root>

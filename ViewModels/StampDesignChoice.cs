@@ -33,6 +33,7 @@ public partial class StampDesignChoice(StampPattern pattern) : ObservableObject
         StampPattern.GlobePostmark => AppResources.StampPatternGlobePostmark,
         StampPattern.Journey => AppResources.StampPatternJourney,
         StampPattern.PostageStamp => AppResources.StampPatternPostageStamp,
+        StampPattern.MovieTicket => AppResources.StampPatternMovieTicket,
         _ => AppResources.StampPatternSquare,
     };
 }
