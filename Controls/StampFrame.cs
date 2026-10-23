@@ -622,6 +622,37 @@ public class StampFrame : GraphicsView
         static void Journey(Pen d, RectF r)
         {
             var ring = Round(r);
+#if ANDROID || IOS || MACCATALYST
+            // The traced picture is some 190 shapes: drawn once into a picture for each size, and
+            // the picture put down from then on, so scrolling a passport of them stays smooth
+            var key = (Width: (int)MathF.Round(ring.Width * d.Canvas.DisplayScale), d.Small);
+            if (!JourneyPictures.TryGetValue(key, out var picture))
+            {
+                // Kept with its picture: disposing the context would dispose the picture's bitmap
+                var context = new Microsoft.Maui.Graphics.Platform.PlatformBitmapExportContext(
+                    (int)MathF.Ceiling(ring.Width), (int)MathF.Ceiling(ring.Height), d.Canvas.DisplayScale);
+                DrawJourney(new Pen(context.Canvas, d.Ink, d.Small), new RectF(0, 0, ring.Width, ring.Height));
+                picture = (context, context.Image);
+                if (JourneyPictures.Count >= 8)
+                {
+                    foreach (var old in JourneyPictures.Values) old.Context.Dispose();
+                    JourneyPictures.Clear();
+                }
+                JourneyPictures[key] = picture;
+            }
+            d.Canvas.DrawImage(picture.Image, ring.X, ring.Y, ring.Width, ring.Height);
+#else
+            DrawJourney(d, ring);
+#endif
+        }
+
+#if ANDROID || IOS || MACCATALYST
+        // A few sizes at most: the passport's, the popups' and the settings preview
+        static readonly Dictionary<(int Width, bool Small), (Microsoft.Maui.Graphics.Platform.PlatformBitmapExportContext Context, Microsoft.Maui.Graphics.IImage Image)> JourneyPictures = [];
+#endif
+
+        static void DrawJourney(Pen d, RectF ring)
+        {
             d.Canvas.FillColor = Paper;
             d.Canvas.FillEllipse(ring);
             JourneyPicture(d, ring, part => part == 'f');
