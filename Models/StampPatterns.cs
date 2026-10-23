@@ -102,7 +102,7 @@ public static class StampPatterns
         StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
         StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
         StampPattern.PostageStamp => Token("StampInkOlive", "#4E6B2A"),
-        StampPattern.MovieTicket => Token("StampInkBurgundy", "#7A2638"),
+        StampPattern.MovieTicket => Token("StampInkBurgundy", "#5C1A29"),
         _ => Token("Ink", "#22252E"),
     };
 

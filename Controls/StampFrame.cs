@@ -94,7 +94,9 @@ public class StampFrame : GraphicsView
 
             if (!frame.IsSmall)
             {
-                InkGaps(canvas, bounds, new Random(frame.Seed * 31 + (int)frame.Pattern));
+                // Fewer gaps on the movie ticket: they are the colour of its text and would hide it
+                InkGaps(canvas, bounds, new Random(frame.Seed * 31 + (int)frame.Pattern),
+                    frame.Pattern == StampPattern.MovieTicket ? 0.25f : 1);
             }
         }
 
@@ -1350,10 +1352,10 @@ public class StampFrame : GraphicsView
         }
 
         // Where a rubber stamp did not take the ink: small paper-coloured specks over the lines.
-        static void InkGaps(ICanvas canvas, RectF bounds, Random random)
+        static void InkGaps(ICanvas canvas, RectF bounds, Random random, float density = 1)
         {
             canvas.FillColor = Paper.WithAlpha(0.85f);
-            var count = (int)(bounds.Width * bounds.Height / 200);
+            var count = (int)(bounds.Width * bounds.Height / 200 * density);
             for (var i = 0; i < count; i++)
             {
                 var x = bounds.Left + (float)random.NextDouble() * bounds.Width;
