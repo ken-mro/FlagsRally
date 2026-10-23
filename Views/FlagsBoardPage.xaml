@@ -26,8 +26,11 @@
         <!--  A visited region and one not visited yet have their own tiles, so a tile builds only the views
               it shows and an unvisited region's flag is never loaded. Page settings come through the page
               (x:Reference), found once, instead of each tile looking up its ancestors (RelativeSource).  -->
+        <!--  Both kinds of tile keep the same margin, so the gap is even wherever a visited tile (drawn to
+              its edges) and one not visited (a Border, whose stroke sits a little inside) meet  -->
         <DataTemplate x:Key="UnvisitedTile" x:DataType="{x:Type models:SubRegion}">
             <Border
+                Margin="3"
                 BackgroundColor="Transparent"
                 Stroke="{Binding Tile.Frame}"
                 StrokeThickness="4">
@@ -51,7 +54,7 @@
         <!--  The paper, motifs and frame are the country's (CountryTileFrame, drawn once per size); the
               flag, name, date and ARRIVAL sit on them in the country's colours (SubRegion.Tile)  -->
         <DataTemplate x:Key="VisitedTile" x:DataType="{x:Type models:SubRegion}">
-            <Grid>
+            <Grid Margin="3">
                 <controls:CountryTileFrame CountryCode="{Binding Code.CountryCode}" />
                 <VerticalStackLayout
                     Padding="4,4,4,10"
