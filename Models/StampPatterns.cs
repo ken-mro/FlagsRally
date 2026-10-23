@@ -66,8 +66,17 @@ public static class StampPatterns
     {
         if (style.Pattern is StampPattern pattern) return pattern;
         var seed = style.ByCountry ? arrival.CountryCode.ToUpperInvariant() : $"arrival-{arrival.Id}";
-        return All[(int)(StableHash(seed) % (uint)All.Count)];
+        return Pick(seed, All);
     }
+
+    /// <summary>
+    /// The pattern scoring highest for the seed (rendezvous hashing). Each pattern's score depends
+    /// only on the seed and the pattern's name, so adding a design moves only the stamps it now wins
+    /// (about one in the new number of designs), removing one moves only its own stamps, and the
+    /// order of the designs does not matter.
+    /// </summary>
+    public static StampPattern Pick(string seed, IEnumerable<StampPattern> candidates) =>
+        candidates.MaxBy(pattern => Mix(StableHash($"{seed}|{pattern}")));
 
     /// <summary>
     /// How far the stamp leans, in degrees (-4..+4, worked out from the arrival so it keeps its
@@ -171,6 +180,18 @@ public static class StampPatterns
         Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color
             ? color
             : Color.FromArgb(fallback);
+
+    // Spreads the bits of a hash (MurmurHash3's finaliser): FNV-1a of strings that differ only at
+    // the end differs little, and the scores of the patterns are compared with each other.
+    static uint Mix(uint hash)
+    {
+        hash ^= hash >> 16;
+        hash *= 0x85EBCA6B;
+        hash ^= hash >> 13;
+        hash *= 0xC2B2AE35;
+        hash ^= hash >> 16;
+        return hash;
+    }
 
     // FNV-1a: string.GetHashCode changes every time the app starts, which would reshuffle the stamps.
     static uint StableHash(string text)

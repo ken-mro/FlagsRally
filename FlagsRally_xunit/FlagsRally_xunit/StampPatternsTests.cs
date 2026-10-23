@@ -120,4 +120,40 @@ public class StampPatternsTests
     {
         Assert.Equal([StampPattern.Airmail], StampPatterns.All.Where(StampPatterns.IsLeftAligned));
     }
+
+    [Fact]
+    public void A_new_design_takes_over_only_the_stamps_it_wins()
+    {
+        foreach (var added in StampPatterns.All)
+        {
+            var before = StampPatterns.All.Where(p => p != added).ToList();
+            foreach (var id in Enumerable.Range(1, 500))
+            {
+                var seed = $"arrival-{id}";
+                var old = StampPatterns.Pick(seed, before);
+                var now = StampPatterns.Pick(seed, StampPatterns.All);
+                Assert.True(now == old || now == added, $"{seed} moved from {old} to {now}, not to the new {added}");
+            }
+        }
+    }
+
+    [Fact]
+    public void The_order_of_the_designs_does_not_matter()
+    {
+        foreach (var id in Enumerable.Range(1, 200))
+        {
+            Assert.Equal(StampPatterns.Pick($"arrival-{id}", StampPatterns.All), StampPatterns.Pick($"arrival-{id}", StampPatterns.All.Reverse()));
+        }
+    }
+
+    [Fact]
+    public void A_mix_spreads_the_stamps_evenly_over_the_designs()
+    {
+        var count = StampPatterns.All.Count;
+        var counts = Enumerable.Range(1, count * 300)
+            .GroupBy(id => StampPatterns.Pick($"arrival-{id}", StampPatterns.All))
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        Assert.All(StampPatterns.All, p => Assert.InRange(counts.GetValueOrDefault(p), 200, 400));
+    }
 }
