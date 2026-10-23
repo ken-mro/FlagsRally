@@ -39,7 +39,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.3.0</string>
 	<key>CFBundleVersion</key>
-	<string>21</string>
+	<string>22</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
