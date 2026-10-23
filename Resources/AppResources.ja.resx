@@ -662,4 +662,7 @@
   <data name="StampPatternMovieTicket" xml:space="preserve">
     <value>映画のチケット</value>
   </data>
+  <data name="StampStyleLocked" xml:space="preserve">
+    <value>スタンプのデザインと傾きは、サブスクリプションの登録中か、自分の Google Maps API キーを使っているときに選べます。それまでは四角（従来）になります。</value>
+  </data>
 </root>

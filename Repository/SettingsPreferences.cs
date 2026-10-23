@@ -129,6 +129,14 @@ public partial class SettingsPreferences : ObservableObject
 
     public void SetStampStyle(StampStyle style) => _defaultPreferences.Set(_stampStyle, style.Key);
 
+    // Passport stamp designs and tilt are for subscribers and those using their own API key. Others
+    // get the original square, upright; their choices are kept and come back once unlocked.
+    public bool CanChooseStampStyle() => GetIsSubscribed() || IsApiKeySet();
+
+    public StampStyle GetPassportStampStyle() => CanChooseStampStyle() ? GetStampStyle() : StampStyle.Default;
+
+    public bool GetPassportStampTilt() => CanChooseStampStyle() && GetStampTilt();
+
     // Whether the stamps lean a little, as if pressed by hand. Until it is chosen, a mix leans as it
     // did before tilting was a setting of its own, and the other styles stand upright.
     public bool GetStampTilt() => _defaultPreferences.ContainsKey(_stampTilt)

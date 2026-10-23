@@ -662,4 +662,7 @@
   <data name="StampPatternMovieTicket" xml:space="preserve">
     <value>Movie ticket</value>
   </data>
+  <data name="StampStyleLocked" xml:space="preserve">
+    <value>Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the original square.</value>
+  </data>
 </root>

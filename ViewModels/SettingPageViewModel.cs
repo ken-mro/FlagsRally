@@ -37,8 +37,12 @@ namespace FlagsRally.ViewModels
         private string _apiKey;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(SubscriptionStatusText))]
+        [NotifyPropertyChangedFor(nameof(SubscriptionStatusText), nameof(CanChooseStampStyle), nameof(IsStampStyleLocked))]
         private bool _isSubscribed;
+
+        // The stamp designs and tilt need a subscription or the user's own API key
+        public bool CanChooseStampStyle => IsSubscribed || _settingPreferences.IsApiKeySet();
+        public bool IsStampStyleLocked => !CanChooseStampStyle;
 
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
         public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
@@ -75,11 +79,16 @@ namespace FlagsRally.ViewModels
         private bool _isStampDesignListOpen;
 
         [RelayCommand]
-        void ToggleStampDesignList() => IsStampDesignListOpen = !IsStampDesignListOpen;
+        async Task ToggleStampDesignList()
+        {
+            if (!await UnlockStampStyleAsync()) return;
+            IsStampDesignListOpen = !IsStampDesignListOpen;
+        }
 
         [RelayCommand]
-        void PickStampDesign(StampDesignChoice choice)
+        async Task PickStampDesign(StampDesignChoice choice)
         {
+            if (!await UnlockStampStyleAsync()) return;
             SelectedStampDesign = choice;
             IsStampDesignListOpen = false;
         }
@@ -97,6 +106,7 @@ namespace FlagsRally.ViewModels
 
         partial void OnSelectedStampDesignChanged(StampDesignChoice value)
         {
+            if (!CanChooseStampStyle) return;
             foreach (var choice in StampDesignChoices) choice.IsSelected = choice == value;
             // Picking a design is choosing the same design for every stamp
             _settingPreferences.SetStampSamePattern(value.Pattern);
@@ -106,17 +116,29 @@ namespace FlagsRally.ViewModels
         [ObservableProperty]
         private bool _stampTilt;
 
-        partial void OnStampTiltChanged(bool value) => _settingPreferences.SetStampTilt(value);
+        partial void OnStampTiltChanged(bool value)
+        {
+            if (CanChooseStampStyle) _settingPreferences.SetStampTilt(value);
+        }
 
         [RelayCommand]
-        void SetStampMode(string mode)
+        async Task SetStampMode(string mode)
         {
+            if (!await UnlockStampStyleAsync()) return;
             SetStampStyle(mode switch
             {
                 "Mixed" => StampStyle.Mixed,
                 "ByCountry" => StampStyle.PerCountry,
                 _ => StampStyle.Single(SelectedStampDesign.Pattern),
             });
+        }
+
+        // Locked: offers the subscription, as the subscribe button does. True once it is unlocked.
+        async Task<bool> UnlockStampStyleAsync()
+        {
+            if (CanChooseStampStyle) return true;
+            await ManageSubscriptionAsync();
+            return CanChooseStampStyle;
         }
 
         void SetStampStyle(StampStyle style)
@@ -153,6 +175,8 @@ namespace FlagsRally.ViewModels
             var samePattern = _settingPreferences.GetStampSamePattern();
             _selectedStampDesign = StampDesignChoices.First(choice => choice.Pattern == samePattern);
             _selectedStampDesign.IsSelected = true;
+            // The last known status, so the stamp settings open unlocked for a subscriber while it is checked again
+            _isSubscribed = _settingPreferences.GetIsSubscribed();
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;
@@ -293,6 +317,8 @@ namespace FlagsRally.ViewModels
                 if (!string.IsNullOrEmpty(_settingPreferences.GetApiKey()))
                 {
                     _settingPreferences.SetApiKey(string.Empty);
+                    OnPropertyChanged(nameof(CanChooseStampStyle));
+                    OnPropertyChanged(nameof(IsStampStyleLocked));
                     await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.ClearAPIKey}", "OK");
                 }
 
@@ -303,6 +329,8 @@ namespace FlagsRally.ViewModels
             if (isApiKeyValid)
             {
                 _settingPreferences.SetApiKey(ApiKey);
+                OnPropertyChanged(nameof(CanChooseStampStyle));
+                OnPropertyChanged(nameof(IsStampStyleLocked));
                 await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.SetAPIKey}", "OK");
             }
             else

@@ -1691,5 +1691,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StampPatternMovieTicket", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the original square..
+        /// </summary>
+        internal static string StampStyleLocked {
+            get {
+                return ResourceManager.GetString("StampStyleLocked", resourceCulture);
+            }
+        }
     }
 }

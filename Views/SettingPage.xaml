@@ -7,6 +7,7 @@
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel"
     Style="{StaticResource PaperPage}">
@@ -31,6 +32,11 @@
             <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
             <Setter Property="Margin" Value="4,2,4,-4" />
         </Style>
+        <toolkit:BoolToObjectConverter
+            x:Key="StampLockOpacity"
+            x:TypeArguments="x:Double"
+            FalseObject="0.45"
+            TrueObject="1" />
         <Style x:Key="SettingsCheck" TargetType="Label">
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="FontSize" Value="20" />
@@ -228,8 +234,23 @@
             <!--  Passport stamps: the design (a mix, one per country, or the same one for every stamp,
                   picked in a dropdown) and, apart from it, whether they lean as if pressed by hand  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.PassportStamps}" />
+            <!--  Locked without a subscription or the user's own API key: a note with the subscribe button  -->
+            <Border IsVisible="{Binding IsStampStyleLocked}" Style="{StaticResource SettingsCard}">
+                <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
+                    <Label
+                        FontSize="13"
+                        Text="{x:Static strings:AppResources.StampStyleLocked}"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding ManageSubscriptionCommand}"
+                        Text="{x:Static strings:AppResources.Subscribe}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
             <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampDesign}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource SettingsCard}">
                 <VerticalStackLayout>
                     <Grid ColumnDefinitions="Auto,*,Auto" Style="{StaticResource SettingsRow}">
                         <Grid.GestureRecognizers>
@@ -355,7 +376,7 @@
                 </VerticalStackLayout>
             </Border>
             <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampTilt}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource SettingsCard}">
                 <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
                     <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                         <Label FontSize="16" Text="{x:Static strings:AppResources.StampTiltOn}" />
@@ -363,6 +384,7 @@
                     </VerticalStackLayout>
                     <Switch
                         Grid.Column="1"
+                        IsEnabled="{Binding CanChooseStampStyle}"
                         IsToggled="{Binding StampTilt}"
                         OnColor="{StaticResource Navy}"
                         VerticalOptions="Center" />
