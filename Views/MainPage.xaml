@@ -45,6 +45,568 @@
             <Setter Property="HorizontalTextAlignment" Value="Center" />
             <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
         </Style>
+
+        <!--  The original stamp: a solid square with a dashed one inside  -->
+        <DataTemplate x:Key="SquareStamp" x:DataType="{x:Type models:ArrivalLocation}">
+            <SwipeView>
+                <SwipeView.LeftItems>
+                    <SwipeItem
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                        CommandParameter="{Binding .}"
+                        IconImageSource="eraser.png"
+                        Text="{x:Static strings:AppResources.Delete}" />
+                </SwipeView.LeftItems>
+                <!--  StampFrame draws the square and its dashed line with worn ink, like the other designs  -->
+                <Grid Margin="{Binding StampMargin}" Rotation="{Binding StampTilt}">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
+                    </Grid.GestureRecognizers>
+                    <controls:StampFrame Pattern="Square" Seed="{Binding Id}" />
+                    <Grid Padding="10">
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <FlyoutBase.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem
+                                        Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        CommandParameter="{Binding .}"
+                                        IconImageSource="eraser.png"
+                                        IsDestructive="True"
+                                        Text="{x:Static strings:AppResources.Delete}" />
+                                </MenuFlyout>
+                            </FlyoutBase.ContextFlyout>
+                            <OnPlatform x:TypeArguments="View">
+                                <On Platform="MacCatalyst, iOS, Android">
+                                    <Label
+                                        Margin="-2"
+                                        FontSize="47"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        Text="{Binding CountryFlagSource}"
+                                        VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding AdminAreaFlagSource}"
+                                                TargetType="Label"
+                                                Value="">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </On>
+                                <On Platform="Android">
+                                    <Label
+                                        FontSize="45"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        Text="{Binding CountryFlagSource}"
+                                        VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding AdminAreaFlagSource}"
+                                                TargetType="Label"
+                                                Value="">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </On>
+                                <On Platform="WinUI">
+                                    <Image
+                                        Margin="10"
+                                        HeightRequest="40"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        Source="{Binding CountryFlagSource}"
+                                        VerticalOptions="Center" />
+                                </On>
+                            </OnPlatform>
+                            <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the stamp again  -->
+                            <Image
+                                Margin="10"
+                                HeightRequest="40"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                Source="{Binding AdminAreaFlagSource}"
+                                VerticalOptions="Center"
+                                WidthRequest="80">
+                                <Image.Triggers>
+                                    <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
+                                    <DataTrigger
+                                        Binding="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        TargetType="Image"
+                                        Value="True">
+                                        <Setter Property="Source" Value="{x:Null}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding AdminAreaFlagSource}"
+                                        TargetType="Image"
+                                        Value="">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                            <controls:StampNameLabel
+                                Padding="2,0,2,2"
+                                FontAttributes="Bold"
+                                FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
+                                FontSize="20"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                MinFontSize="15"
+                                Name="{Binding CountryName}"
+                                TwoLineMinFontSize="11"
+                                TextColor="{StaticResource Ink}"
+                                VerticalOptions="Center" />
+                            <controls:StampNameLabel
+                                Padding="2,0,2,2"
+                                FontAttributes="Bold"
+                                FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
+                                FontSize="20"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                MinFontSize="15"
+                                Name="{Binding AdminAreaName}"
+                                TwoLineMinFontSize="11"
+                                TextColor="{StaticResource Ink}"
+                                VerticalOptions="Center" />
+                            <Line
+                                HorizontalOptions="Center"
+                                Stroke="{StaticResource Ink}"
+                                StrokeDashArray="2,2"
+                                StrokeThickness="2"
+                                X1="0"
+                                X2="150"
+                                Y1="0"
+                                Y2="0" />
+                            <controls:OneLineFittingLabel
+                                Margin="8,0"
+                                FontAttributes="Bold"
+                                FontFamily="craftmincho"
+                                FontSize="Body"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                HorizontalTextAlignment="Center"
+                                LineBreakMode="WordWrap"
+                                LineHeight="1"
+                                Text="{Binding ArrivalDateString}"
+                                TextColor="{StaticResource Stamp}"
+                                VerticalOptions="Center" />
+                            <controls:OneLineFittingLabel
+                                Margin="8,0"
+                                FontAttributes="Bold"
+                                FontFamily="craftmincho"
+                                FontSize="Body"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                HorizontalTextAlignment="Center"
+                                LineBreakMode="WordWrap"
+                                LineHeight="1"
+                                Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
+                                TextColor="{StaticResource Stamp}"
+                                VerticalOptions="Center" />
+                            <Line
+                                HorizontalOptions="Center"
+                                Stroke="{StaticResource Ink}"
+                                StrokeDashArray="2,2"
+                                StrokeThickness="2"
+                                X1="0"
+                                X2="120"
+                                Y1="0"
+                                Y2="0" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontAutoScalingEnabled="True"
+                                FontFamily="JerseyclubGrungeBold"
+                                FontSize="40"
+                                HorizontalOptions="Center"
+                                LineBreakMode="NoWrap"
+                                Text="ARRIVAL"
+                                TextColor="{StaticResource Ink}"
+                                VerticalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Grid>
+            </SwipeView>
+        </DataTemplate>
+        <!--  The other patterns: StampFrame draws the outline in the pattern's ink, the text sits on top  -->
+        <DataTemplate x:Key="ShapedStamp" x:DataType="{x:Type models:ArrivalLocation}">
+            <SwipeView>
+                <SwipeView.LeftItems>
+                    <SwipeItem
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                        CommandParameter="{Binding .}"
+                        IconImageSource="eraser.png"
+                        Text="{x:Static strings:AppResources.Delete}" />
+                </SwipeView.LeftItems>
+                <!--  Shrinks as a whole in a cell narrower than the stamp is drawn for  -->
+                <controls:ShrinkToFitLayout DesignWidth="180">
+                    <Grid Margin="{Binding StampMargin}" Rotation="{Binding StampTilt}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        <controls:StampFrame Pattern="{Binding StampPattern}" Seed="{Binding Id}" />
+                        <Grid>
+                            <VerticalStackLayout Padding="{Binding StampPadding}" VerticalOptions="Center">
+                                <FlyoutBase.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem
+                                            Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            CommandParameter="{Binding .}"
+                                            IconImageSource="eraser.png"
+                                            IsDestructive="True"
+                                            Text="{x:Static strings:AppResources.Delete}" />
+                                    </MenuFlyout>
+                                </FlyoutBase.ContextFlyout>
+                                <OnPlatform x:TypeArguments="View">
+                                    <On Platform="MacCatalyst, iOS, Android">
+                                        <Label
+                                            Margin="-2"
+                                            FontSize="38"
+                                            HorizontalOptions="{Binding StampAlignment}"
+                                            IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            Text="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding AdminAreaFlagSource}"
+                                                    TargetType="Label"
+                                                    Value="">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </On>
+                                    <On Platform="Android">
+                                        <Label
+                                            FontSize="36"
+                                            HorizontalOptions="{Binding StampAlignment}"
+                                            IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            Text="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding AdminAreaFlagSource}"
+                                                    TargetType="Label"
+                                                    Value="">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </On>
+                                    <On Platform="WinUI">
+                                        <Image
+                                            Margin="10"
+                                            HeightRequest="40"
+                                            HorizontalOptions="{Binding StampAlignment}"
+                                            IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            Source="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center" />
+                                    </On>
+                                </OnPlatform>
+                                <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the stamp again  -->
+                                <Image
+                                    Margin="6"
+                                    HeightRequest="32"
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    Source="{Binding AdminAreaFlagSource}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="64">
+                                    <Image.Triggers>
+                                        <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
+                                        <DataTrigger
+                                            Binding="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            TargetType="Image"
+                                            Value="True">
+                                            <Setter Property="Source" Value="{x:Null}" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding AdminAreaFlagSource}"
+                                            TargetType="Image"
+                                            Value="">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                                <!--  Shrinks to stay on one line, or goes onto two even lines, never broken mid-word  -->
+                                <controls:StampNameLabel
+                                    Padding="2,0,2,2"
+                                    FontAutoScalingEnabled="False"
+                                    FontAttributes="Bold"
+                                    FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
+                                    FontSize="18"
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    HorizontalTextAlignment="{Binding StampTextAlignment}"
+                                    IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    MinFontSize="13"
+                                    Name="{Binding CountryName}"
+                                    TwoLineMinFontSize="7.5"
+                                    TextColor="{Binding StampInk}"
+                                    VerticalOptions="Center" />
+                                <!--  Shrinks to stay on one line, or goes onto two even lines, never broken mid-word  -->
+                                <controls:StampNameLabel
+                                    Padding="2,0,2,2"
+                                    FontAutoScalingEnabled="False"
+                                    FontAttributes="Bold"
+                                    FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
+                                    FontSize="18"
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    HorizontalTextAlignment="{Binding StampTextAlignment}"
+                                    IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    MinFontSize="13"
+                                    Name="{Binding AdminAreaName}"
+                                    TwoLineMinFontSize="7.5"
+                                    TextColor="{Binding StampInk}"
+                                    VerticalOptions="Center" />
+                                <Line
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    Stroke="{Binding StampInk}"
+                                    StrokeDashArray="2,2"
+                                    StrokeThickness="2"
+                                    X1="0"
+                                    X2="{Binding StampLongLine}"
+                                    Y1="0"
+                                    Y2="0" />
+                                <controls:OneLineFittingLabel
+                                    MinFontSize="8"
+                                    Margin="8,0"
+                                    FontAttributes="Bold"
+                                    FontAutoScalingEnabled="False"
+                                    FontFamily="craftmincho"
+                                    FontSize="14"
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    HorizontalTextAlignment="{Binding StampTextAlignment}"
+                                    LineBreakMode="WordWrap"
+                                    LineHeight="1"
+                                    Text="{Binding ArrivalDateString}"
+                                    TextColor="{Binding StampDateInk}"
+                                    VerticalOptions="Center" />
+                                <controls:OneLineFittingLabel
+                                    MinFontSize="8"
+                                    Margin="8,0"
+                                    FontAttributes="Bold"
+                                    FontAutoScalingEnabled="False"
+                                    FontFamily="craftmincho"
+                                    FontSize="14"
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    HorizontalTextAlignment="{Binding StampTextAlignment}"
+                                    LineBreakMode="WordWrap"
+                                    LineHeight="1"
+                                    Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
+                                    TextColor="{Binding StampDateInk}"
+                                    VerticalOptions="Center" />
+                                <Line
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    Stroke="{Binding StampInk}"
+                                    StrokeDashArray="2,2"
+                                    StrokeThickness="2"
+                                    X1="0"
+                                    X2="{Binding StampShortLine}"
+                                    Y1="0"
+                                    Y2="0" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontAutoScalingEnabled="False"
+                                    FontFamily="JerseyclubGrungeBold"
+                                    FontSize="{Binding StampArrivalFontSize}"
+                                    HorizontalOptions="{Binding StampAlignment}"
+                                    LineBreakMode="NoWrap"
+                                    IsVisible="{Binding StampShowsArrival}"
+                                    Text="ARRIVAL"
+                                    TextColor="{Binding StampInk}"
+                                    VerticalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Grid>
+                </controls:ShrinkToFitLayout>
+            </SwipeView>
+        </DataTemplate>
+
+        <!--  The journey compass: StampFrame draws the compass, the sun and the ways of travelling round
+              the middle; the flag sits in the middle and the date between the rules at the bottom, no name  -->
+        <DataTemplate x:Key="JourneyStamp" x:DataType="{x:Type models:ArrivalLocation}">
+            <SwipeView>
+                <SwipeView.LeftItems>
+                    <SwipeItem
+                        BackgroundColor="{StaticResource Stamp}"
+                        Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                        CommandParameter="{Binding .}"
+                        IconImageSource="eraser.png"
+                        Text="{x:Static strings:AppResources.Delete}" />
+                </SwipeView.LeftItems>
+                <!--  Shrinks as a whole in a cell narrower than the stamp is drawn for  -->
+                <controls:ShrinkToFitLayout DesignWidth="184">
+                    <Grid Margin="{Binding StampMargin}" Rotation="{Binding StampTilt}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        <AbsoluteLayout
+                            HeightRequest="172"
+                            HorizontalOptions="Center"
+                            WidthRequest="172">
+                            <FlyoutBase.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem
+                                        Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                        CommandParameter="{Binding .}"
+                                        IconImageSource="eraser.png"
+                                        IsDestructive="True"
+                                        Text="{x:Static strings:AppResources.Delete}" />
+                                </MenuFlyout>
+                            </FlyoutBase.ContextFlyout>
+                            <controls:StampFrame
+                                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                AbsoluteLayout.LayoutFlags="All"
+                                Pattern="{Binding StampPattern}"
+                                Seed="{Binding Id}" />
+                            <!--  The flag on the globe  -->
+                            <Grid AbsoluteLayout.LayoutBounds="0.5,0.453,0.36,0.27" AbsoluteLayout.LayoutFlags="All">
+                                <OnPlatform x:TypeArguments="View">
+                                    <On Platform="MacCatalyst, iOS, Android">
+                                        <Label
+                                            Margin="-2"
+                                            FontAutoScalingEnabled="False"
+                                            FontSize="38"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            Text="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding AdminAreaFlagSource}"
+                                                    TargetType="Label"
+                                                    Value="">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </On>
+                                    <On Platform="Android">
+                                        <Label
+                                            FontAutoScalingEnabled="False"
+                                            FontSize="30"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            Text="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding AdminAreaFlagSource}"
+                                                    TargetType="Label"
+                                                    Value="">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </On>
+                                    <On Platform="WinUI">
+                                        <Image
+                                            Margin="10"
+                                            HeightRequest="40"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            Source="{Binding CountryFlagSource}"
+                                            VerticalOptions="Center" />
+                                    </On>
+                                </OnPlatform>
+                                <!--  A fixed box about the globe's size (flags up to 2:1 keep their height), so a flag arriving does not lay out the stamp again  -->
+                                <Image
+                                    HeightRequest="24"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    Source="{Binding AdminAreaFlagSource}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="48">
+                                    <Image.Triggers>
+                                        <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
+                                        <DataTrigger
+                                            Binding="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                            TargetType="Image"
+                                            Value="True">
+                                            <Setter Property="Source" Value="{x:Null}" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding AdminAreaFlagSource}"
+                                            TargetType="Image"
+                                            Value="">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                            </Grid>
+                            <!--  The name above the date: one line, or two reaching up over the faded picture  -->
+                            <Grid AbsoluteLayout.LayoutBounds="0.5,0.718,0.55,0.16" AbsoluteLayout.LayoutFlags="All">
+                                <controls:StampNameLabel
+                                    Margin="2,0"
+                                    FontAutoScalingEnabled="False"
+                                    FontAttributes="Bold"
+                                    FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
+                                    FontSize="14"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    MinFontSize="10"
+                                    Name="{Binding CountryName}"
+                                    TwoLineMinFontSize="6.5"
+                                    TextColor="{Binding StampInk}"
+                                    VerticalOptions="End" />
+                                <controls:StampNameLabel
+                                    Margin="2,0"
+                                    FontAutoScalingEnabled="False"
+                                    FontAttributes="Bold"
+                                    FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
+                                    FontSize="14"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    MinFontSize="10"
+                                    Name="{Binding AdminAreaName}"
+                                    TwoLineMinFontSize="6.5"
+                                    TextColor="{Binding StampInk}"
+                                    VerticalOptions="End" />
+                            </Grid>
+                            <!--  The date near the bottom  -->
+                            <Grid AbsoluteLayout.LayoutBounds="0.5,0.834,0.5,0.09" AbsoluteLayout.LayoutFlags="All">
+                                <controls:OneLineFittingLabel
+                                    MinFontSize="7"
+                                    Margin="2,0"
+                                    FontAttributes="Bold"
+                                    FontFamily="craftmincho"
+                                    FontSize="13"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
+                                    LineHeight="1"
+                                    Text="{Binding ArrivalDateString}"
+                                    TextColor="{Binding StampDateInk}"
+                                    VerticalOptions="Center" />
+                                <controls:OneLineFittingLabel
+                                    MinFontSize="7"
+                                    Margin="2,0"
+                                    FontAttributes="Bold"
+                                    FontFamily="craftmincho"
+                                    FontSize="13"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
+                                    LineHeight="1"
+                                    Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
+                                    TextColor="{Binding StampDateInk}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </AbsoluteLayout>
+                    </Grid>
+                </controls:ShrinkToFitLayout>
+            </SwipeView>
+        </DataTemplate>
     </ContentPage.Resources>
     <!--  Once the passport has scrolled away, its numbers move up beside the title as icon + number
           pairs (the same icons as in the passport header), which stay on one line in any language.  -->
@@ -237,202 +799,12 @@
                 <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
             </CollectionView.ItemsLayout>
 
+            <!--  The original square stamp, or one drawn in another shape (Settings > Passport stamps)  -->
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type models:ArrivalLocation}">
-                    <SwipeView>
-                        <SwipeView.LeftItems>
-                            <SwipeItem
-                                BackgroundColor="{StaticResource Stamp}"
-                                Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                CommandParameter="{Binding .}"
-                                IconImageSource="eraser.png"
-                                Text="{x:Static strings:AppResources.Delete}" />
-                        </SwipeView.LeftItems>
-                        <Border
-                            Margin="2"
-                            BackgroundColor="Transparent"
-                            Stroke="{StaticResource Ink}"
-                            StrokeShape="Rectangle"
-                            StrokeThickness="4">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
-                            <Border
-                                Margin="2"
-                                BackgroundColor="Transparent"
-                                Stroke="{StaticResource Ink}"
-                                StrokeDashArray="2,2"
-                                StrokeShape="Rectangle"
-                                StrokeThickness="2">
-                                <VerticalStackLayout VerticalOptions="Center">
-                                    <FlyoutBase.ContextFlyout>
-                                        <MenuFlyout>
-                                            <MenuFlyoutItem
-                                                Command="{Binding ViewModel.DeleteArrivalLocationCommand, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                                CommandParameter="{Binding .}"
-                                                IconImageSource="eraser.png"
-                                                IsDestructive="True"
-                                                Text="{x:Static strings:AppResources.Delete}" />
-                                        </MenuFlyout>
-                                    </FlyoutBase.ContextFlyout>
-                                    <OnPlatform x:TypeArguments="View">
-                                        <On Platform="MacCatalyst, iOS, Android">
-                                            <Label
-                                                Margin="-2"
-                                                FontSize="47"
-                                                HorizontalOptions="Center"
-                                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                                Text="{Binding CountryFlagSource}"
-                                                VerticalOptions="Center">
-                                                <Label.Triggers>
-                                                    <DataTrigger
-                                                        Binding="{Binding AdminAreaFlagSource}"
-                                                        TargetType="Label"
-                                                        Value="">
-                                                        <Setter Property="IsVisible" Value="True" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </On>
-                                        <On Platform="Android">
-                                            <Label
-                                                FontSize="45"
-                                                HorizontalOptions="Center"
-                                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                                Text="{Binding CountryFlagSource}"
-                                                VerticalOptions="Center">
-                                                <Label.Triggers>
-                                                    <DataTrigger
-                                                        Binding="{Binding AdminAreaFlagSource}"
-                                                        TargetType="Label"
-                                                        Value="">
-                                                        <Setter Property="IsVisible" Value="True" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </On>
-                                        <On Platform="WinUI">
-                                            <Image
-                                                Margin="10"
-                                                HeightRequest="40"
-                                                HorizontalOptions="Center"
-                                                IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                                Source="{Binding CountryFlagSource}"
-                                                VerticalOptions="Center" />
-                                        </On>
-                                    </OnPlatform>
-                                    <!--  A fixed box (flags up to 2:1 keep their 40 height), so a flag arriving does not lay out the stamp again  -->
-                                    <Image
-                                        Margin="10"
-                                        HeightRequest="40"
-                                        HorizontalOptions="Center"
-                                        IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                        Source="{Binding AdminAreaFlagSource}"
-                                        VerticalOptions="Center"
-                                        WidthRequest="80">
-                                        <Image.Triggers>
-                                            <!--  Hidden while the stamps show countries: do not load the region's flag then  -->
-                                            <DataTrigger
-                                                Binding="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                                TargetType="Image"
-                                                Value="True">
-                                                <Setter Property="Source" Value="{x:Null}" />
-                                            </DataTrigger>
-                                            <DataTrigger
-                                                Binding="{Binding AdminAreaFlagSource}"
-                                                TargetType="Image"
-                                                Value="">
-                                                <Setter Property="IsVisible" Value="False" />
-                                            </DataTrigger>
-                                        </Image.Triggers>
-                                    </Image>
-                                    <Label
-                                        Padding="2,0"
-                                        FontAttributes="Bold"
-                                        FontFamily="{Binding CountryName, Converter={StaticResource FontFamilyConverter}}"
-                                        FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
-                                        HorizontalOptions="Center"
-                                        HorizontalTextAlignment="Center"
-                                        IsVisible="{Binding ViewModel.IsCountry, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                        LineBreakMode="CharacterWrap"
-                                        LineHeight="1"
-                                        MaxLines="2"
-                                        Text="{Binding CountryName}"
-                                        TextColor="{StaticResource Ink}"
-                                        VerticalOptions="Center" />
-                                    <Label
-                                        Padding="2,0"
-                                        FontAttributes="Bold"
-                                        FontFamily="{Binding AdminAreaName, Converter={StaticResource FontFamilyConverter}}"
-                                        FontSize="{Binding CountryName, Converter={StaticResource FontSizeConverter}}"
-                                        HorizontalOptions="Center"
-                                        HorizontalTextAlignment="Center"
-                                        IsVisible="{Binding ViewModel.IsAdminArea, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                        LineBreakMode="CharacterWrap"
-                                        LineHeight="1"
-                                        MaxLines="2"
-                                        Text="{Binding AdminAreaName}"
-                                        TextColor="{StaticResource Ink}"
-                                        VerticalOptions="Center" />
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="{StaticResource Ink}"
-                                        StrokeDashArray="2,2"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="150"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <controls:OneLineFittingLabel
-                                        Margin="8,0"
-                                        FontAttributes="Bold"
-                                        FontFamily="craftmincho"
-                                        FontSize="Body"
-                                        HorizontalOptions="Center"
-                                        IsVisible="{Binding ViewModel.DateIsVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                        HorizontalTextAlignment="Center"
-                                        LineBreakMode="WordWrap"
-                                        LineHeight="1"
-                                        Text="{Binding ArrivalDateString}"
-                                        TextColor="{StaticResource Stamp}"
-                                        VerticalOptions="Center" />
-                                    <controls:OneLineFittingLabel
-                                        Margin="8,0"
-                                        FontAttributes="Bold"
-                                        FontFamily="craftmincho"
-                                        FontSize="Body"
-                                        HorizontalOptions="Center"
-                                        IsVisible="{Binding ViewModel.DateIsNotVisible, Source={x:Reference page}, x:DataType=views:MainPage}"
-                                        HorizontalTextAlignment="Center"
-                                        LineBreakMode="WordWrap"
-                                        LineHeight="1"
-                                        Text="{Binding ArrivalDate, StringFormat='DD Mmm {0:yyyy}'}"
-                                        TextColor="{StaticResource Stamp}"
-                                        VerticalOptions="Center" />
-                                    <Line
-                                        HorizontalOptions="Center"
-                                        Stroke="{StaticResource Ink}"
-                                        StrokeDashArray="2,2"
-                                        StrokeThickness="2"
-                                        X1="0"
-                                        X2="120"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontAutoScalingEnabled="True"
-                                        FontFamily="JerseyclubGrungeBold"
-                                        FontSize="40"
-                                        HorizontalOptions="Center"
-                                        LineBreakMode="NoWrap"
-                                        Text="ARRIVAL"
-                                        TextColor="{StaticResource Ink}"
-                                        VerticalOptions="Center" />
-                                </VerticalStackLayout>
-                            </Border>
-                        </Border>
-                    </SwipeView>
-                </DataTemplate>
+                <views:StampTemplateSelector
+                    JourneyStamp="{StaticResource JourneyStamp}"
+                    ShapedStamp="{StaticResource ShapedStamp}"
+                    SquareStamp="{StaticResource SquareStamp}" />
             </CollectionView.ItemTemplate>
         </CollectionView>
 

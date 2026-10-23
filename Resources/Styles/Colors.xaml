@@ -9,6 +9,20 @@
     <Color x:Key="NavyDeep">#0F1C3A</Color>
     <Color x:Key="NavyMuted">#A3AEC8</Color>
     <Color x:Key="Stamp">#B94047</Color>
+    <!--  Inks of the passport stamp designs (Square uses Ink and Stamp)  -->
+    <Color x:Key="StampInkRed">#B8333A</Color>
+    <Color x:Key="StampInkGreen">#2F6B4F</Color>
+    <Color x:Key="StampInkBrown">#8A5A2B</Color>
+    <Color x:Key="StampInkPurple">#5B4389</Color>
+    <Color x:Key="StampInkTeal">#23789A</Color>
+    <Color x:Key="StampInkBlue">#24477F</Color>
+    <Color x:Key="StampInkCrimson">#A3262E</Color>
+    <Color x:Key="StampInkOchre">#A86F17</Color>
+    <Color x:Key="StampInkPink">#C9406F</Color>
+    <Color x:Key="StampInkVermilion">#C4482B</Color>
+    <Color x:Key="StampInkJourney">#063665</Color>
+    <Color x:Key="StampInkOlive">#4E6B2A</Color>
+    <Color x:Key="StampInkBurgundy">#5C1A29</Color>
     <Color x:Key="Paper">#F4EEDF</Color>
     <Color x:Key="PaperCard">#FBF8F0</Color>
     <Color x:Key="PaperEdge">#DDD2BA</Color>

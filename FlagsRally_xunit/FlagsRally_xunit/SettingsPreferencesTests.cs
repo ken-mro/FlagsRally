@@ -86,4 +86,46 @@ public class SettingsPreferencesTests
     {
         Assert.Equal(expected, SettingsPreferences.PickCountryCode(first, second, last));
     }
+    [Theory]
+    [InlineData("Mixed", true)]
+    [InlineData("ByCountry", false)]
+    [InlineData("Square", false)]
+    public void Until_tilt_is_chosen_only_a_mix_leans_as_before(string style, bool tilted)
+    {
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.ContainsKey("StampTilt", null)).Returns(false);
+        preferences.Setup(p => p.Get("StampStyle", It.IsAny<string>(), null)).Returns(style);
+
+        Assert.Equal(tilted, new SettingsPreferences(preferences.Object).GetStampTilt());
+    }
+
+    [Fact]
+    public void The_same_design_defaults_to_the_one_already_chosen_for_every_stamp()
+    {
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get("StampSamePattern", It.IsAny<string>(), null)).Returns(string.Empty);
+        preferences.Setup(p => p.Get("StampStyle", It.IsAny<string>(), null)).Returns("Ticket");
+
+        Assert.Equal(FlagsRally.Models.StampPattern.Ticket, new SettingsPreferences(preferences.Object).GetStampSamePattern());
+    }
+    [Theory]
+    [InlineData(false, "", false)]
+    [InlineData(true, "", true)]
+    [InlineData(false, "my-key", true)]
+    public void Stamp_designs_need_a_subscription_or_an_own_api_key(bool subscribed, string apiKey, bool unlocked)
+    {
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get("IsSubscribed", It.IsAny<string>(), null)).Returns(subscribed.ToString());
+        preferences.Setup(p => p.Get("ApiKey", It.IsAny<string>(), null)).Returns(apiKey);
+        preferences.Setup(p => p.Get("StampStyle", It.IsAny<string>(), null)).Returns("Ticket");
+        preferences.Setup(p => p.ContainsKey("StampTilt", null)).Returns(true);
+        preferences.Setup(p => p.Get("StampTilt", It.IsAny<bool>(), null)).Returns(true);
+        var settings = new SettingsPreferences(preferences.Object);
+
+        Assert.Equal(unlocked, settings.CanChooseStampStyle());
+        Assert.Equal(unlocked ? FlagsRally.Models.StampStyle.Single(FlagsRally.Models.StampPattern.Ticket) : FlagsRally.Models.StampStyle.Default, settings.GetPassportStampStyle());
+        Assert.Equal(unlocked, settings.GetPassportStampTilt());
+        // The choice itself is kept for when it is unlocked
+        Assert.Equal(FlagsRally.Models.StampPattern.Ticket, settings.GetStampStyle().Pattern);
+    }
 }

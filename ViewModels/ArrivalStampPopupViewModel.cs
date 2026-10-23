@@ -5,7 +5,9 @@ using FlagsRally.Models;
 namespace FlagsRally.ViewModels;
 
 /// <summary>
-/// An arrival's stamp as the passport shows it, opened from its pin on the map.
+/// An arrival's stamp as the passport shows it, opened from its pin on the map: in the design the
+/// passport gives it (Settings > Passport stamps), upright and larger, with both the country and
+/// the region.
 /// </summary>
 public partial class ArrivalStampPopupViewModel : BaseViewModel
 {
@@ -19,9 +21,18 @@ public partial class ArrivalStampPopupViewModel : BaseViewModel
     // An unexplored place has the same "unexplored" wording for the country and the region; say it once.
     public bool HasAdminAreaName => !string.IsNullOrEmpty(Arrival.AdminAreaName) && Arrival.AdminAreaName != Arrival.CountryName;
 
-    public ArrivalStampPopupViewModel(ArrivalLocation arrival)
+    public bool IsSquare => Arrival.StampPattern == StampPattern.Square;
+    public bool IsJourney => Arrival.StampPattern == StampPattern.Journey;
+    public bool IsShaped => !IsSquare && !IsJourney;
+
+    // The journey compass has room for two lines of names: the country smaller above its region.
+    public double JourneyCountryFontSize => HasAdminAreaName ? 10 : 14;
+
+    public ArrivalStampPopupViewModel(ArrivalLocation arrival, StampStyle? style = null)
     {
-        Arrival = arrival;
+        Arrival = style is { } chosen
+            ? StampPatterns.Apply(arrival, chosen, tilted: false)
+            : arrival;
     }
 
     [RelayCommand]

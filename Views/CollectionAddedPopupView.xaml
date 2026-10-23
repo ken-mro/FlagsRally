@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.CollectionAddedPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:models="clr-namespace:FlagsRally.Models"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:CollectionAddedPopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Margin="0,1,0,0"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <toolkit:Popup.Resources>
+        <converters:BoardFontSizeConverter x:Key="BoardFontSize" />
+    </toolkit:Popup.Resources>
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,Auto"
+        RowSpacing="14">
+        <controls:StampLabel
+            FontAutoScalingEnabled="True"
+            FontSize="Title"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource StampHeading}"
+            Text="{x:Static strings:AppResources.AddedToCollection}" />
+
+        <!--  The region's tile as the country's regional flags show it (FlagsBoardPage), pressed down,
+              with the country's progress under it  -->
+        <Grid Grid.Row="1" HeightRequest="320">
+            <VerticalStackLayout Spacing="14" VerticalOptions="Center">
+                <controls:ShrinkToFitLayout
+                    x:Name="tile"
+                    DesignWidth="160"
+                    HorizontalOptions="Center"
+                    MaxScale="1.3"
+                    WidthRequest="208">
+                    <Border
+                        x:DataType="models:SubRegion"
+                        BackgroundColor="{StaticResource Paper}"
+                        BindingContext="{Binding Region}"
+                        Stroke="{StaticResource Ink}"
+                        StrokeShape="RoundRectangle 20,20,20,20"
+                        StrokeThickness="4">
+                        <VerticalStackLayout Spacing="{OnPlatform MacCatalyst=2, iOS=2, Default=0}" VerticalOptions="Center">
+                            <Image
+                                Margin="5"
+                                HeightRequest="40"
+                                HorizontalOptions="Center"
+                                Source="{Binding FlagSource}"
+                                VerticalOptions="Center"
+                                WidthRequest="80" />
+                            <StackLayout BackgroundColor="{StaticResource Ink}">
+                                <Label
+                                    FontAutoScalingEnabled="False"
+                                    FontFamily="KiwiMaru-Medium"
+                                    FontSize="{Binding Name, Converter={StaticResource BoardFontSize}}"
+                                    HorizontalOptions="Center"
+                                    LineBreakMode="MiddleTruncation"
+                                    LineHeight="1"
+                                    MaxLines="2"
+                                    Text="{Binding Name}"
+                                    TextColor="{StaticResource PaperCard}"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                            <controls:OneLineFittingLabel
+                                FontAttributes="Bold"
+                                FontAutoScalingEnabled="False"
+                                FontFamily="JerseyclubGrungeBold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                LineBreakMode="WordWrap"
+                                LineHeight="1"
+                                Text="{Binding ArrivalDateString}"
+                                TextColor="{StaticResource Stamp}"
+                                VerticalOptions="Center" />
+                            <Line
+                                HorizontalOptions="Center"
+                                Stroke="{StaticResource Ink}"
+                                StrokeThickness="2"
+                                X1="0"
+                                X2="120"
+                                Y1="0"
+                                Y2="0" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontAutoScalingEnabled="False"
+                                FontFamily="JerseyclubGrungeBold"
+                                FontSize="35"
+                                HorizontalOptions="Center"
+                                LineBreakMode="NoWrap"
+                                Text="ARRIVAL"
+                                TextColor="{StaticResource Ink}"
+                                VerticalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                </controls:ShrinkToFitLayout>
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="4" WidthRequest="208">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding CountryName}"
+                        TextColor="{StaticResource Ink}" />
+                    <ProgressBar x:Name="progress" ProgressColor="{StaticResource Stamp}" />
+                    <Label
+                        FontSize="12"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding ProgressText}"
+                        TextColor="{StaticResource InkMuted}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+            <skia:SKLottieView
+                x:Name="celebration"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                IsAnimationEnabled="False"
+                IsVisible="False"
+                RepeatCount="0"
+                Source="celebration.json"
+                VerticalOptions="Fill" />
+        </Grid>
+
+        <!--  On once the tile has been pressed and the bar has moved  -->
+        <Button
+            Grid.Row="2"
+            Command="{Binding ClosePopupCommand}"
+            HorizontalOptions="Center"
+            IsEnabled="{Binding CanClose}"
+            Text="OK"
+            WidthRequest="100" />
+    </Grid>
+</toolkit:Popup>

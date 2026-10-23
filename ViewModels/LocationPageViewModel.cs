@@ -39,6 +39,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private CustomBoardService _customBoardService;
     private ArrivalLocationService _arrivalLocationService;
     private readonly MapFocusRequest _mapFocusRequest;
+    private readonly RegionalFlagsService _regionalFlagsService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
@@ -534,7 +535,7 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customBoardRepository = customBoardRepository;
@@ -546,6 +547,7 @@ public partial class LocationPageViewModel : BaseViewModel
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
         _mapFocusRequest = mapFocusRequest;
+        _regionalFlagsService = regionalFlagsService;
         PinIcons.Style = settingsPreferences.GetPinStyle();
 
         WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
@@ -772,14 +774,15 @@ public partial class LocationPageViewModel : BaseViewModel
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
                 FanOutOverlappingPins();
 
-                if (isFirstTimeCountry)
+                if (isFirstTimeCountry || isFirstTimeSupportedSubRegion)
                 {
-                    await ShowLocationDiscoveryPopup(arrivalLocation);
+                    await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
                 }
 
+                // A new region's flag also joins the country's regional flags in Collections
                 if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
                 {
-                    await ShowLocationDiscoveryPopup(arrivalLocation.AdminAreaName, subRegionCode);
+                    await ShowCollectionAddedPopup(subRegionCode);
                 }
 
                 RemoveCheckInSpot();
@@ -893,7 +896,7 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
-            var popup = new ArrivalStampPopupView(new ArrivalStampPopupViewModel(arrival));
+            var popup = new ArrivalStampPopupView(new ArrivalStampPopupViewModel(arrival, _settingsPreferences.GetPassportStampStyle()));
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
         catch (Exception ex)
@@ -904,57 +907,46 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    private static async Task ShowLocationDiscoveryPopup(ArrivalLocation arrivalLocation)
+    // After the stamp of a new region: its flag joining the country's card in Collections
+    private async Task ShowCollectionAddedPopup(SubRegionCode subRegionCode)
     {
         try
         {
-            string imageSource = arrivalLocation.CountryFlagSource;
-            string title = string.Empty;
+            var country = _regionalFlagsService.GetCountry(subRegionCode.CountryCode);
+            var regions = await _regionalFlagsService.GetRegionsAsync(country);
+            var region = regions.FirstOrDefault(r => r.Code == subRegionCode && r.HasBeenVisited);
+            if (region is null) return;
 
-            title = $"{AppResources.NewCountry}: {arrivalLocation.CountryName}";
-
-            // Only show popup if we have an image to display
-            if (string.IsNullOrEmpty(imageSource)) return;
-
-            var popupViewModel = new LocationDiscoveryPopupViewModel(imageSource, true, title);
-            var popup = new LocationDiscoveryPopupView(popupViewModel);
-            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+            var viewModel = new CollectionAddedPopupViewModel(
+                region, country.CountryName, regions.Count(r => r.HasBeenVisited), regions.Count);
+            await Shell.Current.CurrentPage.ShowPopupAsync(new CollectionAddedPopupView(viewModel));
         }
         catch (Exception ex)
         {
             // If popup fails, don't block the location saving process
 #if DEBUG
-            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
+            Console.WriteLine($"Failed to show the collection: {ex.Message}");
 #endif
         }
     }
 
-    private static async Task ShowLocationDiscoveryPopup(string subRegionTitle, SubRegionCode subRegionCode)
+    // After stamping somewhere new: the new country's stamp and the new region's, in the passport's
+    // design, one page after the other
+    private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool newRegion)
     {
         try
         {
-            string imageUrl = string.Empty;
-            string title = string.Empty;
+            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, newRegion);
+            if (slides.Count == 0) return;
 
-            if (Constants.SupportedSubRegionCountryCodeList.Contains(subRegionCode.CountryCode.ToLower()))
-            {
-                // Show emblem for supported sub-region
-                imageUrl = SubRegion.GetFlagSource(subRegionCode);
-                title = $"{AppResources.NewRegion}: {subRegionTitle}";
-            }
-
-            // Only show popup if we have an image to display
-            if (string.IsNullOrEmpty(imageUrl)) return;
-
-            var popupViewModel = new LocationDiscoveryPopupViewModel(imageUrl, false, title);
-            var popup = new LocationDiscoveryPopupView(popupViewModel);
+            var popup = new StampAcquiredPopupView(new StampAcquiredPopupViewModel(slides));
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
         catch (Exception ex)
         {
             // If popup fails, don't block the location saving process
 #if DEBUG
-            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
+            Console.WriteLine($"Failed to show the new stamp: {ex.Message}");
 #endif
         }
     }

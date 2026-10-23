@@ -155,7 +155,11 @@ namespace FlagsRally.ViewModels
             try
             {
                 IsBusy = true;
-                var allArrivalLocationList = await _arrivalLocationRepository.GetAllArrivalLocations();
+                // Each stamp carries the pattern it is drawn with, from Settings > Passport stamps.
+                var stampStyle = _settingsPreferences.GetPassportStampStyle();
+                var stampTilt = _settingsPreferences.GetPassportStampTilt();
+                var allArrivalLocationList = (await _arrivalLocationRepository.GetAllArrivalLocations())
+                    .ConvertAll(arrival => StampPatterns.Apply(arrival, stampStyle, stampTilt));
                 var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(allArrivalLocationList);
                 SourceArrivalLocationList = sourceArrivalLocationList;
 

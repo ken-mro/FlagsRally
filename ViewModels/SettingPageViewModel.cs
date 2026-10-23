@@ -37,8 +37,12 @@ namespace FlagsRally.ViewModels
         private string _apiKey;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(SubscriptionStatusText))]
+        [NotifyPropertyChangedFor(nameof(SubscriptionStatusText), nameof(CanChooseStampStyle), nameof(IsStampStyleLocked))]
         private bool _isSubscribed;
+
+        // The stamp designs and tilt need a subscription or the user's own API key
+        public bool CanChooseStampStyle => IsSubscribed || _settingPreferences.IsApiKeySet();
+        public bool IsStampStyleLocked => !CanChooseStampStyle;
 
         public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
         public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
@@ -66,6 +70,83 @@ namespace FlagsRally.ViewModels
             PinStyle = Enum.Parse<PinStyle>(style);
         }
 
+        // Settings > Passport stamps: the design (a mix, one per country, or the same for every stamp,
+        // chosen in a dropdown) and, apart from it, whether the stamps lean a little.
+        public IReadOnlyList<StampDesignChoice> StampDesignChoices { get; } = StampDesignChoice.All();
+
+        // The dropdown's list, open below its button
+        [ObservableProperty]
+        private bool _isStampDesignListOpen;
+
+        [RelayCommand]
+        async Task ToggleStampDesignList()
+        {
+            if (!await UnlockStampStyleAsync()) return;
+            IsStampDesignListOpen = !IsStampDesignListOpen;
+        }
+
+        [RelayCommand]
+        async Task PickStampDesign(StampDesignChoice choice)
+        {
+            if (!await UnlockStampStyleAsync()) return;
+            SelectedStampDesign = choice;
+            IsStampDesignListOpen = false;
+        }
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsStampMixed), nameof(IsStampByCountry), nameof(IsStampSame))]
+        private StampStyle _stampStyle;
+
+        public bool IsStampMixed => StampStyle.IsMixed;
+        public bool IsStampByCountry => StampStyle.ByCountry;
+        public bool IsStampSame => StampStyle.Pattern is not null;
+
+        [ObservableProperty]
+        private StampDesignChoice _selectedStampDesign;
+
+        partial void OnSelectedStampDesignChanged(StampDesignChoice value)
+        {
+            if (!CanChooseStampStyle) return;
+            foreach (var choice in StampDesignChoices) choice.IsSelected = choice == value;
+            // Picking a design is choosing the same design for every stamp
+            _settingPreferences.SetStampSamePattern(value.Pattern);
+            SetStampStyle(StampStyle.Single(value.Pattern));
+        }
+
+        [ObservableProperty]
+        private bool _stampTilt;
+
+        partial void OnStampTiltChanged(bool value)
+        {
+            if (CanChooseStampStyle) _settingPreferences.SetStampTilt(value);
+        }
+
+        [RelayCommand]
+        async Task SetStampMode(string mode)
+        {
+            if (!await UnlockStampStyleAsync()) return;
+            SetStampStyle(mode switch
+            {
+                "Mixed" => StampStyle.Mixed,
+                "ByCountry" => StampStyle.PerCountry,
+                _ => StampStyle.Single(SelectedStampDesign.Pattern),
+            });
+        }
+
+        // Locked: offers the subscription, as the subscribe button does. True once it is unlocked.
+        async Task<bool> UnlockStampStyleAsync()
+        {
+            if (CanChooseStampStyle) return true;
+            await ManageSubscriptionAsync();
+            return CanChooseStampStyle;
+        }
+
+        void SetStampStyle(StampStyle style)
+        {
+            _settingPreferences.SetStampStyle(style);
+            StampStyle = style;
+        }
+
         // The pin previews leave out custom board pins while there are no custom boards.
         [ObservableProperty]
         private bool _hasCustomBoards;
@@ -89,6 +170,13 @@ namespace FlagsRally.ViewModels
             _revenueCatBilling = revenueCatBilling;
             ApiKey = _settingPreferences.GetApiKey();
             _pinStyle = _settingPreferences.GetPinStyle();
+            _stampStyle = _settingPreferences.GetStampStyle();
+            _stampTilt = _settingPreferences.GetStampTilt();
+            var samePattern = _settingPreferences.GetStampSamePattern();
+            _selectedStampDesign = StampDesignChoices.First(choice => choice.Pattern == samePattern);
+            _selectedStampDesign.IsSelected = true;
+            // The last known status, so the stamp settings open unlocked for a subscriber while it is checked again
+            _isSubscribed = _settingPreferences.GetIsSubscribed();
             _ = UpdateSubscriptionStatusAsync();
 
             _countryHelper = countryHelper;
@@ -229,6 +317,8 @@ namespace FlagsRally.ViewModels
                 if (!string.IsNullOrEmpty(_settingPreferences.GetApiKey()))
                 {
                     _settingPreferences.SetApiKey(string.Empty);
+                    OnPropertyChanged(nameof(CanChooseStampStyle));
+                    OnPropertyChanged(nameof(IsStampStyleLocked));
                     await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.ClearAPIKey}", "OK");
                 }
 
@@ -239,6 +329,8 @@ namespace FlagsRally.ViewModels
             if (isApiKeyValid)
             {
                 _settingPreferences.SetApiKey(ApiKey);
+                OnPropertyChanged(nameof(CanChooseStampStyle));
+                OnPropertyChanged(nameof(IsStampStyleLocked));
                 await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.SetAPIKey}", "OK");
             }
             else

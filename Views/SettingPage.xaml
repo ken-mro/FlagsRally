@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FlagsRally.Views.SettingPage"
+    x:Name="settingsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:SettingPageViewModel"
     Style="{StaticResource PaperPage}">
@@ -21,6 +24,25 @@
         <Style x:Key="SettingsRow" TargetType="Grid">
             <Setter Property="Padding" Value="14,12" />
             <Setter Property="ColumnSpacing" Value="10" />
+        </Style>
+        <!--  A small heading inside a section, above a card  -->
+        <Style x:Key="SettingsSubheading" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+            <Setter Property="Margin" Value="4,2,4,-4" />
+        </Style>
+        <toolkit:BoolToObjectConverter
+            x:Key="StampLockOpacity"
+            x:TypeArguments="x:Double"
+            FalseObject="0.45"
+            TrueObject="1" />
+        <Style x:Key="SettingsCheck" TargetType="Label">
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Text" Value="✓" />
+            <Setter Property="TextColor" Value="{StaticResource Navy}" />
+            <Setter Property="VerticalOptions" Value="Center" />
         </Style>
         <Style x:Key="RowDivider" TargetType="BoxView">
             <Setter Property="HeightRequest" Value="1" />
@@ -207,6 +229,166 @@
                         VerticalOptions="Center" />
                 </Grid>
               </VerticalStackLayout>
+            </Border>
+
+            <!--  Passport stamps: the design (a mix, one per country, or the same one for every stamp,
+                  picked in a dropdown) and, apart from it, whether they lean as if pressed by hand  -->
+            <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.PassportStamps}" />
+            <!--  Locked without a subscription or the user's own API key: a note with the subscribe button  -->
+            <Border IsVisible="{Binding IsStampStyleLocked}" Style="{StaticResource SettingsCard}">
+                <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
+                    <Label
+                        FontSize="13"
+                        Text="{x:Static strings:AppResources.StampStyleLocked}"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding ManageSubscriptionCommand}"
+                        Text="{x:Static strings:AppResources.Subscribe}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampDesign}" />
+            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource SettingsCard}">
+                <VerticalStackLayout>
+                    <Grid ColumnDefinitions="Auto,*,Auto" Style="{StaticResource SettingsRow}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SetStampModeCommand}" CommandParameter="Mixed" />
+                        </Grid.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="3" VerticalOptions="Center" WidthRequest="114">
+                            <controls:StampFrame HeightRequest="28" IsSmall="True" Pattern="Sunrise" WidthRequest="36" />
+                            <controls:StampFrame HeightRequest="28" IsSmall="True" Pattern="Airmail" WidthRequest="36" />
+                            <controls:StampFrame HeightRequest="28" IsSmall="True" Pattern="CompassHexagon" WidthRequest="36" />
+                        </HorizontalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label FontSize="16" Text="{x:Static strings:AppResources.StampStyleMixed}" />
+                            <Label FontSize="12" Text="{x:Static strings:AppResources.StampStyleMixedHint}" TextColor="{StaticResource InkMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" IsVisible="{Binding IsStampMixed}" Style="{StaticResource SettingsCheck}" />
+                    </Grid>
+                    <BoxView Style="{StaticResource RowDivider}" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" Style="{StaticResource SettingsRow}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SetStampModeCommand}" CommandParameter="ByCountry" />
+                        </Grid.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="3" VerticalOptions="Center" WidthRequest="114">
+                            <controls:StampFrame HeightRequest="28" IsSmall="True" Pattern="Ticket" WidthRequest="36" />
+                            <controls:StampFrame HeightRequest="28" IsSmall="True" Pattern="Ticket" WidthRequest="36" />
+                            <controls:StampFrame HeightRequest="28" IsSmall="True" Pattern="StarSeal" WidthRequest="36" />
+                        </HorizontalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label FontSize="16" Text="{x:Static strings:AppResources.StampStyleByCountry}" />
+                            <Label FontSize="12" Text="{x:Static strings:AppResources.StampStyleByCountryHint}" TextColor="{StaticResource InkMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" IsVisible="{Binding IsStampByCountry}" Style="{StaticResource SettingsCheck}" />
+                    </Grid>
+                    <BoxView Style="{StaticResource RowDivider}" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" Style="{StaticResource SettingsRow}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SetStampModeCommand}" CommandParameter="Same" />
+                        </Grid.GestureRecognizers>
+                        <!--  The chosen design, drawn  -->
+                        <controls:StampFrame
+                            HeightRequest="28"
+                            HorizontalOptions="Start"
+                            IsSmall="True"
+                            Pattern="{Binding SelectedStampDesign.Pattern}"
+                            VerticalOptions="Center"
+                            WidthRequest="36" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label FontSize="16" Text="{x:Static strings:AppResources.StampStyleSame}" />
+                            <Label FontSize="12" Text="{x:Static strings:AppResources.StampStyleSameHint}" TextColor="{StaticResource InkMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" IsVisible="{Binding IsStampSame}" Style="{StaticResource SettingsCheck}" />
+                    </Grid>
+                    <!--  The dropdown: a button with the chosen design, and the list of designs opening below it.
+                          Not a Picker, which is a dialog on Android and a wheel on iOS.  -->
+                    <VerticalStackLayout Margin="60,0,14,12">
+                        <Border
+                            Padding="12,8"
+                            BackgroundColor="{StaticResource Paper}"
+                            Stroke="{StaticResource PaperEdge}"
+                            StrokeShape="RoundRectangle 8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleStampDesignListCommand}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="{Binding SelectedStampDesign.Name}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="14"
+                                    Text="▾"
+                                    TextColor="{StaticResource InkMuted}"
+                                    VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsStampDesignListOpen}"
+                                            TargetType="Label"
+                                            Value="True">
+                                            <Setter Property="Text" Value="▴" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Grid>
+                        </Border>
+                        <Border
+                            Margin="0,4,0,0"
+                            Padding="0,4"
+                            BackgroundColor="{StaticResource Paper}"
+                            IsVisible="{Binding IsStampDesignListOpen}"
+                            Stroke="{StaticResource PaperEdge}"
+                            StrokeShape="RoundRectangle 8">
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding StampDesignChoices}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:StampDesignChoice">
+                                        <Grid
+                                            Padding="10,6"
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            ColumnSpacing="10">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding BindingContext.PickStampDesignCommand, Source={x:Reference settingsPage}, x:DataType=ContentPage}" CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <controls:StampFrame
+                                                HeightRequest="28"
+                                                IsSmall="True"
+                                                Pattern="{Binding Pattern}"
+                                                WidthRequest="36" />
+                                            <Label
+                                                Grid.Column="1"
+                                                FontSize="15"
+                                                Text="{Binding Name}"
+                                                VerticalOptions="Center" />
+                                            <Label
+                                                Grid.Column="2"
+                                                FontSize="16"
+                                                IsVisible="{Binding IsSelected}"
+                                                Style="{StaticResource SettingsCheck}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+            <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampTilt}" />
+            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource SettingsCard}">
+                <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
+                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                        <Label FontSize="16" Text="{x:Static strings:AppResources.StampTiltOn}" />
+                        <Label FontSize="12" Text="{x:Static strings:AppResources.StampTiltHint}" TextColor="{StaticResource InkMuted}" />
+                    </VerticalStackLayout>
+                    <Switch
+                        Grid.Column="1"
+                        IsEnabled="{Binding CanChooseStampStyle}"
+                        IsToggled="{Binding StampTilt}"
+                        OnColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Grid>
             </Border>
 
             <!--  Subscription  -->

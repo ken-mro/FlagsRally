@@ -1,0 +1,206 @@
+namespace FlagsRally.Models;
+
+/// <summary>
+/// The designs a passport stamp can take. Square is the original; the others follow travel stamps
+/// and postmarks (globe, compass, airmail edge, world map). None shows one means of travel on its
+/// own: where travel appears, it is the whole row (plane, ship, train, car, on foot).
+/// </summary>
+public enum StampPattern
+{
+    // The order of Settings' design list: the original square, then paper (a stamp, an envelope,
+    // tickets), postmarks and seals, round and oval, and last the polygons. Kept in preferences by
+    // name, so reordering does not change anyone's choice.
+    Square,
+    PostageStamp,
+    Airmail,
+    Ticket,
+    MovieTicket,
+    GlobePostmark,
+    CompassSeal,
+    Sunrise,
+    ScallopedGlobe,
+    StarSeal,
+    WorldOval,
+    Journey,
+    CompassHexagon,
+    Triangle,
+}
+
+/// <summary>
+/// How the passport picks each stamp's pattern (Settings > Passport stamps): every stamp the same
+/// pattern, a mix (each stamp its own), or one pattern per country.
+/// </summary>
+public readonly record struct StampStyle(StampPattern? Pattern, bool ByCountry)
+{
+    public static StampStyle Mixed { get; } = new(null, false);
+    public static StampStyle PerCountry { get; } = new(null, true);
+    public static StampStyle Single(StampPattern pattern) => new(pattern, false);
+    public static StampStyle Default { get; } = Single(StampPattern.Square);
+
+    public bool IsMixed => Pattern is null && !ByCountry;
+
+    /// <summary>The key kept in preferences: "Mixed", "ByCountry" or a pattern's name.</summary>
+    public string Key => ByCountry ? "ByCountry" : Pattern?.ToString() ?? "Mixed";
+
+    public static StampStyle FromKey(string? key) => key switch
+    {
+        "Mixed" => Mixed,
+        "ByCountry" => PerCountry,
+        _ when Enum.TryParse<StampPattern>(key, out var pattern) && Enum.IsDefined(pattern) => Single(pattern),
+        _ => Default,
+    };
+}
+
+public static class StampPatterns
+{
+    public static IReadOnlyList<StampPattern> All { get; } = Enum.GetValues<StampPattern>();
+
+    // A tilted stamp leans by up to this much, like one pressed by hand.
+    const double MaxTilt = 4;
+
+    /// <summary>
+    /// The pattern of one stamp. A mix and the per-country choice are worked out from the arrival
+    /// (or its country), so a stamp keeps its look every time the passport is opened.
+    /// </summary>
+    public static StampPattern For(ArrivalLocation arrival, StampStyle style)
+    {
+        if (style.Pattern is StampPattern pattern) return pattern;
+        var seed = style.ByCountry ? arrival.CountryCode.ToUpperInvariant() : $"arrival-{arrival.Id}";
+        return Pick(seed, All);
+    }
+
+    /// <summary>
+    /// The pattern scoring highest for the seed (rendezvous hashing). Each pattern's score depends
+    /// only on the seed and the pattern's name, so adding a design moves only the stamps it now wins
+    /// (about one in the new number of designs), removing one moves only its own stamps, and the
+    /// order of the designs does not matter.
+    /// </summary>
+    public static StampPattern Pick(string seed, IEnumerable<StampPattern> candidates) =>
+        candidates.MaxBy(pattern => Mix(StableHash($"{seed}|{pattern}")));
+
+    /// <summary>
+    /// How far the stamp leans, in degrees (-4..+4, worked out from the arrival so it keeps its
+    /// angle): none unless Settings > Passport stamps asks for stamps tilted as if pressed by hand.
+    /// </summary>
+    public static double TiltFor(ArrivalLocation arrival, bool tilted)
+    {
+        if (!tilted) return 0;
+        var steps = StableHash($"tilt-{arrival.Id}") % 9;
+        return (int)steps - MaxTilt;
+    }
+
+    /// <summary>Room round a stamp: a leaning stamp needs more, or its corners leave the screen.</summary>
+    public static Thickness MarginFor(double tilt) => tilt == 0 ? new Thickness(2) : new Thickness(8);
+
+    /// <summary>The arrival with the pattern and tilt the passport draws it with.</summary>
+    public static ArrivalLocation Apply(ArrivalLocation arrival, StampStyle style, bool tilted) =>
+        arrival with { StampPattern = For(arrival, style), StampTilt = TiltFor(arrival, tilted) };
+
+    /// <summary>The ink of a pattern. Square keeps the original black with a red date.</summary>
+    public static Color InkFor(StampPattern pattern) => pattern switch
+    {
+        StampPattern.Airmail => Token("StampInkRed", "#B8333A"),
+        StampPattern.CompassHexagon => Token("StampInkGreen", "#2F6B4F"),
+        StampPattern.Sunrise => Token("StampInkBrown", "#8A5A2B"),
+        StampPattern.ScallopedGlobe => Token("StampInkPurple", "#5B4389"),
+        StampPattern.WorldOval => Token("StampInkTeal", "#23789A"),
+        StampPattern.Ticket => Token("StampInkBlue", "#24477F"),
+        StampPattern.CompassSeal => Token("StampInkCrimson", "#A3262E"),
+        StampPattern.Triangle => Token("StampInkOchre", "#A86F17"),
+        StampPattern.Journey => Token("StampInkJourney", "#063665"),
+        StampPattern.GlobePostmark => Token("StampInkVermilion", "#C4482B"),
+        StampPattern.StarSeal => Token("StampInkPink", "#C9406F"),
+        StampPattern.PostageStamp => Token("StampInkOlive", "#4E6B2A"),
+        StampPattern.MovieTicket => Token("StampInkBurgundy", "#5C1A29"),
+        _ => Token("Ink", "#22252E"),
+    };
+
+    /// <summary>
+    /// Room between a stamp's outline and its text, where the pattern's motifs go. With the
+    /// smaller flag of these designs, each comes out about as tall as the original square
+    /// (about 160 points at the standard text size).
+    /// </summary>
+    public static Thickness PaddingFor(StampPattern pattern) => pattern switch
+    {
+        StampPattern.Airmail => new Thickness(26, 42, 20, 30),
+        StampPattern.CompassHexagon => new Thickness(40, 46, 40, 42),
+        StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
+        StampPattern.ScallopedGlobe => new Thickness(46, 44, 46, 40),
+        StampPattern.GlobePostmark => new Thickness(30, 40, 30, 32),
+        // Not used: the journey stamp has its own template (flag on the globe, name and date below)
+        StampPattern.Journey => new Thickness(20, 12),
+        StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
+        StampPattern.Ticket => new Thickness(24, 36, 24, 46),
+        StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
+        StampPattern.Triangle => new Thickness(40, 62, 40, 14),
+        StampPattern.StarSeal => new Thickness(40, 36, 40, 30),
+        StampPattern.PostageStamp => new Thickness(28, 36, 28, 32),
+        // The text keeps to the main part, left of the stub
+        StampPattern.MovieTicket => new Thickness(22, 34, 22 + 180 * MovieTicketStub, 22),
+        _ => new Thickness(0),
+    };
+
+    /// <summary>
+    /// Whether the stamp says ARRIVAL. The designs whose motifs need room above and below the text
+    /// (a globe, a compass, the row of travel) leave it out to keep the original stamp's size.
+    /// </summary>
+    public static bool ShowsArrival(StampPattern pattern) =>
+        pattern is StampPattern.Square or StampPattern.WorldOval;
+
+    /// <summary>Whether the text lines up at the left, like the address on the airmail envelope.</summary>
+    public static bool IsLeftAligned(StampPattern pattern) => pattern == StampPattern.Airmail;
+
+    public static double ArrivalFontSizeFor(StampPattern pattern) => pattern == StampPattern.Square ? 40 : 28;
+
+    // The dashed rules above and below the date
+    public static double LongLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 150 : 90;
+    public static double ShortLineFor(StampPattern pattern) => pattern == StampPattern.Square ? 120 : 70;
+
+    public static Color DateInkFor(StampPattern pattern) => pattern switch
+    {
+        StampPattern.Square => Token("Stamp", "#B94047"),
+        _ => TextInkFor(pattern),
+    };
+
+    /// <summary>
+    /// The colour of a stamp's text and rules: its ink, except on the movie ticket, where the text
+    /// stands out of the solid ink in the paper's colour.
+    /// </summary>
+    public static Color TextInkFor(StampPattern pattern) => pattern switch
+    {
+        StampPattern.MovieTicket => Token("Paper", "#F4EEDF"),
+        _ => InkFor(pattern),
+    };
+
+    /// <summary>The share of the movie ticket's width taken by the stub with the barcode.</summary>
+    public const float MovieTicketStub = 0.25f;
+
+    // The colour from Colors.xaml, or its value when there is no app (unit tests).
+    static Color Token(string key, string fallback) =>
+        Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color
+            ? color
+            : Color.FromArgb(fallback);
+
+    // Spreads the bits of a hash (MurmurHash3's finaliser): FNV-1a of strings that differ only at
+    // the end differs little, and the scores of the patterns are compared with each other.
+    static uint Mix(uint hash)
+    {
+        hash ^= hash >> 16;
+        hash *= 0x85EBCA6B;
+        hash ^= hash >> 13;
+        hash *= 0xC2B2AE35;
+        hash ^= hash >> 16;
+        return hash;
+    }
+
+    // FNV-1a: string.GetHashCode changes every time the app starts, which would reshuffle the stamps.
+    static uint StableHash(string text)
+    {
+        var hash = 2166136261u;
+        foreach (var c in text)
+        {
+            hash = (hash ^ c) * 16777619u;
+        }
+        return hash;
+    }
+}

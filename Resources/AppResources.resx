@@ -587,4 +587,88 @@
   <data name="HideEmptyCollections" xml:space="preserve">
     <value>Hide those with no stamps</value>
   </data>
+  <data name="PassportStamps" xml:space="preserve">
+    <value>Passport stamps</value>
+  </data>
+  <data name="StampStyleMixed" xml:space="preserve">
+    <value>Mix of designs</value>
+  </data>
+  <data name="StampStyleMixedHint" xml:space="preserve">
+    <value>Each stamp gets one of the designs, picked automatically.</value>
+  </data>
+  <data name="StampStyleByCountry" xml:space="preserve">
+    <value>One design per country</value>
+  </data>
+  <data name="StampStyleByCountryHint" xml:space="preserve">
+    <value>Stamps of the same country share a design.</value>
+  </data>
+  <data name="StampPatternSquare" xml:space="preserve">
+    <value>Entry stamp</value>
+  </data>
+  <data name="StampPatternAirmail" xml:space="preserve">
+    <value>Par avion</value>
+  </data>
+  <data name="StampPatternCompassHexagon" xml:space="preserve">
+    <value>Hexagon</value>
+  </data>
+  <data name="StampPatternSunrise" xml:space="preserve">
+    <value>Sunrise</value>
+  </data>
+  <data name="StampPatternScallopedGlobe" xml:space="preserve">
+    <value>Medal</value>
+  </data>
+  <data name="StampPatternWorldOval" xml:space="preserve">
+    <value>World map</value>
+  </data>
+  <data name="StampPatternTicket" xml:space="preserve">
+    <value>Travel pass</value>
+  </data>
+  <data name="StampPatternCompassSeal" xml:space="preserve">
+    <value>Compass rose</value>
+  </data>
+  <data name="StampPatternTriangle" xml:space="preserve">
+    <value>Pennant</value>
+  </data>
+  <data name="StampPatternStarSeal" xml:space="preserve">
+    <value>Star seal</value>
+  </data>
+  <data name="StampPatternGlobePostmark" xml:space="preserve">
+    <value>Globe</value>
+  </data>
+  <data name="StampPatternJourney" xml:space="preserve">
+    <value>Voyage</value>
+  </data>
+  <data name="StampDesign" xml:space="preserve">
+    <value>Design</value>
+  </data>
+  <data name="StampStyleSame" xml:space="preserve">
+    <value>Same design for every stamp</value>
+  </data>
+  <data name="StampStyleSameHint" xml:space="preserve">
+    <value>Every stamp uses the design chosen here.</value>
+  </data>
+  <data name="StampTilt" xml:space="preserve">
+    <value>Tilt</value>
+  </data>
+  <data name="StampTiltOn" xml:space="preserve">
+    <value>Tilt a little, as if pressed by hand</value>
+  </data>
+  <data name="StampTiltHint" xml:space="preserve">
+    <value>Each stamp leans its own way, by a few degrees.</value>
+  </data>
+  <data name="StampPatternPostageStamp" xml:space="preserve">
+    <value>Postage stamp</value>
+  </data>
+  <data name="StampPatternMovieTicket" xml:space="preserve">
+    <value>Cinema ticket</value>
+  </data>
+  <data name="StampStyleLocked" xml:space="preserve">
+    <value>Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the Entry stamp design.</value>
+  </data>
+  <data name="SwipeForNextStamp" xml:space="preserve">
+    <value>Swipe for the next stamp ›</value>
+  </data>
+  <data name="AddedToCollection" xml:space="preserve">
+    <value>Added to your collection</value>
+  </data>
 </root>
