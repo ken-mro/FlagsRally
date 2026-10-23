@@ -1510,7 +1510,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Square (original).
+        ///   Looks up a localized string similar to Entry stamp.
         /// </summary>
         internal static string StampPatternSquare {
             get {
@@ -1519,7 +1519,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Airmail.
+        ///   Looks up a localized string similar to Par avion.
         /// </summary>
         internal static string StampPatternAirmail {
             get {
@@ -1528,7 +1528,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compass hexagon.
+        ///   Looks up a localized string similar to Hexagon.
         /// </summary>
         internal static string StampPatternCompassHexagon {
             get {
@@ -1546,7 +1546,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scalloped globe.
+        ///   Looks up a localized string similar to Globe medal.
         /// </summary>
         internal static string StampPatternScallopedGlobe {
             get {
@@ -1555,7 +1555,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to World map oval.
+        ///   Looks up a localized string similar to World map.
         /// </summary>
         internal static string StampPatternWorldOval {
             get {
@@ -1564,7 +1564,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ticket.
+        ///   Looks up a localized string similar to Travel pass.
         /// </summary>
         internal static string StampPatternTicket {
             get {
@@ -1573,7 +1573,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compass seal.
+        ///   Looks up a localized string similar to Compass rose.
         /// </summary>
         internal static string StampPatternCompassSeal {
             get {
@@ -1582,7 +1582,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Triangle.
+        ///   Looks up a localized string similar to Pennant.
         /// </summary>
         internal static string StampPatternTriangle {
             get {
@@ -1601,7 +1601,7 @@ namespace FlagsRally.Resources {
         
         
         /// <summary>
-        ///   Looks up a localized string similar to Globe postmark.
+        ///   Looks up a localized string similar to World postmark.
         /// </summary>
         internal static string StampPatternGlobePostmark {
             get {
@@ -1610,7 +1610,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Journey compass.
+        ///   Looks up a localized string similar to Voyage.
         /// </summary>
         internal static string StampPatternJourney {
             get {
@@ -1673,7 +1673,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Postage stamp.
+        ///   Looks up a localized string similar to Collector's stamp.
         /// </summary>
         internal static string StampPatternPostageStamp {
             get {
@@ -1684,7 +1684,7 @@ namespace FlagsRally.Resources {
         
         
         /// <summary>
-        ///   Looks up a localized string similar to Movie ticket.
+        ///   Looks up a localized string similar to Cinema ticket.
         /// </summary>
         internal static string StampPatternMovieTicket {
             get {
@@ -1693,7 +1693,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the original square..
+        ///   Looks up a localized string similar to Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the Entry stamp design..
         /// </summary>
         internal static string StampStyleLocked {
             get {

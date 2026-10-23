@@ -603,40 +603,40 @@
     <value>Stamps of the same country share a design.</value>
   </data>
   <data name="StampPatternSquare" xml:space="preserve">
-    <value>Square (original)</value>
+    <value>Entry stamp</value>
   </data>
   <data name="StampPatternAirmail" xml:space="preserve">
-    <value>Airmail</value>
+    <value>Par avion</value>
   </data>
   <data name="StampPatternCompassHexagon" xml:space="preserve">
-    <value>Compass hexagon</value>
+    <value>Hexagon</value>
   </data>
   <data name="StampPatternSunrise" xml:space="preserve">
     <value>Sunrise</value>
   </data>
   <data name="StampPatternScallopedGlobe" xml:space="preserve">
-    <value>Scalloped globe</value>
+    <value>Globe medal</value>
   </data>
   <data name="StampPatternWorldOval" xml:space="preserve">
-    <value>World map oval</value>
+    <value>World map</value>
   </data>
   <data name="StampPatternTicket" xml:space="preserve">
-    <value>Ticket</value>
+    <value>Travel pass</value>
   </data>
   <data name="StampPatternCompassSeal" xml:space="preserve">
-    <value>Compass seal</value>
+    <value>Compass rose</value>
   </data>
   <data name="StampPatternTriangle" xml:space="preserve">
-    <value>Triangle</value>
+    <value>Pennant</value>
   </data>
   <data name="StampPatternStarSeal" xml:space="preserve">
     <value>Star seal</value>
   </data>
   <data name="StampPatternGlobePostmark" xml:space="preserve">
-    <value>Globe postmark</value>
+    <value>World postmark</value>
   </data>
   <data name="StampPatternJourney" xml:space="preserve">
-    <value>Journey compass</value>
+    <value>Voyage</value>
   </data>
   <data name="StampDesign" xml:space="preserve">
     <value>Design</value>
@@ -657,13 +657,13 @@
     <value>Each stamp leans its own way, by a few degrees.</value>
   </data>
   <data name="StampPatternPostageStamp" xml:space="preserve">
-    <value>Postage stamp</value>
+    <value>Collector's stamp</value>
   </data>
   <data name="StampPatternMovieTicket" xml:space="preserve">
-    <value>Movie ticket</value>
+    <value>Cinema ticket</value>
   </data>
   <data name="StampStyleLocked" xml:space="preserve">
-    <value>Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the original square.</value>
+    <value>Stamp designs and tilt are available with a subscription or your own Google Maps API key. Until then, stamps use the Entry stamp design.</value>
   </data>
   <data name="SwipeForNextStamp" xml:space="preserve">
     <value>Swipe for the next stamp ›</value>

@@ -603,40 +603,40 @@
     <value>同じ国のスタンプは同じデザインになります。</value>
   </data>
   <data name="StampPatternSquare" xml:space="preserve">
-    <value>四角（従来）</value>
+    <value>入国スタンプ</value>
   </data>
   <data name="StampPatternAirmail" xml:space="preserve">
     <value>エアメール</value>
   </data>
   <data name="StampPatternCompassHexagon" xml:space="preserve">
-    <value>コンパスの六角形</value>
+    <value>ヘキサゴン</value>
   </data>
   <data name="StampPatternSunrise" xml:space="preserve">
-    <value>日の出</value>
+    <value>サンライズ</value>
   </data>
   <data name="StampPatternScallopedGlobe" xml:space="preserve">
-    <value>波縁の地球</value>
+    <value>地球のメダル</value>
   </data>
   <data name="StampPatternWorldOval" xml:space="preserve">
-    <value>世界地図の楕円</value>
+    <value>ワールドマップ</value>
   </data>
   <data name="StampPatternTicket" xml:space="preserve">
-    <value>チケット</value>
+    <value>トラベルパス</value>
   </data>
   <data name="StampPatternCompassSeal" xml:space="preserve">
-    <value>コンパスの丸印</value>
+    <value>羅針盤</value>
   </data>
   <data name="StampPatternTriangle" xml:space="preserve">
-    <value>三角</value>
+    <value>ペナント</value>
   </data>
   <data name="StampPatternStarSeal" xml:space="preserve">
-    <value>星の飾り縁</value>
+    <value>スターシール</value>
   </data>
   <data name="StampPatternGlobePostmark" xml:space="preserve">
-    <value>地球の消印</value>
+    <value>ワールド消印</value>
   </data>
   <data name="StampPatternJourney" xml:space="preserve">
-    <value>旅のコンパス</value>
+    <value>ボヤージュ</value>
   </data>
   <data name="StampDesign" xml:space="preserve">
     <value>デザイン</value>
@@ -657,13 +657,13 @@
     <value>スタンプごとに少しずつ違う向きになります。</value>
   </data>
   <data name="StampPatternPostageStamp" xml:space="preserve">
-    <value>切手</value>
+    <value>記念切手</value>
   </data>
   <data name="StampPatternMovieTicket" xml:space="preserve">
-    <value>映画のチケット</value>
+    <value>シネマチケット</value>
   </data>
   <data name="StampStyleLocked" xml:space="preserve">
-    <value>スタンプのデザインと傾きは、サブスクリプションの登録中か、自分の Google Maps API キーを使っているときに選べます。それまでは四角（従来）になります。</value>
+    <value>スタンプのデザインと傾きは、サブスクリプションの登録中か、自分の Google Maps API キーを使っているときに選べます。それまでは「入国スタンプ」になります。</value>
   </data>
   <data name="SwipeForNextStamp" xml:space="preserve">
     <value>スワイプして次のスタンプへ ›</value>
