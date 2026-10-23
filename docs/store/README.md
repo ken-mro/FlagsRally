@@ -33,17 +33,19 @@ Screenshot-only versions (the app screens with nothing added) are in `ios/plain/
 | `ios/plain/ipad_13in_2064x2752` | 2064 x 2752 | the capture as is |
 | `android/plain/phone_1110x2220` | 1110 x 2220 | Google Play allows at most 2:1, so the system status bar and gesture handle were cut off and the edge columns repeated 15 px on each side |
 
-Six screens per set, in listing order: passport, regional flags, world map, map check-in, collections, stamp-rally board.
+Eight screens per set, in listing order: passport, passport in mixed stamp designs, passport by region, world map, map check-in, collections, a country's regional flags (Japan), stamp-rally board.
 All files are PNG without transparency.
 
 ## How they were made
 
 1. `tools/make_seed.py <app.db3> <dir>` writes demo databases (`seed_en.db3`, `seed_ja.db3`): 16 arrivals in 12 countries and 9 check-ins on the 全国神宮二十五社巡り board. Place names are stored in the recording language, so each language has its own database.
-2. The app ran on the iPhone 17 Pro Max and iPad Pro 13" (M5) simulators (iOS 26.5) and the Pixel emulator (Android 16) with the demo database, residence US (en) or JP (ja), the app language set accordingly, a 9:41 status bar and the location set to Kyoto. The raw captures go in `tools/raw/{ios69,ipad13,android}_{en,ja}/1_passport.png … 6_board.png` (not committed).
+2. The app ran on the iPhone 17 Pro Max and iPad Pro 13" (M5) simulators (iOS 26.5) and the Pixel emulator (Android 16) with the demo database, residence US (en) or JP (ja), the app language set accordingly, a 9:41 status bar and the location set to Kyoto. The raw captures go in `tools/raw/{ios69,ipad13,android}_{en,ja}/1_passport.png … 8_flags.png` (not committed); their listing order is `NAMES` in `compose.py`.
    - On the phones the passport and regions are shown with Display options → No duplicate countries, so the first rows are not all Japan. The iPad shows every arrival.
    - The map is centred with Show my location and zoomed out until the Kyoto pins spread out, with 平安神宮 selected.
+   - Stamp designs (`7_designs`) is the passport with No duplicate countries and the design set to a mix. Choosing designs needs a subscription or the user's own API key, so for the capture the `ApiKey` preference was set to a placeholder and `StampStyle` to `Mixed`, and both were removed afterwards.
+   - Regional flags (`8_flags`) is Collections → Japan, from a copy of the demo database with seven more prefectures visited (Miyagi, Aomori, Osaka, Hiroshima, Nara, Ishikawa, Fukuoka) so the first screen is full of tiles.
    - On the iOS simulator, write the app's settings with `xcrun simctl spawn <udid> defaults write <container>/Library/Preferences/com.companyname.flagsrally <key> …`. Editing the plist file directly is not picked up once the app has run.
-3. `tools/plain.py` writes the screenshot-only versions. `tools/compose.py` adds the headline and frame and writes every size; `tools/assets.py` draws the icons and feature graphics from the app's SVGs (rendered to `tools/svg/*_navy.svg.png` with `qlmanage`).
+3. `tools/plain.py` writes the screenshot-only versions. `tools/compose.py` adds the headline and frame and writes every size; both take raw names after the output folder to redo only those screens (`compose.py docs/store 7_designs 8_flags`); `tools/assets.py` draws the icons and feature graphics from the app's SVGs (rendered to `tools/svg/*_navy.svg.png` with `qlmanage`).
 4. The PNGs were compressed with `pngquant --quality=85-98`.
 
 Headlines are in `COPY` at the top of `compose.py` (screenshots), `creative.py` (search results) and `assets.py` (feature graphic).

@@ -18,7 +18,7 @@ FONT_EN_SUB = f'{ROOT}/Resources/Fonts/OpenSans-Semibold.ttf'
 FONT_JA_HEAD = f'{ROOT}/Resources/Fonts/craftmincho.otf'
 FONT_JA_SUB = '/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc'
 
-# (headline, subline) per screen, in the order of the raw files 1..6
+# (headline, subline) per screen, in the order of the raw files 1..8 (the listing order is NAMES)
 COPY = {
     'en': [
         ('Your travels,\nstamped', 'Every arrival becomes a passport stamp'),
@@ -27,6 +27,8 @@ COPY = {
         ('Check in on\nthe map', 'Record places within 50 m of you'),
         ('Fill your\ncollections', 'Progress for every country and stamp trail'),
         ('Stamp trails,\nyour way', 'Add trails and gather every stamp'),
+        ('Stamps in\nmany designs', 'Mix them, or pick the one you love'),
+        ('Flags in\nlocal style', "Each country's tiles in its own colors"),
     ],
     'ja': [
         ('旅の記録を\nスタンプに', '訪れた場所がパスポートのスタンプになる'),
@@ -35,6 +37,8 @@ COPY = {
         ('地図で\nチェックイン', '現在地から50m以内の場所を記録'),
         ('コレクションを\n埋めよう', '国やスタンプラリーごとの達成度を表示'),
         ('スタンプラリーを\nもっと自由に', '好きなスタンプラリーを追加して集める'),
+        ('スタンプの\nデザインいろいろ', 'ミックスも、お気に入りひとつでも'),
+        ('国ごとの\nデザインで集める', 'その国らしい色と模様で地域の旗を'),
     ],
 }
 
@@ -151,13 +155,18 @@ TARGETS = [
     ('ipad13', 'ios/ipad_13in_2064x2752', (2064, 2752), 'tablet'),         # iPad Pro 13-inch (M5)
     ('android', 'android/phone_1080x1920', (1080, 1920), 'phone_android'),
 ]
-NAMES = ['1_passport', '2_regions', '3_worldmap', '4_map', '5_collections', '6_board']
+# The raw files in listing order: the stamp designs follow the passport, the regional flags the collections.
+NAMES = ['1_passport', '7_designs', '2_regions', '3_worldmap', '4_map', '5_collections', '8_flags', '6_board']
 
+# usage: compose.py [out dir] [raw names to redo, e.g. 7_designs 8_flags (default: all)]
 if __name__ == '__main__':
+    only = sys.argv[2:]
     for prefix, folder, size, kind in TARGETS:
         for lang in ('en', 'ja'):
             for i, name in enumerate(NAMES):
+                if only and name not in only:
+                    continue
                 src = f'{RAW}/{prefix}_{lang}/{name}.png'
                 dst = f'{OUT}/{folder}/{lang}/{i + 1:02d}_{name.split("_", 1)[1]}.png'
-                compose(src, dst, size, lang, i, kind)
+                compose(src, dst, size, lang, int(name.split('_')[0]) - 1, kind)
             print('done', folder, lang)
