@@ -17,6 +17,9 @@ public class SubRegion
     public string MapToolTipImageSource => GetToolTipImageSource();
 
 
+    /// <summary>The colours of its tile, after its country.</summary>
+    public CountryTileStyle Tile => CountryTileStyles.For(Code.CountryCode);
+
     public bool HasBeenVisited => !(ArrivalDate == DateTime.MinValue);
     public bool HasNotBeenVisited => !HasBeenVisited;
 

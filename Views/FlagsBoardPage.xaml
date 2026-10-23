@@ -26,17 +26,22 @@
         <!--  A visited region and one not visited yet have their own tiles, so a tile builds only the views
               it shows and an unvisited region's flag is never loaded. Page settings come through the page
               (x:Reference), found once, instead of each tile looking up its ancestors (RelativeSource).  -->
+        <!--  Both kinds of tile keep the same margin, so the gap is even wherever a visited tile (drawn to
+              its edges) and one not visited (a Border, whose stroke sits a little inside) meet  -->
         <DataTemplate x:Key="UnvisitedTile" x:DataType="{x:Type models:SubRegion}">
             <Border
+                Margin="3"
                 BackgroundColor="Transparent"
-                Stroke="{StaticResource Ink}"
-                StrokeShape="RoundRectangle 20,20,20,20"
+                Stroke="{Binding Tile.Frame}"
                 StrokeThickness="4">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="{Binding Tile.Corners}" />
+                </Border.StrokeShape>
                 <Label
                     Padding="2"
                     FontFamily="KiwiMaru-Medium"
                     FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                    HeightRequest="134.48"
+                    HeightRequest="140.48"
                     HorizontalOptions="Center"
                     LineBreakMode="MiddleTruncation"
                     LineHeight="1"
@@ -46,13 +51,13 @@
                     VerticalOptions="Center" />
             </Border>
         </DataTemplate>
+        <!--  The paper, motifs and frame are the country's (CountryTileFrame, drawn once per size); the
+              flag, name, date and ARRIVAL sit on them in the country's colours (SubRegion.Tile)  -->
         <DataTemplate x:Key="VisitedTile" x:DataType="{x:Type models:SubRegion}">
-            <Border
-                BackgroundColor="Transparent"
-                Stroke="{StaticResource Ink}"
-                StrokeShape="RoundRectangle 20,20,20,20"
-                StrokeThickness="4">
+            <Grid Margin="3">
+                <controls:CountryTileFrame CountryCode="{Binding Code.CountryCode}" />
                 <VerticalStackLayout
+                    Padding="4,4,4,10"
                     Spacing="{OnPlatform MacCatalyst=2,
                                          iOS=2,
                                          Default=0}"
@@ -65,18 +70,30 @@
                         Source="{Binding FlagSource}"
                         VerticalOptions="Center"
                         WidthRequest="80" />
-                    <StackLayout BackgroundColor="{StaticResource Ink}">
-                        <Label
-                            FontFamily="KiwiMaru-Medium"
-                            FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
-                            HorizontalOptions="Center"
-                            LineBreakMode="MiddleTruncation"
-                            LineHeight="1"
-                            MaxLines="2"
-                            Text="{Binding Name}"
-                            TextColor="{StaticResource PaperCard}"
-                            VerticalOptions="Center" />
-                    </StackLayout>
+                    <!--  The name stays inside the band: smaller, then on two lines  -->
+                    <Border
+                        Padding="3,2"
+                        BackgroundColor="{Binding Tile.Band}"
+                        StrokeThickness="0">
+                        <Border
+                            Padding="2,1"
+                            Stroke="{Binding Tile.BandLine}"
+                            StrokeShape="RoundRectangle 2"
+                            StrokeThickness="0.9">
+                            <controls:StampNameLabel
+                                FontFamily="KiwiMaru-Medium"
+                                FontSize="19"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                LastFontSize="9"
+                                LineHeight="1"
+                                MinFontSize="14"
+                                Name="{Binding Name}"
+                                TextColor="{Binding Tile.BandText}"
+                                TwoLineMinFontSize="11"
+                                VerticalOptions="Center" />
+                        </Border>
+                    </Border>
                     <controls:OneLineFittingLabel
                         FontAttributes="Bold"
                         FontFamily="JerseyclubGrungeBold"
@@ -87,7 +104,7 @@
                         LineBreakMode="WordWrap"
                         LineHeight="1"
                         Text="{Binding ArrivalDateString}"
-                        TextColor="{StaticResource Stamp}"
+                        TextColor="{Binding Tile.Date}"
                         VerticalOptions="Center" />
                     <controls:OneLineFittingLabel
                         FontAttributes="Bold"
@@ -99,11 +116,11 @@
                         LineBreakMode="WordWrap"
                         LineHeight="1"
                         Text="{Binding ArrivalDate, StringFormat='DD  Mmm  {0:yyyy}'}"
-                        TextColor="{StaticResource Stamp}"
+                        TextColor="{Binding Tile.Date}"
                         VerticalOptions="Center" />
                     <Line
                         HorizontalOptions="Center"
-                        Stroke="{StaticResource Ink}"
+                        Stroke="{Binding Tile.Rule}"
                         StrokeThickness="2"
                         X1="0"
                         X2="120"
@@ -117,10 +134,10 @@
                         HorizontalOptions="Center"
                         LineBreakMode="NoWrap"
                         Text="ARRIVAL"
-                        TextColor="{StaticResource Ink}"
+                        TextColor="{Binding Tile.Arrival}"
                         VerticalOptions="Center" />
                 </VerticalStackLayout>
-            </Border>
+            </Grid>
         </DataTemplate>
         <views:RegionTileTemplateSelector
             x:Key="Tiles"
