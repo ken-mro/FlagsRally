@@ -3,6 +3,11 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+- **The app froze after subscribing on iOS.** Once the purchase went through, the subscription popup stayed open and the app stopped responding until it was restarted (the subscription itself had been saved). Saving it, updating the popup and closing it now happen on the main thread.
+
 ## [1.3.0] - Unreleased
 
 ### Added

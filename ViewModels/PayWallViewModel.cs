@@ -40,13 +40,17 @@ public partial class PayWallViewModel : BaseViewModel
         Title = "Pay Wall";
     }
 
+    // Both commands run on the main thread: what they set is bound to the popup, saving the
+    // subscription updates other pages, and closing the popup dismisses it. iOS hangs when any
+    // of these happens on a background thread, as they did from Task.Run before.
     [RelayCommand]
-    private void LoadOfferings()
+    private async Task LoadOfferingsAsync()
     {
-        Task.Run(async () =>
+        var offeringsResult = await _revenueCatBilling.GetOfferings();
+        if (offeringsResult.IsError || offeringsResult.Value is null) return;
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
         {
-            var offeringsResult = await _revenueCatBilling.GetOfferings();
-            if (offeringsResult.IsError || offeringsResult.Value is null) return;
             LoadedOfferings = new ObservableCollection<OfferingDto>(offeringsResult.Value);
 
             MonthlySubscription = LoadedOfferings
@@ -60,20 +64,26 @@ public partial class PayWallViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void BuyItem(PackageDto packageDto)
+    private async Task BuyItemAsync(PackageDto packageDto)
     {
         if (IsBusy) return;
         IsBusy = true;
 
-        Task.Run(async () =>
+        try
         {
             var purchaseResult = await _revenueCatBilling.PurchaseProduct(packageDto);
-            _settingsPreferences.SetIsSubscribed(purchaseResult.IsSuccess);
-            IsBusy = false;
-            if (purchaseResult.IsSuccess)
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await Popup.CloseAsync();
-            }
-        });
+                _settingsPreferences.SetIsSubscribed(purchaseResult.IsSuccess);
+                if (purchaseResult.IsSuccess)
+                {
+                    await Popup.CloseAsync();
+                }
+            });
+        }
+        finally
+        {
+            await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
+        }
     }
 }
