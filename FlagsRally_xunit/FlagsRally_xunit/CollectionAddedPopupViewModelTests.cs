@@ -1,3 +1,4 @@
+using FlagsRally.Models;
 using FlagsRally.ViewModels;
 
 namespace FlagsRallyTests.ViewModels;
@@ -7,7 +8,7 @@ public class CollectionAddedPopupViewModelTests
     [Fact]
     public void The_bar_moves_on_by_the_new_region()
     {
-        var vm = new CollectionAddedPopupViewModel("Mecklenburg-Vorpommern", "de_mv_emblem.png", "Germany", visited: 3, total: 16);
+        var vm = new CollectionAddedPopupViewModel(new SubRegion { Name = "Mecklenburg-Vorpommern" }, "Germany", visited: 3, total: 16);
 
         Assert.Equal(2 / 16.0, vm.ProgressBefore);
         Assert.Equal(3 / 16.0, vm.ProgressAfter);
@@ -18,7 +19,7 @@ public class CollectionAddedPopupViewModelTests
     [Fact]
     public void The_first_region_starts_the_bar_from_empty()
     {
-        var vm = new CollectionAddedPopupViewModel("Kyoto", "jp_26_emblem.png", "Japan", visited: 1, total: 47);
+        var vm = new CollectionAddedPopupViewModel(new SubRegion { Name = "Kyoto" }, "Japan", visited: 1, total: 47);
 
         Assert.Equal(0, vm.ProgressBefore);
     }

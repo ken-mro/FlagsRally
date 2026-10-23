@@ -918,7 +918,7 @@ public partial class LocationPageViewModel : BaseViewModel
             if (region is null) return;
 
             var viewModel = new CollectionAddedPopupViewModel(
-                region.Name, region.FlagSource, country.CountryName, regions.Count(r => r.HasBeenVisited), regions.Count);
+                region, country.CountryName, regions.Count(r => r.HasBeenVisited), regions.Count);
             await Shell.Current.CurrentPage.ShowPopupAsync(new CollectionAddedPopupView(viewModel));
         }
         catch (Exception ex)

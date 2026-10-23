@@ -1,19 +1,19 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Models;
 
 namespace FlagsRally.ViewModels;
 
 /// <summary>
-/// The popup after the stamp of a new region: its flag (as the country's regional flags show it)
-/// joining the country's card from Collections, whose progress moves on by one.
+/// The popup after the stamp of a new region: its tile, as the country's regional flags in
+/// Collections show it, with the country's progress moving on by one.
 /// </summary>
-public partial class CollectionAddedPopupViewModel(string regionName, string flagSource, string countryName, int visited, int total) : BaseViewModel
+public partial class CollectionAddedPopupViewModel(SubRegion region, string countryName, int visited, int total) : BaseViewModel
 {
     public Popup? Popup { get; set; }
 
-    public string RegionName { get; } = regionName;
-    public string FlagSource { get; } = flagSource;
+    public SubRegion Region { get; } = region;
     public string CountryName { get; } = countryName;
     public int Visited { get; } = visited;
     public int Total { get; } = total;
