@@ -1,5 +1,4 @@
-- A new look: your arrivals are now passport stamps, with a new map and new screens throughout.
-- Stamp trails: collect stamps at shrines, temples, manhole cards and more, and add several trails at once.
-- Short how-to pages on the first launch, which you can open again from Settings.
-- Pins at the same spot spread out so each one can be tapped, and the map is easier to use.
-- Text is no longer cut off with large text sizes, and several crashes and display problems are fixed.
+- Choose from 13 new passport stamp designs inspired by travel stamps and postmarks, and tilt them like stamps pressed by hand (with a subscription or your own Google Maps API key).
+- Each country's regional flags in Collections now have a look of their own.
+- New stamps are pressed into your passport with confetti, and a newly visited region is welcomed into your collection.
+- Stamps are no longer recorded in the wrong country, and long place names fit neatly at any text size.
