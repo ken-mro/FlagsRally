@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.CollectionAddedPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:CollectionAddedPopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Margin="0,1,0,0"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <toolkit:Popup.Resources>
+        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+    </toolkit:Popup.Resources>
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,Auto"
+        RowSpacing="14">
+        <controls:StampLabel
+            FontAutoScalingEnabled="True"
+            FontSize="Title"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource StampHeading}"
+            Text="{x:Static strings:AppResources.AddedToCollection}" />
+
+        <!--  The country's card from Collections, with the new region's flag pressed onto it  -->
+        <Grid Grid.Row="1" HeightRequest="290">
+            <Border
+                Padding="16"
+                BackgroundColor="{StaticResource PaperCard}"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 10"
+                VerticalOptions="Center"
+                WidthRequest="240">
+                <VerticalStackLayout Spacing="8">
+                    <Image
+                        x:Name="flag"
+                        Aspect="AspectFit"
+                        HeightRequest="120"
+                        Source="{Binding FlagSource}" />
+                    <controls:StampNameLabel
+                        FontAttributes="Bold"
+                        FontFamily="{Binding RegionName, Converter={StaticResource FontFamilyConverter}}"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        MinFontSize="15"
+                        Name="{Binding RegionName}"
+                        TextColor="{StaticResource Ink}"
+                        TwoLineMinFontSize="12" />
+                    <BoxView
+                        HeightRequest="1"
+                        Margin="8,2"
+                        Color="{StaticResource PaperEdge}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding CountryName}"
+                        TextColor="{StaticResource Ink}" />
+                    <ProgressBar x:Name="progress" ProgressColor="{StaticResource Stamp}" />
+                    <Label
+                        FontSize="12"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding ProgressText}"
+                        TextColor="{StaticResource InkMuted}" />
+                </VerticalStackLayout>
+            </Border>
+            <skia:SKLottieView
+                x:Name="celebration"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                IsAnimationEnabled="False"
+                IsVisible="False"
+                RepeatCount="0"
+                Source="celebration.json"
+                VerticalOptions="Fill" />
+        </Grid>
+
+        <!--  On once the flag has been pressed  -->
+        <Button
+            Grid.Row="2"
+            Command="{Binding ClosePopupCommand}"
+            HorizontalOptions="Center"
+            IsEnabled="{Binding CanClose}"
+            Text="OK"
+            WidthRequest="100" />
+    </Grid>
+</toolkit:Popup>

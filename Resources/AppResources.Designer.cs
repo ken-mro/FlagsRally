@@ -1709,5 +1709,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("SwipeForNextStamp", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added to your collection.
+        /// </summary>
+        internal static string AddedToCollection {
+            get {
+                return ResourceManager.GetString("AddedToCollection", resourceCulture);
+            }
+        }
     }
 }

@@ -668,4 +668,7 @@
   <data name="SwipeForNextStamp" xml:space="preserve">
     <value>Swipe for the next stamp ›</value>
   </data>
+  <data name="AddedToCollection" xml:space="preserve">
+    <value>Added to your collection</value>
+  </data>
 </root>

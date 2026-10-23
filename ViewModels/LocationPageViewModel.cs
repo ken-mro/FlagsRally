@@ -39,6 +39,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private CustomBoardService _customBoardService;
     private ArrivalLocationService _arrivalLocationService;
     private readonly MapFocusRequest _mapFocusRequest;
+    private readonly RegionalFlagsService _regionalFlagsService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
@@ -534,7 +535,7 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _customBoardRepository = customBoardRepository;
@@ -546,6 +547,7 @@ public partial class LocationPageViewModel : BaseViewModel
         _customBoardService = customBoardService;
         _arrivalLocationService = arrivalLocationService;
         _mapFocusRequest = mapFocusRequest;
+        _regionalFlagsService = regionalFlagsService;
         PinIcons.Style = settingsPreferences.GetPinStyle();
 
         WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
@@ -777,6 +779,12 @@ public partial class LocationPageViewModel : BaseViewModel
                     await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
                 }
 
+                // A new region's flag also joins the country's regional flags in Collections
+                if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
+                {
+                    await ShowCollectionAddedPopup(subRegionCode);
+                }
+
                 RemoveCheckInSpot();
 
             }
@@ -895,6 +903,29 @@ public partial class LocationPageViewModel : BaseViewModel
         {
 #if DEBUG
             Console.WriteLine($"Failed to show the arrival stamp: {ex.Message}");
+#endif
+        }
+    }
+
+    // After the stamp of a new region: its flag joining the country's card in Collections
+    private async Task ShowCollectionAddedPopup(SubRegionCode subRegionCode)
+    {
+        try
+        {
+            var country = _regionalFlagsService.GetCountry(subRegionCode.CountryCode);
+            var regions = await _regionalFlagsService.GetRegionsAsync(country);
+            var region = regions.FirstOrDefault(r => r.Code == subRegionCode && r.HasBeenVisited);
+            if (region is null) return;
+
+            var viewModel = new CollectionAddedPopupViewModel(
+                region.Name, region.FlagSource, country.CountryName, regions.Count(r => r.HasBeenVisited), regions.Count);
+            await Shell.Current.CurrentPage.ShowPopupAsync(new CollectionAddedPopupView(viewModel));
+        }
+        catch (Exception ex)
+        {
+            // If popup fails, don't block the location saving process
+#if DEBUG
+            Console.WriteLine($"Failed to show the collection: {ex.Message}");
 #endif
         }
     }
