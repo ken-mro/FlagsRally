@@ -27,16 +27,16 @@ public class CustomGeolocation
     private async Task<ArrivalLocationData> GenerateFrom(DateTime datetime, JObject jsonObject, JObject enJsonObject, Location location, string languageCode)
     {
         var enResults = enJsonObject["results"]?.Value<JArray>() ?? new();
-        var enCountry = GetComponent(enResults, "country");
-        var enAdminArea = GetComponent(enResults, "administrative_area_level_1");
-        var enLocality = GetComponent(enResults, "locality");
+        var enCountry = GeocodeResults.Country(enResults);
+        var countryCode = enCountry?["short_name"]?.Value<string>() ?? string.Empty;
+        var enAdminArea = GeocodeResults.Component(enResults, "administrative_area_level_1", countryCode);
+        var enLocality = GeocodeResults.Component(enResults, "locality", countryCode);
 
         var enCountryName = enCountry?["long_name"]?.Value<string>() ?? string.Empty;
         var enAdminAreaName = enAdminArea?["long_name"]?.Value<string>() ?? string.Empty;
         var enAdminAreaShortName = enAdminArea?["short_name"]?.Value<string>() ?? string.Empty;
         var enLocalityName = enLocality?["long_name"]?.Value<string>() ?? string.Empty;
 
-        var countryCode = enCountry?["short_name"]?.Value<string>() ?? string.Empty;
         var adminAreaCode = _countryHelper.GetAdminAreaCode(countryCode, enAdminAreaName, enAdminAreaShortName);
         if (string.IsNullOrEmpty(adminAreaCode))
         {
@@ -57,9 +57,9 @@ public class CustomGeolocation
         else
         {
             var results = jsonObject["results"]?.Value<JArray>() ?? [];
-            var country = GetComponent(results, "country", enCountryName, languageCode);
-            var adminArea = GetComponent(results, "administrative_area_level_1", enAdminAreaName, languageCode);
-            var locality = GetComponent(results, "locality", enLocalityName, languageCode);
+            var country = GeocodeResults.Translated(results, "country", enCountryName, countryCode);
+            var adminArea = GeocodeResults.Translated(results, "administrative_area_level_1", enAdminAreaName, countryCode);
+            var locality = GeocodeResults.Translated(results, "locality", enLocalityName, countryCode);
 
             countryName = country?["long_name"]?.Value<string>() ?? enCountryName;
             adminAreaName = adminArea?["long_name"]?.Value<string>() ?? enAdminAreaName;
@@ -93,36 +93,6 @@ public class CustomGeolocation
         );
 
         return arrivalLocation;
-    }
-
-    private static JToken? GetComponent(JToken results, string type)
-    {
-        foreach (var result in results)
-        {
-            var addressComponent = result?["address_components"];
-            var targetComponent = addressComponent?.Where(ac => (ac["types"] ?? string.Empty).Values<string>()
-                                    .Contains(type)).FirstOrDefault();
-            if (targetComponent is not null) return targetComponent;
-        }
-
-        return null;
-    }
-
-    private JToken? GetComponent(JToken results, string type, string enName, string languageCode)
-    {
-        if (languageCode == "en") throw new ArgumentException("Language code must not be 'en'");
-
-        foreach (var result in results)
-        {
-            var addressComponent = result?["address_components"];
-            var targetComponent = addressComponent?.Where(ac => (ac["types"] ?? string.Empty).Values<string>()
-                                    .Contains(type)).FirstOrDefault();
-            if (targetComponent is null) continue;
-
-            if (targetComponent["long_name"]?.Value<string>() != enName) return targetComponent;
-        }
-
-        return null;
     }
 
     private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode, SettingsPreferences settings)
@@ -171,7 +141,7 @@ public class CustomGeolocation
 
                 var jObject = JObject.Parse(responseContent);
                 var results = jObject["results"]?.Value<JArray>() ?? new();
-                var country = GetComponent(results, "country");
+                var country = GeocodeResults.Country(results);
                 var countryCode = country?["short_name"]?.Value<string>() ?? string.Empty;
                 return countryCode == "US";
             }
