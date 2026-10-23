@@ -5,7 +5,7 @@ from PIL import Image
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 RAW = f'{TOOLS}/raw'
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(TOOLS)
-NAMES = ['1_passport', '2_regions', '3_worldmap', '4_map', '5_collections', '6_board']
+NAMES = ['1_passport', '7_designs', '2_regions', '3_worldmap', '4_map', '5_collections', '8_flags', '6_board']  # listing order, as in compose.py
 
 def android_phone(im):
     # Google Play allows at most 2:1. Drop the system status bar (rows 0-129) and the gesture
@@ -28,11 +28,15 @@ TARGETS = [
     ('android', 'android/plain/phone_1110x2220', android_phone),
 ]
 
+# usage: plain.py [out dir] [raw names to redo (default: all)]
 if __name__ == '__main__':
+    only = sys.argv[2:]
     for prefix, folder, fit in TARGETS:
         for lang in ('en', 'ja'):
             os.makedirs(f'{OUT}/{folder}/{lang}', exist_ok=True)
             for i, name in enumerate(NAMES):
+                if only and name not in only:
+                    continue
                 im = Image.open(f'{RAW}/{prefix}_{lang}/{name}.png').convert('RGB')
                 fit(im).save(f'{OUT}/{folder}/{lang}/{i + 1:02d}_{name.split("_", 1)[1]}.png', optimize=True)
             print('done', folder, lang)
