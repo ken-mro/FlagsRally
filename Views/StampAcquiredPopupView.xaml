@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.StampAcquiredPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    xmlns:views="clr-namespace:FlagsRally.Views"
+    x:DataType="viewmodels:StampAcquiredPopupViewModel"
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Margin="0,1,0,0"
+    HorizontalOptions="Fill"
+    VerticalOptions="Center">
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,Auto,Auto"
+        RowSpacing="14">
+        <!--  "New country" / "New region" of the page shown  -->
+        <controls:StampLabel
+            x:Name="heading"
+            FontAutoScalingEnabled="True"
+            FontSize="Title"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource StampHeading}"
+            Text="{Binding Current.Heading}" />
+
+        <!--  The stamp, pressed down when its page comes in; swiped to move between pages  -->
+        <Grid
+            x:Name="stage"
+            Grid.Row="1"
+            BackgroundColor="Transparent"
+            HeightRequest="290">
+            <Grid.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Left" Swiped="OnSwipedLeft" />
+                <SwipeGestureRecognizer Direction="Right" Swiped="OnSwipedRight" />
+            </Grid.GestureRecognizers>
+            <views:StampSlideView
+                x:Name="stamp"
+                BindingContext="{Binding Current}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+            <skia:SKLottieView
+                x:Name="celebration"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                IsAnimationEnabled="False"
+                IsVisible="False"
+                RepeatCount="0"
+                Source="celebration.json"
+                VerticalOptions="Fill" />
+        </Grid>
+
+        <!--  Where the pages are, and how to get to the next  -->
+        <VerticalStackLayout
+            Grid.Row="2"
+            IsVisible="{Binding HasSeveral}"
+            Spacing="6">
+            <HorizontalStackLayout
+                BindableLayout.ItemsSource="{Binding Slides}"
+                HorizontalOptions="Center"
+                Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:StampSlide">
+                        <Ellipse
+                            Fill="{StaticResource PaperEdge}"
+                            HeightRequest="8"
+                            WidthRequest="8">
+                            <Ellipse.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsCurrent}"
+                                    TargetType="Ellipse"
+                                    Value="True">
+                                    <Setter Property="Fill" Value="{StaticResource Navy}" />
+                                </DataTrigger>
+                            </Ellipse.Triggers>
+                        </Ellipse>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+            <Label
+                FontSize="13"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding HasMore}"
+                Text="{x:Static strings:AppResources.SwipeForNextStamp}"
+                TextColor="{StaticResource InkMuted}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNextTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </VerticalStackLayout>
+
+        <!--  On once every page has been pressed  -->
+        <Button
+            Grid.Row="3"
+            Command="{Binding ClosePopupCommand}"
+            HorizontalOptions="Center"
+            IsEnabled="{Binding CanClose}"
+            Text="OK"
+            WidthRequest="100" />
+    </Grid>
+</toolkit:Popup>

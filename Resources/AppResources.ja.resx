@@ -665,4 +665,7 @@
   <data name="StampStyleLocked" xml:space="preserve">
     <value>スタンプのデザインと傾きは、サブスクリプションの登録中か、自分の Google Maps API キーを使っているときに選べます。それまでは四角（従来）になります。</value>
   </data>
+  <data name="SwipeForNextStamp" xml:space="preserve">
+    <value>スワイプして次のスタンプへ ›</value>
+  </data>
 </root>

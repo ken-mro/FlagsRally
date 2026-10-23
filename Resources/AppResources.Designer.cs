@@ -1700,5 +1700,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StampStyleLocked", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swipe for the next stamp ›.
+        /// </summary>
+        internal static string SwipeForNextStamp {
+            get {
+                return ResourceManager.GetString("SwipeForNextStamp", resourceCulture);
+            }
+        }
     }
 }

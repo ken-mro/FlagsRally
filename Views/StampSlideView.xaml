@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  One stamp of the popup after stamping, in the passport's design: a country's or a region's
+      flag and name with the date. The same three layouts as the passport (MainPage.xaml), larger.  -->
+<ContentView
+    x:Class="FlagsRally.Views.StampSlideView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:StampSlide">
+    <ContentView.Resources>
+        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
+    </ContentView.Resources>
+    <Grid>
+        <!--  The original square  -->
+        <Border
+            BackgroundColor="Transparent"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsSquare}"
+            Stroke="{StaticResource Ink}"
+            StrokeShape="Rectangle"
+            StrokeThickness="4"
+            WidthRequest="260">
+            <Border
+                Margin="2"
+                Padding="8,12"
+                BackgroundColor="{StaticResource Paper}"
+                Stroke="{StaticResource Ink}"
+                StrokeDashArray="2,2"
+                StrokeShape="Rectangle"
+                StrokeThickness="2">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        FontAutoScalingEnabled="False"
+                        FontSize="56"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasFlagEmoji}"
+                        Text="{Binding FlagEmoji}" />
+                    <Image
+                        HeightRequest="48"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasFlagImage}"
+                        Source="{Binding FlagImage}"
+                        WidthRequest="96" />
+                    <controls:StampNameLabel
+                        FontAttributes="Bold"
+                        FontFamily="{Binding Name, Converter={StaticResource FontFamilyConverter}}"
+                        FontSize="24"
+                        HorizontalTextAlignment="Center"
+                        MinFontSize="18"
+                        Name="{Binding Name}"
+                        TextColor="{StaticResource Ink}"
+                        TwoLineMinFontSize="14" />
+                    <Line
+                        HorizontalOptions="Center"
+                        Stroke="{StaticResource Ink}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="200"
+                        Y1="0"
+                        Y2="0" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="craftmincho"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Arrival.ArrivalDateString}"
+                        TextColor="{StaticResource Stamp}" />
+                    <Line
+                        HorizontalOptions="Center"
+                        Stroke="{StaticResource Ink}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="160"
+                        Y1="0"
+                        Y2="0" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="False"
+                        FontFamily="JerseyclubGrungeBold"
+                        FontSize="48"
+                        HorizontalOptions="Center"
+                        LineBreakMode="NoWrap"
+                        Text="ARRIVAL"
+                        TextColor="{StaticResource Ink}" />
+                </VerticalStackLayout>
+            </Border>
+        </Border>
+        <!--  The other designs, drawn as on the passport and grown to 260 wide  -->
+        <controls:ShrinkToFitLayout
+            DesignWidth="180"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsShaped}"
+            MaxScale="1.45"
+            WidthRequest="260">
+            <Grid>
+                <controls:StampFrame Pattern="{Binding Arrival.StampPattern}" Seed="{Binding Arrival.Id}" />
+                <VerticalStackLayout Padding="{Binding Arrival.StampPadding}" VerticalOptions="Center">
+                    <Label
+                        FontAutoScalingEnabled="False"
+                        FontSize="{OnPlatform Default=30, Android=28}"
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        IsVisible="{Binding HasFlagEmoji}"
+                        Text="{Binding FlagEmoji}" />
+                    <!--  A fixed box (flags up to 2:1 keep their height)  -->
+                    <Image
+                        HeightRequest="26"
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        IsVisible="{Binding HasFlagImage}"
+                        Source="{Binding FlagImage}"
+                        WidthRequest="52" />
+                    <controls:StampNameLabel
+                        Padding="2,0,2,2"
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="False"
+                        FontFamily="{Binding Name, Converter={StaticResource FontFamilyConverter}}"
+                        FontSize="18"
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        HorizontalTextAlignment="{Binding Arrival.StampTextAlignment}"
+                        LineHeight="1"
+                        MinFontSize="13"
+                        Name="{Binding Name}"
+                        TextColor="{Binding Arrival.StampInk}"
+                        TwoLineMinFontSize="7.5" />
+                    <Line
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        Stroke="{Binding Arrival.StampInk}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="{Binding Arrival.StampLongLine}"
+                        Y1="0"
+                        Y2="0" />
+                    <controls:OneLineFittingLabel
+                        Margin="8,0"
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="False"
+                        FontFamily="craftmincho"
+                        FontSize="14"
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        HorizontalTextAlignment="{Binding Arrival.StampTextAlignment}"
+                        LineBreakMode="WordWrap"
+                        LineHeight="1"
+                        MinFontSize="8"
+                        Text="{Binding Arrival.ArrivalDateString}"
+                        TextColor="{Binding Arrival.StampDateInk}" />
+                    <Line
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        Stroke="{Binding Arrival.StampInk}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="2"
+                        X1="0"
+                        X2="{Binding Arrival.StampShortLine}"
+                        Y1="0"
+                        Y2="0" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="False"
+                        FontFamily="JerseyclubGrungeBold"
+                        FontSize="{Binding Arrival.StampArrivalFontSize}"
+                        HorizontalOptions="{Binding Arrival.StampAlignment}"
+                        IsVisible="{Binding Arrival.StampShowsArrival}"
+                        LineBreakMode="NoWrap"
+                        Text="ARRIVAL"
+                        TextColor="{Binding Arrival.StampInk}" />
+                </VerticalStackLayout>
+            </Grid>
+        </controls:ShrinkToFitLayout>
+        <!--  The journey compass: the flag on the globe, the name and the date below  -->
+        <controls:ShrinkToFitLayout
+            DesignWidth="184"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsJourney}"
+            MaxScale="1.45"
+            WidthRequest="260">
+            <AbsoluteLayout HeightRequest="172" WidthRequest="172">
+                <controls:StampFrame
+                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    Pattern="{Binding Arrival.StampPattern}"
+                    Seed="{Binding Arrival.Id}" />
+                <Grid AbsoluteLayout.LayoutBounds="0.5,0.453,0.36,0.27" AbsoluteLayout.LayoutFlags="All">
+                    <Label
+                        FontAutoScalingEnabled="False"
+                        FontSize="{OnPlatform Default=38, Android=30}"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasFlagEmoji}"
+                        Text="{Binding FlagEmoji}"
+                        VerticalOptions="Center" />
+                    <Image
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasFlagImage}"
+                        Source="{Binding FlagImage}"
+                        VerticalOptions="Center"
+                        WidthRequest="48" />
+                </Grid>
+                <Grid AbsoluteLayout.LayoutBounds="0.5,0.718,0.55,0.16" AbsoluteLayout.LayoutFlags="All">
+                    <controls:StampNameLabel
+                        Margin="2,0"
+                        FontAttributes="Bold"
+                        FontAutoScalingEnabled="False"
+                        FontFamily="{Binding Name, Converter={StaticResource FontFamilyConverter}}"
+                        FontSize="14"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        MinFontSize="10"
+                        Name="{Binding Name}"
+                        TextColor="{Binding Arrival.StampInk}"
+                        TwoLineMinFontSize="6.5"
+                        VerticalOptions="End" />
+                </Grid>
+                <controls:OneLineFittingLabel
+                    Margin="2,0"
+                    AbsoluteLayout.LayoutBounds="0.5,0.834,0.5,0.09"
+                    AbsoluteLayout.LayoutFlags="All"
+                    FontAttributes="Bold"
+                    FontAutoScalingEnabled="False"
+                    FontFamily="craftmincho"
+                    FontSize="13"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap"
+                    LineHeight="1"
+                    MinFontSize="7"
+                    Text="{Binding Arrival.ArrivalDateString}"
+                    TextColor="{Binding Arrival.StampDateInk}"
+                    VerticalTextAlignment="Center" />
+            </AbsoluteLayout>
+        </controls:ShrinkToFitLayout>
+    </Grid>
+</ContentView>

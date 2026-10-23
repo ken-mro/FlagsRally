@@ -772,14 +772,9 @@ public partial class LocationPageViewModel : BaseViewModel
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
                 FanOutOverlappingPins();
 
-                if (isFirstTimeCountry)
+                if (isFirstTimeCountry || isFirstTimeSupportedSubRegion)
                 {
-                    await ShowLocationDiscoveryPopup(arrivalLocation);
-                }
-
-                if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
-                {
-                    await ShowLocationDiscoveryPopup(arrivalLocation.AdminAreaName, subRegionCode);
+                    await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
                 }
 
                 RemoveCheckInSpot();
@@ -904,52 +899,23 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    private static async Task ShowLocationDiscoveryPopup(ArrivalLocation arrivalLocation)
+    // After stamping somewhere new: the new country's stamp and the new region's, in the passport's
+    // design, one page after the other
+    private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool newRegion)
     {
         try
         {
-            string imageSource = arrivalLocation.CountryFlagSource;
+            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, newRegion);
+            if (slides.Count == 0) return;
 
-            // Only show popup if we have an image to display
-            if (string.IsNullOrEmpty(imageSource)) return;
-
-            var popupViewModel = new LocationDiscoveryPopupViewModel(imageSource, true, AppResources.NewCountry, arrivalLocation.CountryName);
-            var popup = new LocationDiscoveryPopupView(popupViewModel);
+            var popup = new StampAcquiredPopupView(new StampAcquiredPopupViewModel(slides));
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
         catch (Exception ex)
         {
             // If popup fails, don't block the location saving process
 #if DEBUG
-            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
-#endif
-        }
-    }
-
-    private static async Task ShowLocationDiscoveryPopup(string subRegionTitle, SubRegionCode subRegionCode)
-    {
-        try
-        {
-            string imageUrl = string.Empty;
-
-            if (Constants.SupportedSubRegionCountryCodeList.Contains(subRegionCode.CountryCode.ToLower()))
-            {
-                // Show emblem for supported sub-region
-                imageUrl = SubRegion.GetFlagSource(subRegionCode);
-            }
-
-            // Only show popup if we have an image to display
-            if (string.IsNullOrEmpty(imageUrl)) return;
-
-            var popupViewModel = new LocationDiscoveryPopupViewModel(imageUrl, false, AppResources.NewRegion, subRegionTitle);
-            var popup = new LocationDiscoveryPopupView(popupViewModel);
-            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
-        }
-        catch (Exception ex)
-        {
-            // If popup fails, don't block the location saving process
-#if DEBUG
-            Console.WriteLine($"Failed to show location discovery popup: {ex.Message}");
+            Console.WriteLine($"Failed to show the new stamp: {ex.Message}");
 #endif
         }
     }
