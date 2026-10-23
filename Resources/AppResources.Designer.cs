@@ -1546,7 +1546,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Globe medal.
+        ///   Looks up a localized string similar to Medal.
         /// </summary>
         internal static string StampPatternScallopedGlobe {
             get {
@@ -1601,7 +1601,7 @@ namespace FlagsRally.Resources {
         
         
         /// <summary>
-        ///   Looks up a localized string similar to World postmark.
+        ///   Looks up a localized string similar to Globe.
         /// </summary>
         internal static string StampPatternGlobePostmark {
             get {
@@ -1673,7 +1673,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collector's stamp.
+        ///   Looks up a localized string similar to Postage stamp.
         /// </summary>
         internal static string StampPatternPostageStamp {
             get {

@@ -615,7 +615,7 @@
     <value>Sunrise</value>
   </data>
   <data name="StampPatternScallopedGlobe" xml:space="preserve">
-    <value>Globe medal</value>
+    <value>Medal</value>
   </data>
   <data name="StampPatternWorldOval" xml:space="preserve">
     <value>World map</value>
@@ -633,7 +633,7 @@
     <value>Star seal</value>
   </data>
   <data name="StampPatternGlobePostmark" xml:space="preserve">
-    <value>World postmark</value>
+    <value>Globe</value>
   </data>
   <data name="StampPatternJourney" xml:space="preserve">
     <value>Voyage</value>
@@ -657,7 +657,7 @@
     <value>Each stamp leans its own way, by a few degrees.</value>
   </data>
   <data name="StampPatternPostageStamp" xml:space="preserve">
-    <value>Collector's stamp</value>
+    <value>Postage stamp</value>
   </data>
   <data name="StampPatternMovieTicket" xml:space="preserve">
     <value>Cinema ticket</value>

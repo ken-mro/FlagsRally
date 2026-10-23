@@ -615,7 +615,7 @@
     <value>サンライズ</value>
   </data>
   <data name="StampPatternScallopedGlobe" xml:space="preserve">
-    <value>地球のメダル</value>
+    <value>メダル</value>
   </data>
   <data name="StampPatternWorldOval" xml:space="preserve">
     <value>ワールドマップ</value>
@@ -633,7 +633,7 @@
     <value>スターシール</value>
   </data>
   <data name="StampPatternGlobePostmark" xml:space="preserve">
-    <value>ワールド消印</value>
+    <value>グローブ</value>
   </data>
   <data name="StampPatternJourney" xml:space="preserve">
     <value>ボヤージュ</value>
@@ -657,7 +657,7 @@
     <value>スタンプごとに少しずつ違う向きになります。</value>
   </data>
   <data name="StampPatternPostageStamp" xml:space="preserve">
-    <value>記念切手</value>
+    <value>切手</value>
   </data>
   <data name="StampPatternMovieTicket" xml:space="preserve">
     <value>シネマチケット</value>
