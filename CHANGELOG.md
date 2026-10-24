@@ -5,6 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- **Development:** A second App Store header and search results image (`header_features`, `search_results_features`, English and Japanese) take the store description's headline and its three features, made by `creative.py`.
+- **Development:** A narrated promotional video in English and Japanese (16:9, with .srt subtitles) for YouTube or the Google Play promo video, made by `tools/promo_video.py` with macOS system voices; the new `/promo-video` skill explains how to remake it.
+- **Development:** macOS `.DS_Store` files are ignored by git.
+
 ### Fixed
 - **The app froze after subscribing on iOS.** Once the purchase went through, the subscription popup stayed open and the app stopped responding until it was restarted (the subscription itself had been saved). Saving it, updating the popup and closing it now happen on the main thread.
 - **A cancelled purchase could show a subscriber as not subscribed.** When a purchase did not go through (cancelled, or the store saying you are already subscribed), the app saved "not subscribed" until it was restarted. It now asks RevenueCat for the current subscription instead, and keeps the saved answer when RevenueCat cannot be reached.
