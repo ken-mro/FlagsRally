@@ -7,6 +7,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **The app froze after subscribing on iOS.** Once the purchase went through, the subscription popup stayed open and the app stopped responding until it was restarted (the subscription itself had been saved). Saving it, updating the popup and closing it now happen on the main thread.
+- **A cancelled purchase could show a subscriber as not subscribed.** When a purchase did not go through (cancelled, or the store saying you are already subscribed), the app saved "not subscribed" until it was restarted. It now asks RevenueCat for the current subscription instead, and keeps the saved answer when RevenueCat cannot be reached.
 
 ## [1.3.0] - Unreleased
 

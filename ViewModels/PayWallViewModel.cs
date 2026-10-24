@@ -72,10 +72,13 @@ public partial class PayWallViewModel : BaseViewModel
         try
         {
             var purchaseResult = await _revenueCatBilling.PurchaseProduct(packageDto);
+            // A purchase that did not go through (cancelled, or "already subscribed") says nothing
+            // about the subscription, so ask RevenueCat rather than saving "not subscribed".
+            var isSubscribed = purchaseResult.IsSuccess || await IsSubscribedNowAsync();
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                _settingsPreferences.SetIsSubscribed(purchaseResult.IsSuccess);
-                if (purchaseResult.IsSuccess)
+                _settingsPreferences.SetIsSubscribed(isSubscribed);
+                if (isSubscribed)
                 {
                     await Popup.CloseAsync();
                 }
@@ -85,5 +88,22 @@ public partial class PayWallViewModel : BaseViewModel
         {
             await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
         }
+    }
+
+    // RevenueCat's answer, or the saved one when it cannot be asked
+    private async Task<bool> IsSubscribedNowAsync()
+    {
+        try
+        {
+            var customerInfo = await _revenueCatBilling.GetCustomerInfo();
+            if (customerInfo.IsSuccess && customerInfo.Value is not null)
+            {
+                return customerInfo.Value.ActiveSubscriptions?.Count > 0;
+            }
+        }
+        catch (Exception)
+        {
+        }
+        return _settingsPreferences.GetIsSubscribed();
     }
 }
