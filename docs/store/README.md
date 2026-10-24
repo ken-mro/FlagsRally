@@ -14,6 +14,8 @@ Screenshots, icons, the Play feature graphic and the App Store listing text for 
 | `ios/creative/header_3840x1646.png` | App Store product page header (iOS 27+), no text, for every language | 3840 x 1646 |
 | `ios/creative/search_results_3840x2560_{en,ja}.png` | App Store search results image (iOS 27+) | 3840 x 2560 |
 | `ios/creative/header_brand_3840x1646_{en,ja}.png` | App Store product page header in the Google Play feature graphic's layout (globe, name, tagline), inside the safe area | 3840 x 1646 |
+| `ios/creative/header_features_3840x1646_{en,ja}.png` | App Store product page header, second version from the store description: the headline "Your passport to global adventures" and the three features (flag stamps, stamp trail, travel history) in the safe area, phones on both sides | 3840 x 1646 |
+| `ios/creative/search_results_features_3840x2560_{en,ja}.png` | App Store search results image, second version: the same headline and one phone per feature under its name | 3840 x 2560 |
 | `ios/creative/header_3840x1646.mp4` | App Store product page header video (iOS 27+), no text, loops | 3840 x 1646, 10 s |
 | `ios/creative/search_results_1920x1280_{en,ja}.mp4` | App Store search results video (iOS 27+), loops | 1920 x 1280, 29.5 s |
 | `ios/preview/iphone_886x1920_{en,ja}.mp4` | App preview for iPhone (6.9", 6.5" and iPhone Duo all take 886 x 1920) | 886 x 1920, 29.5 s |
@@ -66,7 +68,7 @@ The app was built with the iOS 27.1 SDK (Xcode 27.1, `ValidateXcodeVersion=false
 
 ### Header and search results (`tools/creative.py`)
 
-Each device crops these differently, so the key art sits in the safe area of Apple's templates: header x 1097-2743, y 493-1154; search results x 836-3004, y 765-1795. The header is the passport emblem with stamps from the captures around it, and has no text so one image serves every language. The search results image has the headline and two phones (passport and a stamp trail) per language. A 16:9 universal asset (5244 x 2950 PNG) could replace both, but is not made.
+Each device crops these differently, so the key art sits in the safe area of Apple's templates: header x 1097-2743, y 493-1154; search results x 836-3004, y 765-1795. The header is the passport emblem with stamps from the captures around it, and has no text so one image serves every language. The search results image has the headline and two phones (passport and a stamp trail) per language. The second versions (`header_features`, `search_results_features`) take their words from the store description (`FEATURES` in `creative.py`). A 16:9 universal asset (5244 x 2950 PNG) could replace both, but is not made.
 
 `tools/creative_video.py` makes the video versions (H.264, 30 fps, muted when shown, so the silent audio track is only there for players that expect one): the header's stamps land one by one around the emblem and fade before the loop restarts; the search results video plays the iPhone app preview inside a phone next to the headline.
 
