@@ -1,0 +1,32 @@
+1
+00:00:00,350 --> 00:00:03,129
+Your passport to global adventures.
+
+2
+00:00:03,079 --> 00:00:04,905
+This is FlagsRally.
+
+3
+00:00:05,905 --> 00:00:13,442
+Wherever you travel, FlagsRally finds where you are and gives you that country's flag stamp, just like a passport.
+
+4
+00:00:13,392 --> 00:00:19,572
+In supported countries, collect the flags of states and regions too, and track your progress.
+
+5
+00:00:20,572 --> 00:00:24,370
+Join stamp trails at shrines, temples and more.
+
+6
+00:00:24,320 --> 00:00:26,518
+You can even create your own.
+
+7
+00:00:27,518 --> 00:00:31,584
+And look back on every stamp you have collected, right on the map.
+
+8
+00:00:32,584 --> 00:00:35,618
+Safe travels, and happy collecting!
+
