@@ -76,6 +76,10 @@ Each device crops these differently, so the key art sits in the safe area of App
 
 Real screen recordings (`xcrun simctl io <udid> recordVideo`) of the app with the demo database, driven with AXe: passport, regions, world map, the Map tab with the 平安神宮 pin and its card, Collections and the 全国神宮二十五社巡り trail. The simulator's location is flagged as simulated and the app refuses to check in with it, so the previews do not show a check-in. `preview.sh <recording> <out.mp4> <w> <h> [start] [length]` crops and scales to the preview size and writes H.264 High 4.0 at 30 fps and about 10 Mbps, with a silent stereo AAC track, as App Store Connect expects. Choose the poster frame (default 5 s) in App Store Connect.
 
+### Promotional video (`tools/promo_video.py`)
+
+`promo/promo_1920x1080_{en,ja}.mp4` (16:9, H.264, 30 fps, AAC stereo; 36 s en, 38 s ja) for YouTube or the Google Play promo video, with `.srt` subtitles alongside for YouTube captions. Scenes: the brand, flag stamps, stamp trail, travel history and a closing card. Each feature scene plays part of the iPhone app preview in a phone. The narration uses the macOS system voices Joelle (Enhanced) for English and Sakura (shown as "Voice 2" (Siri) in Settings) for Japanese, written to files by `tools/speak.swift` because `say` cannot use Siri voices (install both in System Settings → Accessibility → Spoken Content → System voice → Manage Voices). The subtitles are drawn into the frames because this ffmpeg has no `drawtext`/`subtitles` filters. The script and the clip ranges are in `SCENES` at the top. Run `python3 tools/promo_video.py [en|ja]`.
+
 ### File sizes
 
 Apple publishes no per-image limit, so `check_ios.py` keeps every image under 8 MB (most guides report 10 MB); the largest is about 3 MB. Previews may be up to 500 MB; these are 10-17 MB.
