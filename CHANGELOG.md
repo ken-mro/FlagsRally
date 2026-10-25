@@ -6,7 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
-- **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that the subscription pays for the Google Geocoding API calls that find each stamp's country and region; choosing stamp designs is an extra for subscribers and users with their own API key.
+- **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that each stamp's country and region are looked up with Google's Geocoding API, that the subscription (or the user's own API key) lifts the 5-arrival limit, and that subscribers and users with their own key can also choose stamp designs.
 
 ### Fixed
 - **The app froze after subscribing on iOS.** Once the purchase went through, the subscription popup stayed open and the app stopped responding until it was restarted (the subscription itself had been saved). Saving it, updating the popup and closing it now happen on the main thread.
