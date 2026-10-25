@@ -4,8 +4,8 @@ Location: the app uses the location only while it is in use, to stamp a place wh
 
 Stamp trails: Collections > Add stamp trail lists trails shared in a public Google Drive folder; tick one and add it. Its places then appear on the Map tab.
 
-Subscription: the first 5 arrivals are free. Recording a 6th arrival on the Map tab opens the subscription screen (monthly or yearly, auto-renewable). It can also be opened from Settings. Entering your own Google Maps API key in Settings removes the limit instead.
+Subscription: a stamp needs the country and region of the place. To find them, the app sends the place's latitude and longitude to Google's Geocoding API, and each of these calls costs money. The subscription (monthly or yearly, auto-renewable) pays for these lookups: the first 5 arrivals are free, and recording a 6th arrival on the Map tab opens the subscription screen. It can also be opened from Settings. Instead of subscribing, a user can enter their own Google Maps API key in Settings; the lookups are then billed to their own Google account and the limit does not apply.
 
-Stamp designs: Settings > Passport stamps chooses among the passport stamp designs and a slight tilt. They unlock with the subscription or your own Google Maps API key; until then the original design is used.
+Stamp designs: subscribers and users with their own API key can also choose how their passport stamps look in Settings > Passport stamps (several designs and a slight tilt). Everyone else gets the original design. This is an extra for them, not what the subscription is for.
 
-Advertising: the app contains no advertising. It shows no ads and includes no advertising SDK or ad network. Its third-party SDKs are Google Maps and Syncfusion Maps (map display) and RevenueCat (the subscription); the only in-app purchase is the subscription.
+Advertising: the app contains no advertising. It shows no ads and includes no advertising SDK or ad network. Its third-party SDKs are Google Maps and Syncfusion Maps (map display) and RevenueCat (the subscription); the only in-app purchase is the subscription for the location lookups.
