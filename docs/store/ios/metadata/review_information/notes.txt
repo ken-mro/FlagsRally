@@ -5,3 +5,7 @@ Location: the app uses the location only while it is in use, to stamp a place wh
 Stamp trails: Collections > Add stamp trail lists trails shared in a public Google Drive folder; tick one and add it. Its places then appear on the Map tab.
 
 Subscription: the first 5 arrivals are free. Recording a 6th arrival on the Map tab opens the subscription screen (monthly or yearly, auto-renewable). It can also be opened from Settings. Entering your own Google Maps API key in Settings removes the limit instead.
+
+Stamp designs: Settings > Passport stamps chooses among the passport stamp designs and a slight tilt. They unlock with the subscription or your own Google Maps API key; until then the original design is used.
+
+Advertising: the app contains no advertising. It shows no ads and includes no advertising SDK or ad network. Its third-party SDKs are Google Maps and Syncfusion Maps (map display) and RevenueCat (the subscription); the only in-app purchase is the subscription.
