@@ -47,12 +47,13 @@
                         Text="{x:Static strings:AppResources.HowToUse}"
                         TextColor="{StaticResource InkMuted}"
                         VerticalOptions="Center" />
-                    <!--  Skip goes straight to the end; the last page has its own buttons  -->
+                    <!--  Skip goes to the last page, the one about the location, rather than closing: the
+                          App Store asks that the explanation always lead on to the permission request  -->
                     <Button
                         Grid.Column="1"
                         Padding="8,0"
                         BackgroundColor="Transparent"
-                        Command="{Binding FinishCommand}"
+                        Command="{Binding SkipCommand}"
                         IsVisible="{Binding IsNotLast}"
                         Text="{x:Static strings:AppResources.OnboardingSkip}"
                         TextColor="{StaticResource Navy}"
@@ -174,24 +175,16 @@
                         IsVisible="{Binding IsNotLast}"
                         MinimumWidthRequest="110"
                         Text="{x:Static strings:AppResources.OnboardingNext}" />
-                    <Button
-                        Margin="5"
-                        BackgroundColor="Transparent"
-                        BorderColor="{StaticResource Navy}"
-                        BorderWidth="1"
-                        Command="{Binding FinishCommand}"
-                        IsVisible="{Binding ShowsAllowLocation}"
-                        MinimumWidthRequest="110"
-                        Text="{x:Static strings:AppResources.OnboardingLater}"
-                        TextColor="{StaticResource Navy}" />
+                    <!--  Next, not "Allow location", and no "Not now": the location page always goes on to
+                          the system's permission request (App Store guideline 5.1.1(iv))  -->
                     <Button
                         Margin="5"
                         BackgroundColor="{StaticResource Stamp}"
-                        Command="{Binding AllowLocationCommand}"
+                        Command="{Binding RequestLocationCommand}"
                         IsVisible="{Binding ShowsAllowLocation}"
                         LineBreakMode="WordWrap"
                         MinimumWidthRequest="110"
-                        Text="{x:Static strings:AppResources.OnboardingAllowLocation}" />
+                        Text="{x:Static strings:AppResources.OnboardingNext}" />
                     <Button
                         Margin="5"
                         BackgroundColor="{StaticResource Stamp}"

@@ -557,12 +557,6 @@
   <data name="OnboardingLocationBody" xml:space="preserve">
     <value>Stamps and check-ins use where you are. FlagsRally reads your location only while you are using it.</value>
   </data>
-  <data name="OnboardingAllowLocation" xml:space="preserve">
-    <value>Allow location</value>
-  </data>
-  <data name="OnboardingLater" xml:space="preserve">
-    <value>Not now</value>
-  </data>
   <data name="LongPressHint" xml:space="preserve">
     <value>Press and hold the map to put a pin where you want to stamp.</value>
   </data>

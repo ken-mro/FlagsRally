@@ -5,6 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- **The how-to pages always go on to the location permission request.** The location page's buttons are Back and Next (it said Allow location, next to Not now), and Next shows the system's request. Skip on the earlier pages now goes to that page instead of closing. The App Store asks that an explanation before a permission request always lead on to it (guideline 5.1.1(iv)).
+
 ### Added
 - **Terms of Use and Privacy Policy on the subscription screen.** The subscription popup now links to both, under the plans, as the App Store asks of apps with auto-renewable subscriptions (they were only in Settings). The App Store description links to both as well.
 - **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that each stamp's country and region are looked up with Google's Geocoding API, that the subscription (or the user's own API key) lifts the 5-arrival limit, and that subscribers and users with their own key can also choose stamp designs.

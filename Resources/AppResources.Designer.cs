@@ -1375,24 +1375,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow location.
-        /// </summary>
-        internal static string OnboardingAllowLocation {
-            get {
-                return ResourceManager.GetString("OnboardingAllowLocation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not now.
-        /// </summary>
-        internal static string OnboardingLater {
-            get {
-                return ResourceManager.GetString("OnboardingLater", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Press and hold the map to put a pin where you want to stamp..
         /// </summary>
         internal static string LongPressHint {
