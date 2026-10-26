@@ -557,12 +557,6 @@
   <data name="OnboardingLocationBody" xml:space="preserve">
     <value>スタンプとチェックインには現在地を使います。位置情報は、アプリを使っている間だけ取得します。</value>
   </data>
-  <data name="OnboardingAllowLocation" xml:space="preserve">
-    <value>位置情報を許可する</value>
-  </data>
-  <data name="OnboardingLater" xml:space="preserve">
-    <value>あとで</value>
-  </data>
   <data name="LongPressHint" xml:space="preserve">
     <value>マップを長押しすると、スタンプを押したい場所にピンを置けます。</value>
   </data>

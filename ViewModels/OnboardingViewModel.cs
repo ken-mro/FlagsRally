@@ -148,8 +148,14 @@ public partial class OnboardingViewModel : ObservableObject
     [RelayCommand]
     Task FinishAsync() => _close();
 
+    /// <summary>
+    /// Goes to the last page, the location, which leads on to the permission request.
+    /// </summary>
     [RelayCommand]
-    async Task AllowLocationAsync()
+    void Skip() => Index = Steps.Length - 1;
+
+    [RelayCommand]
+    async Task RequestLocationAsync()
     {
         await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
         await _close();
