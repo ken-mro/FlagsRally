@@ -77,5 +77,36 @@
                 IsVisible="{Binding AreOfferingsLoaded}"
                 Text="{Binding YearlyButtonText}" />
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <!--  The App Store asks for the terms and the privacy policy where the subscription is sold  -->
+            <FlexLayout
+                AlignItems="Center"
+                JustifyContent="Center"
+                Wrap="Wrap">
+                <Label
+                    Margin="10,4"
+                    FlexLayout.Shrink="0"
+                    Padding="0,6"
+                    FontSize="14"
+                    Text="{x:Static strings:AppResources.TermsOfUse}"
+                    TextColor="{StaticResource Navy}"
+                    TextDecorations="Underline">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenTermsOfUseCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label
+                    Margin="10,4"
+                    FlexLayout.Shrink="0"
+                    Padding="0,6"
+                    FontSize="14"
+                    Text="{x:Static strings:AppResources.PrivacyPolicy}"
+                    TextColor="{StaticResource Navy}"
+                    TextDecorations="Underline">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenPrivacyPolicyCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </FlexLayout>
     </VerticalStackLayout>
 </toolkit:Popup>
