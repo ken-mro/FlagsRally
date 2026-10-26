@@ -90,6 +90,24 @@ public partial class PayWallViewModel : BaseViewModel
         }
     }
 
+    [RelayCommand]
+    private Task OpenTermsOfUseAsync() => OpenAsync(Constants.TERMS_OF_USE_URL);
+
+    [RelayCommand]
+    private Task OpenPrivacyPolicyAsync() => OpenAsync(Constants.PRIVACY_POLICY_URL);
+
+    private static async Task OpenAsync(string url)
+    {
+        try
+        {
+            await Browser.Default.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync(AppResources.Error, ex.Message, "OK");
+        }
+    }
+
     // RevenueCat's answer, or the saved one when it cannot be asked
     private async Task<bool> IsSubscribedNowAsync()
     {

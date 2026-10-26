@@ -4,7 +4,7 @@ Location: the app uses the location only while it is in use, to stamp a place wh
 
 Stamp trails: Collections > Add stamp trail lists trails shared in a public Google Drive folder; tick one and add it. Its places then appear on the Map tab.
 
-Subscription: a stamp needs the country and region of the place, which the app looks up by sending its latitude and longitude to Google's Geocoding API. The first 5 arrivals are free; recording a 6th arrival on the Map tab opens the subscription screen (monthly or yearly, auto-renewable). It can also be opened from Settings. Instead of subscribing, a user can enter their own Google Maps API key in Settings; the app then uses that key for the lookups and the limit does not apply.
+Subscription: a stamp needs the country and region of the place, which the app looks up by sending its latitude and longitude to Google's Geocoding API. The first 5 arrivals are free; recording a 6th arrival on the Map tab opens the subscription screen (monthly or yearly, auto-renewable). It can also be opened from Settings. The subscription screen shows each plan's length and price and links to the Terms of Use and the Privacy Policy, which are also linked at the end of the App Store description and in Settings. Instead of subscribing, a user can enter their own Google Maps API key in Settings; the app then uses that key for the lookups and the limit does not apply.
 
 Stamp designs: subscribers and users with their own API key can also choose how their passport stamps look in Settings > Passport stamps (several designs and a slight tilt). Everyone else gets the original design.
 
