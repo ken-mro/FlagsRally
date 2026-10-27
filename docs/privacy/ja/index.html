@@ -31,7 +31,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font
 <li>アカウントは不要です。記録は端末の中に保存されます。</li>
 <li>当方はお客様のデータを集めるサーバーを運用しておらず、データを販売したり、広告のために共有したりしません。</li>
 <li>本アプリに広告はなく、当方による分析やトラッキングの仕組みもありません。</li>
-<li>位置情報は本アプリを使っている間だけ使います。到着を記録すると、その座標を国と地域を調べるために Google と TomTom に送ります。</li>
+<li>位置情報は本アプリを使っている間だけ使います。到着を記録すると、国と地域を調べるためにその座標を Google に送ります（地域が特定できない場合のみ TomTom にも送ります）。</li>
 </ul>
 
 <h2>1. 端末に保存する情報</h2>
@@ -43,7 +43,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font
 <ul>
 <li>地図上で現在地を表示するため</li>
 <li>チェックインの前に、スタンプラリーの地点から 50 m 以内にいることを確かめるため</li>
-<li>到着を記録するため。その場所の座標を Google の Geocoding API（ご自身のキーを入力した場合はそのキーで）と TomTom の逆ジオコーディング API に送り、国・地域・場所の名称を受け取ります。</li>
+<li>到着を記録するため。その場所の座標を Google の Geocoding API（ご自身のキーを入力した場合はそのキーで）に送り、国・地域・場所の名称を受け取ります。Google の結果で地域が特定できない場合のみ、TomTom の逆ジオコーディング API にも送ります。</li>
 </ul>
 <p>本アプリはバックグラウンドで位置情報を使いません。許可はいつでも端末の設定で変更できます。</p>
 
@@ -51,7 +51,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font
 <p>本アプリは次のサービスを利用します。本アプリが接続する際、これらのサービスは通常のインターネット通信の一部として IP アドレスとリクエストの内容を受け取り、それぞれのプライバシーポリシーに従って取り扱います。</p>
 <ul>
 <li><b>Google Maps Platform</b>（地図とジオコーディング）。Google Maps SDK は利用状況や診断のデータを収集することがあります。<a href="https://policies.google.com/privacy?hl=ja">Google プライバシーポリシー</a></li>
-<li><b>TomTom</b>（場所の地域を調べるため）。<a href="https://www.tomtom.com/privacy/">TomTom Privacy Notice</a></li>
+<li><b>TomTom</b>（Google で地域が特定できない場合に、場所の地域を調べるため）。<a href="https://www.tomtom.com/privacy/">TomTom Privacy Notice</a></li>
 <li><b>RevenueCat</b>（サブスクリプションの管理）。匿名のアプリ用ユーザー ID と、App Store または Google Play の購入履歴を受け取ります。<a href="https://www.revenuecat.com/privacy">RevenueCat Privacy Policy</a></li>
 <li><b>Apple App Store と Google Play</b>（支払い）。当方がお支払い情報を受け取ることはありません。</li>
 <li><b>Google ドライブ</b>（共有のスタンプラリー一覧を公開フォルダから読み込みます。サインインは不要です）</li>

@@ -31,7 +31,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font
 <li>No account is needed. Your records stay on your device.</li>
 <li>We do not run servers that collect your data, and we do not sell or share your data for advertising.</li>
 <li>The App shows no ads and contains no analytics or tracking of our own.</li>
-<li>Your location is used only while you use the App. When you record an arrival, its coordinates are sent to Google and TomTom to find the country and region.</li>
+<li>Your location is used only while you use the App. When you record an arrival, its coordinates are sent to Google to find the country and region (and to TomTom only when the region cannot be identified).</li>
 </ul>
 
 <h2>1. Information stored on your device</h2>
@@ -43,7 +43,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font
 <ul>
 <li>to show where you are on the map;</li>
 <li>to check that you are within 50 m of a stamp-trail place before a check-in;</li>
-<li>to record an arrival. The coordinates of that place are then sent to Google's Geocoding API (with your own key if you entered one) and to TomTom's reverse geocoding API, which return the country, region and place names.</li>
+<li>to record an arrival. The coordinates of that place are then sent to Google's Geocoding API (with your own key if you entered one), which returns the country, region and place names. Only when Google's result does not identify the region are they also sent to TomTom's reverse geocoding API.</li>
 </ul>
 <p>The App does not use your location in the background. You can change the permission at any time in your device's settings.</p>
 
@@ -51,7 +51,7 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font
 <p>The App uses the services below. When it connects to them, they receive your IP address and the details of the request as part of normal internet communication, and handle them under their own privacy policies.</p>
 <ul>
 <li><b>Google Maps Platform</b> (maps and geocoding). The Google Maps SDK may collect usage and diagnostic data. <a href="https://policies.google.com/privacy">Google Privacy Policy</a></li>
-<li><b>TomTom</b> (finding the region of a place). <a href="https://www.tomtom.com/privacy/">TomTom Privacy Notice</a></li>
+<li><b>TomTom</b> (finding the region of a place when Google cannot identify it). <a href="https://www.tomtom.com/privacy/">TomTom Privacy Notice</a></li>
 <li><b>RevenueCat</b> (managing the subscription). It receives an anonymous app user ID and your purchase history from the App Store or Google Play. <a href="https://www.revenuecat.com/privacy">RevenueCat Privacy Policy</a></li>
 <li><b>Apple App Store and Google Play</b> (payments). We do not receive your payment details.</li>
 <li><b>Google Drive</b> (the shared list of stamp trails is read from a public folder; no sign-in is needed).</li>
