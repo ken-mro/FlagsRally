@@ -19,5 +19,5 @@ FlagsRally は、旅の記録をパスポートのスタンプにして集める
 到着の記録は 5 件まで無料です。それ以上記録するには、月額または年額のサブスクリプション（新規登録は最初の 3 か月無料）に登録するか、設定でご自身の Google Maps API キーを入力してください。
 お支払いは購入の確定時に Apple アカウントに請求されます。サブスクリプションは、現在の期間が終わる 24 時間前までに解約しない限り自動で更新されます。管理や解約は Apple アカウントの設定から行えます。
 
-利用規約: https://doc-hosting.flycricket.io/flagsrally-terms-of-use/ffd4eac4-1892-4fd4-940d-7ada8775f93a/terms
-プライバシーポリシー: https://doc-hosting.flycricket.io/flagsrally-privacy-policy/4cade2a6-c6e3-47e3-85b6-ca608fbaea31/privacy
+利用規約: https://ken-mro.github.io/FlagsRally/terms/ja/
+プライバシーポリシー: https://ken-mro.github.io/FlagsRally/privacy/ja/
