@@ -10,6 +10,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - **Terms of Use and Privacy Policy on the subscription screen.** The subscription popup now links to both, under the plans, as the App Store asks of apps with auto-renewable subscriptions (they were only in Settings). The App Store description links to both as well.
+- **Development:** A second App Store header and search results image (`header_features`, `search_results_features`, English and Japanese) take the store description's headline and its three features, made by `creative.py`.
+- **Development:** A narrated promotional video in English and Japanese (16:9, with .srt subtitles) for YouTube or the Google Play promo video, made by `tools/promo_video.py` with macOS system voices; the new `/promo-video` skill explains how to remake it.
+- **Development:** macOS `.DS_Store` files are ignored by git.
 - **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that each stamp's country and region are looked up with Google's Geocoding API, that the subscription (or the user's own API key) lifts the 5-arrival limit, and that subscribers and users with their own key can also choose stamp designs.
 
 ### Fixed

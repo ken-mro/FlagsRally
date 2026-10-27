@@ -145,8 +145,90 @@ def search(lang):
         place(img, frame, cx - frame.width // 2, top, 36)
     save(img, f'{OUT}/ios/creative/search_results_3840x2560_{lang}.png')
 
+# Second version, from the store description: "Your passport to global adventures" and its three features.
+FEATURES = {
+    'en': ('Your passport to\nglobal adventures', 'Collect flag stamps around the world',
+           ('Flag stamps', 'Stamp trail', 'Travel history')),
+    'ja': ('世界を旅する\nあなたのパスポート', '旅先の国旗のスタンプを、いつでもどこでも',
+           ('国旗のスタンプ', 'スタンプラリー', '旅の履歴')),
+}
+FEATURE_SCREENS = ('1_passport', '6_board', '4_map')  # in the order of the feature names
+
+def chip(text, path, size, fg, bg):
+    f = C.font(path, size)
+    w = round(ImageDraw.Draw(Image.new("L", (1, 1))).textlength(text, font=f))
+    pad_x, pad_y = round(size * 0.8), round(size * 0.45)
+    im = Image.new('RGBA', (w + 2 * pad_x, size + 2 * pad_y), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle([0, 0, im.width - 1, im.height - 1], radius=im.height // 2, fill=bg)
+    d.text((pad_x, pad_y + size * 0.5), text, font=f, fill=fg, anchor='lm')
+    return im
+
+def head_lines(d, img, text, path, size, max_w, cx, y, lang, fill):
+    """Centred lines; returns the y below them."""
+    f = C.fit_lines(d, text, path, size, max_w)
+    lh = round(f.size * (1.08 if lang == 'en' else 1.22))
+    for line in text.split('\n'):
+        d.text((cx, y), line, font=f, fill=fill, anchor='ma')
+        y += lh
+    return y
+
+def header_features(lang):
+    """Headline and the three features in the safe area; phones with each feature lean in from both edges."""
+    W, H = HEADER
+    img = C.backdrop(W, H).convert('RGBA')
+    x0, y0, x1, y1 = HEADER_SAFE
+    cx = (x0 + x1) // 2
+    # phones outside the safe area: passport and stamp trail on the left, map and regions on the right
+    # inner phones first so the outer ones overlap them; all stay clear of the headline
+    for name, cx_, y, angle in (('6_board', 760, 300, -8), ('2_regions', 3080, 300, 8),
+                                ('1_passport', 230, 140, -12), ('4_map', 3610, 140, 12)):
+        frame = C.device(Image.open(f'{RAW}/ios69_{lang}/{name}.png'), 1600, 'phone_ios')
+        frame = frame.rotate(angle, resample=Image.BICUBIC, expand=True)
+        place(img, frame, cx_ - frame.width // 2, y, 30)
+    d = ImageDraw.Draw(img)
+    head, _, feats = FEATURES[lang]
+    head_path = C.FONT_EN_HEAD if lang == 'en' else C.FONT_JA_HEAD
+    y = head_lines(d, img, head, head_path, 150, x1 - x0 - 80, cx, y0 + 40, lang, C.PAPER)
+    d.rounded_rectangle([cx - 110, y + 20, cx + 110, y + 32], radius=6, fill=C.GOLD)
+    sub_path = C.FONT_EN_SUB if lang == 'en' else C.FONT_JA_SUB
+    chips = [chip(t, sub_path, 46, C.NAVY, C.GOLD + (255,)) for t in feats]
+    gap = 28
+    total = sum(c.width for c in chips) + gap * (len(chips) - 1)
+    x, cy = cx - total // 2, y + 80
+    for c in chips:
+        img.alpha_composite(c, (x, cy))
+        x += c.width + gap
+    save(img, f'{OUT}/ios/creative/header_features_3840x1646_{lang}.png')
+
+def search_features(lang):
+    """The headline across the top of the safe area and one phone per feature, each under its name."""
+    W, H = SEARCH
+    img = C.backdrop(W, H).convert('RGBA')
+    d = ImageDraw.Draw(img)
+    x0, y0, x1, y1 = SEARCH_SAFE
+    cx = (x0 + x1) // 2
+    head, sub, feats = FEATURES[lang]
+    head = head.replace('\n', ' ') if lang == 'en' else head.replace('\n', '')
+    head_path = C.FONT_EN_HEAD if lang == 'en' else C.FONT_JA_HEAD
+    y = head_lines(d, img, head, head_path, 170, x1 - x0, cx, y0 - 20, lang, C.PAPER)
+    sf = C.fit_lines(d, sub, C.FONT_EN_SUB if lang == 'en' else C.FONT_JA_SUB, 76, x1 - x0)
+    d.text((cx, y + 10), sub, font=sf, fill=C.GOLD, anchor='ma')
+    top = y + 10 + sf.size + 150
+    sub_path = C.FONT_EN_SUB if lang == 'en' else C.FONT_JA_SUB
+    step = 760
+    for i, (name, label) in enumerate(zip(FEATURE_SCREENS, feats)):
+        px = cx + (i - 1) * step
+        frame = C.device(Image.open(f'{RAW}/ios69_{lang}/{name}.png'), 1500, 'phone_ios')
+        place(img, frame, px - frame.width // 2, top + 40, 36)
+        c = chip(label, sub_path, 56, C.NAVY, C.GOLD + (255,))
+        place(img, c, px - c.width // 2, top - c.height // 2 + 10, 12)
+    save(img, f'{OUT}/ios/creative/search_results_features_3840x2560_{lang}.png')
+
 if __name__ == '__main__':
     header()
     for lang in ('en', 'ja'):
         header_brand(lang)
         search(lang)
+        header_features(lang)
+        search_features(lang)
