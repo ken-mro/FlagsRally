@@ -406,7 +406,7 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                await Browser.Default.OpenAsync(Constants.TERMS_OF_USE_URL, BrowserLaunchMode.SystemPreferred);
+                await Browser.Default.OpenAsync(LegalLinks.TermsOfUse(), BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {
@@ -423,7 +423,7 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                await Browser.Default.OpenAsync(Constants.PRIVACY_POLICY_URL, BrowserLaunchMode.SystemPreferred);
+                await Browser.Default.OpenAsync(LegalLinks.PrivacyPolicy(), BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {

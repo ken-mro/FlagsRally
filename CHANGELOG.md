@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **New Terms of Use and Privacy Policy, in English and Japanese.** They are now on the app's own pages (GitHub Pages) instead of a hosting site that showed ads, and say plainly what the app does: your records stay on your device, the location is used only while the app is open, and which services it talks to. The app opens them in its own language.
 - **The how-to pages always go on to the location permission request.** The location page's buttons are Back and Next (it said Allow location, next to Not now), and Next shows the system's request. Skip on the earlier pages now goes to that page instead of closing. The App Store asks that an explanation before a permission request always lead on to it (guideline 5.1.1(iv)).
 
 ### Added
@@ -13,6 +14,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** A second App Store header and search results image (`header_features`, `search_results_features`, English and Japanese) take the store description's headline and its three features, made by `creative.py`.
 - **Development:** A narrated promotional video in English and Japanese (16:9, with .srt subtitles) for YouTube or the Google Play promo video, made by `tools/promo_video.py` with macOS system voices; the new `/promo-video` skill explains how to remake it.
 - **Development:** macOS `.DS_Store` files are ignored by git.
+- **Development:** The README describes the app, links to the stores and to the Terms of Use and Privacy Policy, and says how to build it. `LICENSE.txt` names the copyright holder (ken_mro, 2024) in place of the template's placeholders, and the Terms of Use say the same about the MIT License: it covers the source code, not the fonts and other third-party materials or the FlagsRally name.
 - **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that each stamp's country and region are looked up with Google's Geocoding API, that the subscription (or the user's own API key) lifts the 5-arrival limit, and that subscribers and users with their own key can also choose stamp designs.
 
 ### Fixed

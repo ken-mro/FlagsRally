@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using Maui.RevenueCat.InAppBilling.Models;
@@ -91,10 +92,10 @@ public partial class PayWallViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private Task OpenTermsOfUseAsync() => OpenAsync(Constants.TERMS_OF_USE_URL);
+    private Task OpenTermsOfUseAsync() => OpenAsync(LegalLinks.TermsOfUse());
 
     [RelayCommand]
-    private Task OpenPrivacyPolicyAsync() => OpenAsync(Constants.PRIVACY_POLICY_URL);
+    private Task OpenPrivacyPolicyAsync() => OpenAsync(LegalLinks.PrivacyPolicy());
 
     private static async Task OpenAsync(string url)
     {
