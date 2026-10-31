@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **Every stamp is pressed down.** Recording an arrival now always shows its passport stamp being pressed down, also where you have been before (headed Stamped, without confetti); before, nothing was shown unless the country or region was new. A new country or region still gets confetti and New Country / New Region, and a new region's flag still joins Collections. Checking in at a stamp-trail place now presses its stamp down too, with confetti and New Stamp above the place's name; looking at the stamp again later shows it as before.
 - **New Terms of Use and Privacy Policy, in English and Japanese.** They are now on the app's own pages (GitHub Pages) instead of a hosting site that showed ads, and say plainly what the app does: your records stay on your device, the location is used only while the app is open, and which services it talks to. The app opens them in its own language.
 - **The how-to pages always go on to the location permission request.** The location page's buttons are Back and Next (it said Allow location, next to Not now), and Next shows the system's request. Skip on the earlier pages now goes to that page instead of closing. The App Store asks that an explanation before a permission request always lead on to it (guideline 5.1.1(iv)).
 
