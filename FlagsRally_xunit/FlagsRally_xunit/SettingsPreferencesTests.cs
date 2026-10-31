@@ -128,4 +128,19 @@ public class SettingsPreferencesTests
         // The choice itself is kept for when it is unlocked
         Assert.Equal(FlagsRally.Models.StampPattern.Ticket, settings.GetStampStyle().Pattern);
     }
+
+    // Every arrival shows its stamp unless it is turned off
+    [Fact]
+    public void Every_stamp_is_shown_until_turned_off()
+    {
+        var preferences = new Mock<IPreferences>();
+        preferences.Setup(p => p.Get(It.IsAny<string>(), It.IsAny<bool>(), null)).Returns((string _, bool defaultValue, string? _) => defaultValue);
+        var settings = new SettingsPreferences(preferences.Object);
+
+        Assert.True(settings.GetShowsEveryStamp());
+
+        settings.SetShowsEveryStamp(false);
+
+        preferences.Verify(p => p.Set("ShowsEveryStamp", false, null));
+    }
 }

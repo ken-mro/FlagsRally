@@ -66,16 +66,18 @@ public partial class StampAcquiredPopupViewModel : BaseViewModel
     /// <summary>
     /// The pages for an arrival, in the design the passport draws it in (upright): the country's stamp,
     /// then, in a country with regional flags, the region's. Each is pressed down; only one stamped
-    /// there for the first time gets confetti and "New", the others say "Stamped".
+    /// there for the first time gets confetti and "New", the others say "Stamped". With
+    /// <paramref name="everyStamp"/> off, only the new ones get a page, and none when nothing is new.
     /// </summary>
-    public static List<StampSlide> SlidesFor(ArrivalLocation arrival, StampStyle style, bool newCountry, bool hasRegions, bool newRegion)
+    public static List<StampSlide> SlidesFor(ArrivalLocation arrival, StampStyle style, bool newCountry, bool hasRegions, bool newRegion, bool everyStamp = true)
     {
         var stamp = StampPatterns.Apply(arrival, style, tilted: false);
-        List<StampSlide> slides =
-        [
-            new(stamp, newCountry ? AppResources.NewCountry : AppResources.Stamped, stamp.CountryName, stamp.CountryFlagSource, string.Empty, celebrates: newCountry),
-        ];
-        if (hasRegions && !string.IsNullOrEmpty(stamp.AdminAreaName))
+        var slides = new List<StampSlide>();
+        if (newCountry || everyStamp)
+        {
+            slides.Add(new(stamp, newCountry ? AppResources.NewCountry : AppResources.Stamped, stamp.CountryName, stamp.CountryFlagSource, string.Empty, celebrates: newCountry));
+        }
+        if (hasRegions && (newRegion || everyStamp) && !string.IsNullOrEmpty(stamp.AdminAreaName))
         {
             slides.Add(new(stamp, newRegion ? AppResources.NewRegion : AppResources.Stamped, stamp.AdminAreaName, string.Empty, stamp.AdminAreaFlagSource, celebrates: newRegion));
         }

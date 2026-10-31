@@ -52,6 +52,22 @@ public class StampAcquiredPopupViewModelTests
         Assert.Equal(newCountry, slide.Celebrates);
     }
 
+    // Set to show only new stamps: the pages of before, nothing when nothing is new
+    [Theory]
+    [InlineData(true, true, true, new[] { "Japan", "Kyoto" })]
+    [InlineData(true, true, false, new[] { "Japan" })]
+    [InlineData(false, true, true, new[] { "Kyoto" })]
+    [InlineData(false, true, false, new string[0])]
+    [InlineData(true, false, false, new[] { "Japan" })]
+    [InlineData(false, false, false, new string[0])]
+    public void Only_new_stamps_when_set_so(bool newCountry, bool hasRegions, bool newRegion, string[] names)
+    {
+        var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry, hasRegions, newRegion, everyStamp: false);
+
+        Assert.Equal(names, slides.Select(s => s.Name));
+        Assert.All(slides, s => Assert.True(s.Celebrates));
+    }
+
     [Fact]
     public void Pages_move_within_their_ends_and_mark_the_current_one()
     {

@@ -929,13 +929,14 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    // After every stamp, in the passport's design: the country's stamp and, where the country has
-    // regional flags, the region's, one page after the other
+    // After every stamp (or, as set in Settings, only a new one), in the passport's design: the
+    // country's stamp and, where the country has regional flags, the region's, one page after the other
     private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool hasRegions, bool newRegion)
     {
         try
         {
-            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, hasRegions, newRegion);
+            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, hasRegions, newRegion,
+                _settingsPreferences.GetShowsEveryStamp());
             if (slides.Count == 0) return;
 
             var popup = new StampAcquiredPopupView(new StampAcquiredPopupViewModel(slides));
