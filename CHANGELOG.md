@@ -12,6 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **The how-to pages always go on to the location permission request.** The location page's buttons are Back and Next (it said Allow location, next to Not now), and Next shows the system's request. Skip on the earlier pages now goes to that page instead of closing. The App Store asks that an explanation before a permission request always lead on to it (guideline 5.1.1(iv)).
 
 ### Added
+- **The app's version at the bottom of Settings.** Information now ends with Version, the installed app's own version and build as each store has it (for example 1.3.0 (24) on iOS, 1.3.0 (10300) on Android).
 - **Terms of Use and Privacy Policy on the subscription screen.** The subscription popup now links to both, under the plans, as the App Store asks of apps with auto-renewable subscriptions (they were only in Settings). The App Store description links to both as well.
 - **Development:** A second App Store header and search results image (`header_features`, `search_results_features`, English and Japanese) take the store description's headline and its three features, made by `creative.py`.
 - **Development:** A narrated promotional video in English and Japanese (16:9, with .srt subtitles) for YouTube or the Google Play promo video, made by `tools/promo_video.py` with macOS system voices; the new `/promo-video` skill explains how to remake it.
