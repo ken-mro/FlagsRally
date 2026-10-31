@@ -774,10 +774,8 @@ public partial class LocationPageViewModel : BaseViewModel
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
                 FanOutOverlappingPins();
 
-                if (isFirstTimeCountry || isFirstTimeSupportedSubRegion)
-                {
-                    await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
-                }
+                // Every stamp is pressed down; only a first country or region gets confetti and "New"
+                await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
 
                 // A new region's flag also joins the country's regional flags in Collections
                 if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
@@ -930,8 +928,8 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    // After stamping somewhere new: the new country's stamp and the new region's, in the passport's
-    // design, one page after the other
+    // After every stamp, in the passport's design: somewhere new, the new country's stamp and the new
+    // region's, one page after the other; somewhere visited before, the stamp alone
     private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool newRegion)
     {
         try

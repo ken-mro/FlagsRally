@@ -9,11 +9,13 @@ namespace FlagsRally.ViewModels;
 /// <summary>
 /// One page of the popup after a stamp: the country's stamp or the region's, in the passport's design.
 /// </summary>
-public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage) : ObservableObject
+public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage, bool celebrates = true) : ObservableObject
 {
     /// <summary>The arrival with the pattern the passport draws it in, for its ink and padding.</summary>
     public ArrivalLocation Arrival { get; } = arrival;
     public string Heading { get; } = heading;
+    /// <summary>Confetti when pressed: only for a country or region stamped for the first time.</summary>
+    public bool Celebrates { get; } = celebrates;
     public string Name { get; } = name;
     public string FlagEmoji { get; } = flagEmoji;
     public string FlagImage { get; } = flagImage;
@@ -31,8 +33,9 @@ public partial class StampSlide(ArrivalLocation arrival, string heading, string 
 }
 
 /// <summary>
-/// The popup after stamping somewhere new: the new country's stamp and, when the region is new too,
-/// its stamp on the next page, each pressed down in turn. OK comes on once every page has been seen.
+/// The popup after every stamp. Somewhere new: the new country's stamp and, when the region is new
+/// too, its stamp on the next page, each pressed down in turn with confetti. Somewhere visited before:
+/// the stamp pressed down, without confetti. OK comes on once every page has been seen.
 /// </summary>
 public partial class StampAcquiredPopupViewModel : BaseViewModel
 {
@@ -62,12 +65,18 @@ public partial class StampAcquiredPopupViewModel : BaseViewModel
 
     /// <summary>
     /// The pages for an arrival: its country when it is the first there, its region when that is the
-    /// first, in the design the passport draws the arrival in (upright).
+    /// first, in the design the passport draws the arrival in (upright). With nothing new, the
+    /// country's stamp alone, without confetti.
     /// </summary>
     public static List<StampSlide> SlidesFor(ArrivalLocation arrival, StampStyle style, bool newCountry, bool newRegion)
     {
         var stamp = StampPatterns.Apply(arrival, style, tilted: false);
         var slides = new List<StampSlide>();
+        if (!newCountry && !newRegion)
+        {
+            slides.Add(new(stamp, AppResources.Stamped, stamp.CountryName, stamp.CountryFlagSource, string.Empty, celebrates: false));
+            return slides;
+        }
         if (newCountry)
         {
             slides.Add(new(stamp, AppResources.NewCountry, stamp.CountryName, stamp.CountryFlagSource, string.Empty));

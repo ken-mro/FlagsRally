@@ -20,6 +20,7 @@ public class StampAcquiredPopupViewModelTests
         var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Single(StampPattern.Ticket), newCountry: true, newRegion: true);
 
         Assert.Equal(["Japan", "Kyoto"], slides.Select(s => s.Name));
+        Assert.All(slides, s => Assert.True(s.Celebrates));
         Assert.True(slides[0].HasFlagEmoji);
         Assert.True(slides[1].HasFlagImage);
         Assert.All(slides, s => Assert.Equal(StampPattern.Ticket, s.Arrival.StampPattern));
@@ -33,7 +34,19 @@ public class StampAcquiredPopupViewModelTests
     {
         var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry, newRegion);
 
-        Assert.Equal(name, Assert.Single(slides).Name);
+        var slide = Assert.Single(slides);
+        Assert.Equal(name, slide.Name);
+        Assert.True(slide.Celebrates);
+    }
+
+    [Fact]
+    public void A_place_visited_before_is_still_stamped_but_without_confetti_or_new()
+    {
+        var slide = Assert.Single(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry: false, newRegion: false));
+
+        Assert.Equal("Japan", slide.Name);
+        Assert.True(slide.HasFlagEmoji);
+        Assert.False(slide.Celebrates);
     }
 
     [Fact]

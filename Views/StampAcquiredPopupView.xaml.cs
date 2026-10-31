@@ -48,7 +48,8 @@ public partial class StampAcquiredPopupView : Popup
         }
     }
 
-    // The page's stamp pressed down with confetti (StampPress); once the last page's has been, OK comes on.
+    // The page's stamp pressed down (StampPress), with confetti when it is new; once the last page's
+    // has been, OK comes on.
     async Task PressAsync()
     {
         var index = _viewModel.Index;
@@ -60,7 +61,7 @@ public partial class StampAcquiredPopupView : Popup
         }
         else
         {
-            await StampPress.PressAsync(stamp, Celebrate);
+            await StampPress.PressAsync(stamp, _viewModel.Current.Celebrates ? Celebrate : null);
             _pressed.Add(index);
         }
         if (_pressed.Count == _viewModel.Slides.Count) _viewModel.CanClose = true;
