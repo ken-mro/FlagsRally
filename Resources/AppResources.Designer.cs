@@ -1718,5 +1718,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("NewStamp", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Places you have been before.
+        /// </summary>
+        internal static string StampRepeat {
+            get {
+                return ResourceManager.GetString("StampRepeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show the stamp on every arrival.
+        /// </summary>
+        internal static string StampRepeatOn {
+            get {
+                return ResourceManager.GetString("StampRepeatOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When off, the stamp is shown only for a new country or region..
+        /// </summary>
+        internal static string StampRepeatHint {
+            get {
+                return ResourceManager.GetString("StampRepeatHint", resourceCulture);
+            }
+        }
     }
 }

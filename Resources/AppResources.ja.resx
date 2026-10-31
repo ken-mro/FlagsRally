@@ -671,4 +671,13 @@
   <data name="NewStamp" xml:space="preserve">
     <value>新しいスタンプ</value>
   </data>
+  <data name="StampRepeat" xml:space="preserve">
+    <value>行ったことのある国・地域</value>
+  </data>
+  <data name="StampRepeatOn" xml:space="preserve">
+    <value>毎回スタンプを表示する</value>
+  </data>
+  <data name="StampRepeatHint" xml:space="preserve">
+    <value>オフにすると、初めての国・地域のときだけ表示します。</value>
+  </data>
 </root>

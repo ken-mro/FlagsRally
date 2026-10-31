@@ -671,4 +671,13 @@
   <data name="NewStamp" xml:space="preserve">
     <value>New Stamp</value>
   </data>
+  <data name="StampRepeat" xml:space="preserve">
+    <value>Places you have been before</value>
+  </data>
+  <data name="StampRepeatOn" xml:space="preserve">
+    <value>Show the stamp on every arrival</value>
+  </data>
+  <data name="StampRepeatHint" xml:space="preserve">
+    <value>When off, the stamp is shown only for a new country or region.</value>
+  </data>
 </root>
