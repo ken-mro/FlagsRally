@@ -1700,5 +1700,23 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("AddedToCollection", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamped.
+        /// </summary>
+        internal static string Stamped {
+            get {
+                return ResourceManager.GetString("Stamped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Stamp.
+        /// </summary>
+        internal static string NewStamp {
+            get {
+                return ResourceManager.GetString("NewStamp", resourceCulture);
+            }
+        }
     }
 }

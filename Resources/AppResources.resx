@@ -665,4 +665,10 @@
   <data name="AddedToCollection" xml:space="preserve">
     <value>Added to your collection</value>
   </data>
+  <data name="Stamped" xml:space="preserve">
+    <value>Stamped</value>
+  </data>
+  <data name="NewStamp" xml:space="preserve">
+    <value>New Stamp</value>
+  </data>
 </root>
