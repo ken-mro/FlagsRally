@@ -19,14 +19,25 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <controls:StampLabel
-            Grid.Row="0"
-            FontAutoScalingEnabled="True"
-            FontSize="Title"
-            HorizontalOptions="Center"
-            HorizontalTextAlignment="Center"
-            Style="{StaticResource StampHeading}"
-            Text="{Binding LocationTitle}" />
+        <VerticalStackLayout Grid.Row="0" Spacing="2">
+            <!--  Just after checking in  -->
+            <Label
+                FontAutoScalingEnabled="True"
+                FontAttributes="Bold"
+                FontSize="15"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding IsAnimationEnabled}"
+                Text="{x:Static strings:AppResources.NewStamp}"
+                TextColor="{StaticResource Stamp}" />
+            <controls:StampLabel
+                FontAutoScalingEnabled="True"
+                FontSize="Title"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Style="{StaticResource StampHeading}"
+                Text="{Binding LocationTitle}" />
+        </VerticalStackLayout>
         <Image
             x:Name="stampImage"
             Grid.Row="1"
