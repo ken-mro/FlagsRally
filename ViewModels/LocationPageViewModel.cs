@@ -774,8 +774,9 @@ public partial class LocationPageViewModel : BaseViewModel
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
                 FanOutOverlappingPins();
 
-                // Every stamp is pressed down; only a first country or region gets confetti and "New"
-                await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
+                // Every stamp is pressed down (the region's too where there are regional flags); only a first
+                // country or region gets confetti and "New"
+                await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, subRegionCode is not null, isFirstTimeSupportedSubRegion);
 
                 // A new region's flag also joins the country's regional flags in Collections
                 if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
@@ -928,13 +929,13 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    // After every stamp, in the passport's design: somewhere new, the new country's stamp and the new
-    // region's, one page after the other; somewhere visited before, the stamp alone
-    private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool newRegion)
+    // After every stamp, in the passport's design: the country's stamp and, where the country has
+    // regional flags, the region's, one page after the other
+    private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool hasRegions, bool newRegion)
     {
         try
         {
-            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, newRegion);
+            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, hasRegions, newRegion);
             if (slides.Count == 0) return;
 
             var popup = new StampAcquiredPopupView(new StampAcquiredPopupViewModel(slides));

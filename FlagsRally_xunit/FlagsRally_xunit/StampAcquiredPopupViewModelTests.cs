@@ -17,7 +17,7 @@ public class StampAcquiredPopupViewModelTests
     [Fact]
     public void A_new_country_and_region_are_two_pages_country_first()
     {
-        var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Single(StampPattern.Ticket), newCountry: true, newRegion: true);
+        var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Single(StampPattern.Ticket), newCountry: true, hasRegions: true, newRegion: true);
 
         Assert.Equal(["Japan", "Kyoto"], slides.Select(s => s.Name));
         Assert.All(slides, s => Assert.True(s.Celebrates));
@@ -27,32 +27,35 @@ public class StampAcquiredPopupViewModelTests
         Assert.All(slides, s => Assert.Equal(0, s.Arrival.StampTilt));
     }
 
+    // A country with regional flags always shows both stamps; only what is new gets confetti
     [Theory]
-    [InlineData(true, false, "Japan")]
-    [InlineData(false, true, "Kyoto")]
-    public void Only_what_is_new_gets_a_page(bool newCountry, bool newRegion, string name)
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(false, false)]
+    public void A_country_with_regional_flags_always_stamps_the_region_too(bool newCountry, bool newRegion)
     {
-        var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry, newRegion);
+        var slides = StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry, hasRegions: true, newRegion);
 
-        var slide = Assert.Single(slides);
-        Assert.Equal(name, slide.Name);
-        Assert.True(slide.Celebrates);
+        Assert.Equal(["Japan", "Kyoto"], slides.Select(s => s.Name));
+        Assert.Equal([newCountry, newRegion], slides.Select(s => s.Celebrates));
     }
 
-    [Fact]
-    public void A_place_visited_before_is_still_stamped_but_without_confetti_or_new()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void A_country_without_regional_flags_is_one_page(bool newCountry)
     {
-        var slide = Assert.Single(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry: false, newRegion: false));
+        var slide = Assert.Single(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, newCountry, hasRegions: false, newRegion: false));
 
         Assert.Equal("Japan", slide.Name);
         Assert.True(slide.HasFlagEmoji);
-        Assert.False(slide.Celebrates);
+        Assert.Equal(newCountry, slide.Celebrates);
     }
 
     [Fact]
     public void Pages_move_within_their_ends_and_mark_the_current_one()
     {
-        var vm = new StampAcquiredPopupViewModel(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, true, true));
+        var vm = new StampAcquiredPopupViewModel(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, true, true, true));
 
         Assert.False(vm.Move(-1));
         Assert.True(vm.HasMore);
@@ -65,7 +68,7 @@ public class StampAcquiredPopupViewModelTests
     [Fact]
     public void Ok_waits_until_the_view_says_every_page_has_been_pressed()
     {
-        var vm = new StampAcquiredPopupViewModel(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, true, false));
+        var vm = new StampAcquiredPopupViewModel(StampAcquiredPopupViewModel.SlidesFor(Kyoto, StampStyle.Default, true, false, false));
 
         Assert.False(vm.CanClose);
     }
