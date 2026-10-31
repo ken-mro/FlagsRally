@@ -390,6 +390,20 @@
                         VerticalOptions="Center" />
                 </Grid>
             </Border>
+            <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampRepeat}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
+                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                        <Label FontSize="16" Text="{x:Static strings:AppResources.StampRepeatOn}" />
+                        <Label FontSize="12" Text="{x:Static strings:AppResources.StampRepeatHint}" TextColor="{StaticResource InkMuted}" />
+                    </VerticalStackLayout>
+                    <Switch
+                        Grid.Column="1"
+                        IsToggled="{Binding ShowsEveryStamp}"
+                        OnColor="{StaticResource Navy}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
 
             <!--  Subscription  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.SubscriptionStatus}" />

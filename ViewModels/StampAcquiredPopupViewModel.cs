@@ -9,11 +9,13 @@ namespace FlagsRally.ViewModels;
 /// <summary>
 /// One page of the popup after a stamp: the country's stamp or the region's, in the passport's design.
 /// </summary>
-public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage) : ObservableObject
+public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage, bool celebrates) : ObservableObject
 {
     /// <summary>The arrival with the pattern the passport draws it in, for its ink and padding.</summary>
     public ArrivalLocation Arrival { get; } = arrival;
     public string Heading { get; } = heading;
+    /// <summary>Confetti when pressed: only for a country or region stamped for the first time.</summary>
+    public bool Celebrates { get; } = celebrates;
     public string Name { get; } = name;
     public string FlagEmoji { get; } = flagEmoji;
     public string FlagImage { get; } = flagImage;
@@ -31,8 +33,9 @@ public partial class StampSlide(ArrivalLocation arrival, string heading, string 
 }
 
 /// <summary>
-/// The popup after stamping somewhere new: the new country's stamp and, when the region is new too,
-/// its stamp on the next page, each pressed down in turn. OK comes on once every page has been seen.
+/// The popup after every stamp: the country's stamp and, in a country with regional flags, the
+/// region's on the next page, each pressed down in turn, with confetti only for a first one. OK comes
+/// on once every page has been pressed.
 /// </summary>
 public partial class StampAcquiredPopupViewModel : BaseViewModel
 {
@@ -61,20 +64,22 @@ public partial class StampAcquiredPopupViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// The pages for an arrival: its country when it is the first there, its region when that is the
-    /// first, in the design the passport draws the arrival in (upright).
+    /// The pages for an arrival, in the design the passport draws it in (upright): the country's stamp,
+    /// then, in a country with regional flags, the region's. Each is pressed down; only one stamped
+    /// there for the first time gets confetti and "New", the others say "Stamped". With
+    /// <paramref name="everyStamp"/> off, only the new ones get a page, and none when nothing is new.
     /// </summary>
-    public static List<StampSlide> SlidesFor(ArrivalLocation arrival, StampStyle style, bool newCountry, bool newRegion)
+    public static List<StampSlide> SlidesFor(ArrivalLocation arrival, StampStyle style, bool newCountry, bool hasRegions, bool newRegion, bool everyStamp = true)
     {
         var stamp = StampPatterns.Apply(arrival, style, tilted: false);
         var slides = new List<StampSlide>();
-        if (newCountry)
+        if (newCountry || everyStamp)
         {
-            slides.Add(new(stamp, AppResources.NewCountry, stamp.CountryName, stamp.CountryFlagSource, string.Empty));
+            slides.Add(new(stamp, newCountry ? AppResources.NewCountry : AppResources.Stamped, stamp.CountryName, stamp.CountryFlagSource, string.Empty, celebrates: newCountry));
         }
-        if (newRegion && !string.IsNullOrEmpty(stamp.AdminAreaName))
+        if (hasRegions && (newRegion || everyStamp) && !string.IsNullOrEmpty(stamp.AdminAreaName))
         {
-            slides.Add(new(stamp, AppResources.NewRegion, stamp.AdminAreaName, string.Empty, stamp.AdminAreaFlagSource));
+            slides.Add(new(stamp, newRegion ? AppResources.NewRegion : AppResources.Stamped, stamp.AdminAreaName, string.Empty, stamp.AdminAreaFlagSource, celebrates: newRegion));
         }
         return slides;
     }

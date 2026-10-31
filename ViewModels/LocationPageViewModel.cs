@@ -774,10 +774,9 @@ public partial class LocationPageViewModel : BaseViewModel
                 ArrivalMap?.Pins.Add(arrivalLocationPin);
                 FanOutOverlappingPins();
 
-                if (isFirstTimeCountry || isFirstTimeSupportedSubRegion)
-                {
-                    await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, isFirstTimeSupportedSubRegion);
-                }
+                // Every stamp is pressed down (the region's too where there are regional flags); only a first
+                // country or region gets confetti and "New"
+                await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, subRegionCode is not null, isFirstTimeSupportedSubRegion);
 
                 // A new region's flag also joins the country's regional flags in Collections
                 if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
@@ -930,13 +929,14 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    // After stamping somewhere new: the new country's stamp and the new region's, in the passport's
-    // design, one page after the other
-    private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool newRegion)
+    // After every stamp (or, as set in Settings, only a new one), in the passport's design: the
+    // country's stamp and, where the country has regional flags, the region's, one page after the other
+    private async Task ShowStampAcquiredPopup(ArrivalLocation arrivalLocation, bool newCountry, bool hasRegions, bool newRegion)
     {
         try
         {
-            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, newRegion);
+            var slides = StampAcquiredPopupViewModel.SlidesFor(arrivalLocation, _settingsPreferences.GetPassportStampStyle(), newCountry, hasRegions, newRegion,
+                _settingsPreferences.GetShowsEveryStamp());
             if (slides.Count == 0) return;
 
             var popup = new StampAcquiredPopupView(new StampAcquiredPopupViewModel(slides));

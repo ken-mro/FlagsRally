@@ -121,6 +121,11 @@ namespace FlagsRally.ViewModels
             if (CanChooseStampStyle) _settingPreferences.SetStampTilt(value);
         }
 
+        [ObservableProperty]
+        private bool _showsEveryStamp;
+
+        partial void OnShowsEveryStampChanged(bool value) => _settingPreferences.SetShowsEveryStamp(value);
+
         [RelayCommand]
         async Task SetStampMode(string mode)
         {
@@ -172,6 +177,7 @@ namespace FlagsRally.ViewModels
             _pinStyle = _settingPreferences.GetPinStyle();
             _stampStyle = _settingPreferences.GetStampStyle();
             _stampTilt = _settingPreferences.GetStampTilt();
+            _showsEveryStamp = _settingPreferences.GetShowsEveryStamp();
             var samePattern = _settingPreferences.GetStampSamePattern();
             _selectedStampDesign = StampDesignChoices.First(choice => choice.Pattern == samePattern);
             _selectedStampDesign.IsSelected = true;

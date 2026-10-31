@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **Every stamp is pressed down.** Recording an arrival now always shows its passport stamp being pressed down, also where you have been before (headed Stamped, without confetti); before, nothing was shown unless the country or region was new. In a country with regional flags (such as Japan) the region's stamp always follows on the next page, and OK comes on once both are pressed; before, the region's page appeared only when it was new. A new country or region still gets confetti and New Country / New Region, and a new region's flag still joins Collections. Checking in at a stamp-trail place now presses its stamp down too, with confetti and New Stamp above the place's name; looking at the stamp again later shows it as before.
+- **Settings > Passport stamps > Places you have been before.** "Show the stamp on every arrival" (on by default) can be turned off to show the stamp only for a new country or region, as before.
 - **New Terms of Use and Privacy Policy, in English and Japanese.** They are now on the app's own pages (GitHub Pages) instead of a hosting site that showed ads, and say plainly what the app does: your records stay on your device, the location is used only while the app is open, and which services it talks to. The app opens them in its own language.
 - **The how-to pages always go on to the location permission request.** The location page's buttons are Back and Next (it said Allow location, next to Not now), and Next shows the system's request. Skip on the earlier pages now goes to that page instead of closing. The App Store asks that an explanation before a permission request always lead on to it (guideline 5.1.1(iv)).
 
@@ -18,6 +20,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that each stamp's country and region are looked up with Google's Geocoding API, that the subscription (or the user's own API key) lifts the 5-arrival limit, and that subscribers and users with their own key can also choose stamp designs.
 
 ### Fixed
+- **Switches in Settings showed no knob when on (iOS).** The knob was the same navy as the track; it is now white.
 - **The app froze after subscribing on iOS.** Once the purchase went through, the subscription popup stayed open and the app stopped responding until it was restarted (the subscription itself had been saved). Saving it, updating the popup and closing it now happen on the main thread.
 - **A cancelled purchase could show a subscriber as not subscribed.** When a purchase did not go through (cancelled, or the store saying you are already subscribed), the app saved "not subscribed" until it was restarted. It now asks RevenueCat for the current subscription instead, and keeps the saved answer when RevenueCat cannot be reached.
 

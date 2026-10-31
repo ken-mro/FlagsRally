@@ -19,6 +19,7 @@ public partial class SettingsPreferences : ObservableObject
     private string _regionalFlagsExpanded = "RegionalFlagsExpanded";
     private string _hidesEmptyCollections = "HidesEmptyCollections";
     private string _hasSeenOnboarding = "HasSeenOnboarding";
+    private string _showsEveryStamp = "ShowsEveryStamp";
     private string _hasSeenLongPressHint = "HasSeenLongPressHint";
 
     public SettingsPreferences(IPreferences defaultPreferences)
@@ -174,6 +175,11 @@ public partial class SettingsPreferences : ObservableObject
     {
         _defaultPreferences.Set(_hidesEmptyCollections, hides.ToString());
     }
+
+    // The stamp popup after every arrival; off, only after a new country or region (as before).
+    public bool GetShowsEveryStamp() => _defaultPreferences.Get(_showsEveryStamp, true);
+
+    public void SetShowsEveryStamp(bool shows) => _defaultPreferences.Set(_showsEveryStamp, shows);
 
     // The how-to pages shown on the first launch (and again from Settings).
     public bool GetHasSeenOnboarding() => _defaultPreferences.Get(_hasSeenOnboarding, false);
