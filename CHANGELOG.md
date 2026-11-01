@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.4.0] - Unreleased
 
 ### Changed
 - **Every stamp is pressed down.** Recording an arrival now always shows its passport stamp being pressed down, also where you have been before (headed Stamped, without confetti); before, nothing was shown unless the country or region was new. In a country with regional flags (such as Japan) the region's stamp always follows on the next page, and OK comes on once both are pressed; before, the region's page appeared only when it was new. A new country or region still gets confetti and New Country / New Region, and a new region's flag still joins Collections. Checking in at a stamp-trail place now presses its stamp down too, with confetti and New Stamp above the place's name; looking at the stamp again later shows it as before.
