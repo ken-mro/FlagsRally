@@ -56,6 +56,7 @@ public static class PinIcons
         CustomLocationPin custom => For(custom.IsVisited ? PinKind.Visited : PinKind.Unvisited),
         ArrivalLocationPin => For(PinKind.CheckIn),
         SelectedLocationPin => For(PinKind.CheckInSpot),
+        PendingArrivalPin => For(PinKind.Pending),
         _ => null,
     };
 }

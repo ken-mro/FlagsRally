@@ -43,6 +43,7 @@ public partial class LocationPage : ContentPage
     {
         base.OnAppearing();
         await _viewModel.ShowRequestedLocationAsync();
+        await _viewModel.LookUpPendingArrivalsAsync(asked: false);
     }
 
     // A rebuilt map view starts at the map's default camera; move it back to where the user left it.

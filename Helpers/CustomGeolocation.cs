@@ -95,6 +95,8 @@ public class CustomGeolocation
         return arrivalLocation;
     }
 
+    private static readonly TimeSpan LookupTimeout = TimeSpan.FromSeconds(15);
+
     private static async Task<JObject> GetAllRequestsForLocationInfo(Location location, string languageCode, SettingsPreferences settings)
     {
         try
@@ -105,7 +107,8 @@ public class CustomGeolocation
 
             string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={location.Latitude},{location.Longitude}&language={languageCode}&key={apiKey}";
 
-            using (HttpClient httpClient = new HttpClient())
+            // A weak signal fails within this, and the stamp is kept as pending rather than left waiting
+            using (HttpClient httpClient = new HttpClient { Timeout = LookupTimeout })
             {
                 HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
                 if (!response.IsSuccessStatusCode) throw new Exception("Unable to get location");

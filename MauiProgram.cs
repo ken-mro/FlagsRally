@@ -65,6 +65,7 @@ namespace FlagsRally
             builder.Services.AddSingleton<AppShell>();
 
             builder.Services.AddSingleton<IArrivalLocationDataRepository, ArrivalLocationDataRepository>();
+            builder.Services.AddSingleton<IPendingArrivalRepository, PendingArrivalRepository>();
             builder.Services.AddSingleton<SubRegionHelper>();
             builder.Services.AddSingleton<RegionalFlagsService>();
             builder.Services.AddSingleton(Preferences.Default);

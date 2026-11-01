@@ -5,12 +5,15 @@ namespace FlagsRally.Models;
 public class MapPinTag
 {
     public int ArrivalLocationId { get; init; } = 0;
+    public int PendingArrivalId { get; init; } = 0;
     public string CustomLocationKey { get; init; } = string.Empty;
     public string BoardName { get; init; } = AppResources.ArrivalLocation;
     public string PinKey => BoardName;
     public bool IsVisited { get; set; } = true;
     public bool IsCustomLocation => !string.IsNullOrEmpty(CustomLocationKey);
     public bool IsArrivalLocation => ArrivalLocationId > 0;
+    // Waiting for its country and region; shown and filtered with the arrivals
+    public bool IsPendingArrival => PendingArrivalId > 0;
 
     private MapPinTag(int arrivalLocationId)
     {
@@ -32,5 +35,10 @@ public class MapPinTag
     public static MapPinTag SetArrivalLocationTag(int id)
     {
         return new MapPinTag(id);
+    }
+
+    public static MapPinTag SetPendingArrivalTag(int id)
+    {
+        return new MapPinTag(0) { PendingArrivalId = id };
     }
 }
