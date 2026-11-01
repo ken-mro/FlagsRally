@@ -81,6 +81,8 @@ namespace FlagsRally
 
             builder.Services.AddSingleton<SettingsPreferences>();
             builder.Services.AddSingleton<CustomGeolocation>();
+            builder.Services.AddSingleton(Geocoding.Default);
+            builder.Services.AddSingleton<SharedPlaceResolver>();
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
