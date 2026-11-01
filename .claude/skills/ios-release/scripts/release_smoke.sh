@@ -81,12 +81,12 @@ for tab in Passport Map Collections Settings; do
   if [ -z "$xy" ]; then
     log "FAIL: the $tab tab was not found on screen (see 0${step}_${tab}.png)"; PROBLEMS=1
   else
-    axe tap -x "${xy% *}" -y "${xy#* }" --udid "$UDID" > /dev/null 2>&1; sleep 6
+    axe tap -x "${xy% *}" -y "${xy#* }" --tap-style physical --udid "$UDID" > /dev/null 2>&1; sleep 6
   fi
   xcrun simctl io "$UDID" screenshot "$OUT/0${step}_${tab}.png" > /dev/null 2>&1; step=$((step+1))
 done
 # Back to the Passport tab, so later checks do not start on Settings.
-xy=$(tab_center Passport); [ -n "$xy" ] && axe tap -x "${xy% *}" -y "${xy#* }" --udid "$UDID" > /dev/null 2>&1
+xy=$(tab_center Passport); [ -n "$xy" ] && axe tap -x "${xy% *}" -y "${xy#* }" --tap-style physical --udid "$UDID" > /dev/null 2>&1
 sleep 3
 
 if ! alive; then log "FAIL: the app is no longer running"; PROBLEMS=1; fi
