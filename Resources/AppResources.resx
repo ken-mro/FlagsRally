@@ -680,4 +680,7 @@
   <data name="StampRepeatHint" xml:space="preserve">
     <value>When off, the stamp is shown only for a new country or region.</value>
   </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
 </root>

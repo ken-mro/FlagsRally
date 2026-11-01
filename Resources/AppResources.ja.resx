@@ -680,4 +680,7 @@
   <data name="StampRepeatHint" xml:space="preserve">
     <value>オフにすると、初めての国・地域のときだけ表示します。</value>
   </data>
+  <data name="Version" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
 </root>
