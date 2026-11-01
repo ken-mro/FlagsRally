@@ -683,4 +683,28 @@
   <data name="Version" xml:space="preserve">
     <value>Version</value>
   </data>
+  <data name="PendingStamp" xml:space="preserve">
+    <value>Pending stamp</value>
+  </data>
+  <data name="PendingStampDetail" xml:space="preserve">
+    <value>Country and region not looked up yet</value>
+  </data>
+  <data name="LookUpNow" xml:space="preserve">
+    <value>Look up now</value>
+  </data>
+  <data name="SavedAsPendingTitle" xml:space="preserve">
+    <value>Kept as pending</value>
+  </data>
+  <data name="SavedAsPending" xml:space="preserve">
+    <value>There is no connection, so the country and region cannot be looked up yet. The stamp stays on the map as pending, with where and when you put it, and is looked up once you are online.</value>
+  </data>
+  <data name="PendingFound" xml:space="preserve">
+    <value>The country and region of the pending stamp ({0}) were found.</value>
+  </data>
+  <data name="PendingIsThisWhere" xml:space="preserve">
+    <value>Is this where you put it?</value>
+  </data>
+  <data name="StillNoConnection" xml:space="preserve">
+    <value>There is still no connection. Please try again where the signal is better.</value>
+  </data>
 </root>

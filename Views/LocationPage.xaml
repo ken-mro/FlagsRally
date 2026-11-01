@@ -425,6 +425,12 @@
                         Text="{x:Static strings:AppResources.CheckIn}" />
                     <Button
                         Margin="0,4,8,0"
+                        Command="{Binding LookUpPendingCommand}"
+                        FlexLayout.Grow="1"
+                        IsVisible="{Binding CanLookUpPending}"
+                        Text="{x:Static strings:AppResources.LookUpNow}" />
+                    <Button
+                        Margin="0,4,8,0"
                         Command="{Binding ViewStampCommand}"
                         IsVisible="{Binding CanViewStamp}"
                         Text="{x:Static strings:AppResources.ViewStamp}" />

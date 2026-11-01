@@ -1754,5 +1754,77 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("Version", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending stamp.
+        /// </summary>
+        internal static string PendingStamp {
+            get {
+                return ResourceManager.GetString("PendingStamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country and region not looked up yet.
+        /// </summary>
+        internal static string PendingStampDetail {
+            get {
+                return ResourceManager.GetString("PendingStampDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Look up now.
+        /// </summary>
+        internal static string LookUpNow {
+            get {
+                return ResourceManager.GetString("LookUpNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kept as pending.
+        /// </summary>
+        internal static string SavedAsPendingTitle {
+            get {
+                return ResourceManager.GetString("SavedAsPendingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no connection, so the country and region cannot be looked up yet. The stamp stays on the map as pending, with where and when you put it, and is looked up once you are online..
+        /// </summary>
+        internal static string SavedAsPending {
+            get {
+                return ResourceManager.GetString("SavedAsPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The country and region of the pending stamp ({0}) were found..
+        /// </summary>
+        internal static string PendingFound {
+            get {
+                return ResourceManager.GetString("PendingFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is this where you put it?.
+        /// </summary>
+        internal static string PendingIsThisWhere {
+            get {
+                return ResourceManager.GetString("PendingIsThisWhere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is still no connection. Please try again where the signal is better..
+        /// </summary>
+        internal static string StillNoConnection {
+            get {
+                return ResourceManager.GetString("StillNoConnection", resourceCulture);
+            }
+        }
     }
 }

@@ -28,6 +28,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private const double CLOSE_ZOOM_LEVEL = 18d;
     private const int MAP_UPDATE_DELAY_MS = 100;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
+    private readonly IPendingArrivalRepository _pendingArrivalRepository;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
@@ -51,6 +52,7 @@ public partial class LocationPageViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(CanRemoveSelectedPin))]
     [NotifyPropertyChangedFor(nameof(RemoveSelectedPinText))]
     [NotifyPropertyChangedFor(nameof(CanViewStamp))]
+    [NotifyPropertyChangedFor(nameof(CanLookUpPending))]
     [NotifyPropertyChangedFor(nameof(ShowsCheckInSpotGuide))]
     [NotifyPropertyChangedFor(nameof(ShowsGetLocationButton))]
     [NotifyPropertyChangedFor(nameof(ShowsMapActions))]
@@ -184,7 +186,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     // The details panel is shown for saved pins (arrival locations and custom board locations),
     // not for the temporary pin dropped by a long press.
-    public bool HasPinDetails => SelectedPin is CustomLocationPin or ArrivalLocationPin;
+    public bool HasPinDetails => SelectedPin is CustomLocationPin or ArrivalLocationPin or PendingArrivalPin;
     public bool HasNoPinDetails => !HasPinDetails;
 
     public string SelectedPinTitle => SelectedPin?.Label ?? string.Empty;
@@ -193,13 +195,20 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         CustomLocationPin pin => $"{((MapPinTag)pin.Tag).BoardName} · {(pin.IsVisited ? pin.Address : AppResources.NotVisited)}",
         ArrivalLocationPin pin => $"{AppResources.ArrivalLocation} · {pin.Address}",
+        PendingArrivalPin pin => $"{pin.Address} · {AppResources.PendingStampDetail}",
         _ => string.Empty,
     };
 
     // Only a place not checked in yet: checking in again would replace the date of the first visit.
     public bool CanCheckIn => SelectedPin is CustomLocationPin { IsVisited: false };
 
-    public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
+    public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or PendingArrivalPin or CustomLocationPin { IsVisited: true };
+
+    // A pending stamp can be looked up straight away, besides when the map opens or the connection returns.
+    public bool CanLookUpPending => SelectedPin is PendingArrivalPin;
+
+    [RelayCommand]
+    Task LookUpPendingAsync() => SelectedPin is PendingArrivalPin pin ? LookUpPendingArrivalsAsync(asked: true, pin.Id) : Task.CompletedTask;
 
     // Arrivals and checked-in places have a stamp, which can be looked at again from the pin.
     public bool CanViewStamp => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
@@ -218,7 +227,7 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    public string RemoveSelectedPinText => SelectedPin is ArrivalLocationPin ? AppResources.Delete : AppResources.ResetCheckIn;
+    public string RemoveSelectedPinText => SelectedPin is ArrivalLocationPin or PendingArrivalPin ? AppResources.Delete : AppResources.ResetCheckIn;
 
     [RelayCommand]
     async Task RemoveSelectedPinAsync()
@@ -400,6 +409,18 @@ public partial class LocationPageViewModel : BaseViewModel
             }
             RemovePinFromMap(pin);
         }
+        else if (pin is PendingArrivalPin pendingArrivalPin)
+        {
+            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            if (!deletes) return;
+
+            if (await _pendingArrivalRepository.DeleteAsync(pendingArrivalPin.Id) != 1)
+            {
+                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                return;
+            }
+            RemovePendingPin(pendingArrivalPin);
+        }
         else if (pin is CustomLocationPin customLocationPin)
         {
             if (!customLocationPin.IsVisited) return;
@@ -535,9 +556,10 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
+        _pendingArrivalRepository = pendingArrivalRepository;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
         _customGeolocation = customGeolocation;
@@ -554,6 +576,13 @@ public partial class LocationPageViewModel : BaseViewModel
             MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
         WeakReferenceMessenger.Default.Register<PinStyleChangedMessage>(this, (recipient, message) =>
             MainThread.BeginInvokeOnMainThread(((LocationPageViewModel)recipient).RedrawPins));
+
+        // Back online: look up the stamps kept as pending, if the map is what is on screen
+        Connectivity.Current.ConnectivityChanged += (_, e) =>
+        {
+            if (e.NetworkAccess == NetworkAccess.Internet)
+                MainThread.BeginInvokeOnMainThread(async () => await LookUpPendingArrivalsAsync(asked: false));
+        };
     }
 
     // Gives every pin already on the map the icon of the newly chosen style.
@@ -688,6 +717,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
         _pinsLoaded = true;
         await ShowRequestedLocationAsync();
+        await LookUpPendingArrivalsAsync(asked: false);
     }
 
     [RelayCommand]
@@ -727,7 +757,8 @@ public partial class LocationPageViewModel : BaseViewModel
                 return;
             }
 
-            var arrivalLocationCount = (await _arrivalLocationRepository.GetAllArrivalLocations()).Count;
+            // Stamps kept as pending become arrivals later, so they count towards the free ones
+            var arrivalLocationCount = (await _arrivalLocationRepository.GetAllArrivalLocations()).Count + await _pendingArrivalRepository.CountAsync();
             if (arrivalLocationCount >= 5 && !_settingsPreferences.IsApiKeySet())
             {
                 await TryToOfferSubscription();
@@ -746,46 +777,27 @@ public partial class LocationPageViewModel : BaseViewModel
             }
 
             currentLocation = tappedPinLocation;
+            var arrivalDate = DateTime.Now;
 
-            string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var rawArrivalLocationData = await _customGeolocation.GetArrivalLocationAsync(DateTime.Now, currentLocation, languageCode);
-
-            if (rawArrivalLocationData is null)
-                throw new Exception($"{AppResources.UnableToGetLocationData}");
+            // The spot has passed every check; only its country and region need the internet. Without
+            // a connection it is kept as it is and looked up later.
+            ArrivalLocationData rawArrivalLocationData;
+            try
+            {
+                rawArrivalLocationData = await LookUpArrivalAsync(arrivalDate, currentLocation);
+            }
+            catch (Exception ex) when (ConnectionFailure.IsConnectionProblem(ex))
+            {
+                await KeepAsPendingAsync(arrivalDate, currentLocation);
+                return;
+            }
 
             var result = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
                                                             $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
             if (result)
             {
-                // Check if this is the first time visiting this country before saving
-                var isFirstTimeCountry = !await _arrivalLocationService.HasVisitedCountryBefore(rawArrivalLocationData.CountryCode);
-
-                SubRegionCode? subRegionCode = null;
-                bool isFirstTimeSupportedSubRegion = false;
-                if (Constants.SupportedSubRegionCountryCodeList.Any(c => c.Equals(rawArrivalLocationData.CountryCode.ToLower())))
-                {
-                    subRegionCode = new SubRegionCode(rawArrivalLocationData.CountryCode, rawArrivalLocationData.AdminAreaCode);
-                    isFirstTimeSupportedSubRegion = !await _arrivalLocationService.HasVisitedSubRegionBefore(subRegionCode);
-                }
-
-                var arrivalLocation = await _arrivalLocationRepository.Save(rawArrivalLocationData);
-                _settingsPreferences.SetLatestCountry(arrivalLocation.CountryCode);
-                ArrivalLocationPin arrivalLocationPin = new(arrivalLocation);
-                ArrivalMap?.Pins.Add(arrivalLocationPin);
-                FanOutOverlappingPins();
-
-                // Every stamp is pressed down (the region's too where there are regional flags); only a first
-                // country or region gets confetti and "New"
-                await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, subRegionCode is not null, isFirstTimeSupportedSubRegion);
-
-                // A new region's flag also joins the country's regional flags in Collections
-                if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
-                {
-                    await ShowCollectionAddedPopup(subRegionCode);
-                }
-
+                await RecordArrivalAsync(rawArrivalLocationData);
                 RemoveCheckInSpot();
-
             }
         }
         catch (FeatureNotSupportedException ex)
@@ -819,6 +831,136 @@ public partial class LocationPageViewModel : BaseViewModel
             IsBusy = false;
             _isCheckingLocation = false;
         }
+    }
+
+    // Lookups that fail for want of a connection are thrown with no waiting: an offline device
+    // would otherwise sit through the request's timeout.
+    private async Task<ArrivalLocationData> LookUpArrivalAsync(DateTime arrivalDate, Location location)
+    {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            throw new HttpRequestException(AppResources.StillNoConnection);
+
+        string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        return await _customGeolocation.GetArrivalLocationAsync(arrivalDate, location, languageCode);
+    }
+
+    // Saves a confirmed arrival, puts its pin on the map and presses its stamps down.
+    private async Task RecordArrivalAsync(ArrivalLocationData rawArrivalLocationData)
+    {
+        // Check if this is the first time visiting this country before saving
+        var isFirstTimeCountry = !await _arrivalLocationService.HasVisitedCountryBefore(rawArrivalLocationData.CountryCode);
+
+        SubRegionCode? subRegionCode = null;
+        bool isFirstTimeSupportedSubRegion = false;
+        if (Constants.SupportedSubRegionCountryCodeList.Any(c => c.Equals(rawArrivalLocationData.CountryCode.ToLower())))
+        {
+            subRegionCode = new SubRegionCode(rawArrivalLocationData.CountryCode, rawArrivalLocationData.AdminAreaCode);
+            isFirstTimeSupportedSubRegion = !await _arrivalLocationService.HasVisitedSubRegionBefore(subRegionCode);
+        }
+
+        var arrivalLocation = await _arrivalLocationRepository.Save(rawArrivalLocationData);
+        _settingsPreferences.SetLatestCountry(arrivalLocation.CountryCode);
+        ArrivalLocationPin arrivalLocationPin = new(arrivalLocation);
+        ArrivalMap?.Pins.Add(arrivalLocationPin);
+        FanOutOverlappingPins();
+
+        // Every stamp is pressed down (the region's too where there are regional flags); only a first
+        // country or region gets confetti and "New"
+        await ShowStampAcquiredPopup(arrivalLocation, isFirstTimeCountry, subRegionCode is not null, isFirstTimeSupportedSubRegion);
+
+        // A new region's flag also joins the country's regional flags in Collections
+        if (isFirstTimeSupportedSubRegion && subRegionCode is not null)
+        {
+            await ShowCollectionAddedPopup(subRegionCode);
+        }
+    }
+
+    // The checked spot and time, kept until the country and region can be looked up.
+    private async Task KeepAsPendingAsync(DateTime arrivalDate, Location location)
+    {
+        var pending = await _pendingArrivalRepository.Save(new PendingArrivalData(arrivalDate, location));
+        RemoveCheckInSpot();
+        ArrivalMap?.Pins.Add(new PendingArrivalPin(pending));
+        FanOutOverlappingPins();
+        await RebuildPinFilterList();
+        await Shell.Current.DisplayAlertAsync($"{AppResources.SavedAsPendingTitle}", $"{AppResources.SavedAsPending}", "OK");
+    }
+
+    bool _isLookingUpPending;
+
+    // Pending stamps answered No since the app started: kept, but not asked about again by themselves
+    // each time the map opens; Look up now on the pin still asks.
+    readonly HashSet<int> _declinedPendingIds = [];
+
+    /// <summary>
+    /// Looks up the country and region of the stamps kept as pending, oldest first, and records each
+    /// one confirmed as it would have been at the time: its own spot and date, nothing from now.
+    /// Runs by itself when the map opens or the connection returns (quietly stopping while still
+    /// offline), and when asked from a pending pin for that one (then saying why it could not).
+    /// </summary>
+    public async Task LookUpPendingArrivalsAsync(bool asked, int? onlyId = null)
+    {
+        if (_isLookingUpPending || IsBusy || _isCheckingLocation || ArrivalMap is null || !_pinsLoaded) return;
+        // Not over another page: the questions it asks belong to the map
+        if (!asked && Shell.Current?.CurrentPage is not LocationPage) return;
+
+        try
+        {
+            _isLookingUpPending = true;
+            var pendingArrivals = (await _pendingArrivalRepository.GetAllAsync())
+                .Where(p => onlyId is null ? !_declinedPendingIds.Contains(p.Id) : p.Id == onlyId);
+            foreach (var pending in pendingArrivals)
+            {
+                ArrivalLocationData rawArrivalLocationData;
+                try
+                {
+                    rawArrivalLocationData = await LookUpArrivalAsync(pending.ArrivalDate, pending.Location);
+                }
+                catch (Exception ex) when (ConnectionFailure.IsConnectionProblem(ex))
+                {
+                    if (asked) await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.StillNoConnection}", "OK");
+                    return;
+                }
+
+                // The map goes to the stamp first, so the question is asked with the place in view
+                var pin = ArrivalMap.Pins.OfType<PendingArrivalPin>().FirstOrDefault(p => p.Id == pending.Id);
+                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(pending.Latitude, pending.Longitude), DEFAULT_ZOOM_LEVEL), animate: true);
+
+                var found = string.Format(AppResources.PendingFound, pending.ArrivalDate.ToString("g", CultureInfo.CurrentCulture));
+                var confirms = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
+                                                            $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
+
+                // Yes records it (before it is let go, so a failure keeps it); No keeps it pending, to be
+                // looked up again or deleted from its pin.
+                if (!confirms)
+                {
+                    _declinedPendingIds.Add(pending.Id);
+                    continue;
+                }
+                await RecordArrivalAsync(rawArrivalLocationData);
+                await _pendingArrivalRepository.DeleteAsync(pending.Id);
+                _declinedPendingIds.Remove(pending.Id);
+                if (pin is not null) RemovePendingPin(pin);
+            }
+        }
+        catch (Exception ex)
+        {
+            if (asked) await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+        }
+        finally
+        {
+            _isLookingUpPending = false;
+        }
+    }
+
+    private void RemovePendingPin(PendingArrivalPin pin)
+    {
+        if (ArrivalMap is not null && ReferenceEquals(ArrivalMap.SelectedPin, pin))
+        {
+            ArrivalMap.SelectedPin = null;
+        }
+        RemovePinFromMap(pin);
+        _ = RebuildPinFilterList();
     }
 
     private async Task CheckInCustomLocation()
@@ -1045,9 +1187,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task TryToOfferSubscription()
     {
+        // Without an answer from RevenueCat (offline, for one), the last known status stands
         var customerInfoResult = await _revenueCat.GetCustomerInfo();
-        var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
-        _settingsPreferences.SetIsSubscribed(isSubscribed);
+        if (customerInfoResult.IsSuccess)
+        {
+            _settingsPreferences.SetIsSubscribed(customerInfoResult.Value?.ActiveSubscriptions?.Count > 0);
+        }
 
         if (_settingsPreferences.GetIsSubscribed()) return;
         await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
@@ -1057,6 +1202,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         var arrivalLocationPins = await _arrivalLocationRepository.GetArrivalLocationPinsAsync();
         AddPinsToMap(arrivalLocationPins);
+        AddPinsToMap((await _pendingArrivalRepository.GetAllAsync()).Select(p => new PendingArrivalPin(p)));
 
         var customLocationList = await _customLocationDataRepository.GetAllCustomLocationPins();
         AddPinsToMap(customLocationList);
@@ -1091,7 +1237,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         var filterList = new List<CustomBoardPinFilterItem>();
 
-        var hasArrivalPins = ArrivalMap?.Pins.Any(p => (p.Tag as MapPinTag)?.IsArrivalLocation ?? false) ?? false;
+        var hasArrivalPins = ArrivalMap?.Pins.Any(p => p.Tag is MapPinTag { IsArrivalLocation: true } or MapPinTag { IsPendingArrival: true }) ?? false;
         if (hasArrivalPins)
         {
             filterList.Add(new CustomBoardPinFilterItem(AppResources.ArrivalLocation));
