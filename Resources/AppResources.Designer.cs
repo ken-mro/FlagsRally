@@ -1826,5 +1826,41 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StillNoConnection", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared place.
+        /// </summary>
+        internal static string SharedPlace {
+            get {
+                return ResourceManager.GetString("SharedPlace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove marker.
+        /// </summary>
+        internal static string RemoveMarker {
+            get {
+                return ResourceManager.GetString("RemoveMarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No place could be found in what was shared. Please share a place from Google Maps..
+        /// </summary>
+        internal static string SharedPlaceNotFound {
+            get {
+                return ResourceManager.GetString("SharedPlaceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no connection, so the shared place cannot be found. Please share it again where the signal is better..
+        /// </summary>
+        internal static string SharedPlaceNoConnection {
+            get {
+                return ResourceManager.GetString("SharedPlaceNoConnection", resourceCulture);
+            }
+        }
     }
 }

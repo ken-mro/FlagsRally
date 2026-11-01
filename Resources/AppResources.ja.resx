@@ -707,4 +707,16 @@
   <data name="StillNoConnection" xml:space="preserve">
     <value>まだ電波が届きません。電波の良いところでもう一度お試しください。</value>
   </data>
+  <data name="SharedPlace" xml:space="preserve">
+    <value>共有された場所</value>
+  </data>
+  <data name="RemoveMarker" xml:space="preserve">
+    <value>印を消す</value>
+  </data>
+  <data name="SharedPlaceNotFound" xml:space="preserve">
+    <value>共有された内容から場所を見つけられませんでした。Google マップから場所を共有してください。</value>
+  </data>
+  <data name="SharedPlaceNoConnection" xml:space="preserve">
+    <value>電波が届かないため、共有された場所を調べられません。電波の良いところでもう一度共有してください。</value>
+  </data>
 </root>

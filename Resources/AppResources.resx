@@ -707,4 +707,16 @@
   <data name="StillNoConnection" xml:space="preserve">
     <value>There is still no connection. Please try again where the signal is better.</value>
   </data>
+  <data name="SharedPlace" xml:space="preserve">
+    <value>Shared place</value>
+  </data>
+  <data name="RemoveMarker" xml:space="preserve">
+    <value>Remove marker</value>
+  </data>
+  <data name="SharedPlaceNotFound" xml:space="preserve">
+    <value>No place could be found in what was shared. Please share a place from Google Maps.</value>
+  </data>
+  <data name="SharedPlaceNoConnection" xml:space="preserve">
+    <value>There is no connection, so the shared place cannot be found. Please share it again where the signal is better.</value>
+  </data>
 </root>

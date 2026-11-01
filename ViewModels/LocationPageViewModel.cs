@@ -41,6 +41,7 @@ public partial class LocationPageViewModel : BaseViewModel
     private ArrivalLocationService _arrivalLocationService;
     private readonly MapFocusRequest _mapFocusRequest;
     private readonly RegionalFlagsService _regionalFlagsService;
+    private readonly SharedPlaceResolver _sharedPlaceResolver;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectsCustomLocationPin))]
@@ -186,7 +187,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
     // The details panel is shown for saved pins (arrival locations and custom board locations),
     // not for the temporary pin dropped by a long press.
-    public bool HasPinDetails => SelectedPin is CustomLocationPin or ArrivalLocationPin or PendingArrivalPin;
+    public bool HasPinDetails => SelectedPin is CustomLocationPin or ArrivalLocationPin or PendingArrivalPin or SharedPlacePin;
     public bool HasNoPinDetails => !HasPinDetails;
 
     public string SelectedPinTitle => SelectedPin?.Label ?? string.Empty;
@@ -196,13 +197,14 @@ public partial class LocationPageViewModel : BaseViewModel
         CustomLocationPin pin => $"{((MapPinTag)pin.Tag).BoardName} · {(pin.IsVisited ? pin.Address : AppResources.NotVisited)}",
         ArrivalLocationPin pin => $"{AppResources.ArrivalLocation} · {pin.Address}",
         PendingArrivalPin pin => $"{pin.Address} · {AppResources.PendingStampDetail}",
+        SharedPlacePin pin => pin.HasName ? $"{AppResources.SharedPlace} · {pin.Address}" : pin.Address,
         _ => string.Empty,
     };
 
     // Only a place not checked in yet: checking in again would replace the date of the first visit.
     public bool CanCheckIn => SelectedPin is CustomLocationPin { IsVisited: false };
 
-    public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or PendingArrivalPin or CustomLocationPin { IsVisited: true };
+    public bool CanRemoveSelectedPin => SelectedPin is ArrivalLocationPin or PendingArrivalPin or SharedPlacePin or CustomLocationPin { IsVisited: true };
 
     // A pending stamp can be looked up straight away, besides when the map opens or the connection returns.
     public bool CanLookUpPending => SelectedPin is PendingArrivalPin;
@@ -227,7 +229,12 @@ public partial class LocationPageViewModel : BaseViewModel
         }
     }
 
-    public string RemoveSelectedPinText => SelectedPin is ArrivalLocationPin or PendingArrivalPin ? AppResources.Delete : AppResources.ResetCheckIn;
+    public string RemoveSelectedPinText => SelectedPin switch
+    {
+        ArrivalLocationPin or PendingArrivalPin => AppResources.Delete,
+        SharedPlacePin => AppResources.RemoveMarker,
+        _ => AppResources.ResetCheckIn,
+    };
 
     [RelayCommand]
     async Task RemoveSelectedPinAsync()
@@ -386,6 +393,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task DeleteOrResetPinAsync(Pin pin)
     {
+        // Only a mark, nothing saved: gone without asking
+        if (pin is SharedPlacePin)
+        {
+            RemoveSharedPlacePin();
+            return;
+        }
 
         if (pin is ArrivalLocationPin arrivalLocationPin)
         {
@@ -556,7 +569,7 @@ public partial class LocationPageViewModel : BaseViewModel
         return location;
     }
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService, SharedPlaceResolver sharedPlaceResolver)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _pendingArrivalRepository = pendingArrivalRepository;
@@ -570,12 +583,19 @@ public partial class LocationPageViewModel : BaseViewModel
         _arrivalLocationService = arrivalLocationService;
         _mapFocusRequest = mapFocusRequest;
         _regionalFlagsService = regionalFlagsService;
+        _sharedPlaceResolver = sharedPlaceResolver;
         PinIcons.Style = settingsPreferences.GetPinStyle();
 
         WeakReferenceMessenger.Default.Register<CustomBoardsChangedMessage>(this, (recipient, message) =>
             MainThread.BeginInvokeOnMainThread(async () => await ((LocationPageViewModel)recipient).OnCustomBoardsChanged(message)));
         WeakReferenceMessenger.Default.Register<PinStyleChangedMessage>(this, (recipient, message) =>
             MainThread.BeginInvokeOnMainThread(((LocationPageViewModel)recipient).RedrawPins));
+        // A place shared while the map is already on screen (otherwise it is shown when the map appears)
+        WeakReferenceMessenger.Default.Register<SharedPlaceReceivedMessage>(this, (recipient, message) =>
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (Shell.Current?.CurrentPage is LocationPage) await ((LocationPageViewModel)recipient).ShowRequestedLocationAsync();
+            }));
 
         // Back online: look up the stamps kept as pending, if the map is what is on screen
         Connectivity.Current.ConnectivityChanged += (_, e) =>
@@ -613,7 +633,12 @@ public partial class LocationPageViewModel : BaseViewModel
         await ShowMyLocationLayerIfAllowedAsync();
 
         var key = _mapFocusRequest.Take();
-        if (key is not null)
+        if (_mapFocusRequest.TakeSharedPlace() is string sharedText)
+        {
+            _hasCenteredOnUser = true;
+            await ShowSharedPlaceAsync(sharedText);
+        }
+        else if (key is not null)
         {
             await ShowCustomLocationAsync(key);
         }
@@ -638,6 +663,58 @@ public partial class LocationPageViewModel : BaseViewModel
         {
             ArrivalMap.MyLocationEnabled = true;
         }
+    }
+
+    SharedPlacePin? _sharedPlacePin;
+
+    /// <summary>
+    /// Marks a place shared from another map app and moves the map there, to see the stamp trail places
+    /// and arrivals around it. Nothing is saved; the mark replaces the one before.
+    /// </summary>
+    private async Task ShowSharedPlaceAsync(string sharedText)
+    {
+        if (ArrivalMap is null) return;
+
+        SharedPlace? place;
+        try
+        {
+            IsBusy = true;
+            place = await _sharedPlaceResolver.ResolveAsync(sharedText);
+        }
+        catch (Exception ex)
+        {
+            IsBusy = false;
+            var message = ConnectionFailure.IsConnectionProblem(ex) ? AppResources.SharedPlaceNoConnection : AppResources.SharedPlaceNotFound;
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+            return;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+        if (place is null)
+        {
+            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.SharedPlaceNotFound}", "OK");
+            return;
+        }
+
+        RemoveSharedPlacePin();
+        _sharedPlacePin = new SharedPlacePin(place);
+        ArrivalMap.Pins.Add(_sharedPlacePin);
+        await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(_sharedPlacePin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
+        ArrivalMap.SelectedPin = _sharedPlacePin;
+    }
+
+    private void RemoveSharedPlacePin()
+    {
+        if (_sharedPlacePin is null || ArrivalMap is null) return;
+        if (ReferenceEquals(ArrivalMap.SelectedPin, _sharedPlacePin))
+        {
+            ArrivalMap.SelectedPin = null;
+        }
+        RemovePinFromMap(_sharedPlacePin);
+        _sharedPlacePin = null;
     }
 
     private async Task ShowCustomLocationAsync(string compositeKey)
