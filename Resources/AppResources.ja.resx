@@ -683,4 +683,28 @@
   <data name="Version" xml:space="preserve">
     <value>バージョン</value>
   </data>
+  <data name="PendingStamp" xml:space="preserve">
+    <value>保留中のスタンプ</value>
+  </data>
+  <data name="PendingStampDetail" xml:space="preserve">
+    <value>国・地域はまだ調べていません</value>
+  </data>
+  <data name="LookUpNow" xml:space="preserve">
+    <value>今すぐ調べる</value>
+  </data>
+  <data name="SavedAsPendingTitle" xml:space="preserve">
+    <value>保留にしました</value>
+  </data>
+  <data name="SavedAsPending" xml:space="preserve">
+    <value>電波が届かないため、まだ国・地域を調べられません。押した場所と日時はそのままに、保留中のスタンプとして地図に残し、電波が戻ったら調べます。</value>
+  </data>
+  <data name="PendingFound" xml:space="preserve">
+    <value>保留中のスタンプ（{0}）の国・地域がわかりました。</value>
+  </data>
+  <data name="PendingIsThisWhere" xml:space="preserve">
+    <value>スタンプを押した場所は以下の通りですか？</value>
+  </data>
+  <data name="StillNoConnection" xml:space="preserve">
+    <value>まだ電波が届きません。電波の良いところでもう一度お試しください。</value>
+  </data>
 </root>
