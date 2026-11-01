@@ -1045,9 +1045,12 @@ public partial class LocationPageViewModel : BaseViewModel
 
     private async Task TryToOfferSubscription()
     {
+        // Without an answer from RevenueCat (offline, for one), the last known status stands
         var customerInfoResult = await _revenueCat.GetCustomerInfo();
-        var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
-        _settingsPreferences.SetIsSubscribed(isSubscribed);
+        if (customerInfoResult.IsSuccess)
+        {
+            _settingsPreferences.SetIsSubscribed(customerInfoResult.Value?.ActiveSubscriptions?.Count > 0);
+        }
 
         if (_settingsPreferences.GetIsSubscribed()) return;
         await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
