@@ -208,7 +208,7 @@ public partial class LocationPageViewModel : BaseViewModel
     public bool CanLookUpPending => SelectedPin is PendingArrivalPin;
 
     [RelayCommand]
-    Task LookUpPendingAsync() => LookUpPendingArrivalsAsync(asked: true);
+    Task LookUpPendingAsync() => SelectedPin is PendingArrivalPin pin ? LookUpPendingArrivalsAsync(asked: true, pin.Id) : Task.CompletedTask;
 
     // Arrivals and checked-in places have a stamp, which can be looked at again from the pin.
     public bool CanViewStamp => SelectedPin is ArrivalLocationPin or CustomLocationPin { IsVisited: true };
@@ -888,13 +888,17 @@ public partial class LocationPageViewModel : BaseViewModel
 
     bool _isLookingUpPending;
 
+    // Pending stamps answered No since the app started: kept, but not asked about again by themselves
+    // each time the map opens; Look up now on the pin still asks.
+    readonly HashSet<int> _declinedPendingIds = [];
+
     /// <summary>
     /// Looks up the country and region of the stamps kept as pending, oldest first, and records each
     /// one confirmed as it would have been at the time: its own spot and date, nothing from now.
     /// Runs by itself when the map opens or the connection returns (quietly stopping while still
-    /// offline), and when asked from a pending pin (then saying why it could not).
+    /// offline), and when asked from a pending pin for that one (then saying why it could not).
     /// </summary>
-    public async Task LookUpPendingArrivalsAsync(bool asked)
+    public async Task LookUpPendingArrivalsAsync(bool asked, int? onlyId = null)
     {
         if (_isLookingUpPending || IsBusy || _isCheckingLocation || ArrivalMap is null || !_pinsLoaded) return;
         // Not over another page: the questions it asks belong to the map
@@ -903,7 +907,8 @@ public partial class LocationPageViewModel : BaseViewModel
         try
         {
             _isLookingUpPending = true;
-            var pendingArrivals = await _pendingArrivalRepository.GetAllAsync();
+            var pendingArrivals = (await _pendingArrivalRepository.GetAllAsync())
+                .Where(p => onlyId is null ? !_declinedPendingIds.Contains(p.Id) : p.Id == onlyId);
             foreach (var pending in pendingArrivals)
             {
                 ArrivalLocationData rawArrivalLocationData;
@@ -917,23 +922,24 @@ public partial class LocationPageViewModel : BaseViewModel
                     return;
                 }
 
+                // The map goes to the stamp first, so the question is asked with the place in view
                 var pin = ArrivalMap.Pins.OfType<PendingArrivalPin>().FirstOrDefault(p => p.Id == pending.Id);
-                if (pin is not null)
-                {
-                    await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
-                }
+                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(pending.Latitude, pending.Longitude), DEFAULT_ZOOM_LEVEL), animate: true);
 
                 var found = string.Format(AppResources.PendingFound, pending.ArrivalDate.ToString("g", CultureInfo.CurrentCulture));
                 var confirms = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
                                                             $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
 
-                // Answered either way, it is no longer pending: Yes records it (before it is let go, so a
-                // failure keeps it), No drops it as a wrong place would be.
-                if (confirms)
+                // Yes records it (before it is let go, so a failure keeps it); No keeps it pending, to be
+                // looked up again or deleted from its pin.
+                if (!confirms)
                 {
-                    await RecordArrivalAsync(rawArrivalLocationData);
+                    _declinedPendingIds.Add(pending.Id);
+                    continue;
                 }
+                await RecordArrivalAsync(rawArrivalLocationData);
                 await _pendingArrivalRepository.DeleteAsync(pending.Id);
+                _declinedPendingIds.Remove(pending.Id);
                 if (pin is not null) RemovePendingPin(pin);
             }
         }
