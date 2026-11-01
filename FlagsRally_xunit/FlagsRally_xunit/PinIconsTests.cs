@@ -22,6 +22,9 @@ public class PinIconsTests
     [InlineData(PinKind.Pending, PinStyle.Classic, "classic_pending_pin")]
     [InlineData(PinKind.Pending, PinStyle.Drop, "pending_pin")]
     [InlineData(PinKind.Pending, PinStyle.Critter, "critter_pending_pin")]
+    [InlineData(PinKind.SharedPlace, PinStyle.Classic, "classic_shared_place_pin")]
+    [InlineData(PinKind.SharedPlace, PinStyle.Drop, "shared_place_pin")]
+    [InlineData(PinKind.SharedPlace, PinStyle.Critter, "critter_shared_place_pin")]
     public void Each_style_has_its_own_images(PinKind kind, PinStyle style, string expected)
     {
         Assert.Equal(expected, PinIcons.FileName(kind, style));

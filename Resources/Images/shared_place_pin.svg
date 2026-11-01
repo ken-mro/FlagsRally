@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="44" viewBox="0 0 32 44">
+  <!-- Map pin: a place shared from another map app, being looked into. The teardrop in navy, with a magnifier. -->
+  <ellipse cx="16" cy="41.5" rx="5" ry="1.6" fill="#000" fill-opacity="0.22"/>
+  <path d="M16 41 C12.5 36.5 3 26 3 15 A13 13 0 1 1 29 15 C29 26 19.5 36.5 16 41 Z" fill="#182A52" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="14.4" cy="13.4" r="4.6" fill="none" stroke="#E9C46A" stroke-width="2.2"/>
+  <path d="M17.9 16.9 L21.6 20.6" stroke="#E9C46A" stroke-width="2.9" stroke-linecap="round"/>
+</svg>

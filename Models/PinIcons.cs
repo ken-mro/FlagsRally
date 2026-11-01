@@ -16,7 +16,7 @@ public enum PinStyle
     Critter,
 }
 
-public enum PinKind { Unvisited, Visited, CheckIn, CheckInSpot, Pending }
+public enum PinKind { Unvisited, Visited, CheckIn, CheckInSpot, Pending, SharedPlace }
 
 public static class PinIcons
 {
@@ -36,6 +36,7 @@ public static class PinIcons
             PinKind.CheckIn => "default_pin",
             PinKind.CheckInSpot => "selected_location_pin",
             PinKind.Pending => "pending_pin",
+            PinKind.SharedPlace => "shared_place_pin",
             _ => "pin",
         };
         return style switch
@@ -57,6 +58,7 @@ public static class PinIcons
         ArrivalLocationPin => For(PinKind.CheckIn),
         SelectedLocationPin => For(PinKind.CheckInSpot),
         PendingArrivalPin => For(PinKind.Pending),
+        SharedPlacePin => For(PinKind.SharedPlace),
         _ => null,
     };
 }

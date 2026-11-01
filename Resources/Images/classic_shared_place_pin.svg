@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="44" viewBox="0 0 32 44">
+  <!-- Classic map pin: a place shared from another map app, being looked into. The pending pin's shape in navy, with a magnifier. -->
+  <ellipse cx="16" cy="42" rx="4.5" ry="1.4" fill="#000" fill-opacity="0.22"/>
+  <path d="M16 22 L16 41.5" stroke="#FFFFFF" stroke-width="4.2" stroke-linecap="round"/>
+  <path d="M16 22 L16 41.5" stroke="#182A52" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="16" cy="12" r="10.6" fill="#182A52" stroke="#FFFFFF" stroke-width="1.6"/>
+  <circle cx="14.6" cy="10.6" r="3.9" fill="none" stroke="#E9C46A" stroke-width="2"/>
+  <path d="M17.5 13.5 L20.8 16.8" stroke="#E9C46A" stroke-width="2.6" stroke-linecap="round"/>
+</svg>
