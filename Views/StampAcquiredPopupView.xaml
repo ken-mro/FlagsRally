@@ -38,10 +38,12 @@
                 <SwipeGestureRecognizer Direction="Left" Swiped="OnSwipedLeft" />
                 <SwipeGestureRecognizer Direction="Right" Swiped="OnSwipedRight" />
             </Grid.GestureRecognizers>
+            <!--  Input transparent: on Android the stamp took the touch, and a swipe on it did nothing  -->
             <views:StampSlideView
                 x:Name="stamp"
                 BindingContext="{Binding Current}"
                 HorizontalOptions="Center"
+                InputTransparent="True"
                 VerticalOptions="Center" />
             <skia:SKLottieView
                 x:Name="celebration"

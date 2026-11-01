@@ -23,6 +23,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** The App Review notes say the app has no advertising (App Review's automated check flagged 1.3.0 for it), and explain that each stamp's country and region are looked up with Google's Geocoding API, that the subscription (or the user's own API key) lifts the 5-arrival limit, and that subscribers and users with their own key can also choose stamp designs.
 
 ### Fixed
+- **Swiping on the stamp did nothing after stamping (Android).** In the popup after a stamp, a swipe on the stamp itself did not bring the next page (only a swipe beside it, or tapping Swipe for the next stamp, did), so the region's stamp and OK seemed out of reach. A swipe on the stamp now moves between the pages.
 - **A subscriber offline could be shown the subscription screen.** From the sixth arrival, the app asks RevenueCat about the subscription before recording; without a connection it saved "not subscribed" and offered the subscription. It now keeps the saved status when RevenueCat cannot be reached.
 - **Switches in Settings showed no knob when on (iOS).** The knob was the same navy as the track; it is now white.
 - **The app froze after subscribing on iOS.** Once the purchase went through, the subscription popup stayed open and the app stopped responding until it was restarted (the subscription itself had been saved). Saving it, updating the popup and closing it now happen on the main thread.
