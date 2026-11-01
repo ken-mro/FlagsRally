@@ -16,7 +16,7 @@ public enum PinStyle
     Critter,
 }
 
-public enum PinKind { Unvisited, Visited, CheckIn, CheckInSpot }
+public enum PinKind { Unvisited, Visited, CheckIn, CheckInSpot, Pending }
 
 public static class PinIcons
 {
@@ -35,6 +35,7 @@ public static class PinIcons
             PinKind.Visited => "pin_arrived",
             PinKind.CheckIn => "default_pin",
             PinKind.CheckInSpot => "selected_location_pin",
+            PinKind.Pending => "pending_pin",
             _ => "pin",
         };
         return style switch
