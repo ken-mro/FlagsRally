@@ -1,4 +1,6 @@
-- Choose from 13 new passport stamp designs inspired by travel stamps and postmarks, and tilt them like stamps pressed by hand (with a subscription or your own Google Maps API key).
-- Each country's regional flags in Collections now have a look of their own.
-- New stamps are pressed into your passport with confetti, and a newly visited region is welcomed into your collection.
-- Stamps are no longer recorded in the wrong country, and long place names fit neatly at any text size.
+- Every arrival now presses its passport stamp down, also where you have been before. You can turn this off in Settings.
+- No signal? Your stamp is kept on the map and recorded with its date once you are back online.
+- The app's version is now shown at the bottom of Settings.
+- New Terms of Use and Privacy Policy, shown in your language.
+- Fixed: switches in Settings showed no knob when turned on.
+- Fixed: a subscriber without a connection could be shown the subscription screen.
