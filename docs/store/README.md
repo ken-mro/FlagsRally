@@ -105,7 +105,7 @@ Screenshot rules (App Store Connect, Screenshot specifications): PNG or JPEG wit
 App Store Connect requires the iPhone with Dynamic Island (medium display) set (`iphone_6.3in`); the 6.9" and 6.5" sets are used on those devices instead of scaled copies. iPad needs the 13" set because the app runs on iPad (`UIDeviceFamily` 1 and 2).
 The 1024 icon is taken from the build's asset catalog, so it is not uploaded in App Store Connect.
 
-`release_notes.txt` holds What's New for 1.3.0 (build 24), the changes since 1.2.2 (build 20), as submitted to App Review; rewrite it for the next version with `/release-notes`.
+`release_notes.txt` holds What's New for 1.4.0 (build 25), the changes since 1.3.0 (build 24), as submitted to App Review (Google Play's notes differ: they also cover sharing from Google Maps and fold the fixes into one line); rewrite it for the next version with `/release-notes`.
 
 ### Set in App Store Connect, not in these files
 
@@ -115,6 +115,6 @@ The 1024 icon is taken from the build's asset catalog, so it is not uploaded in 
   - From the Google Maps SDK's privacy manifest: Crash Data, Performance Data and Product Interaction (Analytics); Device ID and Other Data Types (Analytics, App Functionality; linked).
   - From the RevenueCat SDK's privacy manifest: Purchase History (App Functionality).
   - Re-read `GoogleMaps.bundle/PrivacyInfo.xcprivacy` and `RevenueCat.framework/PrivacyInfo.xcprivacy` in the built `.app` after updating those packages.
-- **Age rating**: no objectionable content; the app has no web browser and no user-to-user contact, so the answers give 4+.
+- **Age rating**: no objectionable content; the app has no web browser, no user-to-user contact and no social media features (Social Media: No, a question added in 2026), so the answers give 4+.
 - **Subscriptions** (monthly and yearly, auto-renewable, first 3 months free as the paywall says): each needs a display name, a description and a review screenshot of the paywall, and the group needs its localized name. Submit them with the version if they are new or changed.
 - **Terms of Use (EULA)**: the description links to our Terms of Use, as Apple asks of apps with auto-renewable subscriptions.

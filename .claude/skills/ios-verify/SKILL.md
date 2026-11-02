@@ -10,6 +10,7 @@ Needs a Mac with Xcode and a booted simulator (`xcrun simctl list devices booted
 **Taps that do nothing** (AXe prints "completed successfully" but the screen does not change) have two causes:
 - **The runtime is older than Xcode.** With Xcode 27, an iOS 26.5 simulator takes no touches at all, not even in the Settings app. Use an iPhone 17 on an iOS 27 runtime; if there is none, make one: `xcrun simctl create "iPhone 17 (iOS 27)" com.apple.CoreSimulator.SimDeviceType.iPhone-17 com.apple.CoreSimulator.SimRuntime.iOS-27-0` (`xcrun simctl list runtimes` for the IDs). A new simulator starts with an empty app: skip the onboarding and grant location (`xcrun simctl privacy <udid> grant location-always com.companyname.flagsrally`).
 - **The default tap style.** AXe's default sends a simulator tap that the app's MAUI controls ignore. Always pass `--tap-style physical` (touch down and up).
+- **Taps stop working partway through a session**, even with both of the above (the Settings app does not open General either): reboot the simulator, `xcrun simctl shutdown <udid> && xcrun simctl boot <udid>`. Check with the Settings app before blaming the app.
 
 1. **Tests first:** `dotnet test FlagsRally_xunit/FlagsRally_xunit/FlagsRally_xunit.csproj`
 2. **Build and install:**
