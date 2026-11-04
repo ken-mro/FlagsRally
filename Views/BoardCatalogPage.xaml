@@ -123,17 +123,33 @@
                     TextColor="{StaticResource Navy}"
                     VerticalOptions="Center" />
             </Grid>
-            <!--  Its own line, so it never squeezes a long folder name  -->
-            <Button
-                Padding="8,0"
-                BackgroundColor="Transparent"
-                Command="{Binding ToggleSelectAllCommand}"
-                FontSize="14"
-                HorizontalOptions="End"
-                IsVisible="{Binding HasBoardFiles}"
-                MinimumHeightRequest="36"
-                Text="{Binding SelectAllText}"
-                TextColor="{StaticResource Navy}" />
+            <!--  Their own line, so they never squeeze a long folder name; they wrap when both do not fit  -->
+            <FlexLayout
+                AlignItems="Center"
+                Direction="Row"
+                JustifyContent="SpaceBetween"
+                Wrap="Wrap">
+                <Button
+                    Padding="8,0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding OpenUpdateHistoryCommand}"
+                    FontSize="14"
+                    IsVisible="{Binding HasUpdateHistory}"
+                    MinimumHeightRequest="36"
+                    Text="{x:Static strings:AppResources.BoardUpdateHistory}"
+                    TextColor="{StaticResource Navy}" />
+                <!--  Keeps "select all" at the end when there is no history button  -->
+                <BoxView WidthRequest="0" HeightRequest="0" Color="Transparent" />
+                <Button
+                    Padding="8,0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ToggleSelectAllCommand}"
+                    FontSize="14"
+                    IsVisible="{Binding HasBoardFiles}"
+                    MinimumHeightRequest="36"
+                    Text="{Binding SelectAllText}"
+                    TextColor="{StaticResource Navy}" />
+            </FlexLayout>
         </VerticalStackLayout>
 
         <Border

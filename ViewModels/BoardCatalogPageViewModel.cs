@@ -74,6 +74,11 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
 
     public string FolderTitle => _openFolders.LastOrDefault()?.Name ?? AppResources.SharedBoards;
 
+    // The update history CSV of the open folder, when the folder has one.
+    DriveEntry? _historyFile;
+
+    public bool HasUpdateHistory => _historyFile is not null;
+
     public async Task Init()
     {
         if (_isLoaded) return;
@@ -85,15 +90,20 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
         OnPropertyChanged(nameof(IsInSubfolder));
         OnPropertyChanged(nameof(FolderTitle));
         Entries.Clear();
+        _historyFile = null;
+        OnPropertyChanged(nameof(HasUpdateHistory));
         HasLoadError = false;
         IsLoading = true;
         try
         {
             var folderId = _openFolders.LastOrDefault()?.Id ?? DriveBoardCatalog.RootFolderId;
-            foreach (var entry in (await _catalog.ListAsync(folderId)).Where(x => x.IsFolder || x.IsBoardFile))
+            var listed = await _catalog.ListAsync(folderId);
+            foreach (var entry in listed.Where(x => x.IsFolder || x.IsBoardFile))
             {
                 Entries.Add(new BoardCatalogItem(entry) { IsSelected = _selected.Any(x => x.Entry.Id == entry.Id) });
             }
+            _historyFile = listed.FirstOrDefault(BoardUpdateHistory.IsHistoryFile);
+            OnPropertyChanged(nameof(HasUpdateHistory));
             _isLoaded = true;
         }
         catch (Exception)
@@ -109,6 +119,16 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
 
     [RelayCommand]
     Task RetryAsync() => LoadAsync();
+
+    [RelayCommand]
+    async Task OpenUpdateHistoryAsync()
+    {
+        if (_historyFile is null || IsBusy) return;
+        await Shell.Current.GoToAsync(Views.BoardUpdateHistoryPage.Route, new Dictionary<string, object>
+        {
+            [BoardUpdateHistoryPageViewModel.FileIdQueryKey] = _historyFile.Id,
+        });
+    }
 
     void OnSelectionChanged()
     {

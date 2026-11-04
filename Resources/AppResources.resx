@@ -719,4 +719,25 @@
   <data name="SharedPlaceNoConnection" xml:space="preserve">
     <value>There is no connection, so the shared place cannot be found. Please share it again where the signal is better.</value>
   </data>
+  <data name="BoardUpdateHistory" xml:space="preserve">
+    <value>Update history</value>
+  </data>
+  <data name="BoardUpdateHistoryHint" xml:space="preserve">
+    <value>Stamp trails added to or updated in the shared folder, newest first.</value>
+  </data>
+  <data name="BoardUpdateAdded" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="BoardUpdateUpdated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="BoardUpdatePlaces" xml:space="preserve">
+    <value>{0} places</value>
+  </data>
+  <data name="CouldNotLoadUpdateHistory" xml:space="preserve">
+    <value>Couldn't load the update history. Check your connection and try again.</value>
+  </data>
+  <data name="NoUpdateHistory" xml:space="preserve">
+    <value>There are no updates yet.</value>
+  </data>
 </root>

@@ -719,4 +719,25 @@
   <data name="SharedPlaceNoConnection" xml:space="preserve">
     <value>電波が届かないため、共有された場所を調べられません。電波の良いところでもう一度共有してください。</value>
   </data>
+  <data name="BoardUpdateHistory" xml:space="preserve">
+    <value>更新履歴</value>
+  </data>
+  <data name="BoardUpdateHistoryHint" xml:space="preserve">
+    <value>共有フォルダに追加・更新されたスタンプラリーです（新しい順）。</value>
+  </data>
+  <data name="BoardUpdateAdded" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="BoardUpdateUpdated" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="BoardUpdatePlaces" xml:space="preserve">
+    <value>{0} か所</value>
+  </data>
+  <data name="CouldNotLoadUpdateHistory" xml:space="preserve">
+    <value>更新履歴を読み込めませんでした。通信状況を確認して、もう一度お試しください。</value>
+  </data>
+  <data name="NoUpdateHistory" xml:space="preserve">
+    <value>更新履歴はまだありません。</value>
+  </data>
 </root>

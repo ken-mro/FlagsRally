@@ -106,6 +106,8 @@ namespace FlagsRally
             builder.Services.AddTransient<ManageCustomBoardsPageViewModel>();
             builder.Services.AddTransient<BoardCatalogPage>();
             builder.Services.AddTransient<BoardCatalogPageViewModel>();
+            builder.Services.AddTransient<BoardUpdateHistoryPage>();
+            builder.Services.AddTransient<BoardUpdateHistoryPageViewModel>();
             builder.Services.AddSingleton<DriveBoardCatalog>();
 
 #if DEBUG
