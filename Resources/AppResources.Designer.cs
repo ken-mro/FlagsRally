@@ -1862,5 +1862,68 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("SharedPlaceNoConnection", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update history.
+        /// </summary>
+        internal static string BoardUpdateHistory {
+            get {
+                return ResourceManager.GetString("BoardUpdateHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stamp trails added to or updated in the shared folder, newest first..
+        /// </summary>
+        internal static string BoardUpdateHistoryHint {
+            get {
+                return ResourceManager.GetString("BoardUpdateHistoryHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added.
+        /// </summary>
+        internal static string BoardUpdateAdded {
+            get {
+                return ResourceManager.GetString("BoardUpdateAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated.
+        /// </summary>
+        internal static string BoardUpdateUpdated {
+            get {
+                return ResourceManager.GetString("BoardUpdateUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} places.
+        /// </summary>
+        internal static string BoardUpdatePlaces {
+            get {
+                return ResourceManager.GetString("BoardUpdatePlaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't load the update history. Check your connection and try again..
+        /// </summary>
+        internal static string CouldNotLoadUpdateHistory {
+            get {
+                return ResourceManager.GetString("CouldNotLoadUpdateHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no updates yet..
+        /// </summary>
+        internal static string NoUpdateHistory {
+            get {
+                return ResourceManager.GetString("NoUpdateHistory", resourceCulture);
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace FlagsRally
             Routing.RegisterRoute(CustomBoardPage.Route, typeof(CustomBoardPage));
             Routing.RegisterRoute(ManageCustomBoardsPage.Route, typeof(ManageCustomBoardsPage));
             Routing.RegisterRoute(BoardCatalogPage.Route, typeof(BoardCatalogPage));
+            Routing.RegisterRoute(BoardUpdateHistoryPage.Route, typeof(BoardUpdateHistoryPage));
         }
     }
 }

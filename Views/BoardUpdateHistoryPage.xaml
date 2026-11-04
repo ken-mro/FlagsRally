@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FlagsRally.Views.BoardUpdateHistoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:BoardUpdateHistoryPageViewModel"
+    Style="{StaticResource PaperPage}">
+    <Shell.TitleView>
+        <controls:FittingStampLabel
+            LineBreakMode="WordWrap"
+            Style="{StaticResource StampTitle}"
+            Text="{x:Static strings:AppResources.BoardUpdateHistory}" />
+    </Shell.TitleView>
+    <Grid Padding="12,12,12,0" RowDefinitions="Auto,*" RowSpacing="10">
+        <Label
+            FontSize="13"
+            Text="{x:Static strings:AppResources.BoardUpdateHistoryHint}"
+            TextColor="{StaticResource InkMuted}" />
+
+        <!--  One section per day, newest first  -->
+        <CollectionView
+            Grid.Row="1"
+            IsGrouped="True"
+            ItemsSource="{Binding Days}"
+            SelectionMode="None">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="viewmodels:BoardUpdateDay">
+                    <Label
+                        Padding="4,14,4,6"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="{Binding DateText}"
+                        TextColor="{StaticResource Navy}" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:BoardUpdateItem">
+                    <Border
+                        Margin="0,0,0,6"
+                        Padding="12,10"
+                        BackgroundColor="{StaticResource PaperCard}"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="0">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontSize="16"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding Name}"
+                                TextColor="{StaticResource Ink}" />
+                            <!--  Wraps so the badge, series and count are always readable in full  -->
+                            <FlexLayout
+                                AlignItems="Center"
+                                Direction="Row"
+                                Wrap="Wrap">
+                                <Border
+                                    Margin="0,2,8,2"
+                                    Padding="8,1"
+                                    BackgroundColor="{StaticResource Stamp}"
+                                    IsVisible="{Binding HasAction}"
+                                    StrokeShape="RoundRectangle 4"
+                                    StrokeThickness="0">
+                                    <Border.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsUpdated}"
+                                            TargetType="Border"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding ActionText}"
+                                        TextColor="White" />
+                                </Border>
+                                <Label
+                                    Margin="0,2,8,2"
+                                    FontSize="13"
+                                    IsVisible="{Binding HasCollection}"
+                                    Text="{Binding Collection}"
+                                    TextColor="{StaticResource InkMuted}" />
+                                <Label
+                                    Margin="0,2,8,2"
+                                    FontSize="13"
+                                    IsVisible="{Binding HasCount}"
+                                    Text="{Binding CountText}"
+                                    TextColor="{StaticResource InkMuted}" />
+                            </FlexLayout>
+                            <Label
+                                FontSize="13"
+                                IsVisible="{Binding HasNote}"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding Note}"
+                                TextColor="{StaticResource Ink}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <ContentView HeightRequest="12" />
+            </CollectionView.Footer>
+            <CollectionView.EmptyView>
+                <Grid>
+                    <VerticalStackLayout
+                        Padding="24"
+                        IsVisible="{Binding HasLoadError}"
+                        Spacing="12"
+                        VerticalOptions="Center">
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Text="{x:Static strings:AppResources.CouldNotLoadUpdateHistory}"
+                            TextColor="{StaticResource InkMuted}" />
+                        <Button
+                            BackgroundColor="{StaticResource Navy}"
+                            Command="{Binding RetryCommand}"
+                            HorizontalOptions="Center"
+                            Text="{x:Static strings:AppResources.Retry}"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                    <Label
+                        Padding="24"
+                        HorizontalTextAlignment="Center"
+                        IsVisible="{Binding ShowsEmpty}"
+                        Text="{x:Static strings:AppResources.NoUpdateHistory}"
+                        TextColor="{StaticResource InkMuted}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <ActivityIndicator
+            Grid.Row="1"
+            HeightRequest="50"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            Color="{StaticResource Navy}" />
+    </Grid>
+</ContentPage>
