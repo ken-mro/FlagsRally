@@ -1,5 +1,6 @@
 using FlagsRally.Models;
 using FlagsRally.Models.CustomBoard;
+using FlagsRally.ViewModels;
 
 namespace FlagsRallyTests.Models;
 
@@ -140,5 +141,74 @@ public class PinFilterRulesTests
 
         Assert.False(chip.IsGroup);
         Assert.Equal("Board A", chip.Text);
+    }
+
+    [Theory]
+    [InlineData(VisitFilter.All, true, true)]
+    [InlineData(VisitFilter.All, false, true)]
+    [InlineData(VisitFilter.Visited, true, true)]
+    [InlineData(VisitFilter.Visited, false, false)]
+    [InlineData(VisitFilter.Unvisited, true, false)]
+    [InlineData(VisitFilter.Unvisited, false, true)]
+    public void A_place_follows_the_visit_filter(VisitFilter filter, bool isVisited, bool shown)
+    {
+        var tag = MapPinTag.SetCustomLocationTag("Board A-1", "Board A", isVisited);
+
+        Assert.Equal(shown, PinFilterRules.IsPinShown(tag, [], filter));
+    }
+
+    [Theory]
+    [InlineData(VisitFilter.All)]
+    [InlineData(VisitFilter.Visited)]
+    [InlineData(VisitFilter.Unvisited)]
+    public void A_hidden_board_stays_hidden_whatever_the_visit_filter(VisitFilter filter)
+    {
+        var visited = MapPinTag.SetCustomLocationTag("Board A-1", "Board A", isVisited: true);
+        var unvisited = MapPinTag.SetCustomLocationTag("Board A-2", "Board A", isVisited: false);
+
+        Assert.False(PinFilterRules.IsPinShown(visited, ["Board A"], filter));
+        Assert.False(PinFilterRules.IsPinShown(unvisited, ["Board A"], filter));
+    }
+
+    [Theory]
+    [InlineData(VisitFilter.Visited)]
+    [InlineData(VisitFilter.Unvisited)]
+    public void Arrivals_and_untagged_pins_ignore_the_visit_filter(VisitFilter filter)
+    {
+        Assert.True(PinFilterRules.IsPinShown(MapPinTag.SetArrivalLocationTag(1), [], filter));
+        Assert.True(PinFilterRules.IsPinShown(MapPinTag.SetPendingArrivalTag(2), [], filter));
+        Assert.True(PinFilterRules.IsPinShown(null, [], filter));
+    }
+
+    [Fact]
+    public void The_visit_filter_is_for_shown_boards_only()
+    {
+        string[] boards = ["Board A", "Board B"];
+
+        Assert.True(PinFilterRules.AnyShown(boards, []));
+        Assert.True(PinFilterRules.AnyShown(boards, ["Board A"]));
+        // Only the arrival location shown, or nothing at all
+        Assert.False(PinFilterRules.AnyShown(boards, ["Board A", "Board B"]));
+        Assert.False(PinFilterRules.AnyShown(boards, ["Board A", "Board B", "Arrival location"]));
+        // No boards on the map
+        Assert.False(PinFilterRules.AnyShown([], []));
+    }
+
+    [Fact]
+    public void Counts_the_places_of_shown_boards_whatever_the_visit_filter()
+    {
+        MapPinTag[] tags =
+        [
+            MapPinTag.SetCustomLocationTag("Board A-1", "Board A", isVisited: true),
+            MapPinTag.SetCustomLocationTag("Board A-2", "Board A", isVisited: false),
+            MapPinTag.SetCustomLocationTag("Board A-3", "Board A", isVisited: false),
+            MapPinTag.SetCustomLocationTag("Board B-1", "Board B", isVisited: true),
+            MapPinTag.SetArrivalLocationTag(1),
+            MapPinTag.SetPendingArrivalTag(2),
+        ];
+
+        Assert.Equal((2, 4), PinFilterRules.CountPlaces(tags, []));
+        Assert.Equal((1, 3), PinFilterRules.CountPlaces(tags, ["Board B"]));
+        Assert.Equal((0, 0), PinFilterRules.CountPlaces(tags, ["Board A", "Board B"]));
     }
 }

@@ -20,7 +20,7 @@ using Map = Maui.GoogleMaps.Map;
 
 namespace FlagsRally.ViewModels;
 
-public partial class LocationPageViewModel : BaseViewModel
+public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 {
     private const double DEFAULT_LATITUDE = 46.22667333333333;
     private const double DEFAULT_LONGITUDE = 6.140291666666666;
@@ -453,6 +453,7 @@ public partial class LocationPageViewModel : BaseViewModel
 
             //update pin on map
             customLocationPin.UpdateVisitStatus(null);
+            RefreshVisitCounts();
 
             if (ArrivalMap is null) return;
             ArrivalMap.SelectedPin = null;
@@ -724,10 +725,15 @@ public partial class LocationPageViewModel : BaseViewModel
         var pin = ArrivalMap.Pins.OfType<CustomLocationPin>().FirstOrDefault(p => p.CustomLocationKey == compositeKey);
         if (pin is null) return;
 
-        // Make sure a filter does not hide the requested pin: show its board again.
-        if (!pin.IsVisible && (pin.Tag as MapPinTag)?.PinKey is string key)
+        // Make sure a filter does not hide the requested pin: show its board again, and all places
+        // when the visit filter leaves it out.
+        if (!pin.IsVisible && pin.Tag is MapPinTag tag)
         {
-            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, [key], shown: true));
+            if (!SelectedVisitFilter.Matches(tag.IsVisited))
+            {
+                SelectedVisitFilter = VisitFilter.All;
+            }
+            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, [tag.PinKey], shown: true));
         }
 
         await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
@@ -1071,6 +1077,7 @@ public partial class LocationPageViewModel : BaseViewModel
         }
 
         selectedCustomLocationPin.UpdateVisitStatus(now);
+        RefreshVisitCounts();
 
         if (ArrivalMap is null) return;
         ArrivalMap.SelectedPin = null;
@@ -1182,6 +1189,46 @@ public partial class LocationPageViewModel : BaseViewModel
     // Pin keys (board names / arrival location) hidden from the map. Empty means all pins are shown.
     readonly HashSet<string> _hiddenPinKeys = [];
 
+    // Narrows the shown boards' places to visited or unvisited ones; arrivals are not affected.
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowsAll))]
+    [NotifyPropertyChangedFor(nameof(ShowsVisited))]
+    [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
+    VisitFilter _selectedVisitFilter = VisitFilter.All;
+
+    public bool ShowsAll => SelectedVisitFilter == VisitFilter.All;
+    public bool ShowsVisited => SelectedVisitFilter == VisitFilter.Visited;
+    public bool ShowsUnvisited => SelectedVisitFilter == VisitFilter.Unvisited;
+
+    // Names of every board on the map, to tell whether any of their pins are shown.
+    readonly List<string> _boardNames = [];
+
+    // The visit filter is offered only while some board's places are shown: not for arrivals alone,
+    // nor when nothing is shown.
+    public bool ShowsVisitFilter => PinFilterRules.AnyShown(_boardNames, _hiddenPinKeys);
+
+    // Places of the shown boards, for the counts beside All / Visited / Not visited.
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UnvisitedCount))]
+    int _totalCount;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UnvisitedCount))]
+    int _visitedCount;
+
+    public int UnvisitedCount => TotalCount - VisitedCount;
+
+    private void RefreshVisitCounts()
+    {
+        var tags = ArrivalMap?.Pins.Select(p => p.Tag).OfType<MapPinTag>() ?? [];
+        (VisitedCount, TotalCount) = PinFilterRules.CountPlaces(tags, _hiddenPinKeys);
+    }
+
+    [RelayCommand]
+    void SetVisitFilter(string filter) => SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
+
+    partial void OnSelectedVisitFilterChanged(VisitFilter value) => UpdatePinsVisibility();
+
     [RelayCommand]
     async Task ToggleFilterChipAsync(PinFilterChip chip)
     {
@@ -1247,6 +1294,7 @@ public partial class LocationPageViewModel : BaseViewModel
     {
         PinFilterRules.Refresh(FilterChips, _hiddenPinKeys);
         OnToggleAllPinsChanged();
+        OnPropertyChanged(nameof(ShowsVisitFilter));
         UpdatePinsVisibility();
     }
 
@@ -1256,9 +1304,9 @@ public partial class LocationPageViewModel : BaseViewModel
         foreach (var pin in ArrivalMap.Pins)
         {
             // Pins without a tag (e.g. the tapped point) are never filtered out.
-            var pinKey = (pin.Tag as MapPinTag)?.PinKey;
-            pin.IsVisible = pinKey is null || !_hiddenPinKeys.Contains(pinKey);
+            pin.IsVisible = PinFilterRules.IsPinShown(pin.Tag as MapPinTag, _hiddenPinKeys, SelectedVisitFilter);
         }
+        RefreshVisitCounts();
         FanOutOverlappingPins();
     }
 
@@ -1323,6 +1371,8 @@ public partial class LocationPageViewModel : BaseViewModel
         // Boards of one series (the shared folder they came from, or the same name but for the
         // issue number) share a chip, in the place of the series' first board.
         var boardList = await _customBoardRepository.GetAllCustomBoards();
+        _boardNames.Clear();
+        _boardNames.AddRange(boardList.Select(b => b.Name));
         foreach (var series in boardList.GroupBy(b => BoardSeries.Of(b.Name, b.Folder)))
         {
             var names = series.Select(b => b.Name).ToList();
@@ -1334,6 +1384,8 @@ public partial class LocationPageViewModel : BaseViewModel
 
         FilterChips = new ObservableCollection<PinFilterChip>(PinFilterRules.Build(filterList, _hiddenPinKeys));
         OnToggleAllPinsChanged();
+        OnPropertyChanged(nameof(ShowsVisitFilter));
+        RefreshVisitCounts();
 
         if (removed)
         {
