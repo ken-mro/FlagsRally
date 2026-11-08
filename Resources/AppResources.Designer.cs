@@ -1925,5 +1925,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("NoUpdateHistory", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show on the map.
+        /// </summary>
+        internal static string ShowOnMapTab {
+            get {
+                return ResourceManager.GetString("ShowOnMapTab", resourceCulture);
+            }
+        }
     }
 }

@@ -740,4 +740,7 @@
   <data name="NoUpdateHistory" xml:space="preserve">
     <value>更新履歴はまだありません。</value>
   </data>
+  <data name="ShowOnMapTab" xml:space="preserve">
+    <value>マップで見る</value>
+  </data>
 </root>

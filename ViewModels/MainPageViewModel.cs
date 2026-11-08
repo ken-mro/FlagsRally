@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CountryData.Standard;
 using FlagsRally.Helpers;
@@ -6,6 +7,7 @@ using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Services;
+using FlagsRally.Views;
 using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
@@ -16,11 +18,13 @@ namespace FlagsRally.ViewModels
         private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
         private readonly CustomCountryHelper _countryHelper;
         private readonly ArrivalLocationService _arrivalLocationService;
+        private readonly MapFocusRequest _mapFocusRequest;
         private const string ALL_COUNTRY_CODE = "All";
         private readonly string ALL_COUNTRY_NAME = AppResources.AllCountries;
 
-        public MainPageViewModel(CustomCountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository, ArrivalLocationService arrivalLocationService)
+        public MainPageViewModel(CustomCountryHelper countryHelper, SettingsPreferences settingPreferences, IArrivalLocationDataRepository arrivalLocationRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest)
         {
+            _mapFocusRequest = mapFocusRequest;
             Title = "Main Page";
 
             _settingsPreferences = settingPreferences;
@@ -299,7 +303,7 @@ namespace FlagsRally.ViewModels
             }
         }
 
-        [RelayCommand]
+        // Deleting is only offered in the stamp's details popup, after a confirmation.
         async Task DeleteArrivalLocationAsync(ArrivalLocation arrivalLocation)
         {
             try
@@ -321,22 +325,23 @@ namespace FlagsRally.ViewModels
         [RelayCommand]
         async Task ShowLocationInfo(ArrivalLocation arrivalLocation)
         {
-            var longitude = arrivalLocation.Location.Longitude;
-            var roundedLongitude = Math.Round(longitude, 6);
-            var latitude = arrivalLocation.Location.Latitude;
-            var roundedLatitude = Math.Round(latitude, 6);
+            // The stamp's details, then: show it on the map, delete it, or close.
+            var viewModel = new ArrivalInfoPopupViewModel(arrivalLocation);
+            await Shell.Current.CurrentPage.ShowPopupAsync(new ArrivalInfoPopupView(viewModel));
 
-            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.ArrivalLocationInfo}", $"\n{AppResources.Date}: {arrivalLocation.ArrivalDate}\n" +
-                                                                    $"{AppResources.Country}: {arrivalLocation.CountryName}\n" +
-                                                                    $"{AppResources.AdminArea}: {arrivalLocation.AdminAreaName}\n" +
-                                                                    $"{AppResources.Locality}: {arrivalLocation.LocalityName}\n" +
-                                                                    $"{AppResources.Location}: {roundedLatitude}, {roundedLongitude}", $"{AppResources.Delete}", "OK");
-            if (!deletes) return;
-
-            var confirmed = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}", $"{AppResources.Yes}", $"{AppResources.No}");
-            if (confirmed)
+            switch (viewModel.Choice)
             {
-                await DeleteArrivalLocationAsync(arrivalLocation);
+                case ArrivalInfoChoice.ShowOnMap:
+                    _mapFocusRequest.RequestArrival(arrivalLocation.Id);
+                    await Shell.Current.GoToAsync("//Map");
+                    break;
+                case ArrivalInfoChoice.Delete:
+                    var confirmed = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}", $"{AppResources.Yes}", $"{AppResources.No}");
+                    if (confirmed)
+                    {
+                        await DeleteArrivalLocationAsync(arrivalLocation);
+                    }
+                    break;
             }
         }
 

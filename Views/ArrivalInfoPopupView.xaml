@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.ArrivalInfoPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:ArrivalInfoPopupViewModel"
+    BackgroundColor="{StaticResource PaperCard}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
+    Padding="0"
+    VerticalOptions="Center">
+    <!--  A passport stamp's details; every value wraps so nothing is cut off  -->
+    <Grid
+        Padding="20,10,20,4"
+        RowDefinitions="Auto,Auto,Auto"
+        RowSpacing="14">
+        <!--  The heading, with ✕ to close as on the map's cards  -->
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <controls:StampLabel
+                LineBreakMode="WordWrap"
+                Style="{StaticResource StampHeading}"
+                Text="{x:Static strings:AppResources.ArrivalLocationInfo}"
+                VerticalOptions="Center" />
+            <Button
+                Grid.Column="1"
+                Margin="0,0,-12,0"
+                Padding="0"
+                BackgroundColor="Transparent"
+                Command="{Binding CloseCommand}"
+                FontSize="18"
+                HeightRequest="44"
+                SemanticProperties.Description="{x:Static strings:AppResources.Close}"
+                Text="✕"
+                TextColor="{StaticResource InkMuted}"
+                VerticalOptions="Start"
+                WidthRequest="44" />
+        </Grid>
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="Auto,*"
+            ColumnSpacing="12"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            RowSpacing="6">
+            <Label
+                Grid.Row="0"
+                FontSize="13"
+                Text="{x:Static strings:AppResources.Date}"
+                TextColor="{StaticResource InkMuted}" />
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                FontSize="14"
+                LineBreakMode="WordWrap"
+                Text="{Binding Date}"
+                TextColor="{StaticResource Ink}" />
+            <Label
+                Grid.Row="1"
+                FontSize="13"
+                Text="{x:Static strings:AppResources.Country}"
+                TextColor="{StaticResource InkMuted}" />
+            <Label
+                Grid.Row="1"
+                Grid.Column="1"
+                FontSize="14"
+                LineBreakMode="WordWrap"
+                Text="{Binding CountryName}"
+                TextColor="{StaticResource Ink}" />
+            <Label
+                Grid.Row="2"
+                FontSize="13"
+                Text="{x:Static strings:AppResources.AdminArea}"
+                TextColor="{StaticResource InkMuted}" />
+            <Label
+                Grid.Row="2"
+                Grid.Column="1"
+                FontSize="14"
+                LineBreakMode="WordWrap"
+                Text="{Binding AdminAreaName}"
+                TextColor="{StaticResource Ink}" />
+            <Label
+                Grid.Row="3"
+                FontSize="13"
+                Text="{x:Static strings:AppResources.Locality}"
+                TextColor="{StaticResource InkMuted}" />
+            <Label
+                Grid.Row="3"
+                Grid.Column="1"
+                FontSize="14"
+                LineBreakMode="WordWrap"
+                Text="{Binding LocalityName}"
+                TextColor="{StaticResource Ink}" />
+            <Label
+                Grid.Row="4"
+                FontSize="13"
+                Text="{x:Static strings:AppResources.Location}"
+                TextColor="{StaticResource InkMuted}" />
+            <Label
+                Grid.Row="4"
+                Grid.Column="1"
+                FontSize="14"
+                LineBreakMode="WordWrap"
+                Text="{Binding Coordinates}"
+                TextColor="{StaticResource Ink}" />
+        </Grid>
+        <!--  The two actions, the same width one above the other: the main one filled,
+              Delete as quiet red text under it. Full width, so long labels wrap instead of squeezing.  -->
+        <VerticalStackLayout Grid.Row="2" Spacing="2">
+            <Button
+                BackgroundColor="{StaticResource Navy}"
+                Command="{Binding ShowOnMapCommand}"
+                CornerRadius="10"
+                LineBreakMode="WordWrap"
+                Text="{x:Static strings:AppResources.ShowOnMapTab}"
+                TextColor="White" />
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding DeleteCommand}"
+                LineBreakMode="WordWrap"
+                Text="{x:Static strings:AppResources.Delete}"
+                TextColor="{StaticResource Stamp}" />
+        </VerticalStackLayout>
+    </Grid>
+</toolkit:Popup>
