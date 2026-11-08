@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using FlagsRally.Models.CustomBoard;
+using FlagsRally.ViewModels;
 
 namespace FlagsRally.Models;
 
@@ -43,6 +44,26 @@ public enum PinsShown { All, Some, None }
 
 public static class PinFilterRules
 {
+    /// <summary>How many stamp-trail places are shown by the board filter, and how many of them are visited
+    /// (the visit filter itself does not change the counts).</summary>
+    public static (int Visited, int Total) CountPlaces(IEnumerable<MapPinTag> tags, IReadOnlyCollection<string> hiddenKeys)
+    {
+        var places = tags.Where(t => t.IsCustomLocation && !hiddenKeys.Contains(t.PinKey)).ToList();
+        return (places.Count(t => t.IsVisited), places.Count);
+    }
+
+    /// <summary>Whether any of the keys (such as the boards' names) is not hidden.</summary>
+    public static bool AnyShown(IEnumerable<string> keys, IReadOnlyCollection<string> hiddenKeys) =>
+        keys.Any(key => !hiddenKeys.Contains(key));
+
+    /// <summary>
+    /// Whether a pin is shown: its board (or the arrival location) is not hidden, and a stamp-trail place
+    /// also matches the visit filter. Arrivals ignore the visit filter; pins without a tag are always shown.
+    /// </summary>
+    public static bool IsPinShown(MapPinTag? tag, IReadOnlyCollection<string> hiddenKeys, VisitFilter visitFilter) =>
+        tag is null
+        || (!hiddenKeys.Contains(tag.PinKey) && (!tag.IsCustomLocation || visitFilter.Matches(tag.IsVisited)));
+
     /// <param name="hiddenKeys">Pin keys hidden from the map; empty means all pins are shown.</param>
     public static List<PinFilterChip> Build(IEnumerable<CustomBoardPinFilterItem> items, IReadOnlyCollection<string> hiddenKeys)
     {

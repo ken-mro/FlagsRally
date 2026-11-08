@@ -87,6 +87,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
     [NotifyPropertyChangedFor(nameof(VisitedCount))]
     [NotifyPropertyChangedFor(nameof(TotalCount))]
+    [NotifyPropertyChangedFor(nameof(UnvisitedCount))]
     [NotifyPropertyChangedFor(nameof(Progress))]
     [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<CustomLocation> _sourceCustomLocationList = [];
@@ -107,6 +108,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
 
     public int VisitedCount => BoardLocations.Count(x => x.HasBeenVisited);
     public int TotalCount => BoardLocations.Count();
+    public int UnvisitedCount => TotalCount - VisitedCount;
     public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
     public string ProgressText => $"{VisitedCount} / {TotalCount}";
 
@@ -159,6 +161,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
             OnPropertyChanged(nameof(DisplayCustomLocationGroups));
             OnPropertyChanged(nameof(VisitedCount));
             OnPropertyChanged(nameof(TotalCount));
+            OnPropertyChanged(nameof(UnvisitedCount));
             OnPropertyChanged(nameof(Progress));
             OnPropertyChanged(nameof(ProgressText));
         }

@@ -39,6 +39,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
     [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
     [NotifyPropertyChangedFor(nameof(VisitedCount))]
     [NotifyPropertyChangedFor(nameof(TotalCount))]
+    [NotifyPropertyChangedFor(nameof(UnvisitedCount))]
     [NotifyPropertyChangedFor(nameof(Progress))]
     [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<SubRegion> _sourceArrivalSubRegionList = [];
@@ -56,6 +57,7 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
 
     public int VisitedCount => SourceArrivalSubRegionList.Count(x => x.HasBeenVisited);
     public int TotalCount => SourceArrivalSubRegionList.Count;
+    public int UnvisitedCount => TotalCount - VisitedCount;
     public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
     public string ProgressText => $"{VisitedCount} / {TotalCount}";
 

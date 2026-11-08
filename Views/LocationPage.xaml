@@ -153,7 +153,8 @@
             Margin="8,8,8,0"
             ColumnDefinitions="Auto,Auto,*"
             ColumnSpacing="6"
-            RowDefinitions="Auto"
+            RowDefinitions="Auto,Auto"
+            RowSpacing="6"
             VerticalOptions="Start">
             <!--  Opens every board in one list: select all, clear, or tick a few  -->
             <Border
@@ -251,6 +252,13 @@
                     </BindableLayout.ItemTemplate>
                 </HorizontalStackLayout>
             </ScrollView>
+            <!--  All / Visited / Not visited for the shown boards' places (arrivals are always shown);
+                  only while some board is shown  -->
+            <controls:VisitFilterBar
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                IsVisible="{Binding ShowsVisitFilter}"
+                ShowsCounts="True" />
         </Grid>
 
         <!--  Default controls: record the current location  -->

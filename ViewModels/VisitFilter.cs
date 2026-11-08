@@ -12,6 +12,10 @@ public interface IVisitFilterable
     bool ShowsAll { get; }
     bool ShowsVisited { get; }
     bool ShowsUnvisited { get; }
+    // Counts shown beside the labels when the bar's ShowsCounts is on
+    int TotalCount { get; }
+    int VisitedCount { get; }
+    int UnvisitedCount { get; }
     IRelayCommand<string> SetVisitFilterCommand { get; }
 }
 
