@@ -15,7 +15,7 @@ STAMP = (185, 64, 71)
 
 FONT_EN_HEAD = f'{ROOT}/Resources/Fonts/JerseyclubGrungeBold-JRXVK.otf'
 FONT_EN_SUB = f'{ROOT}/Resources/Fonts/OpenSans-Semibold.ttf'
-FONT_JA_HEAD = f'{ROOT}/Resources/Fonts/craftmincho.otf'
+FONT_JA_HEAD = f'{ROOT}/Resources/Fonts/KaiseiTokumin-Bold.ttf'
 FONT_JA_SUB = '/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc'
 
 # (headline, subline) per screen, in the order of the raw files 1..8 (the listing order is NAMES)

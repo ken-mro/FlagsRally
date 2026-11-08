@@ -13,7 +13,7 @@ namespace FlagsRally.Converters
 
             if (!string.IsNullOrEmpty(text) && text.ContainsJapaneseCharacters())
             {
-                fontFamily = "craftmincho";
+                fontFamily = "KaiseiTokumin";
             }
 
             return fontFamily;

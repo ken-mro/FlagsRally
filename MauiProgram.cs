@@ -33,7 +33,7 @@ namespace FlagsRally
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("JerseyclubGrungeBold-JRXVK.otf", "JerseyclubGrungeBold");
-                    fonts.AddFont("craftmincho.otf", "craftmincho");
+                    fonts.AddFont("KaiseiTokumin-Bold.ttf", "KaiseiTokumin");
                     fonts.AddFont("KiwiMaru-Medium.ttf", "KiwiMaru-Medium");
                 });
 

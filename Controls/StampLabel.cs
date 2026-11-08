@@ -4,12 +4,12 @@ namespace FlagsRally.Controls;
 
 /// <summary>
 /// Label drawn in the stamp typefaces: JerseyclubGrunge for Latin text and
-/// craftmincho for Japanese text (JerseyclubGrunge has no Japanese glyphs).
+/// Kaisei Tokumin for Japanese text (JerseyclubGrunge has no Japanese glyphs).
 /// </summary>
 public class StampLabel : Label
 {
     const string LatinFont = "JerseyclubGrungeBold";
-    const string JapaneseFont = "craftmincho";
+    const string JapaneseFont = "KaiseiTokumin";
 
     public StampLabel()
     {
