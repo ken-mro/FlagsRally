@@ -244,7 +244,6 @@
 		<None Remove="Resources\Images\de\de_th.png" />
 		<None Remove="Resources\Images\de\de_th_emblem.png" />
 		<None Remove="Resources\Images\earth_noised.png" />
-		<None Remove="Resources\Images\eraser.png" />
 		<None Remove="Resources\Images\es\es_an.png" />
 		<None Remove="Resources\Images\es\es_an_emblem.png" />
 		<None Remove="Resources\Images\es\es_ar.png" />
