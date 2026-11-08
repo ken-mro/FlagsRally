@@ -634,6 +634,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         await ShowMyLocationLayerIfAllowedAsync();
 
         var key = _mapFocusRequest.Take();
+        var arrivalId = _mapFocusRequest.TakeArrival();
         if (_mapFocusRequest.TakeSharedPlace() is string sharedText)
         {
             _hasCenteredOnUser = true;
@@ -642,6 +643,11 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         else if (key is not null)
         {
             await ShowCustomLocationAsync(key);
+        }
+        else if (arrivalId is int id)
+        {
+            _hasCenteredOnUser = true;
+            await ShowArrivalLocationAsync(id);
         }
         else if (!_hasCenteredOnUser && await IsLocationAllowedAsync())
         {
@@ -716,6 +722,23 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         RemovePinFromMap(_sharedPlacePin);
         _sharedPlacePin = null;
+    }
+
+    // A passport stamp asked to be shown: select its arrival pin, showing the arrivals again if they are filtered out.
+    private async Task ShowArrivalLocationAsync(int arrivalLocationId)
+    {
+        if (ArrivalMap is null) return;
+
+        var pin = ArrivalMap.Pins.OfType<ArrivalLocationPin>().FirstOrDefault(p => (p.Tag as MapPinTag)?.ArrivalLocationId == arrivalLocationId);
+        if (pin is null) return;
+
+        if (!pin.IsVisible && pin.Tag is MapPinTag tag)
+        {
+            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, [tag.PinKey], shown: true));
+        }
+
+        await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(pin.Position, DEFAULT_ZOOM_LEVEL), animate: true);
+        ArrivalMap.SelectedPin = pin;
     }
 
     private async Task ShowCustomLocationAsync(string compositeKey)
