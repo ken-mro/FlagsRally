@@ -82,7 +82,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Fonts\craftmincho.otf" />
+	  <None Remove="Resources\Fonts\KaiseiTokumin-Bold.ttf" />
 	  <None Remove="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf" />
 	  <None Remove="Resources\Fonts\KiwiMaru-Medium.ttf" />
 		<None Remove="Resources\Images\at\at_1.png" />
@@ -1240,7 +1240,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiFont Update="Resources\Fonts\craftmincho.otf">
+	  <MauiFont Update="Resources\Fonts\KaiseiTokumin-Bold.ttf">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </MauiFont>
 	  <MauiFont Update="Resources\Fonts\JerseyclubGrungeBold-JRXVK.otf">

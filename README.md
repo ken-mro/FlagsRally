@@ -52,7 +52,7 @@ The pages are published from [`docs/`](docs/) with GitHub Pages.
 
 The source code is released under the [MIT License](LICENSE.txt).
 
-The fonts in `Resources/Fonts` and other third-party materials are under their own licenses. The MIT License does not cover the FlagsRally name; please do not publish another app under it.
+The fonts in `Resources/Fonts` and other third-party materials are under their own licenses. Kaisei Tokumin and Kiwi Maru are under the SIL Open Font License 1.1 (`Resources/Fonts/licenses`). The MIT License does not cover the FlagsRally name; please do not publish another app under it.
 
 ---
 

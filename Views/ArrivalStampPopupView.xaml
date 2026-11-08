@@ -80,7 +80,7 @@
                         Y2="0" />
                     <Label
                         FontAttributes="Bold"
-                        FontFamily="craftmincho"
+                        FontFamily="KaiseiTokumin"
                         FontSize="20"
                         HorizontalTextAlignment="Center"
                         LineBreakMode="WordWrap"
@@ -172,7 +172,7 @@
                         Margin="8,0"
                         FontAttributes="Bold"
                         FontAutoScalingEnabled="False"
-                        FontFamily="craftmincho"
+                        FontFamily="KaiseiTokumin"
                         FontSize="14"
                         HorizontalOptions="{Binding Arrival.StampAlignment}"
                         HorizontalTextAlignment="{Binding Arrival.StampTextAlignment}"
@@ -270,7 +270,7 @@
                     AbsoluteLayout.LayoutFlags="All"
                     FontAttributes="Bold"
                     FontAutoScalingEnabled="False"
-                    FontFamily="craftmincho"
+                    FontFamily="KaiseiTokumin"
                     FontSize="13"
                     HorizontalTextAlignment="Center"
                     LineBreakMode="WordWrap"
