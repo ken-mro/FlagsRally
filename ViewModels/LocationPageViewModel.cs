@@ -490,17 +490,59 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
-    [RelayCommand]
-    Task ZoomIn() => ZoomByAsync(1);
-
-    [RelayCommand]
-    Task ZoomOut() => ZoomByAsync(-1);
-
-    private Task ZoomByAsync(double step)
+    /// <summary>One step in (+1) or out (−1), from a tap on the zoom slider.</summary>
+    public Task ZoomStepAsync(int step)
     {
         if (ArrivalMap is null) return Task.CompletedTask;
         var camera = ArrivalMap.CameraPosition;
-        return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(camera.Target, Math.Clamp(camera.Zoom + step, 2, 21)), animate: true);
+        return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(camera.Target, MapZoom.Step(camera.Zoom, step)), animate: true);
+    }
+
+    // While the zoom slider is held: the camera the slide started from, and the latest zoom asked for.
+    // Moves are sent one at a time; a slide faster than the map keeps up with skips to the newest zoom.
+    Position _zoomDragTarget;
+    double _zoomDragStart;
+    double? _zoomDragRequested;
+    bool _zoomDragMoving;
+    static readonly TimeSpan ZoomDragMoveTimeout = TimeSpan.FromMilliseconds(150);
+
+    public void BeginZoomDrag()
+    {
+        if (ArrivalMap is null) return;
+        var camera = ArrivalMap.CameraPosition;
+        _zoomDragTarget = camera.Target;
+        _zoomDragStart = camera.Zoom;
+    }
+
+    public void ZoomDrag(double totalY)
+    {
+        if (ArrivalMap is null) return;
+        _zoomDragRequested = MapZoom.ZoomFor(_zoomDragStart, totalY);
+        if (!_zoomDragMoving) _ = SendZoomDragMovesAsync();
+    }
+
+    private async Task SendZoomDragMovesAsync()
+    {
+        _zoomDragMoving = true;
+        try
+        {
+            while (_zoomDragRequested is double zoom && ArrivalMap is not null)
+            {
+                _zoomDragRequested = null;
+                try
+                {
+                    await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(_zoomDragTarget, zoom)).WaitAsync(ZoomDragMoveTimeout);
+                }
+                catch (TimeoutException)
+                {
+                    // The camera task sometimes never completes; the next move goes ahead anyway.
+                }
+            }
+        }
+        finally
+        {
+            _zoomDragMoving = false;
+        }
     }
 
     private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
