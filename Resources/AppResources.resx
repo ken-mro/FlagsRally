@@ -743,4 +743,7 @@
   <data name="ShowOnMapTab" xml:space="preserve">
     <value>Show on the map</value>
   </data>
+  <data name="ZoomSliderHint" xml:space="preserve">
+    <value>Slide up to zoom in, down to zoom out</value>
+  </data>
 </root>

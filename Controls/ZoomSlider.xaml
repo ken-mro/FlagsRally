@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  The map's zoom control: press and slide up to zoom in, down to zoom out, with the knob following
+      the finger; a short tap on the top or bottom half zooms one step, as the + and − buttons did.  -->
+<ContentView
+    x:Class="FlagsRally.Controls.ZoomSlider"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources">
+    <Border
+        x:Name="frame"
+        Padding="0"
+        BackgroundColor="{StaticResource PaperCard}"
+        HeightRequest="144"
+        Stroke="{StaticResource PaperEdge}"
+        StrokeShape="RoundRectangle 24"
+        StrokeThickness="1"
+        WidthRequest="48">
+        <Border.Shadow>
+            <Shadow
+                Brush="{StaticResource NavyDeep}"
+                Opacity="0.18"
+                Radius="8"
+                Offset="0,2" />
+        </Border.Shadow>
+        <Grid RowDefinitions="40,*,40">
+            <Label
+                FontSize="22"
+                HorizontalOptions="Center"
+                InputTransparent="True"
+                Text="＋"
+                TextColor="{StaticResource Navy}"
+                VerticalOptions="Center" />
+            <!--  The track, with the knob that follows the finger  -->
+            <Grid
+                x:Name="track"
+                Grid.Row="1"
+                InputTransparent="True">
+                <BoxView
+                    CornerRadius="2"
+                    HorizontalOptions="Center"
+                    WidthRequest="4"
+                    Color="{StaticResource PaperEdge}" />
+                <Border
+                    x:Name="knob"
+                    BackgroundColor="{StaticResource Navy}"
+                    HeightRequest="22"
+                    HorizontalOptions="Center"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0"
+                    VerticalOptions="Center"
+                    WidthRequest="22" />
+            </Grid>
+            <Label
+                Grid.Row="2"
+                FontSize="22"
+                HorizontalOptions="Center"
+                InputTransparent="True"
+                Text="−"
+                TextColor="{StaticResource Navy}"
+                VerticalOptions="Center" />
+            <!--  Touch targets: a slide starting on either half zooms smoothly; a tap on the top half zooms in,
+                  on the bottom half out (also what screen readers find)  -->
+            <Grid Grid.RowSpan="3" RowDefinitions="*,*">
+                <ContentView
+                    BackgroundColor="Transparent"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ZoomIn}"
+                    SemanticProperties.Hint="{x:Static strings:AppResources.ZoomSliderHint}">
+                    <ContentView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnZoomInTapped" />
+                        <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                    </ContentView.GestureRecognizers>
+                </ContentView>
+                <ContentView
+                    Grid.Row="1"
+                    BackgroundColor="Transparent"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ZoomOut}"
+                    SemanticProperties.Hint="{x:Static strings:AppResources.ZoomSliderHint}">
+                    <ContentView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnZoomOutTapped" />
+                        <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                    </ContentView.GestureRecognizers>
+                </ContentView>
+            </Grid>
+        </Grid>
+    </Border>
+</ContentView>

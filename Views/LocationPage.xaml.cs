@@ -39,6 +39,21 @@ public partial class LocationPage : ContentPage
         }
     }
 
+    void OnZoomSliderDragged(object? sender, Controls.ZoomSlider.DragEventArgs e)
+    {
+        switch (e.Status)
+        {
+            case Controls.ZoomSlider.DragStatus.Started:
+                _viewModel.BeginZoomDrag();
+                break;
+            case Controls.ZoomSlider.DragStatus.Running:
+                _viewModel.ZoomDrag(e.TotalY);
+                break;
+        }
+    }
+
+    async void OnZoomSliderStepped(object? sender, int step) => await _viewModel.ZoomStepAsync(step);
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();

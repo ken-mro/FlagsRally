@@ -1934,5 +1934,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("ShowOnMapTab", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide up to zoom in, down to zoom out.
+        /// </summary>
+        internal static string ZoomSliderHint {
+            get {
+                return ResourceManager.GetString("ZoomSliderHint", resourceCulture);
+            }
+        }
     }
 }

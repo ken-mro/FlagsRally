@@ -104,44 +104,11 @@
                     SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
                     Source="my_location.png" />
             </Border>
-            <Border
-                Padding="0"
-                BackgroundColor="{StaticResource PaperCard}"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 24"
-                StrokeThickness="1">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="{StaticResource NavyDeep}"
-                        Opacity="0.18"
-                        Radius="8"
-                        Offset="0,2" />
-                </Border.Shadow>
-                <VerticalStackLayout>
-                    <Button
-                        Padding="0"
-                        BackgroundColor="Transparent"
-                        Command="{Binding ZoomInCommand}"
-                        FontSize="24"
-                        HeightRequest="48"
-                        SemanticProperties.Description="{x:Static strings:AppResources.ZoomIn}"
-                        Text="＋"
-                        TextColor="{StaticResource Navy}" />
-                    <BoxView
-                        Margin="10,0"
-                        HeightRequest="1"
-                        Color="{StaticResource PaperEdge}" />
-                    <Button
-                        Padding="0"
-                        BackgroundColor="Transparent"
-                        Command="{Binding ZoomOutCommand}"
-                        FontSize="24"
-                        HeightRequest="48"
-                        SemanticProperties.Description="{x:Static strings:AppResources.ZoomOut}"
-                        Text="−"
-                        TextColor="{StaticResource Navy}" />
-                </VerticalStackLayout>
-            </Border>
+            <!--  Slide up or down to zoom smoothly; tap the top or bottom half for one step  -->
+            <controls:ZoomSlider
+                x:Name="zoomSlider"
+                Dragged="OnZoomSliderDragged"
+                Stepped="OnZoomSliderStepped" />
         </VerticalStackLayout>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),
