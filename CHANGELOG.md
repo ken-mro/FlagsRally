@@ -3,6 +3,11 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+- **The map's visit counts could be cut off.** With many places (such as 1000) on a narrow screen or with large text, the count beside Not visited (or All, Visited) did not fit and disappeared. It now goes to the next line and the switch grows to show it, at any count or text size.
+
 ## [1.4.1] - Unreleased
 
 ### Added

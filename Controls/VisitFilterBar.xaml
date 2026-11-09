@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--  All / Visited / Not visited segmented control (binds to IVisitFilterable).
-      With ShowsCounts, each part also shows how many places it stands for.  -->
+      With ShowsCounts, each part also shows how many places it stands for.
+      Each part is one Label (the name and the count as spans) so that it wraps as text: when the
+      count does not fit beside the name it goes to the next line, and the part grows to show it.
+      (A wrapping FlexLayout here kept one line's height and cut the count off.)  -->
 <ContentView
     x:Class="FlagsRally.Controls.VisitFilterBar"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:Name="root"
     x:DataType="viewmodels:IVisitFilterable">
+    <ContentView.Resources>
+        <converters:BoolToColorConverter
+            x:Key="LabelColor"
+            FalseColor="{StaticResource Ink}"
+            TrueColor="{StaticResource PaperCard}" />
+        <converters:BoolToColorConverter
+            x:Key="CountColor"
+            FalseColor="{StaticResource InkMuted}"
+            TrueColor="{StaticResource PaperCard}" />
+        <converters:CountSuffixConverter x:Key="CountSuffix" />
+    </ContentView.Resources>
     <Border
         Padding="2"
         BackgroundColor="{StaticResource PaperEdge}"
@@ -34,42 +49,28 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="All" />
                 </Border.GestureRecognizers>
-                <!--  The count goes under the label when both do not fit on one line  -->
-                <FlexLayout
-                    AlignItems="Center"
-                    Direction="Row"
-                    JustifyContent="Center"
-                    Wrap="Wrap">
-                    <Label
-                        FontSize="12"
-                        Text="{x:Static strings:AppResources.AllFilter}"
-                        TextColor="{StaticResource Ink}">
-                        <Label.Triggers>
-                            <DataTrigger
-                                Binding="{Binding ShowsAll}"
-                                TargetType="Label"
-                                Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                    <Label
-                        Margin="4,0,0,0"
-                        FontAttributes="Bold"
-                        FontSize="12"
-                        IsVisible="{Binding ShowsCounts, Source={x:Reference root}, x:DataType=controls:VisitFilterBar}"
-                        Text="{Binding TotalCount}"
-                        TextColor="{StaticResource InkMuted}">
-                        <Label.Triggers>
-                            <DataTrigger
-                                Binding="{Binding ShowsAll}"
-                                TargetType="Label"
-                                Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                </FlexLayout>
+                <Label
+                    FontSize="12"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap"
+                    VerticalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{x:Static strings:AppResources.AllFilter}" TextColor="{Binding ShowsAll, Converter={StaticResource LabelColor}}" />
+                            <Span FontAttributes="Bold" TextColor="{Binding ShowsAll, Converter={StaticResource CountColor}}">
+                                <Span.Text>
+                                    <MultiBinding Converter="{StaticResource CountSuffix}">
+                                        <Binding
+                                            x:DataType="controls:VisitFilterBar"
+                                            Path="ShowsCounts"
+                                            Source="{x:Reference root}" />
+                                        <Binding Path="TotalCount" />
+                                    </MultiBinding>
+                                </Span.Text>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
             </Border>
             <Border
                 Grid.Column="1"
@@ -88,42 +89,28 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Visited" />
                 </Border.GestureRecognizers>
-                <!--  The count goes under the label when both do not fit on one line  -->
-                <FlexLayout
-                    AlignItems="Center"
-                    Direction="Row"
-                    JustifyContent="Center"
-                    Wrap="Wrap">
-                    <Label
-                        FontSize="12"
-                        Text="{x:Static strings:AppResources.Visited}"
-                        TextColor="{StaticResource Ink}">
-                        <Label.Triggers>
-                            <DataTrigger
-                                Binding="{Binding ShowsVisited}"
-                                TargetType="Label"
-                                Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                    <Label
-                        Margin="4,0,0,0"
-                        FontAttributes="Bold"
-                        FontSize="12"
-                        IsVisible="{Binding ShowsCounts, Source={x:Reference root}, x:DataType=controls:VisitFilterBar}"
-                        Text="{Binding VisitedCount}"
-                        TextColor="{StaticResource InkMuted}">
-                        <Label.Triggers>
-                            <DataTrigger
-                                Binding="{Binding ShowsVisited}"
-                                TargetType="Label"
-                                Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                </FlexLayout>
+                <Label
+                    FontSize="12"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap"
+                    VerticalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{x:Static strings:AppResources.Visited}" TextColor="{Binding ShowsVisited, Converter={StaticResource LabelColor}}" />
+                            <Span FontAttributes="Bold" TextColor="{Binding ShowsVisited, Converter={StaticResource CountColor}}">
+                                <Span.Text>
+                                    <MultiBinding Converter="{StaticResource CountSuffix}">
+                                        <Binding
+                                            x:DataType="controls:VisitFilterBar"
+                                            Path="ShowsCounts"
+                                            Source="{x:Reference root}" />
+                                        <Binding Path="VisitedCount" />
+                                    </MultiBinding>
+                                </Span.Text>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
             </Border>
             <Border
                 Grid.Column="2"
@@ -142,42 +129,28 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SetVisitFilterCommand}" CommandParameter="Unvisited" />
                 </Border.GestureRecognizers>
-                <!--  The count goes under the label when both do not fit on one line  -->
-                <FlexLayout
-                    AlignItems="Center"
-                    Direction="Row"
-                    JustifyContent="Center"
-                    Wrap="Wrap">
-                    <Label
-                        FontSize="12"
-                        Text="{x:Static strings:AppResources.NotVisited}"
-                        TextColor="{StaticResource Ink}">
-                        <Label.Triggers>
-                            <DataTrigger
-                                Binding="{Binding ShowsUnvisited}"
-                                TargetType="Label"
-                                Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                    <Label
-                        Margin="4,0,0,0"
-                        FontAttributes="Bold"
-                        FontSize="12"
-                        IsVisible="{Binding ShowsCounts, Source={x:Reference root}, x:DataType=controls:VisitFilterBar}"
-                        Text="{Binding UnvisitedCount}"
-                        TextColor="{StaticResource InkMuted}">
-                        <Label.Triggers>
-                            <DataTrigger
-                                Binding="{Binding ShowsUnvisited}"
-                                TargetType="Label"
-                                Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource PaperCard}" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                </FlexLayout>
+                <Label
+                    FontSize="12"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap"
+                    VerticalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{x:Static strings:AppResources.NotVisited}" TextColor="{Binding ShowsUnvisited, Converter={StaticResource LabelColor}}" />
+                            <Span FontAttributes="Bold" TextColor="{Binding ShowsUnvisited, Converter={StaticResource CountColor}}">
+                                <Span.Text>
+                                    <MultiBinding Converter="{StaticResource CountSuffix}">
+                                        <Binding
+                                            x:DataType="controls:VisitFilterBar"
+                                            Path="ShowsCounts"
+                                            Source="{x:Reference root}" />
+                                        <Binding Path="UnvisitedCount" />
+                                    </MultiBinding>
+                                </Span.Text>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
             </Border>
         </Grid>
     </Border>
