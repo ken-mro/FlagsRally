@@ -105,7 +105,7 @@ Screenshot rules (App Store Connect, Screenshot specifications): PNG or JPEG wit
 App Store Connect requires the iPhone with Dynamic Island (medium display) set (`iphone_6.3in`); the 6.9" and 6.5" sets are used on those devices instead of scaled copies. iPad needs the 13" set because the app runs on iPad (`UIDeviceFamily` 1 and 2).
 The 1024 icon is taken from the build's asset catalog, so it is not uploaded in App Store Connect.
 
-`release_notes.txt` holds What's New for 1.4.0 (build 25), the changes since 1.3.0 (build 24), as submitted to App Review (Google Play's notes differ: they also cover sharing from Google Maps and fold the fixes into one line); rewrite it for the next version with `/release-notes`.
+`release_notes.txt` holds What's New for 1.4.1 (build 26), the changes since 1.4.0 (build 25), as submitted to App Review (the same text as Google Play's 1.4.1 notes); rewrite it for the next version with `/release-notes`.
 
 ### Set in App Store Connect, not in these files
 
