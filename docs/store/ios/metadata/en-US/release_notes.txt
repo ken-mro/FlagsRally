@@ -1,6 +1,5 @@
-- Every arrival now presses its passport stamp down, also where you have been before. You can turn this off in Settings.
-- No signal? Your stamp is kept on the map and recorded with its date once you are back online.
-- The app's version is now shown at the bottom of Settings.
-- New Terms of Use and Privacy Policy, shown in your language.
-- Fixed: switches in Settings showed no knob when turned on.
-- Fixed: a subscriber without a connection could be shown the subscription screen.
+- Zoom the map smoothly by sliding one finger on the new zoom control.
+- Jump from a passport stamp straight to its place on the map.
+- Show only the stamp trail places you have visited, or the ones you haven't, on the map.
+- See which shared stamp trails were recently added or updated.
+- Japanese place names on stamps now show every character.
