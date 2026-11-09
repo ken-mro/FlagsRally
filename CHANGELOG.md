@@ -13,6 +13,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Development:** The iOS release smoke test taps the tabs with physical touches (`axe tap --tap-style physical`); plain taps did not switch tabs on the Xcode 27 simulator. `/ios-verify` says to reboot the simulator when its taps stop working mid-session.
 - **Development:** The iOS version is set to 1.4.1 (build 26) in `Info.plist`, the build uploaded to App Store Connect. The App Store's What's New (`docs/store/ios/metadata/*/release_notes.txt`) holds the 1.4.1 notes, the same as Google Play's.
 - **Development:** `upload_to_play.py --promote` sends an uploaded Google Play draft out (to everyone or a staged rollout) without uploading the bundle again; `/android-release` mentions it.
+- **Development:** `Info.plist` declares `ITSAppUsesNonExemptEncryption` = false, the export compliance answer every build so far was given in App Store Connect, so new builds no longer wait for it before review.
 
 ### Changed
 - **Japanese headings and stamp names in Kaisei Tokumin.** The Japanese headings, the names over a stamp (View stamp) and the Japanese text on passport stamps used Craft Mincho, which leaves about 3,800 of the 6,700 JIS kanji blank (伊弉諾神宮 showed as 伊　諾神宮, 氣比神宮 as 　比神宮). They now use Kaisei Tokumin Bold, of a similar weight, which draws nearly all of them. It is under the SIL Open Font License 1.1, as is Kiwi Maru; both licenses are now in `Resources/Fonts/licenses`. The store image tool uses the same font.
