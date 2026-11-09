@@ -10,6 +10,7 @@
     uv run --locked upload_to_play.py ... --status completed                  # publish to everyone
     uv run --locked upload_to_play.py ... --status inProgress --fraction 0.2  # staged rollout to 20%
     uv run --locked upload_to_play.py --show-track                            # what the track holds now (read-only)
+    uv run --locked upload_to_play.py --promote --version 1.1.22 --status completed   # send the uploaded draft out
 
 --notes is the file holding exactly the block /release-notes printed (<en-US>...</en-US> and
 <ja-JP>...</ja-JP>), so the notes on Google Play are the ones the user saw and approved.
@@ -81,7 +82,13 @@ def main() -> int:
     parser.add_argument("--not-sent-for-review", action="store_true",
                         help="commit with changesNotSentForReview (only when Google Play asks for it)")
     parser.add_argument("--show-track", action="store_true", help="print the track's releases and exit (read-only)")
+    parser.add_argument("--promote", action="store_true",
+                        help="give the track's draft release --version the new --status (completed or inProgress), "
+                             "keeping its bundle and notes")
     args = parser.parse_args()
+
+    if args.promote:
+        return promote(args)
 
     if args.show_track:
         edits, pkg = connect()
@@ -126,6 +133,46 @@ def main() -> int:
                 edits.delete(packageName=pkg, editId=edit_id).execute()
             except Exception:
                 pass  # an edit not committed expires on its own
+    return 0
+
+
+def promote(args) -> int:
+    """Send an uploaded draft out: the release keeps its bundle and notes, only its status changes."""
+    if not args.version or args.status == "draft":
+        raise SystemExit("FAIL: --promote needs --version and --status completed or inProgress")
+    if args.status == "inProgress" and not (args.fraction and 0 < args.fraction < 1):
+        raise SystemExit("FAIL: --status inProgress needs --fraction between 0 and 1")
+    edits, pkg = connect()
+    edit_id = edits.insert(packageName=pkg, body={}).execute()["id"]
+    committed = False
+    try:
+        track = edits.tracks().get(packageName=pkg, editId=edit_id, track=args.track).execute()
+        releases = track.get("releases", [])
+        drafts = [r for r in releases if r.get("name") == args.version and r.get("status") == "draft"]
+        if len(drafts) != 1:
+            raise SystemExit(f"FAIL: no single draft named {args.version} on {args.track}. Nothing was changed.")
+        draft = drafts[0]
+        draft["status"] = args.status
+        if args.status == "inProgress":
+            draft["userFraction"] = args.fraction
+        # Only the promoted release is sent; the releases it supersedes are retired by Google Play.
+        edits.tracks().update(packageName=pkg, editId=edit_id, track=args.track,
+                              body={"track": args.track, "releases": [draft]}).execute()
+        try:
+            edits.commit(packageName=pkg, editId=edit_id, changesNotSentForReview=args.not_sent_for_review).execute()
+        except Exception as error:
+            if "changesNotSentForReview" in str(error):
+                raise SystemExit("FAIL: Google Play asks for changesNotSentForReview (managed publishing). "
+                                 "Nothing was changed. Ask the user, then run again with --not-sent-for-review.")
+            raise
+        committed = True
+        print(f"PROMOTED: {args.version} codes={draft.get('versionCodes')} on {args.track} is now {args.status}.")
+    finally:
+        if not committed:
+            try:
+                edits.delete(packageName=pkg, editId=edit_id).execute()
+            except Exception:
+                pass
     return 0
 
 
