@@ -12,6 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Update history of the shared stamp trails.** Add stamp trail now has an Update history button when the shared folder holds `更新履歴.csv`. It lists the stamp trails added to or updated in the folder by day, newest first, each with Added or Updated, its series, the number of places and any note. The file is read as CSV (`date,collection,action,file,name,count,note`, columns found by their header); lines without a date or a name are skipped.
 - **Development:** The iOS release smoke test taps the tabs with physical touches (`axe tap --tap-style physical`); plain taps did not switch tabs on the Xcode 27 simulator. `/ios-verify` says to reboot the simulator when its taps stop working mid-session.
 - **Development:** The iOS version is set to 1.4.1 (build 26) in `Info.plist`, the build uploaded to App Store Connect. The App Store's What's New (`docs/store/ios/metadata/*/release_notes.txt`) holds the 1.4.1 notes, the same as Google Play's.
+- **Development:** `upload_to_play.py --promote` sends an uploaded Google Play draft out (to everyone or a staged rollout) without uploading the bundle again; `/android-release` mentions it.
 - **Development:** `Info.plist` declares `ITSAppUsesNonExemptEncryption` = false, the export compliance answer every build so far was given in App Store Connect, so new builds no longer wait for it before review.
 
 ### Changed
