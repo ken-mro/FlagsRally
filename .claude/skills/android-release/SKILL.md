@@ -119,4 +119,4 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
 - The Release check: the number of runs, what was fixed between them, the folder with the final run's screenshots.
 - Non-fatal problems left for later.
 - The release notes from stage 4, in their code block.
-- The upload: track, release type and the script's `UPLOADED` line. For a draft, say that the rollout is started in the Play Console (Release > Production) and is theirs to start. If the upload did not happen (no setup, the user said no), say so and what is left to do.
+- The upload: track, release type and the script's `UPLOADED` line. For a draft, say that the rollout is started in the Play Console (Release > Production) and is theirs to start. When the user asks to send the draft out (to review and then everyone), run `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --promote --version <version> --status completed` (or `--status inProgress --fraction 0.2`): it keeps the uploaded bundle and notes and only changes the status. If the upload did not happen (no setup, the user said no), say so and what is left to do.
