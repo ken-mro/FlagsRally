@@ -8,6 +8,9 @@ public partial class PassportFilterBar : ContentView
     // The two round buttons on the right, with the spacing between the columns.
     const double ButtonsWidth = 44 + 44 + 3 * 4;
 
+    // Gap between the controls and the country filter when it has a row of its own.
+    const double RowSpacingWithSecondRow = 6;
+
     MainPageViewModel? _viewModel;
 
     public PassportFilterBar()
@@ -51,6 +54,9 @@ public partial class PassportFilterBar : ContentView
         Grid.SetRow(countryFilter, ownRow ? 1 : 0);
         Grid.SetColumn(countryFilter, ownRow ? 0 : 1);
         Grid.SetColumnSpan(countryFilter, ownRow ? 4 : 1);
+        // Spacing only between two rows in use; with an empty second row it would sit below the
+        // controls and push them above the middle of the toolbar.
+        bar.RowSpacing = ownRow ? RowSpacingWithSecondRow : 0;
     }
 
     double MeasureFilter() => countryFilter.Measure(double.PositiveInfinity, double.PositiveInfinity).Width;
