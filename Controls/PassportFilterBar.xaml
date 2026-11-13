@@ -11,14 +11,16 @@
     x:DataType="viewmodels:MainPageViewModel">
     <!--  On a narrow screen (a foldable's cover screen) the country filter shows "All" or a flag
           instead of the full name, and only if even that does not fit does it move to a second row
-          (see code-behind), instead of being squeezed to a letter per line.  -->
+          (see code-behind), instead of being squeezed to a letter per line.
+          RowSpacing stays 0 while the second row is empty: the Grid adds the spacing even then,
+          which pushed the controls above the toolbar's middle. The code-behind sets it with the row.  -->
     <Grid
         x:Name="bar"
         Padding="8"
         ColumnDefinitions="Auto,*,Auto,Auto"
         ColumnSpacing="4"
         RowDefinitions="Auto,Auto"
-        RowSpacing="6">
+        RowSpacing="0">
 
         <!--  Countries / regions  -->
         <Border
