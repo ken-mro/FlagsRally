@@ -9,11 +9,15 @@ namespace FlagsRally.Helpers;
 public static partial class BoardSeries
 {
     /// <summary>
-    /// The series a board belongs to: the shared folder it was added from when that is known,
-    /// otherwise its name without the issue number (see <see cref="FromName"/>).
+    /// The series a board sits in on the map's filter list: the outermost shared folder it was added
+    /// from ("マンホールカード" for "マンホールカード／関東"), otherwise the series its name belongs to.
+    /// Subfolders are not levels of their own: only whole series are shown or hidden together.
     /// </summary>
-    public static string Of(string boardName, string? folderName) =>
-        string.IsNullOrWhiteSpace(folderName) ? FromName(boardName) : folderName.Trim();
+    public static string Of(string boardName, string? folderName)
+    {
+        var top = folderName?.Split(PathSeparator).Select(f => f.Trim()).FirstOrDefault(f => f.Length > 0);
+        return top ?? FromName(boardName);
+    }
 
     /// <summary>
     /// The name without what tells issues of a series apart: from 「第N弾」 or 「特別版」 on, or a

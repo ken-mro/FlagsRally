@@ -1324,20 +1324,30 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     // Says what a tap does, for screen readers.
     public string ToggleAllPinsDescription => AllPinsShown ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
 
-    // A series chip (such as マンホールカード) opens its boards to show all of them or some.
-    private Task ChooseSeriesBoardsAsync(PinFilterChip chip) => ChoosePinKeysAsync(chip.Name, chip.Members);
+    // The filter list's rows: the arrival location, boards, and series of boards in groups.
+    List<PinFilterNode> _filterTree = [];
 
-    // Every board and the arrival location in one list, with Select all and Clear selection, so that
-    // hiding all of them or all but a few takes a few taps however many boards there are.
+    // A series chip (such as マンホールカード) opens its boards to show all of them or some.
+    private Task ChooseSeriesBoardsAsync(PinFilterChip chip)
+    {
+        var series = _filterTree.FirstOrDefault(r => r.Name == chip.Name && r.IsGroup);
+        return series is null ? Task.CompletedTask : ChoosePinKeysAsync(chip.Name, PinFilterTree.Rebase(series.Children));
+    }
+
+    // Every board and the arrival location in one list, the boards of a series in a group that opens,
+    // with Select all and Clear selection, so that hiding all of them or all but a few takes a few taps
+    // however many boards there are.
     [RelayCommand]
-    Task ChooseShownPinsAsync() => ChoosePinKeysAsync(AppResources.PinsToShow, PinFilterRules.AllKeys(FilterChips));
+    Task ChooseShownPinsAsync() => ChoosePinKeysAsync(AppResources.PinsToShow, PinFilterTree.Rebase(_filterTree));
 
     // A list of pin keys, ticked when their pins are shown; each change applies to the map at once.
-    private async Task ChoosePinKeysAsync(string title, IEnumerable<string> keys)
+    private async Task ChoosePinKeysAsync(string title, IReadOnlyList<PinFilterNode> rows)
     {
-        var items = keys.Select(key => new BoardSeriesFilterItem(key, !_hiddenPinKeys.Contains(key)));
-        var viewModel = new BoardSeriesFilterViewModel(title, items, (names, shown) =>
-            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, names, shown)));
+        var viewModel = new BoardSeriesFilterViewModel(title, rows, _hiddenPinKeys, (keys, shown) =>
+        {
+            SetHiddenPinKeys(PinFilterRules.SetShown(_hiddenPinKeys, keys, shown));
+            return _hiddenPinKeys;
+        });
         await Shell.Current.CurrentPage.ShowPopupAsync(new BoardSeriesFilterPopupView(viewModel));
     }
 
@@ -1425,24 +1435,25 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     private async Task RebuildPinFilterList()
     {
-        var filterList = new List<CustomBoardPinFilterItem>();
+        var entries = new List<PinFilterEntry>();
 
         var hasArrivalPins = ArrivalMap?.Pins.Any(p => p.Tag is MapPinTag { IsArrivalLocation: true } or MapPinTag { IsPendingArrival: true }) ?? false;
         if (hasArrivalPins)
         {
-            filterList.Add(new CustomBoardPinFilterItem(AppResources.ArrivalLocation));
+            entries.Add(new PinFilterEntry(AppResources.ArrivalLocation, null));
         }
 
-        // Boards of one series (the shared folder they came from, or the same name but for the
-        // issue number) share a chip, in the place of the series' first board.
+        // Boards of one series (the outermost shared folder they came from, or the same name but for the
+        // issue number) share a chip, in the place of the series' first board, and a group in the list.
         var boardList = await _customBoardRepository.GetAllCustomBoards();
         _boardNames.Clear();
         _boardNames.AddRange(boardList.Select(b => b.Name));
-        foreach (var series in boardList.GroupBy(b => BoardSeries.Of(b.Name, b.Folder)))
-        {
-            var names = series.Select(b => b.Name).ToList();
-            filterList.Add(names.Count == 1 ? new CustomBoardPinFilterItem(names[0]) : new CustomBoardPinFilterItem(series.Key, names));
-        }
+        entries.AddRange(boardList.Select(b => new PinFilterEntry(b.Name, BoardSeries.Of(b.Name, b.Folder))));
+        _filterTree = PinFilterTree.Build(entries);
+
+        var filterList = _filterTree
+            .Select(r => r.IsGroup ? new CustomBoardPinFilterItem(r.Name, r.Keys) : new CustomBoardPinFilterItem(r.Key!))
+            .ToList();
 
         // Drop keys of filters that no longer exist (e.g. deleted boards).
         var removed = _hiddenPinKeys.RemoveWhere(key => !filterList.Any(f => f.Members.Contains(key))) > 0;
