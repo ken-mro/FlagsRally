@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.4.2] - Unreleased
 
 ### Changed
 - **The map's Filter list groups the stamp trails of a series.** Stamp trails from the same shared folder (or with the same name but for the issue number, such as マンホールカード第1弾 … 第29弾) sit under one row for the series, as in the Windows features dialog. Tap its name to open or close it. Its tick box shows whether all, some or none of its stamp trails are shown (with how many, such as 3/4), and a tap on it shows them all, or hides them all when all are shown. A series of one stamp trail stays a single row. Only the outermost shared folder counts: stamp trails in subfolders (such as マンホールカード／関東 and ／関西) are one series, also in the chip above the map, which used to show each subfolder as a chip of its own.
