@@ -22,9 +22,11 @@ public class BoardSeriesTests
     }
 
     [Fact]
-    public void The_folder_a_board_came_from_is_its_series()
+    public void The_outermost_folder_a_board_came_from_is_its_series_otherwise_its_name()
     {
         Assert.Equal("Expo25", BoardSeries.Of("Expo_2025_Osaka_Country_Pavilion_Stamps", "Expo25"));
+        Assert.Equal("マンホールカード", BoardSeries.Of("Board A", "マンホールカード／関東"));
+        Assert.Equal("マンホールカード", BoardSeries.Of("Board A", " ／マンホールカード／関西"));
         Assert.Equal("マンホールカード", BoardSeries.Of("マンホールカード第05弾", null));
         Assert.Equal("マンホールカード", BoardSeries.Of("マンホールカード第05弾", " "));
     }
@@ -38,11 +40,11 @@ public class BoardSeriesTests
     }
 
     [Fact]
-    public void Subfolders_with_the_same_name_in_different_series_stay_apart()
+    public void Boards_in_subfolders_of_one_series_share_it()
     {
-        var manhole = BoardSeries.Of("Board A", BoardSeries.FolderPath(["マンホールカード", "関東"]));
-        var shrines = BoardSeries.Of("Board B", BoardSeries.FolderPath(["神社", "関東"]));
+        var kanto = BoardSeries.Of("Board A", BoardSeries.FolderPath(["マンホールカード", "関東"]));
+        var kansai = BoardSeries.Of("Board B", BoardSeries.FolderPath(["マンホールカード", "関西"]));
 
-        Assert.NotEqual(manhole, shrines);
+        Assert.Equal(kanto, kansai);
     }
 }

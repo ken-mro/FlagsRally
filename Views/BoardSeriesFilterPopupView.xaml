@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -13,7 +14,7 @@
     CanBeDismissedByTappingOutsideOfPopup="True"
     HorizontalOptions="Fill"
     VerticalOptions="Center">
-    <!--  A series' boards, ticked when their pins are shown on the map  -->
+    <!--  Boards, ticked when their pins are shown on the map; a series' boards in a group that opens  -->
     <Grid
         Padding="20,18,20,14"
         RowDefinitions="Auto,Auto,Auto,Auto"
@@ -47,28 +48,93 @@
                 TextColor="{StaticResource Navy}" />
         </FlexLayout>
         <ScrollView x:Name="boards" Grid.Row="2">
-            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Boards}">
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Rows}">
                 <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="viewmodels:BoardSeriesFilterItem">
-                        <!--  The whole row toggles the board  -->
+                    <DataTemplate x:DataType="models:PinFilterNode">
+                        <!--  ▸ / ▾, the name (and for a group how many of its boards are shown), the tick box.
+                              A group's name opens or closes it and its tick box shows or hides all of its
+                              boards; a board's whole row toggles it.  -->
                         <Grid
-                            ColumnDefinitions="*,Auto"
-                            ColumnSpacing="8"
+                            Padding="{Binding Indent}"
+                            ColumnDefinitions="24,*,Auto"
+                            ColumnSpacing="4"
                             MinimumHeightRequest="48">
                             <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.ToggleBoardCommand, Source={x:Reference popup}, x:DataType=toolkit:Popup}" CommandParameter="{Binding .}" />
+                                <TapGestureRecognizer Command="{Binding BindingContext.TapRowCommand, Source={x:Reference popup}, x:DataType=toolkit:Popup}" CommandParameter="{Binding .}" />
                             </Grid.GestureRecognizers>
+                            <Path
+                                Data="M1,0 L9,5 L1,10 Z"
+                                Fill="{StaticResource Ink}"
+                                HeightRequest="10"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding IsGroup}"
+                                Rotation="{Binding ExpandRotation}"
+                                VerticalOptions="Center"
+                                WidthRequest="10" />
                             <Label
+                                Grid.Column="1"
                                 FontSize="16"
                                 LineBreakMode="WordWrap"
-                                Text="{Binding Name}"
-                                VerticalOptions="Center" />
-                            <CheckBox
-                                Grid.Column="1"
-                                InputTransparent="True"
-                                IsChecked="{Binding IsShown}"
-                                VerticalOptions="Center"
-                                Color="{StaticResource Stamp}" />
+                                VerticalOptions="Center">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding Name}" />
+                                        <Span Text="&#x00A0;&#x00A0;" />
+                                        <Span
+                                            FontSize="13"
+                                            Text="{Binding CountText}"
+                                            TextColor="{StaticResource InkMuted}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <!--  Tick box with three states, as in the Windows features dialog: ticked (all
+                                  shown), filled square (some shown), empty (none)  -->
+                            <Grid
+                                Grid.Column="2"
+                                HeightRequest="44"
+                                SemanticProperties.Description="{Binding Name}"
+                                WidthRequest="44">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.ToggleShownCommand, Source={x:Reference popup}, x:DataType=toolkit:Popup}" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Border
+                                    BackgroundColor="{StaticResource PaperCard}"
+                                    HeightRequest="22"
+                                    HorizontalOptions="Center"
+                                    Stroke="{StaticResource Stamp}"
+                                    StrokeShape="RoundRectangle 3"
+                                    StrokeThickness="2"
+                                    VerticalOptions="Center"
+                                    WidthRequest="22">
+                                    <Border.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsAllShown}"
+                                            TargetType="Border"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Stamp}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Grid>
+                                        <Path
+                                            Data="M4,9.5 L7.5,13 L14,5.5"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding IsAllShown}"
+                                            Stroke="{StaticResource PaperCard}"
+                                            StrokeLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeThickness="2.4"
+                                            VerticalOptions="Center" />
+                                        <BoxView
+                                            CornerRadius="1"
+                                            HeightRequest="10"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding IsSomeShown}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="10"
+                                            Color="{StaticResource Stamp}" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
