@@ -28,6 +28,11 @@ public class FlagSourcesTests
         Assert.Equal("jp_26_emblem.png", FlagSources.RegionFlag(kyoto, emblem: true));
     }
 
+    // France is one of the countries with regional flags
+    [Fact]
+    public void French_regions_have_their_own_flag() =>
+        Assert.Equal("fr_idf.png", FlagSources.RegionFlag(new SubRegionCode("FR", "IDF")));
+
     [Fact]
     public void A_country_without_regions_is_refused() =>
         Assert.Throws<ArgumentException>(() => FlagSources.RegionFlag(new SubRegionCode("GB", "ENG")));
