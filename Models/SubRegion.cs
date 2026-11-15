@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using FlagsRally.Helpers;
+﻿using FlagsRally.Helpers;
 
 namespace FlagsRally.Models;
 
@@ -9,7 +8,7 @@ public class SubRegion
     public DateTime ArrivalDate { get; set; }
 
     public string IsoCode => Code.lowerCountryCodeHyphenRegionCode.ToUpper();
-    public string ArrivalDateString => ArrivalDate.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+    public string ArrivalDateString => StampDate.FormatSpaced(ArrivalDate);
     public string Name { get; init; } = string.Empty;
     public string EnAdminAreaName { get; init; } = string.Empty;
     public SubRegionCode Code { get; init; } = SubRegionCode.EmptyCode();

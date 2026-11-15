@@ -1,4 +1,4 @@
-using System.Globalization;
+using FlagsRally.Helpers;
 using System.Text.RegularExpressions;
 
 namespace FlagsRally.Models.CustomBoard;
@@ -24,7 +24,7 @@ public class CustomLocation
     public int SortIndex { get; init; }
     public bool HasBeenVisited => ArrivalDate is not null;
     public bool HasNotBeenVisited => !HasBeenVisited;
-    public string ArrivalDateString => ArrivalDate?.ToString("dd  MMM  yyyy", CultureInfo.CreateSpecificCulture("en-US")) ?? string.Empty;
+    public string ArrivalDateString => ArrivalDate is DateTime date ? StampDate.FormatSpaced(date) : string.Empty;
 
     // Boards come from other people, so their image URL may only use the place's own descriptive
     // fields; anything else (visit dates in particular) must never reach the image server.
