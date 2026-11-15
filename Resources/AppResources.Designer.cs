@@ -1943,5 +1943,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("ZoomSliderHint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticked.
+        /// </summary>
+        internal static string TickBoxTicked {
+            get {
+                return ResourceManager.GetString("TickBoxTicked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Partly ticked.
+        /// </summary>
+        internal static string TickBoxPartlyTicked {
+            get {
+                return ResourceManager.GetString("TickBoxPartlyTicked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not ticked.
+        /// </summary>
+        internal static string TickBoxNotTicked {
+            get {
+                return ResourceManager.GetString("TickBoxNotTicked", resourceCulture);
+            }
+        }
     }
 }

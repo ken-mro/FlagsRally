@@ -59,6 +59,8 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - 改行コードは既存ファイルに合わせる（多くは CRLF、一部 BOM 付き）。スクリプトで置換するときは CRLF を考慮する。
 - 文字列は `Resources/AppResources.resx`（英）・`AppResources.ja.resx`（日）・`AppResources.Designer.cs` の 3 つを揃えて追加する。`tools/add_strings.py` を使う（`/add-strings`）。
 - 色は `Resources/Styles/Colors.xaml` のトークン（Navy `#182A52`、Stamp `#B94047`、Paper / PaperCard / PaperEdge、Ink / InkMuted、Gold `#E9C46A`）。ライトテーマ固定。
+  - 色の使い分け: 選んでいる・オンになっている「状態」は Navy（選択中のチップ、All / Visited / Not visited、チェック欄）、押すと何かが起きる「操作」のボタンは Stamp（追加・削除・チェックイン）。
+- チェック欄は `controls:TickBox`（チェックあり・一部チェック・なしの 3 状態、Android と iOS で同じ見た目）。素の `CheckBox` は使わない（iOS で丸、Android で四角になり、一部チェックも表せない）。タップで何をするか別に決まる行は `Command` を渡し、紺のチップの中では `Color` を白、`TickColor` を Navy にする。
 - アプリ自身の文言（`AppResources`）は英語・日本語どちらでも全文が見えること。ラベルに `TailTruncation` / `MaxLines` を付けて隠さない。日付や「All Countries」のようにバインドで出す文言も同じ。`Entry` の `Placeholder` は 1 行で切れるので、説明はラベルにする（どれも `XamlTextTruncationTests` が止める。切ってよいバインドはテストの許可リストだけ）。横にアイコンやボタンを足すときは、折り返すか段を分ける。ボタンが並ぶ行は日本語や大きい文字で入りきらないので、`Grid` で詰めずに `FlexLayout Wrap="Wrap"` にする（ボタンは縮むと文字が切れる）。切ってよいのはボード名など外から来る名前だけ。
 - ページは `Style="{StaticResource PaperPage}"`（紙の背景）。暗黙の Page スタイルにすると CommunityToolkit の `PopupPage` にも効いてしまうのでキー付きスタイルにしてある。
 - 見出しは `controls:StampLabel`（英字は JerseyclubGrunge、日本語は Kaisei Tokumin に自動切り替え）。

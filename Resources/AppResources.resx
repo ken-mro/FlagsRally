@@ -746,4 +746,13 @@
   <data name="ZoomSliderHint" xml:space="preserve">
     <value>Slide up to zoom in, down to zoom out</value>
   </data>
+  <data name="TickBoxTicked" xml:space="preserve">
+    <value>Ticked</value>
+  </data>
+  <data name="TickBoxPartlyTicked" xml:space="preserve">
+    <value>Partly ticked</value>
+  </data>
+  <data name="TickBoxNotTicked" xml:space="preserve">
+    <value>Not ticked</value>
+  </data>
 </root>

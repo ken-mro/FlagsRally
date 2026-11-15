@@ -1314,12 +1314,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     public bool AllPinsShown => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) == PinsShown.All;
 
-    public string ToggleAllPinsIcon => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) switch
-    {
-        PinsShown.All => "all_pins_shown.png",
-        PinsShown.Some => "some_pins_shown.png",
-        _ => "no_pins_shown.png",
-    };
+    public bool SomePinsShown => PinFilterRules.Shown(FilterChips, _hiddenPinKeys) == PinsShown.Some;
 
     // Says what a tap does, for screen readers.
     public string ToggleAllPinsDescription => AllPinsShown ? AppResources.ClearBoardSelection : AppResources.SelectAllBoards;
@@ -1354,7 +1349,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private void OnToggleAllPinsChanged()
     {
         OnPropertyChanged(nameof(AllPinsShown));
-        OnPropertyChanged(nameof(ToggleAllPinsIcon));
+        OnPropertyChanged(nameof(SomePinsShown));
         OnPropertyChanged(nameof(ToggleAllPinsDescription));
     }
 

@@ -51,8 +51,9 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="56" />
                                 </Grid.ColumnDefinitions>
-                                <CheckBox
+                                <controls:TickBox
                                     Grid.Column="0"
+                                    Description="{Binding Name}"
                                     IsChecked="{Binding IsSelected}"
                                     VerticalOptions="Center" />
                                 <!--  Two lines fit in the row; the rows keep one height because dragging steps by it  -->
