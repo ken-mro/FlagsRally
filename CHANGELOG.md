@@ -3,6 +3,11 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+- **The map's Not visited count could still disappear.** At some screen widths, such as a Galaxy Z Fold cover screen with four-digit counts (Not visited 5000), the count was measured as fitting beside its name, then wrapped onto a second line that was cut off. The switch now makes room for the second line whenever the count may wrap, so the count is shown at every width, count and text size.
+
 ## [1.4.2] - Unreleased
 
 ### Added
