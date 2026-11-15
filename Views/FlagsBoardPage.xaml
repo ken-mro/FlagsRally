@@ -159,7 +159,7 @@
                     FontAttributes="Bold"
                     FontSize="22"
                     Text="{Binding ProgressText}" />
-                <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                <ProgressBar Progress="{Binding Progress}" />
             </VerticalStackLayout>
         </Grid>
 

@@ -114,7 +114,7 @@
                         LineBreakMode="WordWrap"
                         Text="{Binding CountryName}"
                         TextColor="{StaticResource Ink}" />
-                    <ProgressBar x:Name="progress" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar x:Name="progress" />
                     <Label
                         FontSize="12"
                         HorizontalTextAlignment="Center"

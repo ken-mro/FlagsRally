@@ -275,8 +275,9 @@
         </Setter>
     </Style>
 
+    <!--  Progress through a collection is stamp red everywhere  -->
     <Style TargetType="ProgressBar">
-        <Setter Property="ProgressColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="ProgressColor" Value="{StaticResource Stamp}" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">

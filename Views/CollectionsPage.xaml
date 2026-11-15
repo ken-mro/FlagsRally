@@ -49,7 +49,7 @@
                         </Image>
                     </Border>
                     <Label Style="{StaticResource CardTitle}" Text="{Binding Title}" />
-                    <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar Progress="{Binding Progress}" />
                     <Label Style="{StaticResource CardProgressText}" Text="{Binding ProgressText}" />
                 </VerticalStackLayout>
             </Border>
@@ -64,7 +64,7 @@
                         HeightRequest="96"
                         Source="{Binding LocalImageFile}" />
                     <Label Style="{StaticResource CardTitle}" Text="{Binding Title}" />
-                    <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar Progress="{Binding Progress}" />
                     <Label Style="{StaticResource CardProgressText}" Text="{Binding ProgressText}" />
                 </VerticalStackLayout>
             </Border>
@@ -86,7 +86,7 @@
                             VerticalOptions="Center" />
                     </Border>
                     <Label Style="{StaticResource CardTitle}" Text="{Binding Title}" />
-                    <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar Progress="{Binding Progress}" />
                     <Label Style="{StaticResource CardProgressText}" Text="{Binding ProgressText}" />
                 </VerticalStackLayout>
             </Border>
