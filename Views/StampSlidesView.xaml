@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  An arrival's stamps one page at a time: the heading of the page shown, its stamp (swiped to move
+      between pages), and the dots with "Swipe for the next stamp" when there are several  -->
+<ContentView
+    x:Class="FlagsRally.Views.StampSlidesView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    xmlns:views="clr-namespace:FlagsRally.Views"
+    x:DataType="viewmodels:StampSlidesViewModel">
+    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
+        <!--  "New country" / "New region" / "Stamped" of the page shown, when it has one  -->
+        <controls:StampLabel
+            FontAutoScalingEnabled="True"
+            FontSize="Title"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            IsVisible="{Binding Current.HasHeading}"
+            Style="{StaticResource StampHeading}"
+            Text="{Binding Current.Heading}" />
+
+        <!--  The stamp; swiped to move between pages  -->
+        <Grid
+            x:Name="stage"
+            Grid.Row="1"
+            BackgroundColor="Transparent"
+            HeightRequest="290">
+            <Grid.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Left" Swiped="OnSwipedLeft" />
+                <SwipeGestureRecognizer Direction="Right" Swiped="OnSwipedRight" />
+            </Grid.GestureRecognizers>
+            <!--  Input transparent: on Android the stamp took the touch, and a swipe on it did nothing  -->
+            <views:StampSlideView
+                x:Name="stamp"
+                BindingContext="{Binding Current}"
+                HorizontalOptions="Center"
+                InputTransparent="True"
+                VerticalOptions="Center" />
+            <skia:SKLottieView
+                x:Name="celebration"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                IsAnimationEnabled="False"
+                IsVisible="False"
+                RepeatCount="0"
+                Source="celebration.json"
+                VerticalOptions="Fill" />
+        </Grid>
+
+        <!--  Where the pages are, and how to get to the next  -->
+        <VerticalStackLayout
+            Grid.Row="2"
+            IsVisible="{Binding HasSeveral}"
+            Spacing="6">
+            <controls:PageDots ItemsSource="{Binding Slides}" />
+            <Label
+                FontSize="13"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding HasMore}"
+                Text="{x:Static strings:AppResources.SwipeForNextStamp}"
+                TextColor="{StaticResource InkMuted}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNextTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>
