@@ -909,8 +909,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 return;
             }
 
-            var result = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
-                                                            $"{rawArrivalLocationData}");
+            var result = await ConfirmPlaceAsync(AppResources.IsTheFollowingYourLocatoin, rawArrivalLocationData);
             if (result)
             {
                 await RecordArrivalAsync(rawArrivalLocationData);
@@ -1044,8 +1043,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(pending.Latitude, pending.Longitude), DEFAULT_ZOOM_LEVEL), animate: true);
 
                 var found = string.Format(AppResources.PendingFound, pending.ArrivalDate.ToString("g", CultureInfo.CurrentCulture));
-                var confirms = await ConfirmAsync(AppResources.Confirmation, $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
-                                                            $"{rawArrivalLocationData}");
+                var confirms = await ConfirmPlaceAsync($"{found}\n{AppResources.PendingIsThisWhere}", rawArrivalLocationData);
 
                 // Yes records it (before it is let go, so a failure keeps it); No keeps it pending, to be
                 // looked up again or deleted from its pin.
@@ -1340,6 +1338,14 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         RefreshVisitCounts();
         FanOutOverlappingPins();
+    }
+
+    // Whether the place found for a stamp is right, asked in a popup laid out like a passport stamp's details
+    private static async Task<bool> ConfirmPlaceAsync(string message, ArrivalLocationData place)
+    {
+        var viewModel = new LocationConfirmPopupViewModel(message, place);
+        await Shell.Current.CurrentPage.ShowPopupAsync(new LocationConfirmPopupView(viewModel));
+        return viewModel.Confirmed;
     }
 
     private async Task TryToOfferSubscription()
