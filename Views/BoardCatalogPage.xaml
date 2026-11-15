@@ -194,10 +194,9 @@
 
         <ActivityIndicator
             Grid.Row="1"
-            HeightRequest="50"
             IsRunning="{Binding IsLoading}"
             IsVisible="{Binding IsLoading}"
-            Color="{StaticResource Navy}" />
+            Style="{StaticResource BusyIndicator}" />
         <!--  Downloading and saving a board  -->
         <Grid
             Grid.RowSpan="3"

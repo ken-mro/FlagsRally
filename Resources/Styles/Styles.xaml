@@ -482,6 +482,12 @@
         <Setter Property="StrokeThickness" Value="1" />
     </Style>
 
+    <!--  The spinner over a page while it loads  -->
+    <Style x:Key="BusyIndicator" TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource Navy}" />
+        <Setter Property="HeightRequest" Value="50" />
+    </Style>
+
     <Style x:Key="PaperPage" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource Paper}" />
         <Setter Property="BackgroundImageSource" Value="paper.jpg" />

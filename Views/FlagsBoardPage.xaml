@@ -224,10 +224,9 @@
         <ActivityIndicator
             Grid.Row="1"
             Grid.ColumnSpan="2"
-            HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="{StaticResource Navy}" />
+            Style="{StaticResource BusyIndicator}" />
         <!--  Controls float just above the tab bar, within thumb reach, over the tiles  -->
         <Border
             Grid.RowSpan="2"

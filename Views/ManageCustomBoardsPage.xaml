@@ -104,9 +104,8 @@
         </Button>
         <ActivityIndicator
             Grid.Row="1"
-            HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="{StaticResource Navy}" />
+            Style="{StaticResource BusyIndicator}" />
     </Grid>
 </ContentPage>

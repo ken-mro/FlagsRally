@@ -791,10 +791,9 @@
 
         <ActivityIndicator
             Grid.Row="1"
-            HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="{StaticResource Navy}" />
+            Style="{StaticResource BusyIndicator}" />
 
         <!--  Controls float just above the tab bar, within thumb reach, over the stamps or the map  -->
         <Border
