@@ -1,4 +1,5 @@
 using FlagsRally.Helpers;
+using Maui.GoogleMaps;
 
 namespace FlagsRallyTests.Helpers;
 
@@ -28,5 +29,16 @@ public class CheckInRangeTests
     public void The_limit_reads_as_50_metres()
     {
         Assert.Equal("50 m", CheckInRange.LimitText);
+    }
+
+    // A pin 0.0009° north is about 100 m away: outside the range
+    [Fact]
+    public void The_distance_from_a_pin_is_in_kilometres()
+    {
+        var here = new Location(35.0, 135.0);
+        Assert.Equal(0, CheckInRange.DistanceKm(new Position(35.0, 135.0), here), 6);
+        var distance = CheckInRange.DistanceKm(new Position(35.0009, 135.0), here);
+        Assert.InRange(distance, 0.09, 0.11);
+        Assert.False(CheckInRange.IsWithin(distance));
     }
 }

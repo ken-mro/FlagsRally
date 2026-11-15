@@ -158,7 +158,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         _checkInRangeCircle = new Circle
         {
-            Center = new Position(here.Latitude, here.Longitude),
+            Center = here.ToPosition(),
             Radius = Distance.FromKilometers(CheckInRange.LimitKm),
             StrokeColor = AppColors.Get("Navy", "#182A52"),
             StrokeWidth = 2f,
@@ -178,8 +178,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     {
         if (_tappedPointPin is null || _checkInOrigin is null) return;
 
-        var spot = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
-        CheckInSpotDistanceKm = spot.CalculateDistance(_checkInOrigin, DistanceUnits.Kilometers);
+        CheckInSpotDistanceKm = CheckInRange.DistanceKm(_tappedPointPin.Position, _checkInOrigin);
     }
 
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
@@ -470,15 +469,16 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         var closeDistanceThresholdKM = GetCloseDistanceThresholdKMFrom(currentZoomLevel);
         var targetZoomLevel = distance > closeDistanceThresholdKM ? currentZoomLevel : Math.Max(currentZoomLevel, CLOSE_ZOOM_LEVEL);
 
-        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
-        if (ArrivalMap is not null)
-        {
-            var position = new Position(userLocation.Latitude, userLocation.Longitude);
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel), animate: true);
-        }
+        await AnimateCameraToAsync(userLocation, targetZoomLevel);
     }
 
-    private static readonly TimeSpan CameraMoveTimeout = TimeSpan.FromSeconds(3);
+    // After a short delay, so the map has caught up with what changed before.
+    private async Task AnimateCameraToAsync(Location location, double zoom)
+    {
+        await Task.Delay(MAP_UPDATE_DELAY_MS);
+        await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(location.ToPosition(), zoom), animate: true);
+    }
+
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
@@ -537,21 +537,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
     }
 
-    private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
-    {
-        if (ArrivalMap is null) return;
-        try
-        {
-            var move = animate ? ArrivalMap.AnimateCamera(update) : ArrivalMap.MoveCamera(update);
-            await move.WaitAsync(CameraMoveTimeout);
-        }
-        catch (TimeoutException)
-        {
-#if DEBUG
-            Console.WriteLine("Camera move did not complete in time; continuing.");
-#endif
-        }
-    }
+    private Task MoveCameraSafelyAsync(CameraUpdate update, bool animate) =>
+        ArrivalMap?.MoveCameraSafelyAsync(update, animate) ?? Task.CompletedTask;
 
     private static async Task<Location> GetLastKnownOrDefaultLocationAsync()
     {
@@ -561,16 +548,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private async Task MoveAndZoomToCurrentLocationAsync()
     {
         var userLocation = await GetLastKnownOrDefaultLocationAsync();
-        var currentCameraLocation = GetCurrentCameraLocation();
-        var position = new Position(userLocation.Latitude, userLocation.Longitude);
-
         var currentZoom = ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL;
-        var zoomLevel = Math.Max(currentZoom, CLOSE_ZOOM_LEVEL);
-        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
-        if (ArrivalMap is not null)
-        {
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, zoomLevel), animate: true);
-        }
+        await AnimateCameraToAsync(userLocation, Math.Max(currentZoom, CLOSE_ZOOM_LEVEL));
     }
 
     private Location GetCurrentCameraLocation()
@@ -687,7 +666,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             // Allowed since the map was made (on the how-to pages): show where the user is.
             _hasCenteredOnUser = true;
             var location = await GetLastKnownOrDefaultLocationAsync();
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(location.Latitude, location.Longitude), DEFAULT_ZOOM_LEVEL), animate: false);
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(location.ToPosition(), DEFAULT_ZOOM_LEVEL), animate: false);
         }
     }
 
@@ -830,7 +809,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             Location location = _hasCenteredOnUser
                 ? await GetLastKnownOrDefaultLocationAsync()
                 : new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            var position = new Position(location.Latitude, location.Longitude);
+            var position = location.ToPosition();
             if (ArrivalMap is not null)
             {
                 await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
@@ -881,7 +860,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             {
                 var here = await GetCurrentLocation();
                 await MoveAndZoomToCurrentLocationAsync();
-                PlaceCheckInSpot(new Position(here.Latitude, here.Longitude), here);
+                PlaceCheckInSpot(here.ToPosition(), here);
                 if (ArrivalMap is not null)
                 {
                     ArrivalMap.SelectedPin = _tappedPointPin;
@@ -905,17 +884,16 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             }
 
             var currentLocation = await GetCurrentLocation();
-            var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
             await ShowCheckInRangeAsync(currentLocation);
 
-            var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+            var distance = CheckInRange.DistanceKm(_tappedPointPin.Position, currentLocation);
             if (!CheckInRange.IsWithin(distance))
             {
                 await ShowCheckInSpotTooFarAsync(distance);
                 return;
             }
 
-            currentLocation = tappedPinLocation;
+            currentLocation = _tappedPointPin.Position.ToLocation();
             var arrivalDate = DateTime.Now;
 
             // The spot has passed every check; only its country and region need the internet. Without
@@ -1106,16 +1084,15 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     {
         var selectedCustomLocationPin = SelectedPin as CustomLocationPin;
         var pinPosition = selectedCustomLocationPin!.Position;
-        var pinLocation = new Location(pinPosition.Latitude, pinPosition.Longitude);
 
         await MoveAndZoomToCurrentLocationAsync();
         var currentLocation = await GetCurrentLocation();
 
-        var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+        var distance = CheckInRange.DistanceKm(pinPosition, currentLocation);
         if (!CheckInRange.IsWithin(distance))
         {
             // Say how far away the location is and offer directions to it.
-            var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, DistanceFormatter.Format(distance))}";
+            var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, CheckInRange.FormatDistance(distance))}";
             var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", AppResources.OK);
             if (wantsDirections)
             {
