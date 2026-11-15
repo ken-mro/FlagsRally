@@ -89,52 +89,13 @@
                             </Label>
                             <!--  Tick box with three states, as in the Windows features dialog: ticked (all
                                   shown), filled square (some shown), empty (none)  -->
-                            <Grid
+                            <controls:TickBox
                                 Grid.Column="2"
-                                HeightRequest="44"
-                                SemanticProperties.Description="{Binding Name}"
-                                WidthRequest="44">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding BindingContext.ToggleShownCommand, Source={x:Reference popup}, x:DataType=toolkit:Popup}" CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-                                <Border
-                                    BackgroundColor="{StaticResource PaperCard}"
-                                    HeightRequest="22"
-                                    HorizontalOptions="Center"
-                                    Stroke="{StaticResource Stamp}"
-                                    StrokeShape="RoundRectangle 3"
-                                    StrokeThickness="2"
-                                    VerticalOptions="Center"
-                                    WidthRequest="22">
-                                    <Border.Triggers>
-                                        <DataTrigger
-                                            Binding="{Binding IsAllShown}"
-                                            TargetType="Border"
-                                            Value="True">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource Stamp}" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Grid>
-                                        <Path
-                                            Data="M4,9.5 L7.5,13 L14,5.5"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding IsAllShown}"
-                                            Stroke="{StaticResource PaperCard}"
-                                            StrokeLineCap="Round"
-                                            StrokeLineJoin="Round"
-                                            StrokeThickness="2.4"
-                                            VerticalOptions="Center" />
-                                        <BoxView
-                                            CornerRadius="1"
-                                            HeightRequest="10"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding IsSomeShown}"
-                                            VerticalOptions="Center"
-                                            WidthRequest="10"
-                                            Color="{StaticResource Stamp}" />
-                                    </Grid>
-                                </Border>
-                            </Grid>
+                                Command="{Binding BindingContext.ToggleShownCommand, Source={x:Reference popup}, x:DataType=toolkit:Popup}"
+                                CommandParameter="{Binding .}"
+                                Description="{Binding Name}"
+                                IsChecked="{Binding IsAllShown, Mode=OneWay}"
+                                IsPartlyChecked="{Binding IsSomeShown}" />
                         </Grid>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>

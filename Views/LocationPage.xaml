@@ -146,9 +146,10 @@
                         VerticalOptions="Center" />
                 </HorizontalStackLayout>
             </Border>
-            <!--  Select all and Clear all in one. While every pin is shown it is a selected chip with two
-                  white ticks, and a tap clears them all; otherwise a box with a dash (some shown) or an
-                  empty box (none shown), and a tap shows them all.  -->
+            <!--  Select all and Clear all in one, with the tick box of the Filter list's rows: while every
+                  pin is shown it is a selected chip with a white ticked box, and a tap clears them all;
+                  otherwise a box with a filled square (some shown) or an empty box (none shown), and a
+                  tap shows them all.  -->
             <Border
                 Grid.Column="1"
                 Padding="12,0"
@@ -169,12 +170,24 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ToggleAllPinsCommand}" />
                 </Border.GestureRecognizers>
-                <!--  The same height as the chips: an ImageButton would keep Android's 48 dp minimum  -->
-                <Image
-                    HeightRequest="20"
-                    Source="{Binding ToggleAllPinsIcon}"
-                    VerticalOptions="Center"
-                    WidthRequest="20" />
+                <!--  No 44 point minimum, so the chip keeps the height of the others; the whole chip takes the tap  -->
+                <controls:TickBox
+                    InputTransparent="True"
+                    IsChecked="{Binding AllPinsShown, Mode=OneWay}"
+                    IsPartlyChecked="{Binding SomePinsShown}"
+                    MinimumHeightRequest="0"
+                    MinimumWidthRequest="0"
+                    VerticalOptions="Center">
+                    <controls:TickBox.Triggers>
+                        <DataTrigger
+                            Binding="{Binding AllPinsShown}"
+                            TargetType="controls:TickBox"
+                            Value="True">
+                            <Setter Property="Color" Value="White" />
+                            <Setter Property="TickColor" Value="{StaticResource Navy}" />
+                        </DataTrigger>
+                    </controls:TickBox.Triggers>
+                </controls:TickBox>
             </Border>
             <ScrollView
                 Grid.Column="2"
