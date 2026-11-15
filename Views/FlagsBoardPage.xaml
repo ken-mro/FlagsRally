@@ -5,7 +5,6 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
-    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
@@ -21,7 +20,6 @@
             Text="{Binding FilteredCountry.CountryName}" />
     </Shell.TitleView>
     <ContentPage.Resources>
-        <converters:BoardFontSizeConverter x:Key="FontSizeConverter" />
         <!--  A visited region and one not visited yet have their own tiles, so a tile builds only the views
               it shows and an unvisited region's flag is never loaded. Page settings come through the page
               (x:Reference), found once, instead of each tile looking up its ancestors (RelativeSource).  -->
@@ -39,7 +37,7 @@
                 <Label
                     Padding="2"
                     FontFamily="KiwiMaru-Medium"
-                    FontSize="{Binding Name, Converter={StaticResource FontSizeConverter}}"
+                    FontSize="{Binding Name, Converter={StaticResource BoardFontSize}}"
                     HeightRequest="140.48"
                     HorizontalOptions="Center"
                     LineBreakMode="MiddleTruncation"

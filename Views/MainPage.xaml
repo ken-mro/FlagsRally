@@ -5,7 +5,6 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
-    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
@@ -15,7 +14,6 @@
     x:DataType="viewmodels:MainPageViewModel"
     Style="{StaticResource PaperPage}">
     <ContentPage.Resources>
-        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
         <Style x:Key="TitleStatIcon" TargetType="Image">
             <Setter Property="HeightRequest" Value="15" />
             <Setter Property="WidthRequest" Value="15" />

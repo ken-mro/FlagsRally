@@ -6,12 +6,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
-    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:StampSlide">
-    <ContentView.Resources>
-        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
-    </ContentView.Resources>
     <Grid>
         <!--  The original square  -->
         <Border
