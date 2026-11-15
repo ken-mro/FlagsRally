@@ -30,16 +30,12 @@
                     VerticalOptions="Center" />
                 <Label
                     Grid.Column="2"
-                    FontSize="22"
-                    Text="›"
-                    TextColor="{StaticResource InkMuted}"
-                    VerticalOptions="Center" />
+                    Style="{StaticResource Chevron}" />
                 <BoxView
                     Grid.ColumnSpan="3"
                     Margin="36,0,0,0"
-                    HeightRequest="1"
-                    VerticalOptions="End"
-                    Color="{StaticResource PaperEdge}" />
+                    Style="{StaticResource RowDivider}"
+                    VerticalOptions="End" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="BoardRow" x:DataType="viewmodels:BoardCatalogItem">
@@ -70,9 +66,8 @@
                 <BoxView
                     Grid.ColumnSpan="3"
                     Margin="36,0,0,0"
-                    HeightRequest="1"
-                    VerticalOptions="End"
-                    Color="{StaticResource PaperEdge}" />
+                    Style="{StaticResource RowDivider}"
+                    VerticalOptions="End" />
             </Grid>
         </DataTemplate>
         <views:BoardCatalogRowTemplateSelector
@@ -148,10 +143,8 @@
 
         <Border
             Grid.Row="1"
-            Padding="0"
-            BackgroundColor="{StaticResource PaperCard}"
-            StrokeShape="RoundRectangle 10"
-            StrokeThickness="0">
+            StrokeThickness="0"
+            Style="{StaticResource CardShell}">
             <CollectionView
                 x:Name="entries"
                 ItemTemplate="{StaticResource EntryRows}"

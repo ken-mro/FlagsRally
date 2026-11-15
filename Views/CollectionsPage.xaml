@@ -14,11 +14,12 @@
     <!--  One template per kind of card, holding only the views that kind shows: building a cell is
           what makes the first scroll stutter, so a card does not carry hidden views for the other kinds.  -->
     <ContentPage.Resources>
-        <Style x:Key="CardFrame" TargetType="Border">
+        <Style
+            x:Key="CardFrame"
+            BasedOn="{StaticResource CardShell}"
+            TargetType="Border">
             <Setter Property="Margin" Value="4" />
             <Setter Property="Padding" Value="8" />
-            <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
         </Style>
         <Style x:Key="CardTitle" TargetType="Label">
             <Setter Property="FontAttributes" Value="Bold" />

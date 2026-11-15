@@ -16,12 +16,7 @@
         <controls:StampLabel Style="{StaticResource StampTitle}" Text="{x:Static strings:AppResources.Settings}" />
     </Shell.TitleView>
     <ContentPage.Resources>
-        <!--  Grouped list: a heading, then a card of rows separated by thin lines  -->
-        <Style x:Key="SettingsCard" TargetType="Border">
-            <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
+        <!--  Grouped list: a heading, then a card (CardShell) of rows separated by thin lines  -->
         <Style x:Key="SettingsRow" TargetType="Grid">
             <Setter Property="Padding" Value="14,12" />
             <Setter Property="ColumnSpacing" Value="10" />
@@ -45,24 +40,13 @@
             <Setter Property="TextColor" Value="{StaticResource Navy}" />
             <Setter Property="VerticalOptions" Value="Center" />
         </Style>
-        <Style x:Key="RowDivider" TargetType="BoxView">
-            <Setter Property="HeightRequest" Value="1" />
-            <Setter Property="Margin" Value="14,0" />
-            <Setter Property="Color" Value="{StaticResource PaperEdge}" />
-        </Style>
-        <Style x:Key="Chevron" TargetType="Label">
-            <Setter Property="Text" Value="›" />
-            <Setter Property="FontSize" Value="22" />
-            <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
-            <Setter Property="VerticalOptions" Value="Center" />
-        </Style>
     </ContentPage.Resources>
     <ScrollView>
         <VerticalStackLayout Padding="12,12,12,28" Spacing="10">
 
             <!--  Country of residence  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.CountryOfResidence}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
                 <Grid Style="{StaticResource SettingsRow}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -108,7 +92,7 @@
 
             <!--  Map pin style  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.MapPins}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
               <VerticalStackLayout>
                 <Grid Style="{StaticResource SettingsRow}" ColumnDefinitions="Auto,*,Auto">
                     <Grid.GestureRecognizers>
@@ -224,7 +208,7 @@
                   picked in a dropdown) and, apart from it, whether they lean as if pressed by hand  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.PassportStamps}" />
             <!--  Locked without a subscription or the user's own API key: a note with the subscribe button  -->
-            <Border IsVisible="{Binding IsStampStyleLocked}" Style="{StaticResource SettingsCard}">
+            <Border IsVisible="{Binding IsStampStyleLocked}" Style="{StaticResource CardShell}">
                 <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
                     <Label
                         FontSize="13"
@@ -239,7 +223,7 @@
                 </Grid>
             </Border>
             <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampDesign}" />
-            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource SettingsCard}">
+            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource CardShell}">
                 <VerticalStackLayout>
                     <Grid ColumnDefinitions="Auto,*,Auto" Style="{StaticResource SettingsRow}">
                         <Grid.GestureRecognizers>
@@ -365,7 +349,7 @@
                 </VerticalStackLayout>
             </Border>
             <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampTilt}" />
-            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource SettingsCard}">
+            <Border Opacity="{Binding CanChooseStampStyle, Converter={StaticResource StampLockOpacity}}" Style="{StaticResource CardShell}">
                 <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
                     <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                         <Label FontSize="16" Text="{x:Static strings:AppResources.StampTiltOn}" />
@@ -380,7 +364,7 @@
                 </Grid>
             </Border>
             <Label Style="{StaticResource SettingsSubheading}" Text="{x:Static strings:AppResources.StampRepeat}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
                 <Grid ColumnDefinitions="*,Auto" Style="{StaticResource SettingsRow}">
                     <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                         <Label FontSize="16" Text="{x:Static strings:AppResources.StampRepeatOn}" />
@@ -396,7 +380,7 @@
 
             <!--  Subscription  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.SubscriptionStatus}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
                 <Grid Style="{StaticResource SettingsRow}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -416,7 +400,7 @@
 
             <!--  Backup and restore  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.Data}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
                 <VerticalStackLayout>
                     <Grid Style="{StaticResource SettingsRow}">
                         <Grid.ColumnDefinitions>
@@ -458,7 +442,7 @@
 
             <!--  Advanced: own Google Maps API key  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.Advanced}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
                 <VerticalStackLayout Padding="14,12" Spacing="6">
                     <Label
                         FontSize="16"
@@ -489,7 +473,7 @@
 
             <!--  Information  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.Information}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardShell}">
                 <VerticalStackLayout>
                     <Grid Style="{StaticResource SettingsRow}">
                         <Grid.ColumnDefinitions>

@@ -452,6 +452,26 @@
 
     <!--  Paper background for the app's own screens. Not applied to every Page, because the
           CommunityToolkit popup host is a page too and would lose its dimmed backdrop.  -->
+    <!--  A card on the paper: lists of rows, settings groups  -->
+    <Style x:Key="CardShell" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    <!--  The thin line between rows of a card; lists indent it past the row's icon with Margin  -->
+    <Style x:Key="RowDivider" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="Margin" Value="14,0" />
+        <Setter Property="Color" Value="{StaticResource PaperEdge}" />
+    </Style>
+    <!--  › at the end of a row that opens something  -->
+    <Style x:Key="Chevron" TargetType="Label">
+        <Setter Property="Text" Value="›" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
     <Style x:Key="PaperPage" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource Paper}" />
         <Setter Property="BackgroundImageSource" Value="paper.jpg" />

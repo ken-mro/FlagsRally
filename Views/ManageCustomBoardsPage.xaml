@@ -29,9 +29,7 @@
             TextColor="{StaticResource InkMuted}" />
         <ScrollView x:Name="scrollView" Grid.Row="1">
             <Border
-                Padding="0"
-                BackgroundColor="{StaticResource PaperCard}"
-                StrokeShape="RoundRectangle 10"
+                Style="{StaticResource CardShell}"
                 VerticalOptions="Start">
                 <!--  Rows are reordered by dragging the handle on the right (see code-behind).  -->
                 <VerticalStackLayout x:Name="boardList" BindableLayout.ItemsSource="{Binding Boards}">
@@ -80,9 +78,8 @@
                                 <BoxView
                                     Grid.ColumnSpan="3"
                                     Margin="40,0,0,-4"
-                                    HeightRequest="1"
-                                    VerticalOptions="End"
-                                    Color="{StaticResource PaperEdge}" />
+                                    Style="{StaticResource RowDivider}"
+                                    VerticalOptions="End" />
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
