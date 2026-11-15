@@ -9,7 +9,7 @@ using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
-public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable, IVisitFilterable
+public partial class FlagsBoardPageViewModel : BoardViewModelBase, IQueryAttributable
 {
     public const string CountryQueryKey = "country";
 
@@ -33,39 +33,15 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
     }
 
     [ObservableProperty]
-    int _gridItemSpan = 2;
-
-    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
-    [NotifyPropertyChangedFor(nameof(VisitedCount))]
-    [NotifyPropertyChangedFor(nameof(TotalCount))]
-    [NotifyPropertyChangedFor(nameof(UnvisitedCount))]
-    [NotifyPropertyChangedFor(nameof(Progress))]
-    [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<SubRegion> _sourceArrivalSubRegionList = [];
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DisplayFullSubRegionList))]
-    [NotifyPropertyChangedFor(nameof(ShowsAll))]
-    [NotifyPropertyChangedFor(nameof(ShowsVisited))]
-    [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
-    VisitFilter _selectedVisitFilter = VisitFilter.All;
+    partial void OnSourceArrivalSubRegionListChanged(ObservableCollection<SubRegion> value) => OnCountsChanged();
 
-    public bool ShowsAll => SelectedVisitFilter == VisitFilter.All;
-    public bool ShowsVisited => SelectedVisitFilter == VisitFilter.Visited;
-    public bool ShowsUnvisited => SelectedVisitFilter == VisitFilter.Unvisited;
+    public override int VisitedCount => SourceArrivalSubRegionList.Count(x => x.HasBeenVisited);
+    public override int TotalCount => SourceArrivalSubRegionList.Count;
 
-    public int VisitedCount => SourceArrivalSubRegionList.Count(x => x.HasBeenVisited);
-    public int TotalCount => SourceArrivalSubRegionList.Count;
-    public int UnvisitedCount => TotalCount - VisitedCount;
-    public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
-    public string ProgressText => $"{VisitedCount} / {TotalCount}";
-
-    [RelayCommand]
-    void SetVisitFilter(string filter)
-    {
-        SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
-    }
+    protected override void OnShownPlacesChanged() => OnPropertyChanged(nameof(DisplayFullSubRegionList));
 
     private bool _isLoaded = false;
     public string ShapesSource => GetShapesSource();
@@ -87,19 +63,10 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
 
     public bool IsListVisible => !IsMapVisible;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DateIsVisible))]
-    bool _dateIsNotVisible;
-
-    public bool DateIsVisible => !DateIsNotVisible;
-
     public ObservableCollection<SubRegion> DisplayFullSubRegionList =>
         new(SourceArrivalSubRegionList.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited)));
 
-    [ObservableProperty]
-    bool _isRefreshing = false;
-
-    public async Task Init()
+    public override async Task Init()
     {
         try
         {
@@ -117,26 +84,6 @@ public partial class FlagsBoardPageViewModel : BaseViewModel, IQueryAttributable
         {
             if (!_isLoaded) _isLoaded = true;
             IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    public async Task RefreshCountriesAsync()
-    {
-        IsRefreshing = true;
-        await Init();
-        IsRefreshing = false;
-    }
-
-    // "Hide date and month" as a small menu, ticked when on.
-    [RelayCommand]
-    async Task ChooseDisplayOptionsAsync()
-    {
-        var hideDate = DateIsNotVisible ? $"✓ {AppResources.HideDateAndMonth}" : AppResources.HideDateAndMonth;
-        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideDate);
-        if (choice == hideDate)
-        {
-            DateIsNotVisible = !DateIsNotVisible;
         }
     }
 

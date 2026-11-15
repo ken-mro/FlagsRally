@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Helpers;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
@@ -10,7 +11,7 @@ using System.Text.Json;
 
 namespace FlagsRally.ViewModels;
 
-public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributable, IVisitFilterable
+public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttributable
 {
     public const string BoardQueryKey = "board";
 
@@ -38,9 +39,6 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
     }
-
-    [ObservableProperty]
-    int _gridItemSpan = 2;
 
     // A visited tile's image is sized from the page width and the board's image shape: left to size
     // itself, its height depended on the bitmap and the screen density and differed between devices.
@@ -85,37 +83,19 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
     [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
-    [NotifyPropertyChangedFor(nameof(VisitedCount))]
-    [NotifyPropertyChangedFor(nameof(TotalCount))]
-    [NotifyPropertyChangedFor(nameof(UnvisitedCount))]
-    [NotifyPropertyChangedFor(nameof(Progress))]
-    [NotifyPropertyChangedFor(nameof(ProgressText))]
     ObservableCollection<CustomLocation> _sourceCustomLocationList = [];
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationList))]
-    [NotifyPropertyChangedFor(nameof(DisplayCustomLocationGroups))]
-    [NotifyPropertyChangedFor(nameof(ShowsAll))]
-    [NotifyPropertyChangedFor(nameof(ShowsVisited))]
-    [NotifyPropertyChangedFor(nameof(ShowsUnvisited))]
-    VisitFilter _selectedVisitFilter = VisitFilter.All;
-
-    public bool ShowsAll => SelectedVisitFilter == VisitFilter.All;
-    public bool ShowsVisited => SelectedVisitFilter == VisitFilter.Visited;
-    public bool ShowsUnvisited => SelectedVisitFilter == VisitFilter.Unvisited;
+    partial void OnSourceCustomLocationListChanged(ObservableCollection<CustomLocation> value) => OnCountsChanged();
 
     IEnumerable<CustomLocation> BoardLocations => SourceCustomLocationList.Where(x => x.Board.Name == FilteredCustomBoard?.Name);
 
-    public int VisitedCount => BoardLocations.Count(x => x.HasBeenVisited);
-    public int TotalCount => BoardLocations.Count();
-    public int UnvisitedCount => TotalCount - VisitedCount;
-    public double Progress => TotalCount == 0 ? 0 : (double)VisitedCount / TotalCount;
-    public string ProgressText => $"{VisitedCount} / {TotalCount}";
+    public override int VisitedCount => BoardLocations.Count(x => x.HasBeenVisited);
+    public override int TotalCount => BoardLocations.Count();
 
-    [RelayCommand]
-    void SetVisitFilter(string filter)
+    protected override void OnShownPlacesChanged()
     {
-        SelectedVisitFilter = Enum.Parse<VisitFilter>(filter);
+        OnPropertyChanged(nameof(DisplayCustomLocationList));
+        OnPropertyChanged(nameof(DisplayCustomLocationGroups));
     }
 
     [ObservableProperty]
@@ -133,7 +113,7 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     {
         // The sort in use carries a tick, since the toolbar only shows an icon.
         var sorts = Enum.GetValues<LocationSort>();
-        string Label(LocationSort sort) => sort == SelectedSort ? $"✓ {sort.DisplayName()}" : sort.DisplayName();
+        string Label(LocationSort sort) => ActionSheetLabel.Ticked(sort == SelectedSort, sort.DisplayName());
         var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.SortBy, AppResources.Cancel, null, sorts.Select(Label).ToArray());
         SelectedSort = sorts.FirstOrDefault(x => Label(x) == choice, SelectedSort);
     }
@@ -157,32 +137,18 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
         {
             SetProperty(ref _filteredCustomBoard, value);
             UpdateTileSize(_pageWidth);
-            OnPropertyChanged(nameof(DisplayCustomLocationList));
-            OnPropertyChanged(nameof(DisplayCustomLocationGroups));
-            OnPropertyChanged(nameof(VisitedCount));
-            OnPropertyChanged(nameof(TotalCount));
-            OnPropertyChanged(nameof(UnvisitedCount));
-            OnPropertyChanged(nameof(Progress));
-            OnPropertyChanged(nameof(ProgressText));
+            OnShownPlacesChanged();
+            OnCountsChanged();
         }
     }
 
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DateIsVisible))]
-    bool _dateIsNotVisible;
-
-    public bool DateIsVisible => !DateIsNotVisible;
 
     public ObservableCollection<CustomLocation> DisplayCustomLocationList => new(LocationSorter.Sort(FilteredLocations, SelectedSort));
 
     public List<CustomLocationGroup> DisplayCustomLocationGroups => LocationSorter.Group(FilteredLocations, SelectedSort);
 
 
-    [ObservableProperty]
-    bool _isRefreshing = false;
-
-    public async Task Init()
+    public override async Task Init()
     {
         try
         {
@@ -216,24 +182,4 @@ public partial class CustomBoardPageViewModel : BaseViewModel, IQueryAttributabl
     }
 
     IEnumerable<CustomLocation> FilteredLocations => BoardLocations.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited));
-
-    [RelayCommand]
-    public async Task RefreshCountriesAsync()
-    {
-        IsRefreshing = true;
-        await Init();
-        IsRefreshing = false;
-    }
-
-    // "Hide date and month" as a small menu, ticked when on.
-    [RelayCommand]
-    async Task ChooseDisplayOptionsAsync()
-    {
-        var hideDate = DateIsNotVisible ? $"✓ {AppResources.HideDateAndMonth}" : AppResources.HideDateAndMonth;
-        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideDate);
-        if (choice == hideDate)
-        {
-            DateIsNotVisible = !DateIsNotVisible;
-        }
-    }
 }
