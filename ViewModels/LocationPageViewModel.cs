@@ -61,7 +61,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     // The check-in spot: dropped with a long press (or at your location by Get Location) and
     // dragged to where you want to record, as long as it stays within CheckInRange of you.
-    Pin? _tappedPointPin;
+    SelectedLocationPin? _tappedPointPin;
     bool _isDraggingPin;
 
     // Where you were when the spot was placed, and the circle showing the range around it.
@@ -277,19 +277,12 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
     }
 
-    // Pin equality is value-based (label/position), so remove the exact instance.
-    private void RemovePinFromMap(Pin pin)
+    // App pins compare by reference (AppPin), so Remove takes out this pin and no other.
+    private void RemovePinFromMap(AppPin pin)
     {
-        if (ArrivalMap is null) return;
-
-        for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
+        if (ArrivalMap?.Pins.Remove(pin) == true)
         {
-            if (ReferenceEquals(ArrivalMap.Pins[i], pin))
-            {
-                ArrivalMap.Pins.RemoveAt(i);
-                FanOutOverlappingPins();
-                return;
-            }
+            FanOutOverlappingPins();
         }
     }
 
@@ -419,7 +412,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             {
                 ArrivalMap.SelectedPin = null;
             }
-            RemovePinFromMap(pin);
+            RemovePinFromMap(arrivalLocationPin);
         }
         else if (pin is PendingArrivalPin pendingArrivalPin)
         {
@@ -1401,7 +1394,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             ArrivalMap.SelectedPin = null;
         }
 
-        // Remove by index: Pin equality is value-based (label/position).
+        // Every stamp-trail pin goes; they are added again from the boards below.
         for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
         {
             if (ArrivalMap.Pins[i] is CustomLocationPin)
