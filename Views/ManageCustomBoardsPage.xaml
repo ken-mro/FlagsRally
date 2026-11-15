@@ -24,9 +24,8 @@
         </Grid.RowDefinitions>
         <Label
             Grid.Row="0"
-            FontSize="13"
-            Text="{x:Static strings:AppResources.DragToReorder}"
-            TextColor="{StaticResource InkMuted}" />
+            Style="{StaticResource PageHint}"
+            Text="{x:Static strings:AppResources.DragToReorder}" />
         <ScrollView x:Name="scrollView" Grid.Row="1">
             <Border
                 Style="{StaticResource CardShell}"

@@ -95,9 +95,8 @@
         <!--  Where we are in the shared folder  -->
         <VerticalStackLayout Grid.Row="0" Spacing="4">
             <Label
-                FontSize="13"
-                Text="{x:Static strings:AppResources.BoardCatalogHint}"
-                TextColor="{StaticResource InkMuted}" />
+                Style="{StaticResource PageHint}"
+                Text="{x:Static strings:AppResources.BoardCatalogHint}" />
             <!--  In a subfolder, "‹ folder" takes you up one level. Long folder names wrap.  -->
             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
                 <Grid.GestureRecognizers>

@@ -488,6 +488,12 @@
         <Setter Property="HeightRequest" Value="50" />
     </Style>
 
+    <!--  The gray line under a page's title that says what to do on the page  -->
+    <Style x:Key="PageHint" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+    </Style>
+
     <Style x:Key="PaperPage" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource Paper}" />
         <Setter Property="BackgroundImageSource" Value="paper.jpg" />
