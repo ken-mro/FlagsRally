@@ -1,3 +1,5 @@
+using FlagsRally.Helpers;
+
 namespace FlagsRally.Models;
 
 /// <summary>
@@ -28,8 +30,8 @@ public sealed record CountryTileStyle(
 public static class CountryTileStyles
 {
     static readonly Color Ink = Color.FromArgb("#22252C");
-    static readonly Color Paper = Color.FromArgb("#F4EEDF");
-    static readonly Color Stamp = Color.FromArgb("#B94047");
+    static readonly Color Paper = AppColors.Get("Paper", "#F4EEDF");
+    static readonly Color Stamp = AppColors.Get("Stamp", "#B94047");
 
     /// <summary>The look the tiles had before each country had its own.</summary>
     public static readonly CountryTileStyle Default = new("", Ink, Ink, Paper, Stamp, Ink, Ink);

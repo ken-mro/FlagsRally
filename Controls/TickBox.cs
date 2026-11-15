@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using FlagsRally.Helpers;
 using FlagsRally.Resources;
 using Microsoft.Maui.Controls.Shapes;
 using MauiPath = Microsoft.Maui.Controls.Shapes.Path;
@@ -151,8 +152,8 @@ public class TickBox : ContentView
 
     void Update()
     {
-        var color = Color ?? AppColor("Navy", Colors.Navy);
-        var tickColor = TickColor ?? AppColor("PaperCard", Colors.White);
+        var color = Color ?? AppColors.Get("Navy", "#182A52");
+        var tickColor = TickColor ?? AppColors.Get("PaperCard", "#FBF8F0");
         var partly = IsPartlyChecked && !IsChecked;
 
         _box.Stroke = color;
@@ -167,7 +168,4 @@ public class TickBox : ContentView
             : AppResources.TickBoxNotTicked;
         SemanticProperties.SetDescription(this, string.IsNullOrEmpty(Description) ? state : $"{Description}, {state}");
     }
-
-    static Color AppColor(string key, Color fallback) =>
-        Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color ? color : fallback;
 }
