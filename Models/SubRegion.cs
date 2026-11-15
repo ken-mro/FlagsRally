@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using FlagsRally.Repository;
+using FlagsRally.Helpers;
 
 namespace FlagsRally.Models;
 
@@ -23,38 +23,7 @@ public class SubRegion
     public bool HasBeenVisited => !(ArrivalDate == DateTime.MinValue);
     public bool HasNotBeenVisited => !HasBeenVisited;
 
-    public static string GetFlagSource(SubRegionCode subRegionCode)
-    {
-        if (subRegionCode.lowerCountryCodeHyphenRegionCode[0..2] == "us")
-        {
-            if (subRegionCode.lowerCountryCodeHyphenRegionCode == "us-dc") return "us_dc.png";
+    public static string GetFlagSource(SubRegionCode subRegionCode) => FlagSources.RegionFlag(subRegionCode, emblem: true);
 
-            return $"https://flagcdn.com/160x120/{subRegionCode.lowerCountryCodeHyphenRegionCode}.png";
-        }
-        else if (Constants.SupportedSubRegionCountryCodeList.Contains(subRegionCode.lowerCountryCodeHyphenRegionCode[0..2]))
-        {
-            return $"{subRegionCode.ImageResourceString}_emblem.png";
-        }
-        else
-        {
-            throw new ArgumentException("Unexpected country's SubRegionCode");
-        }
-    }
-        private string GetToolTipImageSource()
-    {
-        if (Code.lowerCountryCodeHyphenRegionCode[0..2] == "us")
-        {
-            if (Code.lowerCountryCodeHyphenRegionCode == "us-dc") return "us_dc.png";
-
-            return $"https://flagcdn.com/160x120/{Code.lowerCountryCodeHyphenRegionCode}.png";
-        }
-        else if (Constants.SupportedSubRegionCountryCodeList.Contains(Code.lowerCountryCodeHyphenRegionCode[0..2]))
-        {
-            return $"{Code.ImageResourceString}.png";
-        }
-        else
-        {
-            throw new ArgumentException("Unexpected country's SubRegionCode");
-        }
-    }
+    private string GetToolTipImageSource() => FlagSources.RegionFlag(Code);
 }

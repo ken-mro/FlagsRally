@@ -45,7 +45,7 @@ namespace FlagsRally.ViewModels
         public bool CanChooseStampStyle => IsSubscribed || _settingPreferences.IsApiKeySet();
         public bool IsStampStyleLocked => !CanChooseStampStyle;
 
-        public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
+        public string ImageSourceString => FlagSources.FlagCdnUrl(SelectedCountry.CountryShortCode);
         public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
 
         [ObservableProperty]

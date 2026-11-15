@@ -103,7 +103,7 @@ public class ArrivalLocationDataRepository : BaseRepository, IArrivalLocationDat
         string countryFlagSource;
 
 #if WINDOWS
-        countryFlagSource = $"https://flagcdn.com/160x120/{ArrivalLocationData.CountryCode.ToLower()}.png";
+        countryFlagSource = FlagSources.FlagCdnUrl(ArrivalLocationData.CountryCode);
 #else
         countryFlagSource = _countryHelper.GetCountryEmojiFlag(ArrivalLocationData.CountryCode);
 #endif
@@ -112,17 +112,13 @@ public class ArrivalLocationDataRepository : BaseRepository, IArrivalLocationDat
 
         if (ArrivalLocationData.CountryCode == "US")
         {
-            var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
-            adminAreaFlagSource = $"https://flagcdn.com/160x120/{subRegionCode?.lowerCountryCodeHyphenRegionCode}.png";
-            if (ArrivalLocationData?.AdminAreaCode == "DC")
-                adminAreaFlagSource = "us_dc.png";
+            adminAreaFlagSource = FlagSources.RegionFlag(new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode));
         }
         else if (Constants.SupportedSubRegionCountryCodeList.Contains(ArrivalLocationData.CountryCode.ToLower()))
         {
             if (!string.IsNullOrEmpty(ArrivalLocationData.AdminAreaCode))
             {
-                var subRegionCode = new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode);
-                adminAreaFlagSource = $"{subRegionCode?.ImageResourceString}.png";
+                adminAreaFlagSource = FlagSources.RegionFlag(new SubRegionCode(ArrivalLocationData.CountryCode, ArrivalLocationData.AdminAreaCode));
             }
         }
 
