@@ -23,12 +23,27 @@ public class ArrivalStampPopupViewModelTests
         Assert.True(vm.Slides[0].IsCurrent);
     }
 
+    // France has regional flags (Resources/Images/fr), so its regions get their own page
+    [Fact]
+    public void A_French_region_gets_its_own_page()
+    {
+        var vm = new ArrivalStampPopupViewModel(new ArrivalLocation
+        {
+            CountryName = "France",
+            AdminAreaName = "Île-de-France",
+            AdminAreaFlagSource = "fr_idf.png",
+        });
+
+        Assert.Equal(["France", "Île-de-France"], vm.Slides.Select(s => s.Name));
+    }
+
+    // The United Kingdom has no regional flags in the app, so England has no stamp of its own
     [Fact]
     public void A_country_without_regional_flags_shows_only_the_country_stamp()
     {
-        var vm = new ArrivalStampPopupViewModel(new ArrivalLocation { CountryName = "France", AdminAreaName = "Île-de-France" });
+        var vm = new ArrivalStampPopupViewModel(new ArrivalLocation { CountryName = "United Kingdom", AdminAreaName = "England" });
 
-        Assert.Equal(["France"], vm.Slides.Select(s => s.Name));
+        Assert.Equal(["United Kingdom"], vm.Slides.Select(s => s.Name));
         Assert.False(vm.HasSeveral);
     }
 
