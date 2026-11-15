@@ -9,6 +9,8 @@ public partial class SettingsPreferences : ObservableObject
     private IPreferences _defaultPreferences;
     private string _selectedCountryOrRegionKey = "SelectedCountryOrRegion";
     private string _isSubscribed = "IsSubscribed";
+    private string _lastSubscriptionCheckUtc = "LastSubscriptionCheckUtc";
+    private string _latestSeenUtc = "SubscriptionLatestSeenUtc";
     private string _latestCountry = "LatestCountry";
     private string _apiKey = "ApiKey";
     private string _customBoardSort = "CustomBoardSort";
@@ -22,9 +24,22 @@ public partial class SettingsPreferences : ObservableObject
     private string _showsEveryStamp = "ShowsEveryStamp";
     private string _hasSeenLongPressHint = "HasSeenLongPressHint";
 
-    public SettingsPreferences(IPreferences defaultPreferences)
+    private readonly TimeProvider _clock;
+
+    /// <summary>
+    /// How long a saved "subscribed" is trusted without a new answer from RevenueCat: long enough
+    /// for a trip offline, short enough that blocking RevenueCat does not keep a lapsed
+    /// subscription for good.
+    /// </summary>
+    public static readonly TimeSpan SubscriptionGrace = TimeSpan.FromDays(14);
+
+    // The latest time seen is saved again only after the clock has moved on by this much.
+    static readonly TimeSpan LatestSeenStep = TimeSpan.FromHours(1);
+
+    public SettingsPreferences(IPreferences defaultPreferences, TimeProvider? clock = null)
     {
         _defaultPreferences = defaultPreferences;
+        _clock = clock ?? TimeProvider.System;
     }
 
     public void SetCountryOfResidence(string twoLetterISORegionName)
@@ -69,16 +84,59 @@ public partial class SettingsPreferences : ObservableObject
         code is { Length: 2 } && code.All(char.IsAsciiLetter)
         && !code.Equals("IV", StringComparison.OrdinalIgnoreCase) && !code.Equals("ZZ", StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Saves RevenueCat's answer (or a purchase that went through) with the time it was given.
+    /// Call it only with an answer: the time starts the period the saved status is trusted for.
+    /// </summary>
     public void SetIsSubscribed(bool isSubscribed)
     {
+        var now = _clock.GetUtcNow();
         _defaultPreferences.Set(_isSubscribed, isSubscribed.ToString());
+        SetTime(_lastSubscriptionCheckUtc, now);
+        SetTime(_latestSeenUtc, now);
         OnPropertyChanged();
     }
 
+    /// <summary>
+    /// The saved status. A saved "subscribed" counts for <see cref="SubscriptionGrace"/> after the
+    /// last answer; after that the user is not subscribed until RevenueCat answers again.
+    /// The time is the latest the app has seen, so setting the device's clock back does not
+    /// lengthen the period.
+    /// </summary>
     public bool GetIsSubscribed()
     {
-        return bool.Parse(_defaultPreferences.Get(_isSubscribed, false.ToString()));
+        if (!bool.TryParse(_defaultPreferences.Get(_isSubscribed, false.ToString()), out var saved) || !saved) return false;
+
+        var now = _clock.GetUtcNow();
+        if (GetTime(_lastSubscriptionCheckUtc) is not DateTimeOffset lastCheck)
+        {
+            // Saved by a version that did not keep the time: the period starts now.
+            SetTime(_lastSubscriptionCheckUtc, now);
+            SetTime(_latestSeenUtc, now);
+            return true;
+        }
+
+        var latestSeen = GetTime(_latestSeenUtc) ?? lastCheck;
+        if (now > latestSeen + LatestSeenStep)
+        {
+            SetTime(_latestSeenUtc, now);
+        }
+        if (now > latestSeen)
+        {
+            latestSeen = now;
+        }
+
+        return latestSeen - lastCheck <= SubscriptionGrace;
     }
+
+    DateTimeOffset? GetTime(string key) =>
+        long.TryParse(_defaultPreferences.Get(key, string.Empty), NumberStyles.None, CultureInfo.InvariantCulture, out var ticks)
+        && ticks <= DateTimeOffset.MaxValue.UtcTicks
+            ? new DateTimeOffset(ticks, TimeSpan.Zero)
+            : null;
+
+    void SetTime(string key, DateTimeOffset time) =>
+        _defaultPreferences.Set(key, time.UtcTicks.ToString(CultureInfo.InvariantCulture));
 
     public string GetLatestCountry()
     {

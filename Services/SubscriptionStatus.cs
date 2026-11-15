@@ -10,7 +10,8 @@ public static class SubscriptionStatus
 {
     /// <summary>
     /// RevenueCat's answer, saved and returned. Without an answer (offline, or RevenueCat reports an
-    /// error) the last saved status stands: a subscriber who opens the app offline stays a subscriber.
+    /// error) the last saved status stands: a subscriber who opens the app offline stays a subscriber,
+    /// for <see cref="SettingsPreferences.SubscriptionGrace"/> after the last answer.
     /// </summary>
     public static async Task<bool> RefreshAsync(IRevenueCatBilling billing, SettingsPreferences preferences)
     {
@@ -26,7 +27,7 @@ public static class SubscriptionStatus
         }
         catch (Exception)
         {
-            // No answer: keep the saved status
+            // No answer: the saved status stands while it is still trusted
         }
         return preferences.GetIsSubscribed();
     }
