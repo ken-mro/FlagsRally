@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Resources;
 
@@ -15,7 +16,7 @@ public class CustomLocationGroup(string name, IEnumerable<CustomLocation> locati
 {
     public string Name { get; } = name;
     public bool HasHeading => !string.IsNullOrEmpty(Name);
-    public string ProgressText => $"{this.Count(x => x.HasBeenVisited)} / {Count}";
+    public string ProgressText => VisitProgress.Text(this.Count(x => x.HasBeenVisited), Count);
 }
 
 public static class LocationSorter

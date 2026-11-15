@@ -264,9 +264,8 @@ namespace FlagsRally.ViewModels
         [RelayCommand]
         async Task ChooseDisplayOptionsAsync()
         {
-            string Label(bool on, string text) => on ? $"✓ {text}" : text;
-            var unique = Label(IsUnique, AppResources.NoDuplicateCountries);
-            var hideDate = Label(DateIsNotVisible, AppResources.HideDateAndMonth);
+            var unique = ActionSheetLabel.Ticked(IsUnique, AppResources.NoDuplicateCountries);
+            var hideDate = ActionSheetLabel.Ticked(DateIsNotVisible, AppResources.HideDateAndMonth);
 
             var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, unique, hideDate);
             if (choice == unique)
