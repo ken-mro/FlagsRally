@@ -13,7 +13,7 @@
     HorizontalOptions="Fill"
     Padding="0"
     VerticalOptions="Center">
-    <!--  A passport stamp's details; every value wraps so nothing is cut off  -->
+    <!--  A passport stamp's details (LocationDetailsView); every value wraps so nothing is cut off  -->
     <Grid
         Padding="20,10,20,4"
         RowDefinitions="Auto,Auto,Auto"
@@ -34,73 +34,7 @@
                 Style="{StaticResource CloseGlyphButton}"
                 VerticalOptions="Start" />
         </Grid>
-        <Grid
-            Grid.Row="1"
-            ColumnDefinitions="Auto,*"
-            ColumnSpacing="12"
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-            RowSpacing="6">
-            <Label
-                Grid.Row="0"
-                FontSize="13"
-                Text="{x:Static strings:AppResources.Date}"
-                TextColor="{StaticResource InkMuted}" />
-            <Label
-                Grid.Row="0"
-                Grid.Column="1"
-                FontSize="14"
-                LineBreakMode="WordWrap"
-                Text="{Binding Date}"
-                TextColor="{StaticResource Ink}" />
-            <Label
-                Grid.Row="1"
-                FontSize="13"
-                Text="{x:Static strings:AppResources.Country}"
-                TextColor="{StaticResource InkMuted}" />
-            <Label
-                Grid.Row="1"
-                Grid.Column="1"
-                FontSize="14"
-                LineBreakMode="WordWrap"
-                Text="{Binding CountryName}"
-                TextColor="{StaticResource Ink}" />
-            <Label
-                Grid.Row="2"
-                FontSize="13"
-                Text="{x:Static strings:AppResources.AdminArea}"
-                TextColor="{StaticResource InkMuted}" />
-            <Label
-                Grid.Row="2"
-                Grid.Column="1"
-                FontSize="14"
-                LineBreakMode="WordWrap"
-                Text="{Binding AdminAreaName}"
-                TextColor="{StaticResource Ink}" />
-            <Label
-                Grid.Row="3"
-                FontSize="13"
-                Text="{x:Static strings:AppResources.Locality}"
-                TextColor="{StaticResource InkMuted}" />
-            <Label
-                Grid.Row="3"
-                Grid.Column="1"
-                FontSize="14"
-                LineBreakMode="WordWrap"
-                Text="{Binding LocalityName}"
-                TextColor="{StaticResource Ink}" />
-            <Label
-                Grid.Row="4"
-                FontSize="13"
-                Text="{x:Static strings:AppResources.Location}"
-                TextColor="{StaticResource InkMuted}" />
-            <Label
-                Grid.Row="4"
-                Grid.Column="1"
-                FontSize="14"
-                LineBreakMode="WordWrap"
-                Text="{Binding Coordinates}"
-                TextColor="{StaticResource Ink}" />
-        </Grid>
+        <controls:LocationDetailsView Grid.Row="1" />
         <!--  The two actions, the same width one above the other: the main one filled,
               Delete as quiet red text under it. Full width, so long labels wrap instead of squeezing.  -->
         <VerticalStackLayout Grid.Row="2" Spacing="2">

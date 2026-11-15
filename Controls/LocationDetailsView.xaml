@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  A place's details, a muted label beside each value: date (when there is one), country, admin
+      area, locality and coordinates. Every value wraps so nothing is cut off.  -->
+<ContentView
+    x:Class="FlagsRally.Controls.LocationDetailsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:ILocationDetails">
+    <Grid
+        ColumnDefinitions="Auto,*"
+        ColumnSpacing="12"
+        RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+        RowSpacing="6">
+        <Label
+            Grid.Row="0"
+            FontSize="13"
+            IsVisible="{Binding Date, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
+            Text="{x:Static strings:AppResources.Date}"
+            TextColor="{StaticResource InkMuted}" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="1"
+            FontSize="14"
+            IsVisible="{Binding Date, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
+            LineBreakMode="WordWrap"
+            Text="{Binding Date}"
+            TextColor="{StaticResource Ink}" />
+        <Label
+            Grid.Row="1"
+            FontSize="13"
+            Text="{x:Static strings:AppResources.Country}"
+            TextColor="{StaticResource InkMuted}" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="1"
+            FontSize="14"
+            LineBreakMode="WordWrap"
+            Text="{Binding CountryName}"
+            TextColor="{StaticResource Ink}" />
+        <Label
+            Grid.Row="2"
+            FontSize="13"
+            Text="{x:Static strings:AppResources.AdminArea}"
+            TextColor="{StaticResource InkMuted}" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="1"
+            FontSize="14"
+            LineBreakMode="WordWrap"
+            Text="{Binding AdminAreaName}"
+            TextColor="{StaticResource Ink}" />
+        <Label
+            Grid.Row="3"
+            FontSize="13"
+            Text="{x:Static strings:AppResources.Locality}"
+            TextColor="{StaticResource InkMuted}" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="1"
+            FontSize="14"
+            LineBreakMode="WordWrap"
+            Text="{Binding LocalityName}"
+            TextColor="{StaticResource Ink}" />
+        <Label
+            Grid.Row="4"
+            FontSize="13"
+            Text="{x:Static strings:AppResources.Location}"
+            TextColor="{StaticResource InkMuted}" />
+        <Label
+            Grid.Row="4"
+            Grid.Column="1"
+            FontSize="14"
+            LineBreakMode="WordWrap"
+            Text="{Binding Coordinates}"
+            TextColor="{StaticResource Ink}" />
+    </Grid>
+</ContentView>
