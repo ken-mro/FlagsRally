@@ -1961,5 +1961,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("TickBoxNotTicked", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
     }
 }

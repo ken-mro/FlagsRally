@@ -78,7 +78,7 @@ public partial class FlagsBoardPageViewModel : BoardViewModelBase, IQueryAttribu
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+            await ShowErrorAsync(ex.Message);
         }
         finally
         {
@@ -91,10 +91,8 @@ public partial class FlagsBoardPageViewModel : BoardViewModelBase, IQueryAttribu
     async Task ChangeMapVisibilityAsync()
     {
         if (IsBusy) return;
-        try
+        await RunBusyAsync(async () =>
         {
-            IsBusy = true;
-
             IsMapVisible = !IsMapVisible;
             if (!IsMapVisible) return;
 
@@ -104,14 +102,6 @@ public partial class FlagsBoardPageViewModel : BoardViewModelBase, IQueryAttribu
                 await Task.Delay(100);
                 OnPropertyChanged(nameof(ShapesSource));
             }
-        }
-        catch (Exception ex)
-        {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        });
     }
 }

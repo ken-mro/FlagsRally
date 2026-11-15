@@ -156,9 +156,8 @@ namespace FlagsRally.ViewModels
 
         public async Task Init()
         {
-            try
+            await RunBusyAsync(async () =>
             {
-                IsBusy = true;
                 // Each stamp carries the pattern it is drawn with, from Settings > Passport stamps.
                 var stampStyle = _settingsPreferences.GetPassportStampStyle();
                 var stampTilt = _settingsPreferences.GetPassportStampTilt();
@@ -196,15 +195,7 @@ namespace FlagsRally.ViewModels
 
                 CountryList = new ObservableCollection<Country>(countryList);
                 FilteredCountry = CountryList.First(x => x.CountryShortCode == filteredCountryCode);
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            });
         }
 
         private ObservableCollection<ArrivalLocation> GetFilteredList()
@@ -292,20 +283,11 @@ namespace FlagsRally.ViewModels
         // Deleting is only offered in the stamp's details popup, after a confirmation.
         async Task DeleteArrivalLocationAsync(ArrivalLocation arrivalLocation)
         {
-            try
+            await RunBusyAsync(async () =>
             {
-                IsBusy = true;
                 await _arrivalLocationRepository.DeleteAsync(arrivalLocation.Id);
                 await Init();
-            }
-            catch(Exception ex)
-            {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            });
         }
 
         [RelayCommand]
@@ -322,7 +304,7 @@ namespace FlagsRally.ViewModels
                     await Shell.Current.GoToAsync("//Map");
                     break;
                 case ArrivalInfoChoice.Delete:
-                    var confirmed = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}", $"{AppResources.Yes}", $"{AppResources.No}");
+                    var confirmed = await ConfirmAsync(AppResources.Confirmation, AppResources.ConfirmDelete);
                     if (confirmed)
                     {
                         await DeleteArrivalLocationAsync(arrivalLocation);
@@ -335,10 +317,8 @@ namespace FlagsRally.ViewModels
         async Task ChangeMapVisibilityAsync()
         {
             if (IsBusy) return;
-            try
+            await RunBusyAsync(async () =>
             {
-                IsBusy = true;
-
                 IsMapVisible = !IsMapVisible;
                 if (!IsMapVisible) return;
                 if (_isMapInitialized) return;
@@ -349,15 +329,7 @@ namespace FlagsRally.ViewModels
 
                 OnPropertyChanged(nameof(ShapesSource));
                 OnPropertyChanged(nameof(MapArrivalLocationList));
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            });
         }
     }
 }

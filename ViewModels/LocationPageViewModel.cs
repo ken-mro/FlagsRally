@@ -171,7 +171,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private static Task ShowCheckInSpotTooFarAsync(double distanceKm)
     {
         var message = string.Format(AppResources.CheckInSpotTooFar, CheckInRange.FormatDistance(distanceKm), CheckInRange.LimitText);
-        return Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+        return ShowErrorAsync(message);
     }
 
     private void UpdateCheckInSpotDistance()
@@ -264,7 +264,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+            await ShowErrorAsync(ex.Message);
         }
     }
 
@@ -394,7 +394,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
         if (pin is ArrivalLocationPin arrivalLocationPin)
         {
-            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var deletes = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.ConfirmDelete}\n\n");
             if (!deletes) return;
 
             //update database
@@ -403,7 +403,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
             if (deleteIsFailed)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await ShowErrorAsync($"{AppResources.PleaseTryAgain}\n\n");
                 return;
             }
 
@@ -416,12 +416,12 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         else if (pin is PendingArrivalPin pendingArrivalPin)
         {
-            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var deletes = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.ConfirmDelete}\n\n");
             if (!deletes) return;
 
             if (await _pendingArrivalRepository.DeleteAsync(pendingArrivalPin.Id) != 1)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await ShowErrorAsync($"{AppResources.PleaseTryAgain}\n\n");
                 return;
             }
             RemovePendingPin(pendingArrivalPin);
@@ -430,7 +430,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             if (!customLocationPin.IsVisited) return;
 
-            var clears = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var clears = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.ConfirmReset}\n\n");
             if (!clears) return;
 
             //update database
@@ -439,7 +439,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
             if (clearIsFailed)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await ShowErrorAsync($"{AppResources.PleaseTryAgain}\n\n");
                 return;
             }
 
@@ -725,7 +725,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             IsBusy = false;
             var message = ConnectionFailure.IsConnectionProblem(ex) ? AppResources.SharedPlaceNoConnection : AppResources.SharedPlaceNotFound;
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+            await ShowErrorAsync(message);
             return;
         }
         finally
@@ -735,7 +735,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
         if (place is null)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.SharedPlaceNotFound}", "OK");
+            await ShowErrorAsync(AppResources.SharedPlaceNotFound);
             return;
         }
 
@@ -931,8 +931,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 return;
             }
 
-            var result = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
-                                                            $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
+            var result = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
+                                                            $"{rawArrivalLocationData}");
             if (result)
             {
                 await RecordArrivalAsync(rawArrivalLocationData);
@@ -942,28 +942,28 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         catch (FeatureNotSupportedException ex)
         {
             // Handle not supported on device exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nNot supported on device.", "OK");
+            await ShowErrorAsync($"{ex.Message}\nNot supported on device.");
         }
         catch (FeatureNotEnabledException ex)
         {
             // Handle not enabled on device exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nNot enabled on device.", "OK");
+            await ShowErrorAsync($"{ex.Message}\nNot enabled on device.");
         }
         catch (PermissionException ex)
         {
             // Handle permission exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nSomething wrong with the permission", "OK");
+            await ShowErrorAsync($"{ex.Message}\nSomething wrong with the permission");
         }
         catch(FakeLocationException ex)
         {
             // Handle fake location exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}", "OK");
+            await ShowErrorAsync($"{ex.Message}");
         }
         catch (Exception ex)
         {
             // Unable to get location
             // Todo:add logger
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            await ShowErrorAsync($"{ex.Message}\n{AppResources.PleaseTryAgain}");
         }
         finally
         {
@@ -1022,7 +1022,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         ArrivalMap?.Pins.Add(new PendingArrivalPin(pending));
         FanOutOverlappingPins();
         await RebuildPinFilterList();
-        await Shell.Current.DisplayAlertAsync($"{AppResources.SavedAsPendingTitle}", $"{AppResources.SavedAsPending}", "OK");
+        await ShowAlertAsync(AppResources.SavedAsPendingTitle, AppResources.SavedAsPending);
     }
 
     bool _isLookingUpPending;
@@ -1057,7 +1057,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 }
                 catch (Exception ex) when (ConnectionFailure.IsConnectionProblem(ex))
                 {
-                    if (asked) await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.StillNoConnection}", "OK");
+                    if (asked) await ShowErrorAsync(AppResources.StillNoConnection);
                     return;
                 }
 
@@ -1066,8 +1066,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(pending.Latitude, pending.Longitude), DEFAULT_ZOOM_LEVEL), animate: true);
 
                 var found = string.Format(AppResources.PendingFound, pending.ArrivalDate.ToString("g", CultureInfo.CurrentCulture));
-                var confirms = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
-                                                            $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
+                var confirms = await ConfirmAsync(AppResources.Confirmation, $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
+                                                            $"{rawArrivalLocationData}");
 
                 // Yes records it (before it is let go, so a failure keeps it); No keeps it pending, to be
                 // looked up again or deleted from its pin.
@@ -1084,7 +1084,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         catch (Exception ex)
         {
-            if (asked) await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            if (asked) await ShowErrorAsync($"{ex.Message}\n{AppResources.PleaseTryAgain}");
         }
         finally
         {
@@ -1116,7 +1116,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             // Say how far away the location is and offer directions to it.
             var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, DistanceFormatter.Format(distance))}";
-            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", "OK");
+            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", AppResources.OK);
             if (wantsDirections)
             {
                 await OpenDirectionsAsync();
@@ -1173,7 +1173,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             var arrival = await _arrivalLocationRepository.GetArrivalLocationAsync(arrivalLocationId);
             if (arrival is null)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}", "OK");
+                await ShowErrorAsync(AppResources.PleaseTryAgain);
                 return;
             }
 

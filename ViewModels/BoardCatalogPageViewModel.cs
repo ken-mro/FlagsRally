@@ -229,7 +229,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+            await ShowErrorAsync(ex.Message);
             return;
         }
 
@@ -271,11 +271,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
             var existingBoards = await _customBoardRepository.GetAllCustomBoards();
             if (existingBoards.Any(x => x.Name == board.name))
             {
-                var replaces = await Shell.Current.DisplayAlertAsync(
-                    AppResources.Confirmation,
-                    string.Format(AppResources.ConfirmReplaceBoard, board.name),
-                    AppResources.Yes,
-                    AppResources.No);
+                var replaces = await ConfirmAsync(AppResources.Confirmation, string.Format(AppResources.ConfirmReplaceBoard, board.name));
                 if (!replaces) return;
             }
 
@@ -313,7 +309,7 @@ public partial class BoardCatalogPageViewModel : BaseViewModel
         if (lines.Count == 0) return;
 
         var title = results.Added.Count > 0 ? AppResources.AddBoard : AppResources.Error;
-        await Shell.Current.DisplayAlertAsync(title, string.Join("\n\n", lines), "OK");
+        await ShowAlertAsync(title, string.Join("\n\n", lines));
 
         if (results.Added.Count > 0)
         {

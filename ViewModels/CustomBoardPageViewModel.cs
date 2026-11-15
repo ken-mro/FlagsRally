@@ -150,10 +150,8 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
 
     public override async Task Init()
     {
-        try
+        await RunBusyAsync(async () =>
         {
-            IsBusy = true;
-
             var allCustomLocations = await _customLocationDataRepository.GetAllCustomLocations();
             // Set the field and let the FilteredCustomBoard assignment below raise every change once,
             // so the grouped list is built a single time per visit.
@@ -170,15 +168,7 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
             _requestedBoardName = null;
             var matchingBoard = allBoards.FirstOrDefault(x => x.Name.Equals(selectedBoardName));
             FilteredCustomBoard = (matchingBoard ?? allBoards.FirstOrDefault())!;
-        }
-        catch (Exception ex)
-        {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        });
     }
 
     IEnumerable<CustomLocation> FilteredLocations => BoardLocations.Where(x => SelectedVisitFilter.Matches(x.HasBeenVisited));

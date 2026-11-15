@@ -106,7 +106,7 @@ public partial class PayWallViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync(AppResources.Error, ex.Message, "OK");
+            await ShowErrorAsync(ex.Message);
         }
     }
 }
