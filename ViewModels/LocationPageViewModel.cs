@@ -1383,13 +1383,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private async Task TryToOfferSubscription()
     {
         // Without an answer from RevenueCat (offline, for one), the last known status stands
-        var customerInfoResult = await _revenueCat.GetCustomerInfo();
-        if (customerInfoResult.IsSuccess)
-        {
-            _settingsPreferences.SetIsSubscribed(customerInfoResult.Value?.ActiveSubscriptions?.Count > 0);
-        }
-
-        if (_settingsPreferences.GetIsSubscribed()) return;
+        if (await SubscriptionStatus.RefreshAsync(_revenueCat, _settingsPreferences)) return;
         await Shell.Current.CurrentPage.ShowPopupAsync(new PayWallView(new PayWallViewModel(_revenueCat, _settingsPreferences)));
     }
 

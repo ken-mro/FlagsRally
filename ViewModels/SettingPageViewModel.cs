@@ -10,6 +10,7 @@ using FlagsRally.Messages;
 using FlagsRally.Models;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Services;
 using FlagsRally.Views;
 using ICSharpCode.SharpZipLib.Zip;
 using Maui.RevenueCat.InAppBilling.Services;
@@ -195,21 +196,9 @@ namespace FlagsRally.ViewModels
             PropertyChanged += OnSelectedCountryChanged;
         }
 
-        private async Task UpdateSubscriptionStatusAsync()
-        {
-            try
-            {
-                var customerInfoResult = await _revenueCatBilling.GetCustomerInfo();
-                var isSubscribed = customerInfoResult.IsSuccess && customerInfoResult.Value?.ActiveSubscriptions?.Count > 0;
-                _settingPreferences.SetIsSubscribed(isSubscribed);
-                IsSubscribed = isSubscribed;
-            }
-            catch (Exception)
-            {
-                // Handle error gracefully, possibly with default value
-                IsSubscribed = _settingPreferences.GetIsSubscribed();
-            }
-        }
+        // Without an answer from RevenueCat (offline, for one), the last known status stands
+        private async Task UpdateSubscriptionStatusAsync() =>
+            IsSubscribed = await SubscriptionStatus.RefreshAsync(_revenueCatBilling, _settingPreferences);
 
         private void OnSelectedCountryChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
+using FlagsRally.Services;
 using Maui.RevenueCat.InAppBilling.Models;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
@@ -75,7 +76,7 @@ public partial class PayWallViewModel : BaseViewModel
             var purchaseResult = await _revenueCatBilling.PurchaseProduct(packageDto);
             // A purchase that did not go through (cancelled, or "already subscribed") says nothing
             // about the subscription, so ask RevenueCat rather than saving "not subscribed".
-            var isSubscribed = purchaseResult.IsSuccess || await IsSubscribedNowAsync();
+            var isSubscribed = purchaseResult.IsSuccess || await SubscriptionStatus.RefreshAsync(_revenueCatBilling, _settingsPreferences);
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 _settingsPreferences.SetIsSubscribed(isSubscribed);
@@ -107,22 +108,5 @@ public partial class PayWallViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync(AppResources.Error, ex.Message, "OK");
         }
-    }
-
-    // RevenueCat's answer, or the saved one when it cannot be asked
-    private async Task<bool> IsSubscribedNowAsync()
-    {
-        try
-        {
-            var customerInfo = await _revenueCatBilling.GetCustomerInfo();
-            if (customerInfo.IsSuccess && customerInfo.Value is not null)
-            {
-                return customerInfo.Value.ActiveSubscriptions?.Count > 0;
-            }
-        }
-        catch (Exception)
-        {
-        }
-        return _settingsPreferences.GetIsSubscribed();
     }
 }
