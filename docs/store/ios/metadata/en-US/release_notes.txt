@@ -1,5 +1,3 @@
-- Zoom the map smoothly by sliding one finger on the new zoom control.
-- Jump from a passport stamp straight to its place on the map.
-- Show only the stamp trail places you have visited, or the ones you haven't, on the map.
-- See which shared stamp trails were recently added or updated.
-- Japanese place names on stamps now show every character.
+- In the map's filter, stamp trails of the same series are grouped together, so you can show or hide them all with one tap.
+- The map's visit counts are always shown in full, even with large text.
+- The controls at the bottom of the Passport tab sit neatly in the middle of their bar.
