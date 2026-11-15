@@ -290,19 +290,6 @@ namespace FlagsRally.ViewModels
             IsRefreshing = false;
         }
 
-        [RelayCommand]
-        public void ChangeRegion()
-        {
-            if (SelectedRegion == AppResources.Country)
-            {
-                SelectedRegion = AppResources.AdminArea;
-            }
-            else
-            {
-                SelectedRegion = AppResources.Country;
-            }
-        }
-
         // Deleting is only offered in the stamp's details popup, after a confirmation.
         async Task DeleteArrivalLocationAsync(ArrivalLocation arrivalLocation)
         {

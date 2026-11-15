@@ -16,7 +16,6 @@
     Style="{StaticResource PaperPage}">
     <ContentPage.Resources>
         <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
-        <converters:FontSizeConverter x:Key="FontSizeConverter" />
         <Style x:Key="TitleStatIcon" TargetType="Image">
             <Setter Property="HeightRequest" Value="15" />
             <Setter Property="WidthRequest" Value="15" />

@@ -32,7 +32,6 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
-    private CancellationTokenSource? _cancelTokenSource;
     private bool _isCheckingLocation;
     private IRevenueCatBilling _revenueCat;
     private SettingsPreferences _settingsPreferences;
@@ -62,7 +61,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     // The check-in spot: dropped with a long press (or at your location by Get Location) and
     // dragged to where you want to record, as long as it stays within CheckInRange of you.
-    Pin? _tappedPointPin;
+    SelectedLocationPin? _tappedPointPin;
     bool _isDraggingPin;
 
     // Where you were when the spot was placed, and the circle showing the range around it.
@@ -278,19 +277,12 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
     }
 
-    // Pin equality is value-based (label/position), so remove the exact instance.
-    private void RemovePinFromMap(Pin pin)
+    // App pins compare by reference (AppPin), so Remove takes out this pin and no other.
+    private void RemovePinFromMap(AppPin pin)
     {
-        if (ArrivalMap is null) return;
-
-        for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
+        if (ArrivalMap?.Pins.Remove(pin) == true)
         {
-            if (ReferenceEquals(ArrivalMap.Pins[i], pin))
-            {
-                ArrivalMap.Pins.RemoveAt(i);
-                FanOutOverlappingPins();
-                return;
-            }
+            FanOutOverlappingPins();
         }
     }
 
@@ -420,7 +412,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             {
                 ArrivalMap.SelectedPin = null;
             }
-            RemovePinFromMap(pin);
+            RemovePinFromMap(arrivalLocationPin);
         }
         else if (pin is PendingArrivalPin pendingArrivalPin)
         {
@@ -597,8 +589,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             request.RequestFullAccuracy = true;
 #endif
 
-        _cancelTokenSource = new CancellationTokenSource();
-        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        var location = await Geolocation.Default.GetLocationAsync(request);
         // Asking for the location may have just been allowed.
         await ShowMyLocationLayerIfAllowedAsync();
         if (location is null)
@@ -1242,12 +1233,6 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
     }
 
-    public void CancelRequest()
-    {
-        if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
-            _cancelTokenSource.Cancel();
-    }
-
     [ObservableProperty]
     ObservableCollection<PinFilterChip> _filterChips = [];
 
@@ -1409,7 +1394,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             ArrivalMap.SelectedPin = null;
         }
 
-        // Remove by index: Pin equality is value-based (label/position).
+        // Every stamp-trail pin goes; they are added again from the boards below.
         for (int i = ArrivalMap.Pins.Count - 1; i >= 0; i--)
         {
             if (ArrivalMap.Pins[i] is CustomLocationPin)

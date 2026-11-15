@@ -489,7 +489,6 @@
 		<None Remove="Resources\Images\no\no_55_emblem.png" />
 		<None Remove="Resources\Images\no\no_56.png" />
 		<None Remove="Resources\Images\no\no_56_emblem.png" />
-		<None Remove="Resources\Images\passport_earth2.png" />
 		<None Remove="Resources\Images\pin.png" />
 		<None Remove="Resources\Images\pin_arrived.png" />
 		<None Remove="Resources\Images\pt\pt_01.png" />
