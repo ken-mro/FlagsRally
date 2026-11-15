@@ -24,7 +24,8 @@
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PaperEdge}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="Button">
+    <!--  Every button starts from this; the keyed button styles below are based on it  -->
+    <Style x:Key="BaseButton" TargetType="Button">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
@@ -48,6 +49,62 @@
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
+    </Style>
+    <Style BasedOn="{StaticResource BaseButton}" TargetType="Button" />
+
+    <!--  Buttons by role. An action (add, delete, stamp) is stamp red; a chosen state is navy  -->
+    <Style
+        x:Key="ActionButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Stamp}" />
+    </Style>
+    <!--  A second choice beside an action, or one that does not change anything yet  -->
+    <Style
+        x:Key="OutlineButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor" Value="{StaticResource Navy}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="TextColor" Value="{StaticResource Navy}" />
+    </Style>
+    <!--  A link-like button in a heading or a toolbar row (Select all, Edit, Skip)  -->
+    <Style
+        x:Key="TextButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="TextColor" Value="{StaticResource Navy}" />
+    </Style>
+    <!--  Delete, as text under the main button of a card or popup  -->
+    <Style
+        x:Key="DangerTextButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource Stamp}" />
+    </Style>
+    <!--  ✕ in the corner of a card or popup  -->
+    <Style
+        x:Key="CloseGlyphButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Text" Value="✕" />
+        <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+        <Setter Property="WidthRequest" Value="44" />
+    </Style>
+    <!--  OK under a popup's content  -->
+    <Style
+        x:Key="PopupOkButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="WidthRequest" Value="100" />
     </Style>
 
     <Style TargetType="DatePicker">

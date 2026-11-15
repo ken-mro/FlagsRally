@@ -479,12 +479,9 @@
                             VerticalOptions="Center" />
                         <Button
                             Grid.Column="1"
-                            BackgroundColor="Transparent"
-                            BorderColor="{StaticResource Navy}"
-                            BorderWidth="1"
                             Command="{Binding EnableApiKeyCommand}"
+                            Style="{StaticResource OutlineButton}"
                             Text="{x:Static strings:AppResources.Enable}"
-                            TextColor="{StaticResource Navy}"
                             VerticalOptions="Center" />
                     </Grid>
                 </VerticalStackLayout>

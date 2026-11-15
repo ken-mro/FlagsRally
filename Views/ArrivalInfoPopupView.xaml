@@ -28,16 +28,11 @@
             <Button
                 Grid.Column="1"
                 Margin="0,0,-12,0"
-                Padding="0"
-                BackgroundColor="Transparent"
                 Command="{Binding CloseCommand}"
-                FontSize="18"
                 HeightRequest="44"
                 SemanticProperties.Description="{x:Static strings:AppResources.Close}"
-                Text="✕"
-                TextColor="{StaticResource InkMuted}"
-                VerticalOptions="Start"
-                WidthRequest="44" />
+                Style="{StaticResource CloseGlyphButton}"
+                VerticalOptions="Start" />
         </Grid>
         <Grid
             Grid.Row="1"
@@ -110,18 +105,15 @@
               Delete as quiet red text under it. Full width, so long labels wrap instead of squeezing.  -->
         <VerticalStackLayout Grid.Row="2" Spacing="2">
             <Button
-                BackgroundColor="{StaticResource Navy}"
                 Command="{Binding ShowOnMapCommand}"
                 CornerRadius="10"
                 LineBreakMode="WordWrap"
-                Text="{x:Static strings:AppResources.ShowOnMapTab}"
-                TextColor="White" />
+                Text="{x:Static strings:AppResources.ShowOnMapTab}" />
             <Button
-                BackgroundColor="Transparent"
                 Command="{Binding DeleteCommand}"
                 LineBreakMode="WordWrap"
-                Text="{x:Static strings:AppResources.Delete}"
-                TextColor="{StaticResource Stamp}" />
+                Style="{StaticResource DangerTextButton}"
+                Text="{x:Static strings:AppResources.Delete}" />
         </VerticalStackLayout>
     </Grid>
 </toolkit:Popup>

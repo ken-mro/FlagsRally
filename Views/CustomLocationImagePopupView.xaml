@@ -59,8 +59,7 @@
         <Button
             Grid.Row="2"
             Command="{Binding ClosePopupCommand}"
-            HorizontalOptions="Center"
-            Text="OK"
-            WidthRequest="100" />
+            Style="{StaticResource PopupOkButton}"
+            Text="OK" />
     </Grid>
 </toolkit:Popup>

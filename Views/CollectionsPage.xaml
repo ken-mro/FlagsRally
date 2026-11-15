@@ -182,13 +182,11 @@
                         VerticalOptions="Center" />
                     <Button
                         Grid.Column="3"
-                        Padding="8,0"
-                        BackgroundColor="Transparent"
                         Command="{Binding ViewModel.EditBoardsCommand, Source={x:Reference page}, x:DataType=views:CollectionsPage}"
                         HorizontalOptions="End"
                         IsVisible="{Binding IsEditable}"
-                        Text="{x:Static strings:AppResources.Edit}"
-                        TextColor="{StaticResource Navy}" />
+                        Style="{StaticResource TextButton}"
+                        Text="{x:Static strings:AppResources.Edit}" />
                 </Grid>
             </DataTemplate>
         </CollectionView.GroupHeaderTemplate>

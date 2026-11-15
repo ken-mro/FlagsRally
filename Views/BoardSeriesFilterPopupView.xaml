@@ -31,21 +31,15 @@
             <Button
                 Margin="0,0,8,4"
                 Padding="12,0"
-                BackgroundColor="Transparent"
-                BorderColor="{StaticResource Navy}"
-                BorderWidth="1"
                 Command="{Binding ShowAllCommand}"
-                Text="{x:Static strings:AppResources.SelectAllBoards}"
-                TextColor="{StaticResource Navy}" />
+                Style="{StaticResource OutlineButton}"
+                Text="{x:Static strings:AppResources.SelectAllBoards}" />
             <Button
                 Margin="0,0,8,4"
                 Padding="12,0"
-                BackgroundColor="Transparent"
-                BorderColor="{StaticResource Navy}"
-                BorderWidth="1"
                 Command="{Binding HideAllCommand}"
-                Text="{x:Static strings:AppResources.ClearBoardSelection}"
-                TextColor="{StaticResource Navy}" />
+                Style="{StaticResource OutlineButton}"
+                Text="{x:Static strings:AppResources.ClearBoardSelection}" />
         </FlexLayout>
         <ScrollView x:Name="boards" Grid.Row="2">
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Rows}">

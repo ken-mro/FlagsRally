@@ -113,11 +113,9 @@
                             Text="{x:Static strings:AppResources.CouldNotLoadUpdateHistory}"
                             TextColor="{StaticResource InkMuted}" />
                         <Button
-                            BackgroundColor="{StaticResource Navy}"
                             Command="{Binding RetryCommand}"
                             HorizontalOptions="Center"
-                            Text="{x:Static strings:AppResources.Retry}"
-                            TextColor="White" />
+                            Text="{x:Static strings:AppResources.Retry}" />
                     </VerticalStackLayout>
                     <Label
                         Padding="24"

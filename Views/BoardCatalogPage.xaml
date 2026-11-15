@@ -130,25 +130,19 @@
                 JustifyContent="SpaceBetween"
                 Wrap="Wrap">
                 <Button
-                    Padding="8,0"
-                    BackgroundColor="Transparent"
                     Command="{Binding OpenUpdateHistoryCommand}"
-                    FontSize="14"
                     IsVisible="{Binding HasUpdateHistory}"
                     MinimumHeightRequest="36"
-                    Text="{x:Static strings:AppResources.BoardUpdateHistory}"
-                    TextColor="{StaticResource Navy}" />
+                    Style="{StaticResource TextButton}"
+                    Text="{x:Static strings:AppResources.BoardUpdateHistory}" />
                 <!--  Keeps "select all" at the end when there is no history button  -->
                 <BoxView WidthRequest="0" HeightRequest="0" Color="Transparent" />
                 <Button
-                    Padding="8,0"
-                    BackgroundColor="Transparent"
                     Command="{Binding ToggleSelectAllCommand}"
-                    FontSize="14"
                     IsVisible="{Binding HasBoardFiles}"
                     MinimumHeightRequest="36"
-                    Text="{Binding SelectAllText}"
-                    TextColor="{StaticResource Navy}" />
+                    Style="{StaticResource TextButton}"
+                    Text="{Binding SelectAllText}" />
             </FlexLayout>
         </VerticalStackLayout>
 
@@ -176,11 +170,9 @@
                                 Text="{x:Static strings:AppResources.CouldNotLoadBoards}"
                                 TextColor="{StaticResource InkMuted}" />
                             <Button
-                                BackgroundColor="{StaticResource Navy}"
                                 Command="{Binding RetryCommand}"
                                 HorizontalOptions="Center"
-                                Text="{x:Static strings:AppResources.Retry}"
-                                TextColor="White" />
+                                Text="{x:Static strings:AppResources.Retry}" />
                         </VerticalStackLayout>
                         <Label
                             Padding="24"
@@ -196,18 +188,15 @@
 
         <VerticalStackLayout Grid.Row="2" Spacing="8">
             <Button
-                BackgroundColor="{StaticResource Stamp}"
                 Command="{Binding AddSelectedCommand}"
                 IsVisible="{Binding HasSelection}"
                 LineBreakMode="WordWrap"
+                Style="{StaticResource ActionButton}"
                 Text="{Binding AddSelectedText}" />
             <Button
-                BackgroundColor="Transparent"
-                BorderColor="{StaticResource Navy}"
-                BorderWidth="1"
                 Command="{Binding AddFromDeviceCommand}"
-                Text="{x:Static strings:AppResources.AddFromDevice}"
-                TextColor="{StaticResource Navy}" />
+                Style="{StaticResource OutlineButton}"
+                Text="{x:Static strings:AppResources.AddFromDevice}" />
         </VerticalStackLayout>
 
         <ActivityIndicator

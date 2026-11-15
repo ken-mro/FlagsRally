@@ -91,10 +91,9 @@
         </ScrollView>
         <Button
             Grid.Row="2"
-            BackgroundColor="{StaticResource Stamp}"
             Command="{Binding DeleteSelectedCommand}"
-            Text="{Binding DeleteSelectedText}"
-            TextColor="White">
+            Style="{StaticResource ActionButton}"
+            Text="{Binding DeleteSelectedText}">
             <!--  Greyed out until a board is ticked (the command does nothing then). Not IsEnabled: with a
                   Command bound as well, the button kept its disabled look after a board was ticked.  -->
             <Button.Triggers>
