@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Models;
@@ -7,7 +6,7 @@ using FlagsRally.Resources;
 namespace FlagsRally.ViewModels;
 
 /// <summary>
-/// One page of the popup after a stamp: the country's stamp or the region's, in the passport's design.
+/// One page of a stamp popup: the country's stamp or the region's, in the passport's design.
 /// </summary>
 public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage, bool celebrates) : ObservableObject, IPageDot
 {
@@ -20,6 +19,7 @@ public partial class StampSlide(ArrivalLocation arrival, string heading, string 
     public string FlagEmoji { get; } = flagEmoji;
     public string FlagImage { get; } = flagImage;
 
+    public bool HasHeading => !string.IsNullOrEmpty(Heading);
     public bool HasFlagEmoji => !string.IsNullOrEmpty(FlagEmoji);
     public bool HasFlagImage => !HasFlagEmoji && !string.IsNullOrEmpty(FlagImage);
 
@@ -37,31 +37,11 @@ public partial class StampSlide(ArrivalLocation arrival, string heading, string 
 /// region's on the next page, each pressed down in turn, with confetti only for a first one. OK comes
 /// on once every page has been pressed.
 /// </summary>
-public partial class StampAcquiredPopupViewModel : BaseViewModel
+public partial class StampAcquiredPopupViewModel(IReadOnlyList<StampSlide> slides) : StampSlidesViewModel(slides)
 {
-    public Popup? Popup { get; set; }
-
-    public IReadOnlyList<StampSlide> Slides { get; }
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Current), nameof(IsLast), nameof(HasMore))]
-    int _index;
-
-    public StampSlide Current => Slides[Index];
-    public bool IsLast => Index == Slides.Count - 1;
-    public bool HasMore => !IsLast;
-    public bool HasSeveral => Slides.Count > 1;
-
     // Set by the view once the last page's stamp has been pressed
     [ObservableProperty]
     bool _canClose;
-
-    public StampAcquiredPopupViewModel(IReadOnlyList<StampSlide> slides)
-    {
-        if (slides.Count == 0) throw new ArgumentException("A stamp popup needs a page", nameof(slides));
-        Slides = slides;
-        Slides[0].IsCurrent = true;
-    }
 
     /// <summary>
     /// The pages for an arrival, in the design the passport draws it in (upright): the country's stamp,
@@ -82,17 +62,6 @@ public partial class StampAcquiredPopupViewModel : BaseViewModel
             slides.Add(new(stamp, newRegion ? AppResources.NewRegion : AppResources.Stamped, stamp.AdminAreaName, string.Empty, stamp.AdminAreaFlagSource, celebrates: newRegion));
         }
         return slides;
-    }
-
-    /// <summary>Moves by a page; false at either end.</summary>
-    public bool Move(int step)
-    {
-        var next = Index + step;
-        if (next < 0 || next >= Slides.Count) return false;
-        Slides[Index].IsCurrent = false;
-        Index = next;
-        Slides[Index].IsCurrent = true;
-        return true;
     }
 
     [RelayCommand]

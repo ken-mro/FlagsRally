@@ -3,7 +3,7 @@ using System.Xml.Linq;
 namespace FlagsRallyTests.Views;
 
 /// <summary>
-/// The popup after stamping moves between its pages with a swipe on the stamp. On Android the stamp
+/// The stamp popups (after stamping, and from a pin on the map) move between their pages with a swipe on the stamp (StampSlidesView). On Android the stamp
 /// took the touch itself, so a swipe on it did nothing and the region's page (and OK) could not be
 /// reached that way.
 /// </summary>
@@ -12,7 +12,7 @@ public class StampPopupSwipeTests
     [Fact]
     public void The_stamp_lets_a_swipe_through_to_its_stage()
     {
-        var document = XDocument.Load(Path.Combine(RepositoryRoot(), "Views", "StampAcquiredPopupView.xaml"));
+        var document = XDocument.Load(Path.Combine(RepositoryRoot(), "Views", "StampSlidesView.xaml"));
         XNamespace x = "http://schemas.microsoft.com/winfx/2009/xaml";
 
         var stamp = document.Descendants().Single(e => (string?)e.Attribute(x + "Name") == "stamp");
