@@ -5,6 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- **One tick box everywhere.** Adding stamp trails, deleting them, the map's Filter list and the select-all button next to Filter now share one tick box: navy, square on Android and iOS alike (deleting used a circle on iOS, adding was red), with a filled square when only some of a row is ticked. The rule behind it: a chosen state is navy, a button that does something (Add, Delete) is stamp red. The tick in the Filter list, which sat low and to the right of its box, is centred, and screen readers say whether a box is ticked.
+
 ### Fixed
 - **The map's Not visited count could still disappear.** At some screen widths, such as a Galaxy Z Fold cover screen with four-digit counts (Not visited 5000), the count was measured as fitting beside its name, then wrapped onto a second line that was cut off. The switch now makes room for the second line whenever the count may wrap, so the count is shown at every width, count and text size.
 
