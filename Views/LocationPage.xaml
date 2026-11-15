@@ -126,10 +126,7 @@
             <!--  Opens every board in one list: select all, clear, or tick a few  -->
             <Border
                 Padding="10,6,12,6"
-                BackgroundColor="{StaticResource PaperCard}"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 16"
-                StrokeThickness="1">
+                Style="{StaticResource Chip}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ChooseShownPinsCommand}" />
                 </Border.GestureRecognizers>
@@ -153,11 +150,8 @@
             <Border
                 Grid.Column="1"
                 Padding="12,0"
-                BackgroundColor="{StaticResource PaperCard}"
                 SemanticProperties.Description="{Binding ToggleAllPinsDescription}"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 16"
-                StrokeThickness="1">
+                Style="{StaticResource Chip}">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding AllPinsShown}"
@@ -198,10 +192,7 @@
                         <DataTemplate x:DataType="models:PinFilterChip">
                             <Border
                                 Padding="12,6"
-                                BackgroundColor="{StaticResource PaperCard}"
-                                Stroke="{StaticResource PaperEdge}"
-                                StrokeShape="RoundRectangle 16"
-                                StrokeThickness="1">
+                                Style="{StaticResource Chip}">
                                 <Border.Triggers>
                                     <DataTrigger
                                         Binding="{Binding IsSelected}"

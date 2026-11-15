@@ -101,9 +101,8 @@
             SemanticProperties.Description="{Binding FilteredCountry.CountryName}"
             Padding="8,7"
             HorizontalOptions="Start"
-            BackgroundColor="{StaticResource PaperCard}"
-            Stroke="{StaticResource PaperEdge}"
             StrokeShape="RoundRectangle 18"
+            Style="{StaticResource Chip}"
             VerticalOptions="Center">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ChooseCountryCommand}" />

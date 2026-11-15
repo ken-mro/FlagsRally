@@ -472,6 +472,15 @@
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
+    <!--  A chip over the map or the passport. A chosen chip turns navy: set that with a DataTrigger
+          on the chip, as what it is bound to differs  -->
+    <Style x:Key="Chip" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+        <Setter Property="Stroke" Value="{StaticResource PaperEdge}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="StrokeThickness" Value="1" />
+    </Style>
+
     <Style x:Key="PaperPage" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource Paper}" />
         <Setter Property="BackgroundImageSource" Value="paper.jpg" />
