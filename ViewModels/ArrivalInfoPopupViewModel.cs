@@ -10,7 +10,7 @@ public enum ArrivalInfoChoice { Close, ShowOnMap, Delete }
 /// A passport stamp's details, with Show on the map, Delete and Close.
 /// The caller reads <see cref="Choice"/> once the popup has closed.
 /// </summary>
-public partial class ArrivalInfoPopupViewModel(ArrivalLocation arrivalLocation) : BaseViewModel
+public partial class ArrivalInfoPopupViewModel(ArrivalLocation arrivalLocation) : BaseViewModel, ILocationDetails
 {
     public Popup? Popup { get; set; }
 
