@@ -32,7 +32,6 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
-    private CancellationTokenSource? _cancelTokenSource;
     private bool _isCheckingLocation;
     private IRevenueCatBilling _revenueCat;
     private SettingsPreferences _settingsPreferences;
@@ -597,8 +596,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             request.RequestFullAccuracy = true;
 #endif
 
-        _cancelTokenSource = new CancellationTokenSource();
-        var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+        var location = await Geolocation.Default.GetLocationAsync(request);
         // Asking for the location may have just been allowed.
         await ShowMyLocationLayerIfAllowedAsync();
         if (location is null)
@@ -1240,12 +1238,6 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             Console.WriteLine($"Failed to show the new stamp: {ex.Message}");
 #endif
         }
-    }
-
-    public void CancelRequest()
-    {
-        if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
-            _cancelTokenSource.Cancel();
     }
 
     [ObservableProperty]
