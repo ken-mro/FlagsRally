@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **Development:** Tests use the United Kingdom (England) as the country without regional flags; France, which has them, was used by mistake. A French region now gets its own page in the stamp popup test.
 - **The place found for a stamp is confirmed in a card like a passport stamp's details.** After Stamp here, and when a pending stamp's country and region are found, the question used to be a system alert with "Country: … Admin Area: …" as plain text. It is now a card with the question, the country, admin area, locality and coordinates as labelled rows, and Yes / No, laid out like the dialog a passport stamp opens.
 - **A pin's stamp is shown one page at a time.** View stamp on an arrival's card on the map used to draw the country and the region in one stamp. It now shows the country's stamp and, for a region with its own flag (a US state, a Japanese prefecture, ...), the region's on the next page: swipe or tap "Swipe for the next stamp", as in the popup after stamping. A region without its own flag no longer appears under the country there.
 - **Development:** Repeated pieces of screens are shared controls: FloatingToolbar (the bar over the passport and the boards), MapToggleButton, BoardProgressHeader, PageDots and a DisplayOptionsButton style. The screens look the same as before (part of ken-mro/FlagsRally#245).
