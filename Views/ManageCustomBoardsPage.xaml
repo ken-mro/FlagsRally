@@ -12,8 +12,7 @@
     <Shell.TitleView>
         <!--  The whole title, made smaller to fit the bar when it is long (「スタンプラリーを追加」)  -->
         <controls:FittingStampLabel
-            LineBreakMode="WordWrap"
-            Style="{StaticResource StampTitle}"
+            Style="{StaticResource FittingStampTitle}"
             Text="{x:Static strings:AppResources.ManageBoards}" />
     </Shell.TitleView>
     <Grid Padding="12" RowSpacing="10">

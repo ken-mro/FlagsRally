@@ -10,8 +10,7 @@
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
         <controls:FittingStampLabel
-            LineBreakMode="WordWrap"
-            Style="{StaticResource StampTitle}"
+            Style="{StaticResource FittingStampTitle}"
             Text="{x:Static strings:AppResources.BoardUpdateHistory}" />
     </Shell.TitleView>
     <Grid Padding="12,12,12,0" RowDefinitions="Auto,*" RowSpacing="10">
