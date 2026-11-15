@@ -142,12 +142,8 @@
                         VerticalOptions="Center" />
                     <Label
                         Grid.Column="2"
-                        FontAttributes="Bold"
-                        FontSize="20"
                         IsVisible="{Binding UsesClassicPins}"
-                        Text="✓"
-                        TextColor="{StaticResource Navy}"
-                        VerticalOptions="Center" />
+                        Style="{StaticResource SettingsCheck}" />
                 </Grid>
                 <BoxView Style="{StaticResource RowDivider}" />
                 <Grid Style="{StaticResource SettingsRow}" ColumnDefinitions="Auto,*,Auto">
@@ -182,12 +178,8 @@
                         VerticalOptions="Center" />
                     <Label
                         Grid.Column="2"
-                        FontAttributes="Bold"
-                        FontSize="20"
                         IsVisible="{Binding UsesDropPins}"
-                        Text="✓"
-                        TextColor="{StaticResource Navy}"
-                        VerticalOptions="Center" />
+                        Style="{StaticResource SettingsCheck}" />
                 </Grid>
                 <BoxView Style="{StaticResource RowDivider}" />
                 <Grid Style="{StaticResource SettingsRow}" ColumnDefinitions="Auto,*,Auto">
@@ -222,12 +214,8 @@
                         VerticalOptions="Center" />
                     <Label
                         Grid.Column="2"
-                        FontAttributes="Bold"
-                        FontSize="20"
                         IsVisible="{Binding UsesCritterPins}"
-                        Text="✓"
-                        TextColor="{StaticResource Navy}"
-                        VerticalOptions="Center" />
+                        Style="{StaticResource SettingsCheck}" />
                 </Grid>
               </VerticalStackLayout>
             </Border>
