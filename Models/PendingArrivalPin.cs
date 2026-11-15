@@ -1,6 +1,6 @@
-﻿using FlagsRally.Resources;
+﻿using FlagsRally.Helpers;
+using FlagsRally.Resources;
 using Maui.GoogleMaps;
-using System.Globalization;
 
 namespace FlagsRally.Models;
 
@@ -12,7 +12,7 @@ public class PendingArrivalPin : AppPin
     public PendingArrivalPin(PendingArrivalData pendingArrival)
     {
         Label = AppResources.PendingStamp;
-        Address = pendingArrival.ArrivalDate.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Address = StampDate.Format(pendingArrival.ArrivalDate);
         Position = new Position(pendingArrival.Latitude, pendingArrival.Longitude);
         Type = PinType.SavedPin;
         Tag = MapPinTag.SetPendingArrivalTag(pendingArrival.Id);

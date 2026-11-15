@@ -1,4 +1,5 @@
 using System.Globalization;
+using Maui.GoogleMaps;
 
 namespace FlagsRally.Helpers;
 
@@ -11,6 +12,10 @@ public static class CheckInRange
     public const double LimitKm = 0.05;
 
     public static bool IsWithin(double distanceKm) => distanceKm <= LimitKm;
+
+    /// <summary>How far a place on the map is from a location, in kilometres.</summary>
+    public static double DistanceKm(Position place, Location from) =>
+        place.ToLocation().CalculateDistance(from, DistanceUnits.Kilometers);
 
     public static string LimitText => DistanceFormatter.Format(LimitKm);
 

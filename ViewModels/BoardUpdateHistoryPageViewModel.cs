@@ -42,7 +42,7 @@ public class BoardUpdateDay(DateOnly date, IEnumerable<BoardUpdateItem> items) :
 /// <summary>
 /// Shows the update history CSV published in the shared board folder.
 /// </summary>
-public partial class BoardUpdateHistoryPageViewModel(DriveBoardCatalog catalog) : BaseViewModel, IQueryAttributable
+public partial class BoardUpdateHistoryPageViewModel(DriveBoardCatalog catalog) : BaseViewModel, IQueryAttributable, IInitializable
 {
     public const string FileIdQueryKey = "fileId";
 

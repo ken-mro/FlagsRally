@@ -1,5 +1,5 @@
-﻿using Maui.GoogleMaps;
-using System.Globalization;
+﻿using FlagsRally.Helpers;
+using Maui.GoogleMaps;
 
 namespace FlagsRally.Models.CustomBoard;
 
@@ -9,7 +9,7 @@ public class CustomLocationPin : AppPin
     {
         
         Label = data.Title;
-        Address = data.ArrivalDate?.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Address = data.ArrivalDate is DateTime arrival ? StampDate.Format(arrival) : null;
         var position = new Position(data.Latitude, data.Longitude);
         Position = position;
 
@@ -29,7 +29,7 @@ public class CustomLocationPin : AppPin
         Icon = SetIcon(isVisited);
         ((MapPinTag)Tag).IsVisited = isVisited;
 
-        Address = isVisited ? date?.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US")) : null;
+        Address = isVisited && date is DateTime visited ? StampDate.Format(visited) : null;
     }
 
     public bool IsVisited => ((MapPinTag)Tag).IsVisited;

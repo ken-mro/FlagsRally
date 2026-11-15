@@ -4,14 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
-    xmlns:converters="clr-namespace:FlagsRally.Converters"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:ArrivalStampPopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="True"
     Style="{StaticResource StampPopup}">
     <toolkit:Popup.Resources>
-        <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </toolkit:Popup.Resources>
     <VerticalStackLayout Padding="20" Spacing="15">

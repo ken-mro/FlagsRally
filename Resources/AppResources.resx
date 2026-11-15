@@ -752,4 +752,7 @@
   <data name="TickBoxNotTicked" xml:space="preserve">
     <value>Not ticked</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

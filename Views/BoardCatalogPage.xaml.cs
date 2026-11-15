@@ -2,7 +2,7 @@ using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class BoardCatalogPage : ContentPage
+public partial class BoardCatalogPage : InitializingPage
 {
     public const string Route = "BoardCatalog";
 
@@ -12,12 +12,6 @@ public partial class BoardCatalogPage : ContentPage
     {
         InitializeComponent();
         BindingContext = _viewModel = vm;
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _viewModel.Init();
     }
 
     // A tap selects the row; open the folder or tick the board, then clear the selection so the row can be tapped again.

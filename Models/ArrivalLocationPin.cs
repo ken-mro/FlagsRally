@@ -1,5 +1,5 @@
-﻿using Maui.GoogleMaps;
-using System.Globalization;
+﻿using FlagsRally.Helpers;
+using Maui.GoogleMaps;
 
 namespace FlagsRally.Models;
 
@@ -8,7 +8,7 @@ public class ArrivalLocationPin : AppPin
     public ArrivalLocationPin(ArrivalLocationData arrivalLocationData)
     {
         Label = arrivalLocationData.AdminAreaName;
-        Address = arrivalLocationData.ArrivalDate.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Address = StampDate.Format(arrivalLocationData.ArrivalDate);
         Position = new Position(arrivalLocationData.Latitude, arrivalLocationData.Longitude);
         Type = PinType.SavedPin;
         Tag = MapPinTag.SetArrivalLocationTag(arrivalLocationData.Id);
@@ -19,7 +19,7 @@ public class ArrivalLocationPin : AppPin
     public ArrivalLocationPin(ArrivalLocation arrivalLocation)
     {
         Label = arrivalLocation.AdminAreaName;
-        Address = arrivalLocation.ArrivalDate.ToString("dd MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        Address = StampDate.Format(arrivalLocation.ArrivalDate);
         Position = new Position(arrivalLocation.Location.Latitude, arrivalLocation.Location.Longitude);
         Type = PinType.SavedPin;
         Tag = MapPinTag.SetArrivalLocationTag(arrivalLocation.Id);

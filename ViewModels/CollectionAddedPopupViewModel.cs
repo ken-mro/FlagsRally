@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Helpers;
 using FlagsRally.Models;
 
 namespace FlagsRally.ViewModels;
@@ -19,9 +20,9 @@ public partial class CollectionAddedPopupViewModel(SubRegion region, string coun
     public int Total { get; } = total;
 
     // The progress before and with the new region; the bar moves from one to the other
-    public double ProgressBefore => Total == 0 ? 0 : Math.Max(Visited - 1, 0) / (double)Total;
-    public double ProgressAfter => Total == 0 ? 0 : (double)Visited / Total;
-    public string ProgressText => $"{Visited} / {Total}";
+    public double ProgressBefore => VisitProgress.Ratio(Math.Max(Visited - 1, 0), Total);
+    public double ProgressAfter => VisitProgress.Ratio(Visited, Total);
+    public string ProgressText => VisitProgress.Text(Visited, Total);
 
     // Set by the view once the flag has been pressed
     [ObservableProperty]

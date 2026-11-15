@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Resources;
 using FlagsRally.Services;
@@ -26,8 +27,8 @@ public record CollectionCard(CollectionCardKind Kind, string Key, string Title, 
     // Each image view gets only its own kind of source, so a recycled card never shows another card's picture.
     public string? RemoteImageUrl => HasRemoteImage ? ImageUrl : null;
     public string? LocalImageFile => HasLocalImage ? ImageUrl : null;
-    public double Progress => Total == 0 ? 0 : (double)Visited / Total;
-    public string ProgressText => $"{Visited} / {Total}";
+    public double Progress => VisitProgress.Ratio(Visited, Total);
+    public string ProgressText => VisitProgress.Text(Visited, Total);
 }
 
 /// <summary>
@@ -106,7 +107,7 @@ public class CollectionSection(string title, bool isEditable, bool isCollapsible
     }
 }
 
-public partial class CollectionsPageViewModel : BaseViewModel
+public partial class CollectionsPageViewModel : BaseViewModel, IInitializable
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;
@@ -152,7 +153,7 @@ public partial class CollectionsPageViewModel : BaseViewModel
     [RelayCommand]
     async Task ChooseDisplayOptionsAsync()
     {
-        var hideEmpty = HidesEmptyCards ? $"✓ {AppResources.HideEmptyCollections}" : AppResources.HideEmptyCollections;
+        var hideEmpty = ActionSheetLabel.Ticked(HidesEmptyCards, AppResources.HideEmptyCollections);
         var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideEmpty);
         if (choice == hideEmpty)
         {
@@ -199,7 +200,7 @@ public partial class CollectionsPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+            await ShowErrorAsync(ex.Message);
         }
     }
 
@@ -221,7 +222,7 @@ public partial class CollectionsPageViewModel : BaseViewModel
         }
 
         _allRegionalCards = [.. cards.OrderBy(c => c.Visited == 0)];
-        RegionalCards.Summary = $"{cards.Count(c => c.Visited > 0)} / {cards.Count}";
+        RegionalCards.Summary = VisitProgress.Text(cards.Count(c => c.Visited > 0), cards.Count);
     }
 
     [RelayCommand]

@@ -1,8 +1,9 @@
+using FlagsRally.Helpers;
 using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class FlagsBoardPage : ContentPage
+public partial class FlagsBoardPage : InitializingPage
 {
     public const string Route = "FlagsBoard";
 
@@ -17,16 +18,10 @@ public partial class FlagsBoardPage : ContentPage
         BindingContext = _flagsBoardPageViewModel = vm;
     }
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _flagsBoardPageViewModel.Init();
-    }
-
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
 
-        _flagsBoardPageViewModel.GridItemSpan = Math.Max((int)width / 196, 2);
+        _flagsBoardPageViewModel.GridItemSpan = GridSpan.For(width);
     }
 }

@@ -158,7 +158,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         _checkInRangeCircle = new Circle
         {
-            Center = new Position(here.Latitude, here.Longitude),
+            Center = here.ToPosition(),
             Radius = Distance.FromKilometers(CheckInRange.LimitKm),
             StrokeColor = AppColors.Get("Navy", "#182A52"),
             StrokeWidth = 2f,
@@ -171,15 +171,14 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private static Task ShowCheckInSpotTooFarAsync(double distanceKm)
     {
         var message = string.Format(AppResources.CheckInSpotTooFar, CheckInRange.FormatDistance(distanceKm), CheckInRange.LimitText);
-        return Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+        return ShowErrorAsync(message);
     }
 
     private void UpdateCheckInSpotDistance()
     {
         if (_tappedPointPin is null || _checkInOrigin is null) return;
 
-        var spot = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
-        CheckInSpotDistanceKm = spot.CalculateDistance(_checkInOrigin, DistanceUnits.Kilometers);
+        CheckInSpotDistanceKm = CheckInRange.DistanceKm(_tappedPointPin.Position, _checkInOrigin);
     }
 
     public bool SelectsCustomLocationPin => (SelectedPin?.Tag as MapPinTag)?.IsCustomLocation ?? false;
@@ -264,7 +263,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+            await ShowErrorAsync(ex.Message);
         }
     }
 
@@ -394,7 +393,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
         if (pin is ArrivalLocationPin arrivalLocationPin)
         {
-            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var deletes = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.ConfirmDelete}\n\n");
             if (!deletes) return;
 
             //update database
@@ -403,7 +402,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
             if (deleteIsFailed)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await ShowErrorAsync($"{AppResources.PleaseTryAgain}\n\n");
                 return;
             }
 
@@ -416,12 +415,12 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         else if (pin is PendingArrivalPin pendingArrivalPin)
         {
-            var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmDelete}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var deletes = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.ConfirmDelete}\n\n");
             if (!deletes) return;
 
             if (await _pendingArrivalRepository.DeleteAsync(pendingArrivalPin.Id) != 1)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await ShowErrorAsync($"{AppResources.PleaseTryAgain}\n\n");
                 return;
             }
             RemovePendingPin(pendingArrivalPin);
@@ -430,7 +429,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             if (!customLocationPin.IsVisited) return;
 
-            var clears = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.ConfirmReset}\n\n", $"{AppResources.Yes}", $"{AppResources.No}");
+            var clears = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.ConfirmReset}\n\n");
             if (!clears) return;
 
             //update database
@@ -439,7 +438,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
             if (clearIsFailed)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}\n\n", "OK");
+                await ShowErrorAsync($"{AppResources.PleaseTryAgain}\n\n");
                 return;
             }
 
@@ -470,15 +469,16 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         var closeDistanceThresholdKM = GetCloseDistanceThresholdKMFrom(currentZoomLevel);
         var targetZoomLevel = distance > closeDistanceThresholdKM ? currentZoomLevel : Math.Max(currentZoomLevel, CLOSE_ZOOM_LEVEL);
 
-        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
-        if (ArrivalMap is not null)
-        {
-            var position = new Position(userLocation.Latitude, userLocation.Longitude);
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, targetZoomLevel), animate: true);
-        }
+        await AnimateCameraToAsync(userLocation, targetZoomLevel);
     }
 
-    private static readonly TimeSpan CameraMoveTimeout = TimeSpan.FromSeconds(3);
+    // After a short delay, so the map has caught up with what changed before.
+    private async Task AnimateCameraToAsync(Location location, double zoom)
+    {
+        await Task.Delay(MAP_UPDATE_DELAY_MS);
+        await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(location.ToPosition(), zoom), animate: true);
+    }
+
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
@@ -537,21 +537,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
     }
 
-    private async Task MoveCameraSafelyAsync(CameraUpdate update, bool animate)
-    {
-        if (ArrivalMap is null) return;
-        try
-        {
-            var move = animate ? ArrivalMap.AnimateCamera(update) : ArrivalMap.MoveCamera(update);
-            await move.WaitAsync(CameraMoveTimeout);
-        }
-        catch (TimeoutException)
-        {
-#if DEBUG
-            Console.WriteLine("Camera move did not complete in time; continuing.");
-#endif
-        }
-    }
+    private Task MoveCameraSafelyAsync(CameraUpdate update, bool animate) =>
+        ArrivalMap?.MoveCameraSafelyAsync(update, animate) ?? Task.CompletedTask;
 
     private static async Task<Location> GetLastKnownOrDefaultLocationAsync()
     {
@@ -561,16 +548,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private async Task MoveAndZoomToCurrentLocationAsync()
     {
         var userLocation = await GetLastKnownOrDefaultLocationAsync();
-        var currentCameraLocation = GetCurrentCameraLocation();
-        var position = new Position(userLocation.Latitude, userLocation.Longitude);
-
         var currentZoom = ArrivalMap?.CameraPosition.Zoom ?? DEFAULT_ZOOM_LEVEL;
-        var zoomLevel = Math.Max(currentZoom, CLOSE_ZOOM_LEVEL);
-        await Task.Delay(MAP_UPDATE_DELAY_MS); // Delay to allow map to update
-        if (ArrivalMap is not null)
-        {
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, zoomLevel), animate: true);
-        }
+        await AnimateCameraToAsync(userLocation, Math.Max(currentZoom, CLOSE_ZOOM_LEVEL));
     }
 
     private Location GetCurrentCameraLocation()
@@ -687,7 +666,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             // Allowed since the map was made (on the how-to pages): show where the user is.
             _hasCenteredOnUser = true;
             var location = await GetLastKnownOrDefaultLocationAsync();
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(location.Latitude, location.Longitude), DEFAULT_ZOOM_LEVEL), animate: false);
+            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(location.ToPosition(), DEFAULT_ZOOM_LEVEL), animate: false);
         }
     }
 
@@ -725,7 +704,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             IsBusy = false;
             var message = ConnectionFailure.IsConnectionProblem(ex) ? AppResources.SharedPlaceNoConnection : AppResources.SharedPlaceNotFound;
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, "OK");
+            await ShowErrorAsync(message);
             return;
         }
         finally
@@ -735,7 +714,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
         if (place is null)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.SharedPlaceNotFound}", "OK");
+            await ShowErrorAsync(AppResources.SharedPlaceNotFound);
             return;
         }
 
@@ -830,7 +809,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             Location location = _hasCenteredOnUser
                 ? await GetLastKnownOrDefaultLocationAsync()
                 : new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            var position = new Position(location.Latitude, location.Longitude);
+            var position = location.ToPosition();
             if (ArrivalMap is not null)
             {
                 await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
@@ -881,7 +860,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             {
                 var here = await GetCurrentLocation();
                 await MoveAndZoomToCurrentLocationAsync();
-                PlaceCheckInSpot(new Position(here.Latitude, here.Longitude), here);
+                PlaceCheckInSpot(here.ToPosition(), here);
                 if (ArrivalMap is not null)
                 {
                     ArrivalMap.SelectedPin = _tappedPointPin;
@@ -905,17 +884,16 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             }
 
             var currentLocation = await GetCurrentLocation();
-            var tappedPinLocation = new Location(_tappedPointPin.Position.Latitude, _tappedPointPin.Position.Longitude);
             await ShowCheckInRangeAsync(currentLocation);
 
-            var distance = tappedPinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+            var distance = CheckInRange.DistanceKm(_tappedPointPin.Position, currentLocation);
             if (!CheckInRange.IsWithin(distance))
             {
                 await ShowCheckInSpotTooFarAsync(distance);
                 return;
             }
 
-            currentLocation = tappedPinLocation;
+            currentLocation = _tappedPointPin.Position.ToLocation();
             var arrivalDate = DateTime.Now;
 
             // The spot has passed every check; only its country and region need the internet. Without
@@ -931,8 +909,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 return;
             }
 
-            var result = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
-                                                            $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
+            var result = await ConfirmAsync(AppResources.Confirmation, $"{AppResources.IsTheFollowingYourLocatoin}\n\n" +
+                                                            $"{rawArrivalLocationData}");
             if (result)
             {
                 await RecordArrivalAsync(rawArrivalLocationData);
@@ -942,28 +920,28 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         catch (FeatureNotSupportedException ex)
         {
             // Handle not supported on device exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nNot supported on device.", "OK");
+            await ShowErrorAsync($"{ex.Message}\nNot supported on device.");
         }
         catch (FeatureNotEnabledException ex)
         {
             // Handle not enabled on device exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nNot enabled on device.", "OK");
+            await ShowErrorAsync($"{ex.Message}\nNot enabled on device.");
         }
         catch (PermissionException ex)
         {
             // Handle permission exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\nSomething wrong with the permission", "OK");
+            await ShowErrorAsync($"{ex.Message}\nSomething wrong with the permission");
         }
         catch(FakeLocationException ex)
         {
             // Handle fake location exception
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}", "OK");
+            await ShowErrorAsync($"{ex.Message}");
         }
         catch (Exception ex)
         {
             // Unable to get location
             // Todo:add logger
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            await ShowErrorAsync($"{ex.Message}\n{AppResources.PleaseTryAgain}");
         }
         finally
         {
@@ -1022,7 +1000,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         ArrivalMap?.Pins.Add(new PendingArrivalPin(pending));
         FanOutOverlappingPins();
         await RebuildPinFilterList();
-        await Shell.Current.DisplayAlertAsync($"{AppResources.SavedAsPendingTitle}", $"{AppResources.SavedAsPending}", "OK");
+        await ShowAlertAsync(AppResources.SavedAsPendingTitle, AppResources.SavedAsPending);
     }
 
     bool _isLookingUpPending;
@@ -1057,7 +1035,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 }
                 catch (Exception ex) when (ConnectionFailure.IsConnectionProblem(ex))
                 {
-                    if (asked) await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.StillNoConnection}", "OK");
+                    if (asked) await ShowErrorAsync(AppResources.StillNoConnection);
                     return;
                 }
 
@@ -1066,8 +1044,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(new Position(pending.Latitude, pending.Longitude), DEFAULT_ZOOM_LEVEL), animate: true);
 
                 var found = string.Format(AppResources.PendingFound, pending.ArrivalDate.ToString("g", CultureInfo.CurrentCulture));
-                var confirms = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
-                                                            $"{rawArrivalLocationData}", $"{AppResources.Yes}", $"{AppResources.No}");
+                var confirms = await ConfirmAsync(AppResources.Confirmation, $"{found}\n{AppResources.PendingIsThisWhere}\n\n" +
+                                                            $"{rawArrivalLocationData}");
 
                 // Yes records it (before it is let go, so a failure keeps it); No keeps it pending, to be
                 // looked up again or deleted from its pin.
@@ -1084,7 +1062,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         catch (Exception ex)
         {
-            if (asked) await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            if (asked) await ShowErrorAsync($"{ex.Message}\n{AppResources.PleaseTryAgain}");
         }
         finally
         {
@@ -1106,17 +1084,16 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     {
         var selectedCustomLocationPin = SelectedPin as CustomLocationPin;
         var pinPosition = selectedCustomLocationPin!.Position;
-        var pinLocation = new Location(pinPosition.Latitude, pinPosition.Longitude);
 
         await MoveAndZoomToCurrentLocationAsync();
         var currentLocation = await GetCurrentLocation();
 
-        var distance = pinLocation.CalculateDistance(currentLocation, DistanceUnits.Kilometers);
+        var distance = CheckInRange.DistanceKm(pinPosition, currentLocation);
         if (!CheckInRange.IsWithin(distance))
         {
             // Say how far away the location is and offer directions to it.
-            var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, DistanceFormatter.Format(distance))}";
-            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", "OK");
+            var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, CheckInRange.FormatDistance(distance))}";
+            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", AppResources.OK);
             if (wantsDirections)
             {
                 await OpenDirectionsAsync();
@@ -1173,7 +1150,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             var arrival = await _arrivalLocationRepository.GetArrivalLocationAsync(arrivalLocationId);
             if (arrival is null)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.PleaseTryAgain}", "OK");
+                await ShowErrorAsync(AppResources.PleaseTryAgain);
                 return;
             }
 

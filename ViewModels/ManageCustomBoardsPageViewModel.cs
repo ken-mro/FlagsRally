@@ -23,7 +23,7 @@ public partial class ManageableBoardItem : ObservableObject
     bool _isSelected;
 }
 
-public partial class ManageCustomBoardsPageViewModel : BaseViewModel
+public partial class ManageCustomBoardsPageViewModel : BaseViewModel, IInitializable
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly CustomBoardService _customBoardService;
@@ -45,9 +45,8 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
 
     public async Task Init()
     {
-        try
+        await RunBusyAsync(async () =>
         {
-            IsBusy = true;
             var allBoards = await _customBoardRepository.GetAllCustomBoards();
             foreach (var item in Boards)
             {
@@ -61,15 +60,7 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
                 Boards.Add(item);
             }
             NotifySelectionChanged();
-        }
-        catch (Exception ex)
-        {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        });
     }
 
     private void OnBoardItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -104,7 +95,7 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
         catch (Exception ex)
         {
             Boards.Move(newIndex, oldIndex);
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            await ShowErrorAsync($"{ex.Message}\n{AppResources.PleaseTryAgain}");
         }
     }
 
@@ -115,7 +106,7 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
         if (selectedNames.Count == 0 || IsBusy) return;
 
         var message = $"{AppResources.ConfirmDeleteBoards}\n\n{string.Join("\n", selectedNames)}\n\n{AppResources.ActionCannotUndone}";
-        var deletes = await Shell.Current.DisplayAlertAsync($"{AppResources.Confirmation}", message, $"{AppResources.Yes}", $"{AppResources.No}");
+        var deletes = await ConfirmAsync(AppResources.Confirmation, message);
         if (!deletes) return;
 
         try
@@ -125,7 +116,7 @@ public partial class ManageCustomBoardsPageViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{ex.Message}\n{AppResources.PleaseTryAgain}", "OK");
+            await ShowErrorAsync($"{ex.Message}\n{AppResources.PleaseTryAgain}");
         }
         finally
         {

@@ -45,7 +45,7 @@ namespace FlagsRally.ViewModels
         public bool CanChooseStampStyle => IsSubscribed || _settingPreferences.IsApiKeySet();
         public bool IsStampStyleLocked => !CanChooseStampStyle;
 
-        public string ImageSourceString => $"https://flagcdn.com/160x120/{SelectedCountry.CountryShortCode.ToLower()}.png";
+        public string ImageSourceString => FlagSources.FlagCdnUrl(SelectedCountry.CountryShortCode);
         public string SubscriptionStatusText => IsSubscribed ? AppResources.Subscribed : AppResources.NotSubscribed;
 
         [ObservableProperty]
@@ -219,10 +219,7 @@ namespace FlagsRally.ViewModels
                 if (IsSubscribed)
                 {
                     // Show thank you message if already subscribed
-                    await Shell.Current.DisplayAlertAsync(
-                        AppResources.Subscription.TrimEnd(':'), 
-                        AppResources.ThankYouForSubscribing, 
-                        "OK");
+                    await ShowAlertAsync(AppResources.Subscription.TrimEnd(':'), AppResources.ThankYouForSubscribing);
                 }
                 else
                 {
@@ -236,7 +233,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+                await ShowErrorAsync(ex.Message);
             }
         }
 
@@ -288,7 +285,7 @@ namespace FlagsRally.ViewModels
                     return;
                 }
 
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.BackupSucceeded}", "OK");
+                await ShowAlertAsync(AppResources.Completed, AppResources.BackupSucceeded);
             }
             catch (OperationCanceledException)
             {
@@ -296,11 +293,11 @@ namespace FlagsRally.ViewModels
             }
             catch (UnauthorizedAccessException)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.AccessDenied}", "OK");
+                await ShowErrorAsync(AppResources.AccessDenied);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+                await ShowErrorAsync(ex.Message);
             }
         }
 
@@ -314,7 +311,7 @@ namespace FlagsRally.ViewModels
                     _settingPreferences.SetApiKey(string.Empty);
                     OnPropertyChanged(nameof(CanChooseStampStyle));
                     OnPropertyChanged(nameof(IsStampStyleLocked));
-                    await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.ClearAPIKey}", "OK");
+                    await ShowAlertAsync(AppResources.Completed, AppResources.ClearAPIKey);
                 }
 
                 return;
@@ -326,11 +323,11 @@ namespace FlagsRally.ViewModels
                 _settingPreferences.SetApiKey(ApiKey);
                 OnPropertyChanged(nameof(CanChooseStampStyle));
                 OnPropertyChanged(nameof(IsStampStyleLocked));
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.SetAPIKey}", "OK");
+                await ShowAlertAsync(AppResources.Completed, AppResources.SetAPIKey);
             }
             else
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidAPIKey}", "OK");
+                await ShowErrorAsync(AppResources.InvalidAPIKey);
             }
         }
 
@@ -339,8 +336,8 @@ namespace FlagsRally.ViewModels
         {
             try
             {
-                var result = await Shell.Current.DisplayAlertAsync($"{AppResources.AreYouSureRestoreBackup}", $"{AppResources.OverwriteExistingFile}\n" +
-                    $"{AppResources.ActionCannotUndone}", $"{AppResources.Yes}", $"{AppResources.No}");
+                var result = await ConfirmAsync(AppResources.AreYouSureRestoreBackup, $"{AppResources.OverwriteExistingFile}\n" +
+                    $"{AppResources.ActionCannotUndone}");
 
                 if (!result) return;
 
@@ -350,7 +347,7 @@ namespace FlagsRally.ViewModels
                 // Validate the backup file using the pattern from Constants
                 if (!Constants.IsValidBackupFileName(pickedFile.FileName))
                 {
-                    await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                    await ShowErrorAsync(AppResources.InvalidFileSelected);
                     return;
                 }
 
@@ -378,21 +375,21 @@ namespace FlagsRally.ViewModels
 
                     if (!databaseFound)
                     {
-                        await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                        await ShowErrorAsync(AppResources.InvalidFileSelected);
                         return;
                     }
                 }
 
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Completed}", $"{AppResources.RestoreSucceeded}\n" +
-                $"{AppResources.RelaunchToEnable}", "OK");
+                await ShowAlertAsync(AppResources.Completed, $"{AppResources.RestoreSucceeded}\n" +
+                $"{AppResources.RelaunchToEnable}");
             }
             catch (ZipException)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", $"{AppResources.InvalidFileSelected}", "OK");
+                await ShowErrorAsync(AppResources.InvalidFileSelected);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+                await ShowErrorAsync(ex.Message);
             }
         }
 
@@ -405,7 +402,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+                await ShowErrorAsync(ex.Message);
             }
         }
 
@@ -422,7 +419,7 @@ namespace FlagsRally.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", ex.Message, "OK");
+                await ShowErrorAsync(ex.Message);
             }
         }
     }

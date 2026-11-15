@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+<views:InitializingPage
     x:Class="FlagsRally.Views.BoardUpdateHistoryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:BoardUpdateHistoryPageViewModel"
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
@@ -131,4 +132,4 @@
             IsVisible="{Binding IsLoading}"
             Style="{StaticResource BusyIndicator}" />
     </Grid>
-</ContentPage>
+</views:InitializingPage>

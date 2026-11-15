@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
@@ -65,7 +66,7 @@ public partial class LocationPage : ContentPage
     void RestoreCamera()
     {
         if (map.Handler is null || _lastCamera is not Maui.GoogleMaps.CameraPosition camera) return;
-        Dispatcher.Dispatch(() => map.MoveCamera(Maui.GoogleMaps.CameraUpdateFactory.NewCameraPosition(camera)));
+        Dispatcher.Dispatch(() => _ = map.MoveCameraSafelyAsync(Maui.GoogleMaps.CameraUpdateFactory.NewCameraPosition(camera), animate: false));
     }
 
     // Google draws its compass in the map's top corner (left on Android, right on iOS), where the

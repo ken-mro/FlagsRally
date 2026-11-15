@@ -2,7 +2,7 @@ using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class CollectionsPage : ContentPage
+public partial class CollectionsPage : InitializingPage
 {
     readonly CollectionsPageViewModel _viewModel;
 
@@ -13,13 +13,6 @@ public partial class CollectionsPage : ContentPage
     {
         InitializeComponent();
         BindingContext = _viewModel = vm;
-    }
-
-    // Reload on every visit so progress reflects check-ins made on the map.
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _viewModel.Init();
     }
 
     // A tap selects the card; open it and clear the selection so the same card can be tapped again.
