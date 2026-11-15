@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  A dot for each page of a popup with several; the page shown is navy  -->
+<ContentView
+    x:Class="FlagsRally.Controls.PageDots"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:Name="root">
+    <HorizontalStackLayout
+        x:DataType="controls:PageDots"
+        BindableLayout.ItemsSource="{Binding ItemsSource, Source={x:Reference root}}"
+        HorizontalOptions="Center"
+        Spacing="8">
+        <BindableLayout.ItemTemplate>
+            <DataTemplate x:DataType="viewmodels:IPageDot">
+                <Ellipse
+                    Fill="{StaticResource PaperEdge}"
+                    HeightRequest="8"
+                    WidthRequest="8">
+                    <Ellipse.Triggers>
+                        <DataTrigger
+                            Binding="{Binding IsCurrent}"
+                            TargetType="Ellipse"
+                            Value="True">
+                            <Setter Property="Fill" Value="{StaticResource Navy}" />
+                        </DataTrigger>
+                    </Ellipse.Triggers>
+                </Ellipse>
+            </DataTemplate>
+        </BindableLayout.ItemTemplate>
+    </HorizontalStackLayout>
+</ContentView>

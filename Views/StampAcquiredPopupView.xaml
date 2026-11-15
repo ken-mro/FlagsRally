@@ -59,28 +59,7 @@
             Grid.Row="2"
             IsVisible="{Binding HasSeveral}"
             Spacing="6">
-            <HorizontalStackLayout
-                BindableLayout.ItemsSource="{Binding Slides}"
-                HorizontalOptions="Center"
-                Spacing="8">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="viewmodels:StampSlide">
-                        <Ellipse
-                            Fill="{StaticResource PaperEdge}"
-                            HeightRequest="8"
-                            WidthRequest="8">
-                            <Ellipse.Triggers>
-                                <DataTrigger
-                                    Binding="{Binding IsCurrent}"
-                                    TargetType="Ellipse"
-                                    Value="True">
-                                    <Setter Property="Fill" Value="{StaticResource Navy}" />
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </HorizontalStackLayout>
+            <controls:PageDots ItemsSource="{Binding Slides}" />
             <Label
                 FontSize="13"
                 HorizontalOptions="Center"
