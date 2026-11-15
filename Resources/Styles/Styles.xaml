@@ -173,7 +173,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="ImageButton">
+    <Style x:Key="BaseImageButton" TargetType="ImageButton">
         <Setter Property="Opacity" Value="1" />
         <Setter Property="BorderColor" Value="Transparent" />
         <Setter Property="BorderWidth" Value="0" />
@@ -193,6 +193,18 @@
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
+    </Style>
+    <Style BasedOn="{StaticResource BaseImageButton}" TargetType="ImageButton" />
+    <!--  The display options button (filter icon) on the passport, the boards and Collections  -->
+    <Style
+        x:Key="DisplayOptionsButton"
+        BasedOn="{StaticResource BaseImageButton}"
+        TargetType="ImageButton">
+        <Setter Property="Padding" Value="11" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="HeightRequest" Value="44" />
+        <Setter Property="Source" Value="filter.png" />
+        <Setter Property="WidthRequest" Value="44" />
     </Style>
 
     <Style TargetType="Label">

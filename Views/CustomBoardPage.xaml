@@ -26,17 +26,7 @@
         </Grid.RowDefinitions>
 
         <!--  Progress  -->
-        <Grid
-            Grid.Row="0"
-            Padding="6,6,6,0">
-            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    Text="{Binding ProgressText}" />
-                <ProgressBar Progress="{Binding Progress}" />
-            </VerticalStackLayout>
-        </Grid>
+        <controls:BoardProgressHeader Grid.Row="0" />
 
         <RefreshView
             Grid.Row="1"
@@ -185,22 +175,10 @@
             IsVisible="{Binding IsBusy}"
             Style="{StaticResource BusyIndicator}" />
         <!--  Controls float just above the tab bar, within thumb reach, over the tiles  -->
-        <Border
+        <controls:FloatingToolbar
             Grid.RowSpan="2"
             Margin="7,0,7,7"
-            Padding="8"
-            BackgroundColor="{StaticResource PaperCard}"
-            Stroke="{StaticResource PaperEdge}"
-            StrokeShape="RoundRectangle 30"
-            StrokeThickness="1"
-            VerticalOptions="End">
-            <Border.Shadow>
-                <Shadow
-                    Brush="{StaticResource NavyDeep}"
-                    Opacity="0.18"
-                    Radius="14"
-                    Offset="0,4" />
-            </Border.Shadow>
+            Padding="8">
             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
                 <controls:VisitFilterBar />
                 <Border
@@ -224,14 +202,10 @@
                 </Border>
                 <ImageButton
                     Grid.Column="2"
-                    Padding="11"
-                    BackgroundColor="Transparent"
                     Command="{Binding ChooseDisplayOptionsCommand}"
-                    HeightRequest="44"
                     SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
-                    Source="filter.png"
-                    WidthRequest="44" />
+                    Style="{StaticResource DisplayOptionsButton}" />
             </Grid>
-        </Border>
+        </controls:FloatingToolbar>
     </Grid>
 </views:InitializingPage>
