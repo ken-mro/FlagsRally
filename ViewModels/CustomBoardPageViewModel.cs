@@ -58,7 +58,7 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     {
         if (pageWidth <= 0) return;
         _pageWidth = pageWidth;
-        GridItemSpan = Math.Max((int)pageWidth / 196, 2);
+        GridItemSpan = GridSpan.For(pageWidth);
         TileImageHeight = TileImageHeightFor(pageWidth, GridItemSpan, FilteredCustomBoard?.Width ?? 0, FilteredCustomBoard?.Height ?? 0);
         TileImageWidth = TileImageWidthFor(pageWidth, GridItemSpan);
     }

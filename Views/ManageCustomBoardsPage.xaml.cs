@@ -2,7 +2,7 @@ using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class ManageCustomBoardsPage : ContentPage
+public partial class ManageCustomBoardsPage : InitializingPage
 {
     public const string Route = "ManageCustomBoards";
     const uint ShiftAnimationMs = 120;
@@ -28,12 +28,6 @@ public partial class ManageCustomBoardsPage : ContentPage
         InitializeComponent();
         BindingContext = _viewModel = vm;
         boardList.Loaded += (_, _) => LimitDragToHandles();
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _viewModel.Init();
     }
 
     protected override void OnDisappearing()

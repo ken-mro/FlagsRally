@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.Repository;
 using FlagsRally.Services;
 using FlagsRally.ViewModels;
@@ -47,7 +48,7 @@ public partial class MainPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
 
-        _mainPageViewModel.GridItemSpan = Math.Max((int)width / 196, 2);
+        _mainPageViewModel.GridItemSpan = GridSpan.For(width);
     }
 
     // The counts sit beside the passport cover when each label fits on one line there. Otherwise

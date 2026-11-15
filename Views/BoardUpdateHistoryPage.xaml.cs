@@ -2,7 +2,7 @@ using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class BoardUpdateHistoryPage : ContentPage
+public partial class BoardUpdateHistoryPage : InitializingPage
 {
     public const string Route = "BoardUpdateHistory";
 
@@ -14,9 +14,4 @@ public partial class BoardUpdateHistoryPage : ContentPage
         BindingContext = _viewModel = vm;
     }
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _viewModel.Init();
-    }
 }

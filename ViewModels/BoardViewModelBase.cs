@@ -10,7 +10,7 @@ namespace FlagsRally.ViewModels;
 /// Not visited switch with its counts and the progress, hiding the dates, pull to refresh and the
 /// number of columns.
 /// </summary>
-public abstract partial class BoardViewModelBase : BaseViewModel, IVisitFilterable
+public abstract partial class BoardViewModelBase : BaseViewModel, IVisitFilterable, IInitializable
 {
     [ObservableProperty]
     int _gridItemSpan = 2;

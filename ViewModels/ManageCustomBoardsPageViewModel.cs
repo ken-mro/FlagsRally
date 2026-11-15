@@ -23,7 +23,7 @@ public partial class ManageableBoardItem : ObservableObject
     bool _isSelected;
 }
 
-public partial class ManageCustomBoardsPageViewModel : BaseViewModel
+public partial class ManageCustomBoardsPageViewModel : BaseViewModel, IInitializable
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly CustomBoardService _customBoardService;

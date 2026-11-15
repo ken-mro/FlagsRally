@@ -3,7 +3,7 @@ using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class CustomBoardPage : ContentPage
+public partial class CustomBoardPage : InitializingPage
 {
     public const string Route = "CustomBoard";
 
@@ -16,12 +16,6 @@ public partial class CustomBoardPage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = _customBoardPageViewModel = vm;
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _customBoardPageViewModel.Init();
     }
 
     protected override void OnSizeAllocated(double width, double height)

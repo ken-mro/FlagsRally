@@ -107,7 +107,7 @@ public class CollectionSection(string title, bool isEditable, bool isCollapsible
     }
 }
 
-public partial class CollectionsPageViewModel : BaseViewModel
+public partial class CollectionsPageViewModel : BaseViewModel, IInitializable
 {
     readonly ICustomBoardRepository _customBoardRepository;
     readonly ICustomLocationDataRepository _customLocationDataRepository;

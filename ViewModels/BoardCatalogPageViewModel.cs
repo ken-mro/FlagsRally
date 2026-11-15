@@ -28,7 +28,7 @@ public partial class BoardCatalogItem(DriveEntry entry) : ObservableObject
 /// <summary>
 /// Adds custom boards from the shared Google Drive folder, or from files on the device.
 /// </summary>
-public partial class BoardCatalogPageViewModel : BaseViewModel
+public partial class BoardCatalogPageViewModel : BaseViewModel, IInitializable
 {
     readonly DriveBoardCatalog _catalog;
     readonly CustomBoardService _customBoardService;
