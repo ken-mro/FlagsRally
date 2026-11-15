@@ -60,10 +60,10 @@
                     LineBreakMode="WordWrap"
                     Text="{Binding DisplayName}"
                     VerticalOptions="Center" />
-                <CheckBox
+                <controls:TickBox
                     Grid.Column="2"
                     Margin="0,0,-8,0"
-                    Color="{StaticResource Stamp}"
+                    Description="{Binding DisplayName}"
                     InputTransparent="True"
                     IsChecked="{Binding IsSelected}"
                     VerticalOptions="Center" />
