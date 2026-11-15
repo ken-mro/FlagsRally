@@ -11,9 +11,7 @@
     xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:StampAcquiredPopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="False"
-    Margin="0,1,0,0"
-    HorizontalOptions="Fill"
-    VerticalOptions="Center">
+    Style="{StaticResource StampPopup}">
     <Grid
         Padding="20"
         RowDefinitions="Auto,Auto,Auto,Auto"

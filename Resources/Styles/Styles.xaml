@@ -3,7 +3,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:FlagsRally.Controls">
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
@@ -499,6 +500,13 @@
     <Style x:Key="PageHint" TargetType="Label">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+    </Style>
+
+    <!--  A popup that shows a stamp or a picture across the screen, with OK under it  -->
+    <Style x:Key="StampPopup" TargetType="toolkit:Popup">
+        <Setter Property="Margin" Value="0,1,0,0" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
     <Style x:Key="PaperPage" TargetType="ContentPage">
