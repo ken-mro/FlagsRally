@@ -14,11 +14,12 @@
     <!--  One template per kind of card, holding only the views that kind shows: building a cell is
           what makes the first scroll stutter, so a card does not carry hidden views for the other kinds.  -->
     <ContentPage.Resources>
-        <Style x:Key="CardFrame" TargetType="Border">
+        <Style
+            x:Key="CardFrame"
+            BasedOn="{StaticResource CardShell}"
+            TargetType="Border">
             <Setter Property="Margin" Value="4" />
             <Setter Property="Padding" Value="8" />
-            <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
         </Style>
         <Style x:Key="CardTitle" TargetType="Label">
             <Setter Property="FontAttributes" Value="Bold" />
@@ -48,7 +49,7 @@
                         </Image>
                     </Border>
                     <Label Style="{StaticResource CardTitle}" Text="{Binding Title}" />
-                    <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar Progress="{Binding Progress}" />
                     <Label Style="{StaticResource CardProgressText}" Text="{Binding ProgressText}" />
                 </VerticalStackLayout>
             </Border>
@@ -63,7 +64,7 @@
                         HeightRequest="96"
                         Source="{Binding LocalImageFile}" />
                     <Label Style="{StaticResource CardTitle}" Text="{Binding Title}" />
-                    <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar Progress="{Binding Progress}" />
                     <Label Style="{StaticResource CardProgressText}" Text="{Binding ProgressText}" />
                 </VerticalStackLayout>
             </Border>
@@ -85,7 +86,7 @@
                             VerticalOptions="Center" />
                     </Border>
                     <Label Style="{StaticResource CardTitle}" Text="{Binding Title}" />
-                    <ProgressBar Progress="{Binding Progress}" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar Progress="{Binding Progress}" />
                     <Label Style="{StaticResource CardProgressText}" Text="{Binding ProgressText}" />
                 </VerticalStackLayout>
             </Border>
@@ -182,13 +183,11 @@
                         VerticalOptions="Center" />
                     <Button
                         Grid.Column="3"
-                        Padding="8,0"
-                        BackgroundColor="Transparent"
                         Command="{Binding ViewModel.EditBoardsCommand, Source={x:Reference page}, x:DataType=views:CollectionsPage}"
                         HorizontalOptions="End"
                         IsVisible="{Binding IsEditable}"
-                        Text="{x:Static strings:AppResources.Edit}"
-                        TextColor="{StaticResource Navy}" />
+                        Style="{StaticResource TextButton}"
+                        Text="{x:Static strings:AppResources.Edit}" />
                 </Grid>
             </DataTemplate>
         </CollectionView.GroupHeaderTemplate>

@@ -10,15 +10,13 @@
     Style="{StaticResource PaperPage}">
     <Shell.TitleView>
         <controls:FittingStampLabel
-            LineBreakMode="WordWrap"
-            Style="{StaticResource StampTitle}"
+            Style="{StaticResource FittingStampTitle}"
             Text="{x:Static strings:AppResources.BoardUpdateHistory}" />
     </Shell.TitleView>
     <Grid Padding="12,12,12,0" RowDefinitions="Auto,*" RowSpacing="10">
         <Label
-            FontSize="13"
-            Text="{x:Static strings:AppResources.BoardUpdateHistoryHint}"
-            TextColor="{StaticResource InkMuted}" />
+            Style="{StaticResource PageHint}"
+            Text="{x:Static strings:AppResources.BoardUpdateHistoryHint}" />
 
         <!--  One section per day, newest first  -->
         <CollectionView
@@ -41,9 +39,8 @@
                     <Border
                         Margin="0,0,0,6"
                         Padding="12,10"
-                        BackgroundColor="{StaticResource PaperCard}"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="0">
+                        StrokeThickness="0"
+                        Style="{StaticResource CardShell}">
                         <VerticalStackLayout Spacing="4">
                             <Label
                                 FontSize="16"
@@ -113,11 +110,9 @@
                             Text="{x:Static strings:AppResources.CouldNotLoadUpdateHistory}"
                             TextColor="{StaticResource InkMuted}" />
                         <Button
-                            BackgroundColor="{StaticResource Navy}"
                             Command="{Binding RetryCommand}"
                             HorizontalOptions="Center"
-                            Text="{x:Static strings:AppResources.Retry}"
-                            TextColor="White" />
+                            Text="{x:Static strings:AppResources.Retry}" />
                     </VerticalStackLayout>
                     <Label
                         Padding="24"
@@ -132,9 +127,8 @@
 
         <ActivityIndicator
             Grid.Row="1"
-            HeightRequest="50"
             IsRunning="{Binding IsLoading}"
             IsVisible="{Binding IsLoading}"
-            Color="{StaticResource Navy}" />
+            Style="{StaticResource BusyIndicator}" />
     </Grid>
 </ContentPage>

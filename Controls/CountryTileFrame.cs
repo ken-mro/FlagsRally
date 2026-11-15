@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.Models;
 
 namespace FlagsRally.Controls;
@@ -34,7 +35,7 @@ public class CountryTileFrame : GraphicsView
 
     const float FrameWidth = 4;
     const float BandTop = 54;
-    static readonly Color Paper = Color.FromArgb("#F4EEDF");
+    static readonly Color Paper = AppColors.Get("Paper", "#F4EEDF");
 
     sealed class TileDrawable(CountryTileFrame frame) : IDrawable
     {

@@ -160,9 +160,9 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             Center = new Position(here.Latitude, here.Longitude),
             Radius = Distance.FromKilometers(CheckInRange.LimitKm),
-            StrokeColor = Color.FromArgb("#182A52"),
+            StrokeColor = AppColors.Get("Navy", "#182A52"),
             StrokeWidth = 2f,
-            FillColor = Color.FromArgb("#33182A52"),
+            FillColor = AppColors.Get("Navy", "#182A52").WithAlpha(0x33 / 255f),
         };
         ArrivalMap.Circles.Add(_checkInRangeCircle);
         UpdateCheckInSpotDistance();

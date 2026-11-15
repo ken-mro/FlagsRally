@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.Models;
 
 namespace FlagsRally.Controls;
@@ -54,7 +55,7 @@ public class StampFrame : GraphicsView
 
     sealed class FrameDrawable(StampFrame frame) : IDrawable
     {
-        static readonly Color Paper = Color.FromArgb("#F4EEDF");
+        static readonly Color Paper = AppColors.Get("Paper", "#F4EEDF");
 
         public void Draw(ICanvas canvas, RectF bounds)
         {

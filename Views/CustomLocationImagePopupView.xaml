@@ -10,9 +10,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CustomLocationImagePopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="True"
-    Margin="0,1,0,0"
-    HorizontalOptions="Fill"
-    VerticalOptions="Center">
+    Style="{StaticResource StampPopup}">
     <Grid Padding="20" RowSpacing="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -59,8 +57,7 @@
         <Button
             Grid.Row="2"
             Command="{Binding ClosePopupCommand}"
-            HorizontalOptions="Center"
-            Text="OK"
-            WidthRequest="100" />
+            Style="{StaticResource PopupOkButton}"
+            Text="OK" />
     </Grid>
 </toolkit:Popup>

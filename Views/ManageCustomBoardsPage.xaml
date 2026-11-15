@@ -12,8 +12,7 @@
     <Shell.TitleView>
         <!--  The whole title, made smaller to fit the bar when it is long (「スタンプラリーを追加」)  -->
         <controls:FittingStampLabel
-            LineBreakMode="WordWrap"
-            Style="{StaticResource StampTitle}"
+            Style="{StaticResource FittingStampTitle}"
             Text="{x:Static strings:AppResources.ManageBoards}" />
     </Shell.TitleView>
     <Grid Padding="12" RowSpacing="10">
@@ -24,14 +23,11 @@
         </Grid.RowDefinitions>
         <Label
             Grid.Row="0"
-            FontSize="13"
-            Text="{x:Static strings:AppResources.DragToReorder}"
-            TextColor="{StaticResource InkMuted}" />
+            Style="{StaticResource PageHint}"
+            Text="{x:Static strings:AppResources.DragToReorder}" />
         <ScrollView x:Name="scrollView" Grid.Row="1">
             <Border
-                Padding="0"
-                BackgroundColor="{StaticResource PaperCard}"
-                StrokeShape="RoundRectangle 10"
+                Style="{StaticResource CardShell}"
                 VerticalOptions="Start">
                 <!--  Rows are reordered by dragging the handle on the right (see code-behind).  -->
                 <VerticalStackLayout x:Name="boardList" BindableLayout.ItemsSource="{Binding Boards}">
@@ -80,9 +76,8 @@
                                 <BoxView
                                     Grid.ColumnSpan="3"
                                     Margin="40,0,0,-4"
-                                    HeightRequest="1"
-                                    VerticalOptions="End"
-                                    Color="{StaticResource PaperEdge}" />
+                                    Style="{StaticResource RowDivider}"
+                                    VerticalOptions="End" />
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
@@ -91,10 +86,9 @@
         </ScrollView>
         <Button
             Grid.Row="2"
-            BackgroundColor="{StaticResource Stamp}"
             Command="{Binding DeleteSelectedCommand}"
-            Text="{Binding DeleteSelectedText}"
-            TextColor="White">
+            Style="{StaticResource ActionButton}"
+            Text="{Binding DeleteSelectedText}">
             <!--  Greyed out until a board is ticked (the command does nothing then). Not IsEnabled: with a
                   Command bound as well, the button kept its disabled look after a board was ticked.  -->
             <Button.Triggers>
@@ -108,9 +102,8 @@
         </Button>
         <ActivityIndicator
             Grid.Row="1"
-            HeightRequest="50"
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
-            Color="{StaticResource Navy}" />
+            Style="{StaticResource BusyIndicator}" />
     </Grid>
 </ContentPage>

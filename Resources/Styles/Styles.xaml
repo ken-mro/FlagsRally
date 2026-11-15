@@ -3,7 +3,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:FlagsRally.Controls">
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
@@ -24,7 +25,8 @@
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PaperEdge}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="Button">
+    <!--  Every button starts from this; the keyed button styles below are based on it  -->
+    <Style x:Key="BaseButton" TargetType="Button">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
@@ -48,6 +50,62 @@
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
+    </Style>
+    <Style BasedOn="{StaticResource BaseButton}" TargetType="Button" />
+
+    <!--  Buttons by role. An action (add, delete, stamp) is stamp red; a chosen state is navy  -->
+    <Style
+        x:Key="ActionButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Stamp}" />
+    </Style>
+    <!--  A second choice beside an action, or one that does not change anything yet  -->
+    <Style
+        x:Key="OutlineButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor" Value="{StaticResource Navy}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="TextColor" Value="{StaticResource Navy}" />
+    </Style>
+    <!--  A link-like button in a heading or a toolbar row (Select all, Edit, Skip)  -->
+    <Style
+        x:Key="TextButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="TextColor" Value="{StaticResource Navy}" />
+    </Style>
+    <!--  Delete, as text under the main button of a card or popup  -->
+    <Style
+        x:Key="DangerTextButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource Stamp}" />
+    </Style>
+    <!--  ✕ in the corner of a card or popup  -->
+    <Style
+        x:Key="CloseGlyphButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Text" Value="✕" />
+        <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+        <Setter Property="WidthRequest" Value="44" />
+    </Style>
+    <!--  OK under a popup's content  -->
+    <Style
+        x:Key="PopupOkButton"
+        BasedOn="{StaticResource BaseButton}"
+        TargetType="Button">
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="WidthRequest" Value="100" />
     </Style>
 
     <Style TargetType="DatePicker">
@@ -183,6 +241,13 @@
         <Setter Property="HorizontalOptions" Value="Start" />
         <Setter Property="LineBreakMode" Value="TailTruncation" />
     </Style>
+    <!--  A sub-page's title: the whole of it, made smaller to fit the bar when it is long  -->
+    <Style
+        x:Key="FittingStampTitle"
+        BasedOn="{StaticResource StampTitle}"
+        TargetType="controls:FittingStampLabel">
+        <Setter Property="LineBreakMode" Value="WordWrap" />
+    </Style>
 
     <Style x:Key="StampHeading" TargetType="controls:StampLabel">
         <Setter Property="TextColor" Value="{StaticResource Navy}" />
@@ -218,8 +283,9 @@
         </Setter>
     </Style>
 
+    <!--  Progress through a collection is stamp red everywhere  -->
     <Style TargetType="ProgressBar">
-        <Setter Property="ProgressColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="ProgressColor" Value="{StaticResource Stamp}" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -395,6 +461,54 @@
 
     <!--  Paper background for the app's own screens. Not applied to every Page, because the
           CommunityToolkit popup host is a page too and would lose its dimmed backdrop.  -->
+    <!--  A card on the paper: lists of rows, settings groups  -->
+    <Style x:Key="CardShell" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    <!--  The thin line between rows of a card; lists indent it past the row's icon with Margin  -->
+    <Style x:Key="RowDivider" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="Margin" Value="14,0" />
+        <Setter Property="Color" Value="{StaticResource PaperEdge}" />
+    </Style>
+    <!--  › at the end of a row that opens something  -->
+    <Style x:Key="Chevron" TargetType="Label">
+        <Setter Property="Text" Value="›" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!--  A chip over the map or the passport. A chosen chip turns navy: set that with a DataTrigger
+          on the chip, as what it is bound to differs  -->
+    <Style x:Key="Chip" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource PaperCard}" />
+        <Setter Property="Stroke" Value="{StaticResource PaperEdge}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="StrokeThickness" Value="1" />
+    </Style>
+
+    <!--  The spinner over a page while it loads  -->
+    <Style x:Key="BusyIndicator" TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource Navy}" />
+        <Setter Property="HeightRequest" Value="50" />
+    </Style>
+
+    <!--  The gray line under a page's title that says what to do on the page  -->
+    <Style x:Key="PageHint" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{StaticResource InkMuted}" />
+    </Style>
+
+    <!--  A popup that shows a stamp or a picture across the screen, with OK under it  -->
+    <Style x:Key="StampPopup" TargetType="toolkit:Popup">
+        <Setter Property="Margin" Value="0,1,0,0" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
     <Style x:Key="PaperPage" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource Paper}" />
         <Setter Property="BackgroundImageSource" Value="paper.jpg" />

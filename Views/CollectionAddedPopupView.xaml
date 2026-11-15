@@ -11,9 +11,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:CollectionAddedPopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="False"
-    Margin="0,1,0,0"
-    HorizontalOptions="Fill"
-    VerticalOptions="Center">
+    Style="{StaticResource StampPopup}">
     <Grid
         Padding="20"
         RowDefinitions="Auto,Auto,Auto"
@@ -114,7 +112,7 @@
                         LineBreakMode="WordWrap"
                         Text="{Binding CountryName}"
                         TextColor="{StaticResource Ink}" />
-                    <ProgressBar x:Name="progress" ProgressColor="{StaticResource Stamp}" />
+                    <ProgressBar x:Name="progress" />
                     <Label
                         FontSize="12"
                         HorizontalTextAlignment="Center"
@@ -137,9 +135,8 @@
         <Button
             Grid.Row="2"
             Command="{Binding ClosePopupCommand}"
-            HorizontalOptions="Center"
             IsEnabled="{Binding CanClose}"
-            Text="OK"
-            WidthRequest="100" />
+            Style="{StaticResource PopupOkButton}"
+            Text="OK" />
     </Grid>
 </toolkit:Popup>

@@ -1,3 +1,5 @@
+using FlagsRally.Helpers;
+
 namespace FlagsRally.Models;
 
 /// <summary>
@@ -176,10 +178,7 @@ public static class StampPatterns
     public const float MovieTicketStub = 0.25f;
 
     // The colour from Colors.xaml, or its value when there is no app (unit tests).
-    static Color Token(string key, string fallback) =>
-        Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color
-            ? color
-            : Color.FromArgb(fallback);
+    static Color Token(string key, string fallback) => AppColors.Get(key, fallback);
 
     // Spreads the bits of a hash (MurmurHash3's finaliser): FNV-1a of strings that differ only at
     // the end differs little, and the scores of the patterns are compared with each other.

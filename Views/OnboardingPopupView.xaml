@@ -51,12 +51,10 @@
                           App Store asks that the explanation always lead on to the permission request  -->
                     <Button
                         Grid.Column="1"
-                        Padding="8,0"
-                        BackgroundColor="Transparent"
                         Command="{Binding SkipCommand}"
                         IsVisible="{Binding IsNotLast}"
+                        Style="{StaticResource TextButton}"
                         Text="{x:Static strings:AppResources.OnboardingSkip}"
-                        TextColor="{StaticResource Navy}"
                         VerticalOptions="Center" />
                 </Grid>
 
@@ -161,14 +159,11 @@
                     Wrap="Wrap">
                     <Button
                         Margin="5"
-                        BackgroundColor="Transparent"
-                        BorderColor="{StaticResource Navy}"
-                        BorderWidth="1"
                         Command="{Binding BackCommand}"
                         IsVisible="{Binding IsNotFirst}"
                         MinimumWidthRequest="110"
-                        Text="{x:Static strings:AppResources.OnboardingBack}"
-                        TextColor="{StaticResource Navy}" />
+                        Style="{StaticResource OutlineButton}"
+                        Text="{x:Static strings:AppResources.OnboardingBack}" />
                     <Button
                         Margin="5"
                         Command="{Binding NextCommand}"
@@ -179,18 +174,18 @@
                           the system's permission request (App Store guideline 5.1.1(iv))  -->
                     <Button
                         Margin="5"
-                        BackgroundColor="{StaticResource Stamp}"
                         Command="{Binding RequestLocationCommand}"
                         IsVisible="{Binding ShowsAllowLocation}"
                         LineBreakMode="WordWrap"
                         MinimumWidthRequest="110"
+                        Style="{StaticResource ActionButton}"
                         Text="{x:Static strings:AppResources.OnboardingNext}" />
                     <Button
                         Margin="5"
-                        BackgroundColor="{StaticResource Stamp}"
                         Command="{Binding FinishCommand}"
                         IsVisible="{Binding ShowsDone}"
                         MinimumWidthRequest="110"
+                        Style="{StaticResource ActionButton}"
                         Text="{x:Static strings:AppResources.OnboardingDone}" />
                 </FlexLayout>
             </Grid>

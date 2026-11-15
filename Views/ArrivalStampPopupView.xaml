@@ -9,9 +9,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     x:DataType="viewmodels:ArrivalStampPopupViewModel"
     CanBeDismissedByTappingOutsideOfPopup="True"
-    Margin="0,1,0,0"
-    HorizontalOptions="Fill"
-    VerticalOptions="Center">
+    Style="{StaticResource StampPopup}">
     <toolkit:Popup.Resources>
         <converters:FontFamilyConverter x:Key="FontFamilyConverter" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
@@ -283,8 +281,7 @@
         </controls:ShrinkToFitLayout>
         <Button
             Command="{Binding ClosePopupCommand}"
-            HorizontalOptions="Center"
-            Text="OK"
-            WidthRequest="100" />
+            Style="{StaticResource PopupOkButton}"
+            Text="OK" />
     </VerticalStackLayout>
 </toolkit:Popup>

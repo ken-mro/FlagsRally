@@ -126,10 +126,7 @@
             <!--  Opens every board in one list: select all, clear, or tick a few  -->
             <Border
                 Padding="10,6,12,6"
-                BackgroundColor="{StaticResource PaperCard}"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 16"
-                StrokeThickness="1">
+                Style="{StaticResource Chip}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ChooseShownPinsCommand}" />
                 </Border.GestureRecognizers>
@@ -153,11 +150,8 @@
             <Border
                 Grid.Column="1"
                 Padding="12,0"
-                BackgroundColor="{StaticResource PaperCard}"
                 SemanticProperties.Description="{Binding ToggleAllPinsDescription}"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 16"
-                StrokeThickness="1">
+                Style="{StaticResource Chip}">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding AllPinsShown}"
@@ -198,10 +192,7 @@
                         <DataTemplate x:DataType="models:PinFilterChip">
                             <Border
                                 Padding="12,6"
-                                BackgroundColor="{StaticResource PaperCard}"
-                                Stroke="{StaticResource PaperEdge}"
-                                StrokeShape="RoundRectangle 16"
-                                StrokeThickness="1">
+                                Style="{StaticResource Chip}">
                                 <Border.Triggers>
                                     <DataTrigger
                                         Binding="{Binding IsSelected}"
@@ -264,15 +255,10 @@
                         VerticalOptions="Center" />
                     <Button
                         Grid.Column="1"
-                        Padding="0"
-                        BackgroundColor="Transparent"
                         Command="{Binding DismissLongPressHintCommand}"
-                        FontSize="18"
                         SemanticProperties.Description="{x:Static strings:AppResources.Close}"
-                        Text="✕"
-                        TextColor="{StaticResource InkMuted}"
-                        VerticalOptions="Center"
-                        WidthRequest="44" />
+                        Style="{StaticResource CloseGlyphButton}"
+                        VerticalOptions="Center" />
                 </Grid>
             </Border>
             <Button
@@ -317,15 +303,10 @@
                     TextColor="{StaticResource InkMuted}" />
                 <Button
                     Grid.Column="2"
-                    Padding="0"
-                    BackgroundColor="Transparent"
                     Command="{Binding CancelCheckInSpotCommand}"
-                    FontSize="18"
                     SemanticProperties.Description="{x:Static strings:AppResources.Close}"
-                    Text="✕"
-                    TextColor="{StaticResource InkMuted}"
-                    VerticalOptions="Start"
-                    WidthRequest="44" />
+                    Style="{StaticResource CloseGlyphButton}"
+                    VerticalOptions="Start" />
                 <Label
                     Grid.Row="2"
                     Grid.Column="1"
@@ -387,15 +368,10 @@
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="1"
-                    Padding="0"
-                    BackgroundColor="Transparent"
                     Command="{Binding ClosePinDetailsCommand}"
-                    FontSize="18"
                     SemanticProperties.Description="{x:Static strings:AppResources.Close}"
-                    Text="✕"
-                    TextColor="{StaticResource InkMuted}"
-                    VerticalOptions="Start"
-                    WidthRequest="44" />
+                    Style="{StaticResource CloseGlyphButton}"
+                    VerticalOptions="Start" />
                 <!--  Wraps instead of squeezing: in Japanese or with large text the
                       buttons do not fit on one line, and a squeezed button cuts its text.  -->
                 <FlexLayout
@@ -406,10 +382,10 @@
                     Wrap="Wrap">
                     <Button
                         Margin="0,4,8,0"
-                        BackgroundColor="{StaticResource Stamp}"
                         Command="{Binding GetCurrentLocationCommand}"
                         FlexLayout.Grow="1"
                         IsVisible="{Binding CanCheckIn}"
+                        Style="{StaticResource ActionButton}"
                         Text="{x:Static strings:AppResources.CheckIn}" />
                     <Button
                         Margin="0,4,8,0"
@@ -424,11 +400,10 @@
                         Text="{x:Static strings:AppResources.ViewStamp}" />
                     <Button
                         Margin="0,4,0,0"
-                        BackgroundColor="Transparent"
                         Command="{Binding RemoveSelectedPinCommand}"
                         IsVisible="{Binding CanRemoveSelectedPin}"
-                        Text="{Binding RemoveSelectedPinText}"
-                        TextColor="{StaticResource Stamp}" />
+                        Style="{StaticResource DangerTextButton}"
+                        Text="{Binding RemoveSelectedPinText}" />
                 </FlexLayout>
             </Grid>
         </Border>
