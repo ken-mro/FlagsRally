@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **Development:** Unused code is removed: the CheckBox and RadioButton styles, the passport_earth images, the UnableToGetLocationData string, FontSizeConverter, the unbound ChangeRegion command and the uncalled CancelRequest. Map pins are removed with Pins.Remove, now that app pins compare by reference, and the pin style ticks in Settings use the SettingsCheck style (part of ken-mro/FlagsRally#245).
 - **One tick box everywhere.** Adding stamp trails, deleting them, the map's Filter list and the select-all button next to Filter now share one tick box: navy, square on Android and iOS alike (deleting used a circle on iOS, adding was red), with a filled square when only some of a row is ticked. The rule behind it: a chosen state is navy, a button that does something (Add, Delete) is stamp red. The tick in the Filter list, which sat low and to the right of its box, is centred, and screen readers say whether a box is ticked.
 
 ### Fixed
