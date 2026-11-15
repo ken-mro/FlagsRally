@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 
 namespace FlagsRally.ViewModels
 {
-    public partial class MainPageViewModel : BaseViewModel
+    public partial class MainPageViewModel : BaseViewModel, IMapTogglable
     {
         private readonly SettingsPreferences _settingsPreferences;
         private readonly IArrivalLocationDataRepository _arrivalLocationRepository;

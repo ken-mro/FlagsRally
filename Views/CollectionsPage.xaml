@@ -126,14 +126,10 @@
             <!--  Display options: hide the countries and boards without a stamp  -->
             <ImageButton
                 Grid.Column="1"
-                Padding="11"
-                BackgroundColor="Transparent"
                 Command="{Binding ChooseDisplayOptionsCommand}"
-                HeightRequest="44"
                 SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
-                Source="filter.png"
-                VerticalOptions="Center"
-                WidthRequest="44">
+                Style="{StaticResource DisplayOptionsButton}"
+                VerticalOptions="Center">
                 <ImageButton.Behaviors>
                     <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
                 </ImageButton.Behaviors>

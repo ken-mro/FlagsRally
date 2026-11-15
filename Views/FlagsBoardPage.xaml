@@ -148,17 +148,7 @@
         </Grid.RowDefinitions>
 
         <!--  Progress  -->
-        <Grid
-            Grid.Row="0"
-            Padding="6,6,6,0">
-            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    Text="{Binding ProgressText}" />
-                <ProgressBar Progress="{Binding Progress}" />
-            </VerticalStackLayout>
-        </Grid>
+        <controls:BoardProgressHeader Grid.Row="0" />
 
         <RefreshView
             Grid.Row="1"
@@ -225,65 +215,19 @@
             IsVisible="{Binding IsBusy}"
             Style="{StaticResource BusyIndicator}" />
         <!--  Controls float just above the tab bar, within thumb reach, over the tiles  -->
-        <Border
+        <controls:FloatingToolbar
             Grid.RowSpan="2"
             Margin="7,0,7,7"
-            Padding="8"
-            BackgroundColor="{StaticResource PaperCard}"
-            Stroke="{StaticResource PaperEdge}"
-            StrokeShape="RoundRectangle 30"
-            StrokeThickness="1"
-            VerticalOptions="End">
-            <Border.Shadow>
-                <Shadow
-                    Brush="{StaticResource NavyDeep}"
-                    Opacity="0.18"
-                    Radius="14"
-                    Offset="0,4" />
-            </Border.Shadow>
+            Padding="8">
             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
                 <controls:VisitFilterBar />
                 <ImageButton
                     Grid.Column="1"
-                    Padding="11"
-                    BackgroundColor="Transparent"
                     Command="{Binding ChooseDisplayOptionsCommand}"
-                    HeightRequest="44"
                     SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
-                    Source="filter.png"
-                    WidthRequest="44" />
-                <Border
-                    Grid.Column="2"
-                    BackgroundColor="{StaticResource Navy}"
-                    HeightRequest="44"
-                    StrokeShape="RoundRectangle 22"
-                    StrokeThickness="0"
-                    WidthRequest="44">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
-                    </Border.GestureRecognizers>
-                    <Grid>
-                        <Image
-                            HeightRequest="22"
-                            IsVisible="{Binding IsListVisible}"
-                            SemanticProperties.Description="{x:Static strings:AppResources.ShowMap}"
-                            Source="earth.png">
-                            <Image.Behaviors>
-                                <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
-                            </Image.Behaviors>
-                        </Image>
-                        <Image
-                            HeightRequest="22"
-                            IsVisible="{Binding IsMapVisible}"
-                            SemanticProperties.Description="{x:Static strings:AppResources.ShowStamps}"
-                            Source="board.png">
-                            <Image.Behaviors>
-                                <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
-                            </Image.Behaviors>
-                        </Image>
-                    </Grid>
-                </Border>
+                    Style="{StaticResource DisplayOptionsButton}" />
+                <controls:MapToggleButton Grid.Column="2" />
             </Grid>
-        </Border>
+        </controls:FloatingToolbar>
     </Grid>
 </views:InitializingPage>

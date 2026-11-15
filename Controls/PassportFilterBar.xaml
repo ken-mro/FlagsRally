@@ -5,6 +5,7 @@
     x:Class="FlagsRally.Controls.PassportFilterBar"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
@@ -119,43 +120,9 @@
         <!--  Display options and map  -->
         <ImageButton
             Grid.Column="2"
-            Padding="11"
-            BackgroundColor="Transparent"
             Command="{Binding ChooseDisplayOptionsCommand}"
-            HeightRequest="44"
             SemanticProperties.Description="{x:Static strings:AppResources.DisplayOptions}"
-            Source="filter.png"
-            WidthRequest="44" />
-        <Border
-            Grid.Column="3"
-            BackgroundColor="{StaticResource Navy}"
-            HeightRequest="44"
-            StrokeShape="RoundRectangle 22"
-            StrokeThickness="0"
-            WidthRequest="44">
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
-            </Border.GestureRecognizers>
-            <Grid>
-                <Image
-                    HeightRequest="22"
-                    IsVisible="{Binding IsListVisible}"
-                    SemanticProperties.Description="{x:Static strings:AppResources.ShowMap}"
-                    Source="earth.png">
-                    <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
-                    </Image.Behaviors>
-                </Image>
-                <Image
-                    HeightRequest="22"
-                    IsVisible="{Binding IsMapVisible}"
-                    SemanticProperties.Description="{x:Static strings:AppResources.ShowStamps}"
-                    Source="board.png">
-                    <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
-                    </Image.Behaviors>
-                </Image>
-            </Grid>
-        </Border>
+            Style="{StaticResource DisplayOptionsButton}" />
+        <controls:MapToggleButton Grid.Column="3" />
     </Grid>
 </ContentView>

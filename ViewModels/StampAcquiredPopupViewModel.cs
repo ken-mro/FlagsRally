@@ -9,7 +9,7 @@ namespace FlagsRally.ViewModels;
 /// <summary>
 /// One page of the popup after a stamp: the country's stamp or the region's, in the passport's design.
 /// </summary>
-public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage, bool celebrates) : ObservableObject
+public partial class StampSlide(ArrivalLocation arrival, string heading, string name, string flagEmoji, string flagImage, bool celebrates) : ObservableObject, IPageDot
 {
     /// <summary>The arrival with the pattern the passport draws it in, for its ink and padding.</summary>
     public ArrivalLocation Arrival { get; } = arrival;

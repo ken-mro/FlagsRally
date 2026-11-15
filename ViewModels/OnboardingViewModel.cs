@@ -11,7 +11,7 @@ public enum OnboardingStep { Passport, Stamp, Boards, HowToAgain, Location }
 /// <summary>
 /// One dot under the how-to pages; the current page's dot is filled.
 /// </summary>
-public partial class OnboardingDot : ObservableObject
+public partial class OnboardingDot : ObservableObject, IPageDot
 {
     [ObservableProperty]
     bool _isCurrent;

@@ -127,29 +127,9 @@
                 </ScrollView>
 
                 <!--  Where you are in the pages  -->
-                <HorizontalStackLayout
+                <controls:PageDots
                     Grid.Row="2"
-                    BindableLayout.ItemsSource="{Binding Dots}"
-                    HorizontalOptions="Center"
-                    Spacing="8">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="viewmodels:OnboardingDot">
-                            <Ellipse
-                                Fill="{StaticResource PaperEdge}"
-                                HeightRequest="8"
-                                WidthRequest="8">
-                                <Ellipse.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding IsCurrent}"
-                                        TargetType="Ellipse"
-                                        Value="True">
-                                        <Setter Property="Fill" Value="{StaticResource Navy}" />
-                                    </DataTrigger>
-                                </Ellipse.Triggers>
-                            </Ellipse>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </HorizontalStackLayout>
+                    ItemsSource="{Binding Dots}" />
 
                 <!--  Buttons wrap onto two rows when Japanese or large text does not fit beside each other  -->
                 <FlexLayout

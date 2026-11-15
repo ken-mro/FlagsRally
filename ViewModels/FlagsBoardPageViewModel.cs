@@ -9,7 +9,7 @@ using FlagsRally.Resources;
 
 namespace FlagsRally.ViewModels;
 
-public partial class FlagsBoardPageViewModel : BoardViewModelBase, IQueryAttributable
+public partial class FlagsBoardPageViewModel : BoardViewModelBase, IQueryAttributable, IMapTogglable
 {
     public const string CountryQueryKey = "country";
 

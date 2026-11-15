@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  The round navy button that switches a page between its stamps and a map: the globe while the
+      stamps show, the board while the map shows.  -->
+<ContentView
+    x:Class="FlagsRally.Controls.MapToggleButton"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:IMapTogglable">
+    <Border
+        BackgroundColor="{StaticResource Navy}"
+        HeightRequest="44"
+        StrokeShape="RoundRectangle 22"
+        StrokeThickness="0"
+        WidthRequest="44">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding ChangeMapVisibilityCommand}" />
+        </Border.GestureRecognizers>
+        <Grid>
+            <Image
+                HeightRequest="22"
+                IsVisible="{Binding IsListVisible}"
+                SemanticProperties.Description="{x:Static strings:AppResources.ShowMap}"
+                Source="earth.png">
+                <Image.Behaviors>
+                    <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
+                </Image.Behaviors>
+            </Image>
+            <Image
+                HeightRequest="22"
+                IsVisible="{Binding IsMapVisible}"
+                SemanticProperties.Description="{x:Static strings:AppResources.ShowStamps}"
+                Source="board.png">
+                <Image.Behaviors>
+                    <toolkit:IconTintColorBehavior TintColor="{StaticResource PaperCard}" />
+                </Image.Behaviors>
+            </Image>
+        </Grid>
+    </Border>
+</ContentView>
