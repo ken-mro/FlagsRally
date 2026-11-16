@@ -163,6 +163,11 @@ namespace FlagsRally.ViewModels
                 var stampTilt = _settingsPreferences.GetPassportStampTilt();
                 var allArrivalLocationList = (await _arrivalLocationRepository.GetAllArrivalLocations())
                     .ConvertAll(arrival => StampPatterns.Apply(arrival, stampStyle, stampTilt));
+
+                // Nothing new (the page only came back from a stamp's details, or from another tab):
+                // the list stays as it is. A new list would put the stamps back at another place.
+                if (CountryList.Count > 0 && ArrivalLocation.ShowTheSame(SourceArrivalLocationList, allArrivalLocationList)) return;
+
                 var sourceArrivalLocationList = new ObservableCollection<ArrivalLocation>(allArrivalLocationList);
                 SourceArrivalLocationList = sourceArrivalLocationList;
 

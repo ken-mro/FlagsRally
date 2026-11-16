@@ -28,6 +28,19 @@ public record ArrivalLocation
     // How the passport draws the stamp (Settings > Passport stamps); see StampPatterns.Apply.
     public StampPattern StampPattern { get; init; } = StampPattern.Square;
     public double StampTilt { get; init; }
+
+    /// <summary>
+    /// Whether two lists show the same stamps in the same order: the passport then keeps its list,
+    /// and with it the place it was scrolled to. The position is compared by its coordinates
+    /// (a Location is only equal to itself).
+    /// </summary>
+    public static bool ShowTheSame(IReadOnlyList<ArrivalLocation> stamps, IReadOnlyList<ArrivalLocation> others) =>
+        stamps.Count == others.Count && stamps.Zip(others).All(pair => pair.First.ShowsTheSameAs(pair.Second));
+
+    bool ShowsTheSameAs(ArrivalLocation other) =>
+        this with { Location = other.Location } == other
+        && Location?.Latitude == other.Location?.Latitude
+        && Location?.Longitude == other.Location?.Longitude;
     public Thickness StampMargin => StampPatterns.MarginFor(StampTilt);
     // The text's colour: the pattern's ink, or the paper's where the text stands out of solid ink
     public Color StampInk => StampPatterns.TextInkFor(StampPattern);
