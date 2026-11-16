@@ -13,6 +13,7 @@ public partial class CollectionsPage : InitializingPage
     public CollectionsPage(CollectionsPageViewModel vm)
     {
         InitializeComponent();
+        SideTabBar.Watch(this, RunUnderSideTabBar);
         BindingContext = _viewModel = vm;
     }
 
@@ -22,6 +23,21 @@ public partial class CollectionsPage : InitializingPage
         base.OnSizeAllocated(width, height);
 
         _viewModel.GridItemSpan = GridSpan.ForCards(GridSpan.IsOpened(this));
+        RunUnderSideTabBar();
+    }
+
+    // The list's margin from the XAML: on iOS, room at the bottom for the tab bar floating there.
+    static readonly Thickness BesideMargin = new(8, 0);
+    static readonly Thickness ListMargin = DeviceInfo.Platform == DevicePlatform.iOS ? new(8, 0, 8, 72) : BesideMargin;
+
+    // Beside a tab bar at the side (iPhone Duo) the cards go on to the page's edge, under the bar,
+    // and no room is kept for a tab bar at the bottom.
+    void RunUnderSideTabBar()
+    {
+        var insets = SideTabBar.InsetsOf(this);
+        SideTabBar.Place(Cards, Cards,
+            insets is { } side ? SideTabBar.MarginToEdges(BesideMargin, side.Right, 0) : ListMargin,
+            insets is null ? 0 : SideTabBar.Height);
     }
 
     // A tap selects the card; open it and clear the selection so the same card can be tapped again.

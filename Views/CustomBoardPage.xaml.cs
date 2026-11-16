@@ -16,6 +16,7 @@ public partial class CustomBoardPage : InitializingPage
     public CustomBoardPage(CustomBoardPageViewModel vm)
 	{
 		InitializeComponent();
+		SideTabBar.Watch(this, RunUnderSideTabBar);
         BindingContext = _customBoardPageViewModel = vm;
     }
 
@@ -24,7 +25,21 @@ public partial class CustomBoardPage : InitializingPage
         base.OnSizeAllocated(width, height);
           
         _customBoardPageViewModel.UpdateTileSize(width, GridSpan.IsOpened(this));
+        RunUnderSideTabBar();
     }
+
+    // Beside a tab bar at the side (iPhone Duo) the tiles go on to the page's edge, under the bar.
+    void RunUnderSideTabBar()
+    {
+        var insets = SideTabBar.InsetsOf(this);
+        SideTabBar.Place(listHost, collectionView,
+            insets is { } side ? SideTabBar.MarginToEdges(Thickness.Zero, side.Right, side.Bottom + PagePadding) : Thickness.Zero,
+            insets is null ? 0 : SideTabBar.Height - ToolbarSpace);
+    }
+
+    // The page's padding and the list's footer for the floating toolbar, as in the XAML.
+    const double PagePadding = 5;
+    const double ToolbarSpace = 84;
 
     // A tap selects the tile; show it on the map and clear the selection so it can be tapped again.
     void OnTileSelected(object? sender, SelectionChangedEventArgs e)

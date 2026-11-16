@@ -29,6 +29,7 @@
         <controls:BoardProgressHeader Grid.Row="0" />
 
         <RefreshView
+            x:Name="listHost"
             Grid.Row="1"
             Command="{Binding RefreshCountriesCommand}"
             IsRefreshing="{Binding IsRefreshing}">
