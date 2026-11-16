@@ -44,9 +44,60 @@ public static class SideTabBar
     }
 
     /// <summary>
+    /// Runs <paramref name="apply"/> whenever the page's safe area changes: the bar moves between
+    /// the side and the bottom when the phone is opened, closed or turned, which can come after
+    /// the page got its new size.
+    /// </summary>
+    public static void Watch(Page page, Action apply)
+    {
+#if IOS
+        page.Loaded += (_, _) =>
+        {
+            if ((page.Handler as IPlatformViewHandler)?.PlatformView is not UIKit.UIView view) return;
+            if (view.Subviews.OfType<SafeAreaWatcher>().Any()) return;
+
+            view.InsertSubview(new SafeAreaWatcher(apply) { Frame = view.Bounds }, 0);
+        };
+#endif
+    }
+
+    /// <summary>
+    /// Gives the list (or the view that holds it) its margin and the room after its last row.
+    /// A changed margin changes the list's width: its rows are laid out again, as iOS can keep
+    /// the tiles at the width they had (the last column was then cut off at the page's edge).
+    /// </summary>
+    public static void Place(View host, View list, Thickness margin, double roomAfterLastRow)
+    {
+        if (host.Margin != margin)
+        {
+            host.Margin = margin;
+            LayOutAgain(list);
+        }
+
+        SetRoomAfterLastRow(list, roomAfterLastRow);
+    }
+
+    static void LayOutAgain(View list)
+    {
+#if IOS
+        // Once the list has its new size
+        CoreFoundation.DispatchQueue.MainQueue.DispatchAsync(() =>
+        {
+            if ((list.Handler as IPlatformViewHandler)?.PlatformView is not UIKit.UIView view) return;
+
+            foreach (var collection in Descendants(view).Prepend(view).OfType<UIKit.UICollectionView>())
+            {
+                collection.CollectionViewLayout.InvalidateLayout();
+                collection.SetNeedsLayout();
+            }
+        });
+#endif
+    }
+
+    /// <summary>
     /// Leaves room after a list's last row, so that it can be scrolled above the bar.
     /// </summary>
-    public static void SetRoomAfterLastRow(View list, double room)
+    static void SetRoomAfterLastRow(View list, double room)
     {
 #if IOS
         if ((list.Handler as IPlatformViewHandler)?.PlatformView is not UIKit.UIView view) return;
@@ -60,6 +111,27 @@ public static class SideTabBar
     }
 
 #if IOS
+    // An unseen view as large as the page, which iOS tells about every change of the safe area.
+    sealed class SafeAreaWatcher : UIKit.UIView
+    {
+        readonly Action _changed;
+
+        public SafeAreaWatcher(Action changed)
+        {
+            _changed = changed;
+            UserInteractionEnabled = false;
+            BackgroundColor = UIKit.UIColor.Clear;
+            AutoresizingMask = UIKit.UIViewAutoresizing.FlexibleWidth | UIKit.UIViewAutoresizing.FlexibleHeight;
+        }
+
+        // Applied after this layout pass: the change sets margins, which asks for another one.
+        public override void SafeAreaInsetsDidChange()
+        {
+            base.SafeAreaInsetsDidChange();
+            CoreFoundation.DispatchQueue.MainQueue.DispatchAsync(_changed);
+        }
+    }
+
     static IEnumerable<UIKit.UIView> Descendants(UIKit.UIView view) =>
         view.Subviews.SelectMany(child => new[] { child }.Concat(Descendants(child)));
 #endif

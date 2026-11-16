@@ -13,6 +13,7 @@ public partial class CollectionsPage : InitializingPage
     public CollectionsPage(CollectionsPageViewModel vm)
     {
         InitializeComponent();
+        SideTabBar.Watch(this, RunUnderSideTabBar);
         BindingContext = _viewModel = vm;
     }
 
@@ -34,8 +35,9 @@ public partial class CollectionsPage : InitializingPage
     void RunUnderSideTabBar()
     {
         var insets = SideTabBar.InsetsOf(this);
-        Cards.Margin = insets is { } side ? SideTabBar.MarginToEdges(BesideMargin, side.Right, 0) : ListMargin;
-        SideTabBar.SetRoomAfterLastRow(Cards, insets is null ? 0 : SideTabBar.Height);
+        SideTabBar.Place(Cards, Cards,
+            insets is { } side ? SideTabBar.MarginToEdges(BesideMargin, side.Right, 0) : ListMargin,
+            insets is null ? 0 : SideTabBar.Height);
     }
 
     // A tap selects the card; open it and clear the selection so the same card can be tapped again.

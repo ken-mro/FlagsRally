@@ -19,6 +19,7 @@ public partial class MainPage : ContentPage
     public MainPage(MainPageViewModel vm, OnboardingService onboardingService, SettingsPreferences settingsPreferences)
     {
         InitializeComponent();
+        SideTabBar.Watch(this, RunUnderSideTabBar);
         BindingContext = _mainPageViewModel = vm;
         _onboardingService = onboardingService;
         _settingsPreferences = settingsPreferences;
@@ -56,8 +57,9 @@ public partial class MainPage : ContentPage
     void RunUnderSideTabBar()
     {
         var insets = SideTabBar.InsetsOf(this);
-        collectionView.Margin = insets is { } side ? SideTabBar.MarginToEdges(Thickness.Zero, side.Right, side.Bottom) : Thickness.Zero;
-        SideTabBar.SetRoomAfterLastRow(collectionView, insets is null ? 0 : SideTabBar.Height - toolbarSpace.HeightRequest);
+        SideTabBar.Place(collectionView, collectionView,
+            insets is { } side ? SideTabBar.MarginToEdges(Thickness.Zero, side.Right, side.Bottom) : Thickness.Zero,
+            insets is null ? 0 : SideTabBar.Height - toolbarSpace.HeightRequest);
         // The cover and the counts stay beside the strip: the clock and the status icons are at its top.
         passportHeader.Padding = new Thickness(16, 16, 16 + (insets?.Right ?? 0), 12);
     }
