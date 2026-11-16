@@ -49,6 +49,17 @@ public partial class MainPage : ContentPage
         base.OnSizeAllocated(width, height);
 
         _mainPageViewModel.GridItemSpan = GridSpan.For(width, GridSpan.IsOpened(this));
+        RunUnderSideTabBar();
+    }
+
+    // Beside a tab bar at the side (iPhone Duo) the stamps go on to the page's edge, under the bar.
+    void RunUnderSideTabBar()
+    {
+        var insets = SideTabBar.InsetsOf(this);
+        collectionView.Margin = insets is { } side ? SideTabBar.MarginToEdges(Thickness.Zero, side.Right, side.Bottom) : Thickness.Zero;
+        SideTabBar.SetRoomAfterLastRow(collectionView, insets is null ? 0 : SideTabBar.Height - toolbarSpace.HeightRequest);
+        // The cover and the counts stay beside the strip: the clock and the status icons are at its top.
+        passportHeader.Padding = new Thickness(16, 16, 16 + (insets?.Right ?? 0), 12);
     }
 
     // The counts sit beside the passport cover when each label fits on one line there. Otherwise
