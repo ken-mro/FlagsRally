@@ -209,6 +209,17 @@ namespace FlagsRally.ViewModels
         }
 
         [RelayCommand]
+        async Task ChooseCountryAsync()
+        {
+            var labels = CountryList.Select(country => $"{country.CountryFlag}\u00A0\u00A0{country.CountryName}").ToArray();
+            var picked = await AppDialogs.PickOneAsync(AppResources.CountryOfResidence, labels, CountryList.IndexOf(SelectedCountry));
+            if (picked is int index)
+            {
+                SelectedCountry = CountryList[index];
+            }
+        }
+
+        [RelayCommand]
         async Task ManageSubscriptionAsync()
         {
             try
