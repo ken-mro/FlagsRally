@@ -22,6 +22,6 @@ public partial class FlagsBoardPage : InitializingPage
     {
         base.OnSizeAllocated(width, height);
 
-        _flagsBoardPageViewModel.GridItemSpan = GridSpan.For(width);
+        _flagsBoardPageViewModel.GridItemSpan = GridSpan.For(width, GridSpan.IsOpened(this));
     }
 }

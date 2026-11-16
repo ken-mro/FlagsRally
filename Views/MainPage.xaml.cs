@@ -48,7 +48,7 @@ public partial class MainPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
 
-        _mainPageViewModel.GridItemSpan = GridSpan.For(width);
+        _mainPageViewModel.GridItemSpan = GridSpan.For(width, GridSpan.IsOpened(this));
     }
 
     // The counts sit beside the passport cover when each label fits on one line there. Otherwise

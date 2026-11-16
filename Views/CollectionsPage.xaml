@@ -147,7 +147,7 @@
         SelectionChanged="OnCardSelected"
         SelectionMode="Single">
         <CollectionView.ItemsLayout>
-            <GridItemsLayout Orientation="Vertical" Span="2" />
+            <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
         </CollectionView.ItemsLayout>
         <CollectionView.GroupHeaderTemplate>
             <DataTemplate x:DataType="viewmodels:CollectionSection">

@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.ViewModels;
 
@@ -22,7 +23,7 @@ public partial class CustomBoardPage : InitializingPage
     {
         base.OnSizeAllocated(width, height);
           
-        _customBoardPageViewModel.UpdateTileSize(width);
+        _customBoardPageViewModel.UpdateTileSize(width, GridSpan.IsOpened(this));
     }
 
     // A tap selects the tile; show it on the map and clear the selection so it can be tapped again.
