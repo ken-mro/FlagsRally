@@ -156,15 +156,10 @@ public partial class CollectionsPageViewModel : BaseViewModel, IInitializable
     bool Shows(CollectionCard card) => !HidesEmptyCards || card.IsAddCard || card.Visited > 0;
 
     [RelayCommand]
-    async Task ChooseDisplayOptionsAsync()
-    {
-        var hideEmpty = ActionSheetLabel.Ticked(HidesEmptyCards, AppResources.HideEmptyCollections);
-        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideEmpty);
-        if (choice == hideEmpty)
-        {
-            SetHidesEmptyCards(!HidesEmptyCards);
-        }
-    }
+    Task ChooseDisplayOptionsAsync() => AppDialogs.OptionsAsync(
+        AppResources.DisplayOptions,
+        [(AppResources.HideEmptyCollections, HidesEmptyCards)],
+        (_, isOn) => SetHidesEmptyCards(isOn));
 
     public void SetHidesEmptyCards(bool hides)
     {

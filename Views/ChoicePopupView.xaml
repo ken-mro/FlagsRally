@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.ChoicePopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:strings="clr-namespace:FlagsRally.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:ChoicePopupViewModel"
+    BackgroundColor="{StaticResource PaperCard}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
+    Padding="0"
+    VerticalOptions="Center">
+    <toolkit:Popup.Resources>
+        <DataTemplate x:Key="ChoiceRowTemplate" x:DataType="viewmodels:ChoiceRow">
+            <Grid RowDefinitions="Auto,Auto">
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="8"
+                    MinimumHeightRequest="48">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding TapCommand}" CommandParameter="{Binding .}" />
+                    </Grid.GestureRecognizers>
+                    <Label
+                        FontSize="16"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Label}"
+                        TextColor="{StaticResource Ink}"
+                        VerticalOptions="Center" />
+                    <!--  An option: a tick box, on or off  -->
+                    <controls:TickBox
+                        Grid.Column="1"
+                        Command="{Binding TapCommand}"
+                        CommandParameter="{Binding .}"
+                        Description="{Binding Label}"
+                        IsChecked="{Binding IsTicked, Mode=OneWay}"
+                        IsVisible="{Binding IsOption}" />
+                    <!--  One of several: a navy tick on the one in use  -->
+                    <Path
+                        Grid.Column="1"
+                        Margin="0,0,6,0"
+                        Data="M1,7 L6,12 L15,1"
+                        HeightRequest="14"
+                        IsVisible="{Binding ShowsTick}"
+                        Stroke="{StaticResource Navy}"
+                        StrokeLineCap="Round"
+                        StrokeLineJoin="Round"
+                        StrokeThickness="2.5"
+                        VerticalOptions="Center"
+                        WidthRequest="17" />
+                </Grid>
+                <BoxView
+                    Grid.Row="1"
+                    Margin="0"
+                    IsVisible="{Binding HasDivider}"
+                    Style="{StaticResource RowDivider}" />
+            </Grid>
+        </DataTemplate>
+    </toolkit:Popup.Resources>
+    <!--  A short list in place of the system action sheet: pick one row, or switch options on and off  -->
+    <Grid
+        x:Name="root"
+        MinimumWidthRequest="280"
+        Padding="20,10,20,14"
+        RowDefinitions="Auto,Auto,Auto"
+        RowSpacing="6">
+        <!--  The heading; picking one has ✕ to leave without picking, as on the map's cards  -->
+        <Grid
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="8"
+            MinimumHeightRequest="44">
+            <controls:StampLabel
+                LineBreakMode="WordWrap"
+                Style="{StaticResource StampHeading}"
+                Text="{Binding Heading}"
+                VerticalOptions="Center" />
+            <Button
+                Grid.Column="1"
+                Margin="0,0,-12,0"
+                Command="{Binding CloseCommand}"
+                HeightRequest="44"
+                IsVisible="{Binding IsPickOne}"
+                SemanticProperties.Description="{x:Static strings:AppResources.Close}"
+                Style="{StaticResource CloseGlyphButton}"
+                VerticalOptions="Start" />
+        </Grid>
+        <!--  A few rows are laid out whole and the popup is as tall as they are  -->
+        <ScrollView
+            x:Name="rowsScroll"
+            Grid.Row="1"
+            IsVisible="{Binding IsShort}">
+            <VerticalStackLayout x:Name="rows" BindableLayout.ItemTemplate="{StaticResource ChoiceRowTemplate}" />
+        </ScrollView>
+        <!--  A long list (all the countries) makes its rows as it scrolls, so it opens at once  -->
+        <CollectionView
+            x:Name="longRows"
+            Grid.Row="1"
+            IsVisible="{Binding IsLong}"
+            ItemTemplate="{StaticResource ChoiceRowTemplate}"
+            SelectionMode="None" />
+        <!--  Options apply at once, so the popup only needs closing  -->
+        <Button
+            Grid.Row="2"
+            Margin="0,8,0,0"
+            Command="{Binding CloseCommand}"
+            HorizontalOptions="End"
+            IsVisible="{Binding IsOptions}"
+            MinimumWidthRequest="100"
+            Text="{x:Static strings:AppResources.Close}" />
+    </Grid>
+</toolkit:Popup>

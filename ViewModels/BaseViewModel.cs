@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FlagsRally.Resources;
+using FlagsRally.Services;
 
 namespace FlagsRally.ViewModels;
 
@@ -16,7 +17,7 @@ public partial class BaseViewModel : ObservableObject
 
     /// <summary>An alert with OK.</summary>
     protected static Task ShowAlertAsync(string title, string message) =>
-        Shell.Current.DisplayAlertAsync(title, message, AppResources.OK);
+        AppDialogs.AlertAsync(title, message);
 
     /// <summary>An error alert with OK.</summary>
     protected static Task ShowErrorAsync(string message) => ShowAlertAsync(AppResources.Error, message);
@@ -44,5 +45,5 @@ public partial class BaseViewModel : ObservableObject
 
     /// <summary>Asks Yes or No; true for Yes.</summary>
     protected static Task<bool> ConfirmAsync(string title, string message) =>
-        Shell.Current.DisplayAlertAsync(title, message, AppResources.Yes, AppResources.No);
+        AppDialogs.ConfirmAsync(title, message, AppResources.Yes, AppResources.No);
 }

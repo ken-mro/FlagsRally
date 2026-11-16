@@ -115,9 +115,11 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     {
         // The sort in use carries a tick, since the toolbar only shows an icon.
         var sorts = Enum.GetValues<LocationSort>();
-        string Label(LocationSort sort) => ActionSheetLabel.Ticked(sort == SelectedSort, sort.DisplayName());
-        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.SortBy, AppResources.Cancel, null, sorts.Select(Label).ToArray());
-        SelectedSort = sorts.FirstOrDefault(x => Label(x) == choice, SelectedSort);
+        var picked = await AppDialogs.PickOneAsync(AppResources.SortBy, [.. sorts.Select(sort => sort.DisplayName())], Array.IndexOf(sorts, SelectedSort));
+        if (picked is int index)
+        {
+            SelectedSort = sorts[index];
+        }
     }
 
     [RelayCommand]

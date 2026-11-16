@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Helpers;
 using FlagsRally.Resources;
+using FlagsRally.Services;
 
 namespace FlagsRally.ViewModels;
 
@@ -71,15 +72,10 @@ public abstract partial class BoardViewModelBase : BaseViewModel, IVisitFilterab
         IsRefreshing = false;
     }
 
-    // "Hide date and month" as a small menu, ticked when on.
+    // "Hide date and month" as a small popup, ticked when on.
     [RelayCommand]
-    async Task ChooseDisplayOptionsAsync()
-    {
-        var hideDate = ActionSheetLabel.Ticked(DateIsNotVisible, AppResources.HideDateAndMonth);
-        var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, hideDate);
-        if (choice == hideDate)
-        {
-            DateIsNotVisible = !DateIsNotVisible;
-        }
-    }
+    Task ChooseDisplayOptionsAsync() => AppDialogs.OptionsAsync(
+        AppResources.DisplayOptions,
+        [(AppResources.HideDateAndMonth, DateIsNotVisible)],
+        (_, isOn) => DateIsNotVisible = isOn);
 }
