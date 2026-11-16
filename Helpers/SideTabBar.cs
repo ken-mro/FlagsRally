@@ -102,15 +102,23 @@ public static class SideTabBar
 #if IOS
         if ((list.Handler as IPlatformViewHandler)?.PlatformView is not UIKit.UIView view) return;
 
+        // A list never given room is left as it is: its inset is not this helper's to reset.
+        var given = RoomGiven.TryGetValue(list, out var before) ? (double)before : 0;
+        if (given == room) return;
+
         var scroller = view as UIKit.UIScrollView ?? Descendants(view).OfType<UIKit.UIScrollView>().FirstOrDefault();
-        if (scroller is null || scroller.ContentInset.Bottom == (nfloat)room) return;
+        if (scroller is null) return;
 
         var inset = scroller.ContentInset;
-        scroller.ContentInset = new UIKit.UIEdgeInsets(inset.Top, inset.Left, (nfloat)room, inset.Right);
+        scroller.ContentInset = new UIKit.UIEdgeInsets(inset.Top, inset.Left, inset.Bottom + (nfloat)(room - given), inset.Right);
+        RoomGiven.AddOrUpdate(list, room);
 #endif
     }
 
 #if IOS
+    // The room each list was given, to take the same back
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<View, object> RoomGiven = [];
+
     // An unseen view as large as the page, which iOS tells about every change of the safe area.
     sealed class SafeAreaWatcher : UIKit.UIView
     {
