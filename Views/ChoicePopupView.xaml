@@ -18,6 +18,7 @@
             <Grid RowDefinitions="Auto,Auto">
                 <Grid
                     ColumnDefinitions="*,Auto"
+                    Padding="0,8"
                     ColumnSpacing="8"
                     MinimumHeightRequest="48">
                     <Grid.GestureRecognizers>
