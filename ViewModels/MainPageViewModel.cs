@@ -248,31 +248,29 @@ namespace FlagsRally.ViewModels
         async Task ChooseCountryAsync()
         {
             var names = CountryList.Select(x => x.CountryName).ToArray();
-            var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.FilterByCountry, AppResources.Cancel, null, names);
-            var country = CountryList.FirstOrDefault(x => x.CountryName == choice);
-            if (country is not null)
+            var picked = await AppDialogs.PickOneAsync(AppResources.FilterByCountry, names, CountryList.IndexOf(FilteredCountry));
+            if (picked is int index)
             {
-                FilteredCountry = country;
+                FilteredCountry = CountryList[index];
             }
         }
 
-        // The two display options as a small menu; a tick marks the ones that are on.
+        // The two display options as a small popup; a tick marks the ones that are on.
         [RelayCommand]
-        async Task ChooseDisplayOptionsAsync()
-        {
-            var unique = ActionSheetLabel.Ticked(IsUnique, AppResources.NoDuplicateCountries);
-            var hideDate = ActionSheetLabel.Ticked(DateIsNotVisible, AppResources.HideDateAndMonth);
-
-            var choice = await Shell.Current.DisplayActionSheetAsync(AppResources.DisplayOptions, AppResources.Cancel, null, unique, hideDate);
-            if (choice == unique)
+        Task ChooseDisplayOptionsAsync() => AppDialogs.OptionsAsync(
+            AppResources.DisplayOptions,
+            [(AppResources.NoDuplicateCountries, IsUnique), (AppResources.HideDateAndMonth, DateIsNotVisible)],
+            (index, isOn) =>
             {
-                IsUnique = !IsUnique;
-            }
-            else if (choice == hideDate)
-            {
-                DateIsNotVisible = !DateIsNotVisible;
-            }
-        }
+                if (index == 0)
+                {
+                    IsUnique = isOn;
+                }
+                else
+                {
+                    DateIsNotVisible = isOn;
+                }
+            });
 
         [RelayCommand]
         Task GoToMapAsync() => Shell.Current.GoToAsync("//Map");

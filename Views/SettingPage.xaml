@@ -48,11 +48,16 @@
             <!--  Country of residence  -->
             <controls:StampLabel Style="{StaticResource StampHeading}" Text="{x:Static strings:AppResources.CountryOfResidence}" />
             <Border Style="{StaticResource CardShell}">
+                <!--  The whole row opens the list of countries (the app's popup, not the system picker)  -->
                 <Grid Style="{StaticResource SettingsRow}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChooseCountryCommand}" />
+                    </Grid.GestureRecognizers>
                     <Image
                         Aspect="AspectFit"
                         HeightRequest="36"
@@ -80,14 +85,17 @@
                             </OnPlatform>
                         </Label.IsVisible>
                     </Label>
-                    <Picker
-                        Title="{x:Static strings:AppResources.CountryOfResidence}"
+                    <Label
                         Grid.Column="1"
                         FontSize="16"
-                        ItemDisplayBinding="{Binding CountryName}"
-                        ItemsSource="{Binding CountryList}"
-                        SelectedItem="{Binding SelectedCountry}"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding SelectedCountry.CountryName}"
+                        TextColor="{StaticResource Ink}"
                         VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="2"
+                        SemanticProperties.Description="{x:Static strings:AppResources.CountryOfResidence}"
+                        Style="{StaticResource Chevron}" />
                 </Grid>
             </Border>
 

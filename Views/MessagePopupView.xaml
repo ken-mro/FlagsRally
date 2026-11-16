@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="FlagsRally.Views.MessagePopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FlagsRally.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
+    x:DataType="viewmodels:MessagePopupViewModel"
+    BackgroundColor="{StaticResource PaperCard}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HorizontalOptions="Fill"
+    Padding="0"
+    VerticalOptions="Center">
+    <!--  A notice or a question in place of the system alert, laid out as the other popups  -->
+    <!--  iOS makes a popup as narrow as its text, so a short question would be a sliver  -->
+    <Grid
+        MinimumWidthRequest="280"
+        Padding="20,18,20,4"
+        RowDefinitions="Auto,Auto,Auto"
+        RowSpacing="14">
+        <controls:StampLabel
+            LineBreakMode="WordWrap"
+            Style="{StaticResource StampHeading}"
+            Text="{Binding Heading}" />
+        <!--  A long message (the boards added and skipped) scrolls instead of running off the screen  -->
+        <ScrollView
+            x:Name="messageScroll"
+            Grid.Row="1"
+            IsVisible="{Binding HasMessage}">
+            <Label
+                FontSize="15"
+                LineBreakMode="WordWrap"
+                Text="{Binding Message}"
+                TextColor="{StaticResource Ink}" />
+        </ScrollView>
+        <VerticalStackLayout Grid.Row="2" Spacing="2">
+            <!--  A notice: OK alone  -->
+            <Button
+                Margin="0,0,0,10"
+                Command="{Binding AcceptCommand}"
+                IsVisible="{Binding IsNotice}"
+                LineBreakMode="WordWrap"
+                MinimumWidthRequest="100"
+                HorizontalOptions="Center"
+                Text="{Binding Accept}" />
+            <!--  A question: the answer that goes on filled, the other as quiet text under it. Full
+                  width, so long labels wrap instead of squeezing  -->
+            <Button
+                Command="{Binding AcceptCommand}"
+                CornerRadius="10"
+                IsVisible="{Binding IsQuestion}"
+                LineBreakMode="WordWrap"
+                Text="{Binding Accept}" />
+            <Button
+                Command="{Binding CancelCommand}"
+                IsVisible="{Binding IsQuestion}"
+                LineBreakMode="WordWrap"
+                Style="{StaticResource TextButton}"
+                Text="{Binding Cancel}" />
+        </VerticalStackLayout>
+    </Grid>
+</toolkit:Popup>

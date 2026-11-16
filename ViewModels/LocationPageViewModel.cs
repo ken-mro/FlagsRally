@@ -353,10 +353,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private async Task ChooseOverlappingPinAsync(IReadOnlyList<Pin> overlappingPins)
     {
         var labels = PinOverlapHelper.GetChoiceLabels(overlappingPins);
-        var choice = await Shell.Current.DisplayActionSheetAsync($"{AppResources.ChooseLocation}", $"{AppResources.Cancel}", null, [.. labels]);
-
-        var index = labels.ToList().IndexOf(choice);
-        if (index < 0 || ArrivalMap is null) return;
+        var picked = await AppDialogs.PickOneAsync(AppResources.ChooseLocation, [.. labels]);
+        if (picked is not int index || ArrivalMap is null) return;
 
         ArrivalMap.SelectedPin = overlappingPins[index];
     }
@@ -1091,7 +1089,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         {
             // Say how far away the location is and offer directions to it.
             var message = $"{AppResources.YouAreNotNearTheLocation}\n{string.Format(AppResources.DistanceFromHere, CheckInRange.FormatDistance(distance))}";
-            var wantsDirections = await Shell.Current.DisplayAlertAsync($"{AppResources.Error}", message, $"{AppResources.Directions}", AppResources.OK);
+            var wantsDirections = await AppDialogs.ConfirmAsync(AppResources.Error, message, AppResources.Directions, AppResources.OK);
             if (wantsDirections)
             {
                 await OpenDirectionsAsync();

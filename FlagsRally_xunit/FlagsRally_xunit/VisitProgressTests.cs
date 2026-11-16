@@ -13,10 +13,4 @@ public class VisitProgressTests
 
     [Fact]
     public void Text_shows_visited_of_total() => Assert.Equal("2 / 47", VisitProgress.Text(2, 47));
-
-    [Theory]
-    [InlineData(true, "✓ Hide date")]
-    [InlineData(false, "Hide date")]
-    public void A_ticked_choice_carries_a_tick(bool ticked, string expected) =>
-        Assert.Equal(expected, ActionSheetLabel.Ticked(ticked, "Hide date"));
 }
