@@ -5,6 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- **An opened foldable shows twice as many in a row.** On a phone that opens (a Galaxy Z Fold, an iPhone Duo) and on a tablet, the passport's stamps, the Collections cards, a stamp trail's tiles and a country's region tiles are four in a row instead of the two of the closed phone, running across the whole screen from the top left. Turning a phone on its side works as before.
+
 ### Changed
 - **A saved subscription counts for 14 days without an answer.** When the subscription service cannot be asked (offline, or it is blocked), the last known status still stands, so stamp designs, tilt and stamps beyond the free ones keep working on a trip. It now stands for 14 days after the last answer; after that the app treats the user as not subscribed until the service answers again, and setting the device's clock back does not lengthen it. A subscriber who was offline longer gets everything back the next time the app is online (ken-mro/FlagsRally#244).
 - **Development:** Tests use the United Kingdom (England) as the country without regional flags; France, which has them, was used by mistake. A French region now gets its own page in the stamp popup test.
