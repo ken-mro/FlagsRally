@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlagsRally.Helpers;
 using FlagsRally.Repository;
@@ -131,6 +132,10 @@ public partial class CollectionsPageViewModel : BaseViewModel, IInitializable
     public CollectionSection BoardCards { get; } = new(AppResources.CustomBoards, isEditable: true);
 
     public ObservableCollection<CollectionSection> Sections { get; }
+
+    // Cards in a row: two, or four on an opened foldable (set by the page).
+    [ObservableProperty]
+    int _gridItemSpan = 2;
 
     /// <summary>
     /// Leaves off the countries and boards without a stamp yet. The Add board card always stays,

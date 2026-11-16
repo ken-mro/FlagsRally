@@ -5,6 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- **An opened foldable shows twice as many in a row.** On a phone that opens (a Galaxy Z Fold, an iPhone Duo) and on a tablet, the passport's stamps, the Collections cards, a stamp trail's tiles and a country's region tiles are four in a row instead of the two of the closed phone, running across the whole screen from the top left. Turning a phone on its side works as before.
+
 ### Changed
 - **A saved subscription counts for 14 days without an answer.** When the subscription service cannot be asked (offline, or it is blocked), the last known status still stands, so stamp designs, tilt and stamps beyond the free ones keep working on a trip. It now stands for 14 days after the last answer; after that the app treats the user as not subscribed until the service answers again, and setting the device's clock back does not lengthen it. A subscriber who was offline longer gets everything back the next time the app is online (ken-mro/FlagsRally#244).
 - **Development:** Tests use the United Kingdom (England) as the country without regional flags; France, which has them, was used by mistake. A French region now gets its own page in the stamp popup test.
@@ -17,6 +20,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **One tick box everywhere.** Adding stamp trails, deleting them, the map's Filter list and the select-all button next to Filter now share one tick box: navy, square on Android and iOS alike (deleting used a circle on iOS, adding was red), with a filled square when only some of a row is ticked. The rule behind it: a chosen state is navy, a button that does something (Add, Delete) is stamp red. The tick in the Filter list, which sat low and to the right of its box, is centred, and screen readers say whether a box is ticked.
 
 ### Fixed
+- **Page titles show on every tab where the tab bar stands at the side.** On an iPhone Duo, in an app built with the newer iOS SDK, only the passport had its title: Map, Collections and Settings showed an empty navy bar, and the display options button of Collections was missing with it. The title is now shown on every tab.
+- **Collections and Settings keep clear of a tab bar at the side.** On an iPhone Duo the last column of cards and the Subscribe button lay under the tab bar, and the first heading of Collections was half hidden under the title bar. Both pages now keep to the safe area at the top and the sides; on a phone held sideways they also keep clear of the camera cutout.
 - **A stamp trail place 54 m away read as "about 50 m from here".** The message when you are too far to check in now gives the distance rounded up to the metre, as the stamp spot on the map does, so it never shows the 50 m limit for a place outside it.
 - **A subscriber could lose the stamp settings when opening Settings offline.** Without an answer from the subscription service, Settings saved the user as not subscribed, so stamp designs and tilt were locked until the next answer. The last known status now stands, as it already did on the map and in the subscription screen.
 - **The map's Not visited count could still disappear.** At some screen widths, such as a Galaxy Z Fold cover screen with four-digit counts (Not visited 5000), the count was measured as fitting beside its name, then wrapped onto a second line that was cut off. The switch now makes room for the second line whenever the count may wrap, so the count is shown at every width, count and text size.

@@ -57,6 +57,9 @@ namespace FlagsRally
                 });
             });
 #elif IOS
+            // Page titles stay on every tab where the tab bar stands at the side (iPhone Duo).
+            builder.ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler(typeof(Shell), typeof(FlagsRally.Platforms.iOS.TitleKeepingShellRenderer)));
             builder.UseGoogleMaps(Constants.GOOGLE_MAP_API_KEY);
 #endif
 

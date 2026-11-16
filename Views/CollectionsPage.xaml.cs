@@ -1,3 +1,4 @@
+using FlagsRally.Helpers;
 using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
@@ -13,6 +14,14 @@ public partial class CollectionsPage : InitializingPage
     {
         InitializeComponent();
         BindingContext = _viewModel = vm;
+    }
+
+    // Two cards in a row, four on an opened foldable.
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        _viewModel.GridItemSpan = GridSpan.ForCards(GridSpan.IsOpened(this));
     }
 
     // A tap selects the card; open it and clear the selection so the same card can be tapped again.

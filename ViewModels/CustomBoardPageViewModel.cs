@@ -47,6 +47,7 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     const double PagePadding = 5;
 
     double _pageWidth;
+    bool _opened;
 
     [ObservableProperty]
     double _tileImageHeight = 180;
@@ -54,11 +55,12 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     [ObservableProperty]
     double _tileImageWidth = 180;
 
-    public void UpdateTileSize(double pageWidth)
+    public void UpdateTileSize(double pageWidth, bool opened = false)
     {
         if (pageWidth <= 0) return;
         _pageWidth = pageWidth;
-        GridItemSpan = GridSpan.For(pageWidth);
+        _opened = opened;
+        GridItemSpan = GridSpan.For(pageWidth, opened);
         TileImageHeight = TileImageHeightFor(pageWidth, GridItemSpan, FilteredCustomBoard?.Width ?? 0, FilteredCustomBoard?.Height ?? 0);
         TileImageWidth = TileImageWidthFor(pageWidth, GridItemSpan);
     }
@@ -136,7 +138,7 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
         set
         {
             SetProperty(ref _filteredCustomBoard, value);
-            UpdateTileSize(_pageWidth);
+            UpdateTileSize(_pageWidth, _opened);
             OnShownPlacesChanged();
             OnCountsChanged();
         }

@@ -10,6 +10,7 @@
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     xmlns:views="clr-namespace:FlagsRally.Views"
     x:DataType="viewmodels:CollectionsPageViewModel"
+    SafeAreaEdges="Container,Container,Container,None"
     Style="{StaticResource PaperPage}">
     <!--  One template per kind of card, holding only the views that kind shows: building a cell is
           what makes the first scroll stutter, so a card does not carry hidden views for the other kinds.  -->
@@ -147,7 +148,7 @@
         SelectionChanged="OnCardSelected"
         SelectionMode="Single">
         <CollectionView.ItemsLayout>
-            <GridItemsLayout Orientation="Vertical" Span="2" />
+            <GridItemsLayout Orientation="Vertical" Span="{Binding GridItemSpan}" />
         </CollectionView.ItemsLayout>
         <CollectionView.GroupHeaderTemplate>
             <DataTemplate x:DataType="viewmodels:CollectionSection">
