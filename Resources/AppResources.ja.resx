@@ -753,15 +753,9 @@
     <value>OK</value>
   </data>
   <data name="MapPad" xml:space="preserve">
-    <value>地図を動かす</value>
+    <value>地図コントローラー</value>
   </data>
   <data name="MapPadHint" xml:space="preserve">
-    <value>押したままにするとパッドが開きます。親指を倒した向きに地図が動き、外へ倒すほど速くなります。指を離すと閉じます。</value>
-  </data>
-  <data name="MapZoomPad" xml:space="preserve">
-    <value>地図を拡大・縮小する</value>
-  </data>
-  <data name="MapZoomPadHint" xml:space="preserve">
-    <value>押したままにするとパッドが開きます。上にずらすと拡大、下にずらすと縮小で、遠くへずらすほど速くなります。指を離すと閉じます。</value>
+    <value>触ってから指をずらします。左にずらすと地図を動かすパッドが開き、親指を倒した向きに地図が動きます。上にずらすと拡大・縮小のパッドが開き、まん中より上で拡大、下で縮小します。指を離すと閉じます。</value>
   </data>
 </root>

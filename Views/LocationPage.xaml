@@ -35,7 +35,7 @@
             x:Name="mapButtons"
             Grid.Row="0"
             Grid.RowSpan="2"
-            Margin="0,0,40,0"
+            Margin="0,0,28,0"
             HorizontalOptions="End"
             Spacing="10"
             VerticalOptions="End"
@@ -109,16 +109,9 @@
                     SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
                     Source="my_location.png" />
             </Border>
-            <!--  Two thumb controllers, each a small button until it is touched; its pad then opens round
-                  the thumb. The first zooms (above its middle in, below out), the second moves the map.  -->
-            <controls:MapThumbPad
-                Kind="Zoom"
-                Moved="OnThumbPadMoved"
-                Started="OnThumbPadStarted" />
-            <controls:MapThumbPad
-                Kind="Move"
-                Moved="OnThumbPadMoved"
-                Started="OnThumbPadStarted" />
+            <!--  The thumb controller, a small button until it is touched. The first slide chooses:
+                  sideways opens the pad that moves the map, up or down the one that zooms it.  -->
+            <controls:MapThumbPad Moved="OnThumbPadMoved" Started="OnThumbPadStarted" />
         </VerticalStackLayout>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),

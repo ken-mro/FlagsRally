@@ -4,20 +4,19 @@ using FlagsRally.Resources;
 namespace FlagsRally.Controls;
 
 /// <summary>
-/// One of the map's two thumb controllers: <see cref="PadKind.Move"/> moves the map,
-/// <see cref="PadKind.Zoom"/> zooms it. At rest it is a small round button. Put a thumb on it and its
-/// pad opens round the thumb; lift the thumb and it closes to the button again. The move pad is a
-/// disc: the map keeps moving the way the thumb leans, faster the further out. The zoom pad is an
-/// upright bar with ＋ at the top and − at the bottom: above the middle zooms in, below zooms out,
-/// faster the further from the middle. The pads are see-through so the map shows under them, and only
+/// The map's thumb controller. At rest it is a small round button. Put a thumb on it and two marks
+/// show what it can do; the first slide chooses. A slide sideways (to the left, as the button is at the
+/// right edge) opens the move pad, a disc: the map keeps moving the way the thumb leans, faster the
+/// further out. A slide up or down opens the zoom pad, an upright bar with ＋ at the top and − at the
+/// bottom: above the middle zooms in, below zooms out, faster the further from the middle. Either pad
+/// opens with its middle under the thumb, so nothing moves until the thumb goes on. Lift the thumb and
+/// the pad closes to the button again. The pads are see-through so the map shows under them, and only
 /// the button takes touches, so the map round it can still be dragged. While the thumb is down the
-/// pad reports, about 30 times a second, how far the map should move and how much the zoom changed
-/// (<see cref="Moved"/>); the page turns that into camera moves with <see cref="MapPad"/>.
+/// controller reports, about 30 times a second, how far the map should move and how much the zoom
+/// changed (<see cref="Moved"/>); the page turns that into camera moves with <see cref="MapPad"/>.
 /// </summary>
 public class MapThumbPad : Grid
 {
-    public enum PadKind { Move, Zoom }
-
     public sealed class MoveEventArgs(double panX, double panY, double zoomChange) : EventArgs
     {
         /// <summary>How far the map's view moves right and down on screen since the last report.</summary>
@@ -33,10 +32,13 @@ public class MapThumbPad : Grid
     /// <summary>The button's size, the same as the map's other round buttons.</summary>
     const float ButtonSize = 48;
     const float ButtonShadowRoom = 8;
-    // Room round the open pad for its outline.
-    const float EdgeRoom = 2;
+    // How far the drawing reaches from the button's centre: the zoom bar, opened a slide above it.
+    const float Reach = (float)(MapPad.ZoomHalfHeight + MapPad.ModeSlop) + 8;
     const float KnobRadius = 14;
     const float PadOpacity = 0.6f;
+    // The marks shown before the first slide: how far from the button's centre, and how large.
+    const float MarkAway = 46;
+    const float MarkRadius = 17;
     static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
 
     static readonly Color Navy = AppColors.Get("Navy", "#182A52");
@@ -47,8 +49,9 @@ public class MapThumbPad : Grid
     readonly IDispatcherTimer _timer;
     readonly GraphicsView _button;   // takes the touches
     readonly GraphicsView _pad;      // drawn round the button while a thumb is down
-    PadKind _kind;
     PointF _finger;                  // from the button's centre
+    PointF _middle;                  // the open pad's middle, from the button's centre
+    MapPad.Mode? _mode;              // null until the first slide has chosen
     DateTime _lastTick;
     bool _touching;
 
@@ -60,6 +63,9 @@ public class MapThumbPad : Grid
         // Larger than the button it is centred on, and drawn over what is next to it.
         _pad = new GraphicsView
         {
+            WidthRequest = Reach * 2,
+            HeightRequest = Reach * 2,
+            Margin = new Thickness(ButtonSize / 2 - Reach),
             BackgroundColor = Colors.Transparent,
             InputTransparent = true,
             IsVisible = false,
@@ -74,9 +80,10 @@ public class MapThumbPad : Grid
             BackgroundColor = Colors.Transparent,
             Drawable = new ButtonDrawable(this),
         };
+        SemanticProperties.SetDescription(_button, AppResources.MapPad);
+        SemanticProperties.SetHint(_button, AppResources.MapPadHint);
         Children.Add(_pad);
         Children.Add(_button);
-        ApplyKind();
 
         _timer = Dispatcher.CreateTimer();
         _timer.Interval = Tick;
@@ -86,53 +93,7 @@ public class MapThumbPad : Grid
         _button.DragInteraction += (_, e) => OnMove(e.Touches.FirstOrDefault());
         _button.EndInteraction += (_, _) => OnUp();
         _button.CancelInteraction += (_, _) => OnUp();
-        Loaded += (_, _) => OpenChanged += OnOpenChanged;
-        Unloaded += (_, _) =>
-        {
-            OpenChanged -= OnOpenChanged;
-            _timer.Stop();
-        };
-    }
-
-    // The pad that is open, if any. The other controller's button is not drawn meanwhile, so it does
-    // not show on top of the open pad. (Raising the open pad with ZIndex instead makes Android take
-    // the view out and put it back, which stops its timer in the middle of the touch.)
-    static MapThumbPad? _open;
-    static event Action? OpenChanged;
-
-    void OnOpenChanged() => _button.Invalidate();
-
-    static void SetOpen(MapThumbPad? pad)
-    {
-        _open = pad;
-        OpenChanged?.Invoke();
-    }
-
-    /// <summary>What this controller does; set once, in XAML.</summary>
-    public PadKind Kind
-    {
-        get => _kind;
-        set
-        {
-            _kind = value;
-            ApplyKind();
-        }
-    }
-
-    void ApplyKind()
-    {
-        var (halfWidth, halfHeight) = _kind == PadKind.Zoom
-            ? (MapPad.ZoomHalfWidth, MapPad.ZoomHalfHeight)
-            : (MapPad.Radius, MapPad.Radius);
-        var width = (halfWidth + EdgeRoom) * 2;
-        var height = (halfHeight + EdgeRoom) * 2;
-        _pad.WidthRequest = width;
-        _pad.HeightRequest = height;
-        _pad.Margin = new Thickness((ButtonSize - width) / 2, (ButtonSize - height) / 2);
-        var zoom = _kind == PadKind.Zoom;
-        SemanticProperties.SetDescription(_button, zoom ? AppResources.MapZoomPad : AppResources.MapPad);
-        SemanticProperties.SetHint(_button, zoom ? AppResources.MapZoomPadHint : AppResources.MapPadHint);
-        _button.Invalidate();
+        Unloaded += (_, _) => _timer.Stop();
     }
 
     PointF FromCentre(PointF touch) => new(touch.X - (float)(_button.Width / 2), touch.Y - (float)(_button.Height / 2));
@@ -146,12 +107,10 @@ public class MapThumbPad : Grid
 
     void OnDown(PointF touch)
     {
-        // The pad opens centred on the button, so a thumb that came down off its centre starts
-        // a little way out. The dead zones take that up.
-        _finger = FromCentre(touch);
+        _finger = _middle = FromCentre(touch);
+        _mode = null;
         _lastTick = DateTime.UtcNow;
         _touching = true;
-        SetOpen(this);
         Started?.Invoke(this, EventArgs.Empty);
         _timer.Start();
         Redraw();
@@ -161,6 +120,12 @@ public class MapThumbPad : Grid
     {
         if (!_touching) return;
         _finger = FromCentre(touch);
+        if (_mode is null)
+        {
+            // _middle is still where the thumb came down. The pad opens with its middle under the thumb.
+            _mode = MapPad.ModeAt(_finger.X - _middle.X, _finger.Y - _middle.Y);
+            if (_mode is not null) _middle = _finger;
+        }
         Redraw();
     }
 
@@ -170,8 +135,8 @@ public class MapThumbPad : Grid
         _timer.Stop();
         Report();
         _touching = false;
-        if (_open == this) SetOpen(null);
-        _finger = PointF.Zero;
+        _mode = null;
+        _finger = _middle = PointF.Zero;
         Redraw();
     }
 
@@ -181,14 +146,18 @@ public class MapThumbPad : Grid
         var seconds = Math.Min((now - _lastTick).TotalSeconds, 0.1);
         _lastTick = now;
 
-        if (_kind == PadKind.Zoom)
+        var x = _finger.X - _middle.X;
+        var y = _finger.Y - _middle.Y;
+        if (_mode == MapPad.Mode.Zoom)
         {
-            var speed = MapPad.ZoomSpeed(_finger.Y);
+            var speed = MapPad.ZoomSpeed(y);
             if (speed != 0) Moved?.Invoke(this, new MoveEventArgs(0, 0, speed * seconds));
-            return;
         }
-        var (vx, vy) = MapPad.PanVelocity(_finger.X, _finger.Y);
-        if (vx != 0 || vy != 0) Moved?.Invoke(this, new MoveEventArgs(vx * seconds, vy * seconds, 0));
+        else if (_mode == MapPad.Mode.Move)
+        {
+            var (vx, vy) = MapPad.PanVelocity(x, y);
+            if (vx != 0 || vy != 0) Moved?.Invoke(this, new MoveEventArgs(vx * seconds, vy * seconds, 0));
+        }
     }
 
     static void DrawSign(ICanvas canvas, float x, float y, float half, bool plus)
@@ -209,13 +178,27 @@ public class MapThumbPad : Grid
 
     static readonly (int X, int Y)[] FourWays = [(1, 0), (-1, 0), (0, 1), (0, -1)];
 
-    // The button at rest: a paper disc like the my-location button. The move button shows a knob and
-    // the four ways it moves the map; the zoom button shows ＋ over −.
+    // The four arrows that stand for moving the map, and ＋ over − for the zoom.
+    static void DrawMoveMark(ICanvas canvas, PointF centre, float size)
+    {
+        canvas.FillColor = Navy;
+        canvas.FillCircle(centre, size * 0.22f);
+        foreach (var (x, y) in FourWays) DrawChevron(canvas, centre, x, y, tip: size, back: size * 0.7f, half: size * 0.3f);
+    }
+
+    static void DrawZoomMark(ICanvas canvas, PointF centre, float size)
+    {
+        DrawSign(canvas, centre.X, centre.Y - size * 0.55f, size * 0.42f, plus: true);
+        DrawSign(canvas, centre.X, centre.Y + size * 0.6f, size * 0.42f, plus: false);
+    }
+
+    // The button at rest: a paper disc like the my-location button, with the move mark at its left
+    // and the zoom mark at its top, the ways to slide for each.
     sealed class ButtonDrawable(MapThumbPad pad) : IDrawable
     {
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            if (_open is not null) return;
+            if (pad._touching) return;
             var centre = dirtyRect.Center;
             var radius = ButtonSize / 2;
 
@@ -229,36 +212,56 @@ public class MapThumbPad : Grid
             canvas.DrawCircle(centre, radius - 0.5f);
 
             canvas.StrokeColor = Navy;
-            canvas.StrokeSize = 2;
+            canvas.StrokeSize = 1.6f;
             canvas.StrokeLineCap = LineCap.Round;
             canvas.StrokeLineJoin = LineJoin.Round;
-            if (pad._kind == PadKind.Zoom)
-            {
-                DrawSign(canvas, centre.X, centre.Y - 9, 5.5f, plus: true);
-                DrawSign(canvas, centre.X, centre.Y + 10, 5.5f, plus: false);
-                canvas.StrokeColor = PaperEdge;
-                canvas.StrokeSize = 1;
-                canvas.DrawLine(centre.X - 9, centre.Y + 1.5f, centre.X + 9, centre.Y + 1.5f);
-                return;
-            }
-            canvas.FillColor = Navy;
-            canvas.FillCircle(centre, 6);
-            foreach (var (x, y) in FourWays) DrawChevron(canvas, centre, x, y, tip: 17, back: 13, half: 4);
+            DrawMoveMark(canvas, new PointF(centre.X - 9, centre.Y + 6), 8);
+            DrawZoomMark(canvas, new PointF(centre.X + 9, centre.Y - 8), 8);
         }
     }
 
-    // The open pad. See-through, so the map shows under it; no shadow, which would show through the paper.
+    // What is drawn while a thumb is down. See-through, so the map shows under it; no shadow, which
+    // would show through the paper.
     sealed class PadDrawable(MapThumbPad pad) : IDrawable
     {
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             canvas.StrokeLineCap = LineCap.Round;
             canvas.StrokeLineJoin = LineJoin.Round;
-            if (pad._kind == PadKind.Zoom) DrawZoom(canvas, dirtyRect.Center);
-            else DrawMove(canvas, dirtyRect.Center);
+            var button = dirtyRect.Center;
+            var middle = new PointF(button.X + pad._middle.X, button.Y + pad._middle.Y);
+            var finger = new PointF(pad._finger.X - pad._middle.X, pad._finger.Y - pad._middle.Y);
+            switch (pad._mode)
+            {
+                case MapPad.Mode.Move: DrawMove(canvas, middle, finger); break;
+                case MapPad.Mode.Zoom: DrawZoom(canvas, middle, finger); break;
+                default: DrawChoice(canvas, button, new PointF(button.X + pad._finger.X, button.Y + pad._finger.Y)); break;
+            }
         }
 
-        void DrawMove(ICanvas canvas, PointF centre)
+        // Before the first slide: where to slide for each pad.
+        static void DrawChoice(ICanvas canvas, PointF button, PointF finger)
+        {
+            var move = new PointF(button.X - MarkAway, button.Y);
+            var zoom = new PointF(button.X, button.Y - MarkAway);
+            foreach (var mark in new[] { move, zoom })
+            {
+                canvas.FillColor = PaperCard.WithAlpha(0.85f);
+                canvas.FillCircle(mark, MarkRadius);
+                canvas.StrokeColor = Navy.WithAlpha(0.45f);
+                canvas.StrokeSize = 1;
+                canvas.DrawCircle(mark, MarkRadius);
+            }
+            canvas.StrokeColor = Navy;
+            canvas.StrokeSize = 2;
+            DrawMoveMark(canvas, move, 10);
+            DrawZoomMark(canvas, zoom, 10);
+
+            canvas.FillColor = Navy.WithAlpha(0.9f);
+            canvas.FillCircle(finger, KnobRadius);
+        }
+
+        static void DrawMove(ICanvas canvas, PointF centre, PointF finger)
         {
             var radius = (float)MapPad.Radius;
             canvas.FillColor = PaperCard.WithAlpha(PadOpacity);
@@ -272,12 +275,12 @@ public class MapThumbPad : Grid
             canvas.StrokeSize = 2;
             foreach (var (x, y) in FourWays) DrawChevron(canvas, centre, x, y, tip: radius - 7, back: radius - 12, half: 5);
 
-            var (kx, ky) = MapPad.KnobOffset(pad._finger.X, pad._finger.Y, radius - KnobRadius);
+            var (kx, ky) = MapPad.KnobOffset(finger.X, finger.Y, radius - KnobRadius);
             canvas.FillColor = Navy.WithAlpha(0.9f);
             canvas.FillCircle(centre.X + (float)kx, centre.Y + (float)ky, KnobRadius);
         }
 
-        void DrawZoom(ICanvas canvas, PointF centre)
+        static void DrawZoom(ICanvas canvas, PointF centre, PointF finger)
         {
             var halfWidth = (float)MapPad.ZoomHalfWidth;
             var halfHeight = (float)MapPad.ZoomHalfHeight;
@@ -288,8 +291,8 @@ public class MapThumbPad : Grid
             canvas.StrokeSize = 1;
             canvas.DrawRoundedRectangle(bar, halfWidth);
 
-            var speed = MapPad.ZoomSpeed(pad._finger.Y);
-            var knobY = Math.Clamp(pad._finger.Y, -(halfHeight - KnobRadius), halfHeight - KnobRadius);
+            var speed = MapPad.ZoomSpeed(finger.Y);
+            var knobY = Math.Clamp(finger.Y, -(halfHeight - KnobRadius), halfHeight - KnobRadius);
 
             // From the middle to the thumb: the longer the band, the faster the zoom.
             if (Math.Abs(knobY) > 1)

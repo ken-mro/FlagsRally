@@ -1963,7 +1963,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move the map.
+        ///   Looks up a localized string similar to Map controller.
         /// </summary>
         internal static string MapPad {
             get {
@@ -1972,29 +1972,11 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Touch and hold to open the pad. The map moves the way your thumb leans, faster the further out. Lift your thumb to close it..
+        ///   Looks up a localized string similar to Touch and slide. Slide left to move the map: it moves the way your thumb leans, faster the further out. Slide up to zoom: above the middle zooms in, below zooms out. Lift your thumb to close it..
         /// </summary>
         internal static string MapPadHint {
             get {
                 return ResourceManager.GetString("MapPadHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom the map.
-        /// </summary>
-        internal static string MapZoomPad {
-            get {
-                return ResourceManager.GetString("MapZoomPad", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Touch and hold to open the pad. Slide up to zoom in or down to zoom out, faster the further you slide. Lift your thumb to close it..
-        /// </summary>
-        internal static string MapZoomPadHint {
-            get {
-                return ResourceManager.GetString("MapZoomPadHint", resourceCulture);
             }
         }
     }

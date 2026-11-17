@@ -4,6 +4,20 @@ namespace FlagsRallyTests.Helpers;
 
 public class MapPadTests
 {
+    [Theory]
+    [InlineData(-5, 0, null)]                 // too short to tell
+    [InlineData(0, -13, null)]
+    [InlineData(-20, 0, MapPad.Mode.Move)]    // to the left
+    [InlineData(-20, -8, MapPad.Mode.Move)]   // mostly to the left
+    [InlineData(18, 3, MapPad.Mode.Move)]     // to the right counts too
+    [InlineData(0, -20, MapPad.Mode.Zoom)]    // up
+    [InlineData(-8, -20, MapPad.Mode.Zoom)]   // mostly up
+    [InlineData(2, 16, MapPad.Mode.Zoom)]     // down counts too
+    public void The_first_slide_chooses_the_pad(double x, double y, MapPad.Mode? mode)
+    {
+        Assert.Equal(mode, MapPad.ModeAt(x, y));
+    }
+
     [Fact]
     public void The_map_moves_the_way_the_finger_leans_faster_further_out()
     {

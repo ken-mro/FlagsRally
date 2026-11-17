@@ -1,14 +1,31 @@
 namespace FlagsRally.Helpers;
 
 /// <summary>
-/// How the map's two thumb pads turn a finger's position into camera moves. Each opens round the
-/// thumb that touched its button, and both are joysticks: the further the finger is from where the
-/// pad opened, the faster. The move pad moves the map the way the finger leans. The zoom pad zooms
-/// in for a finger above its middle and out for one below.
-/// All lengths are device-independent units measured from the pad's centre.
+/// How the map's thumb controller turns a finger's position into camera moves. The first slide from
+/// where the finger came down chooses a pad: sideways for the move pad, up or down for the zoom pad.
+/// The pad opens with its middle under the finger, and both pads are joysticks: the further the
+/// finger is from the middle, the faster. The move pad moves the map the way the finger leans. The
+/// zoom pad zooms in for a finger above its middle and out for one below.
+/// All lengths are device-independent units; positions are measured from the pad's middle.
 /// </summary>
 public static class MapPad
 {
+    public enum Mode { Move, Zoom }
+
+    /// <summary>How far the finger slides from where it came down before a pad opens.</summary>
+    public const double ModeSlop = 14;
+
+    /// <summary>
+    /// The pad chosen by a finger that has slid (<paramref name="x"/>, <paramref name="y"/>) from where
+    /// it came down: none yet for a short slide, the move pad for a slide more sideways than upright,
+    /// the zoom pad otherwise.
+    /// </summary>
+    public static Mode? ModeAt(double x, double y)
+    {
+        if (Math.Sqrt(x * x + y * y) < ModeSlop) return null;
+        return Math.Abs(x) >= Math.Abs(y) ? Mode.Move : Mode.Zoom;
+    }
+
     /// <summary>The move pad's radius.</summary>
     public const double Radius = 64;
 
