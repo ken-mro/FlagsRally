@@ -79,6 +79,7 @@ dotnet build FlagsRally.csproj -f net10.0-android -t:Rebuild
 - ボード並べ替えのドラッグとスクロールの競合: Android は `RequestDisallowInterceptTouchEvent`、iOS は PanGesture の `ShouldReceiveTouch` をハンドル上だけに絞る（`LimitDragToHandles`）。
 - **iOS の grouped CollectionView は Reset 直後の Add で落ちる**（NSInternalInconsistencyException）→ 中身の入れ替えは Reset 1 回で通知する（`CollectionSection.ShowCards`）。
 - **iOS ではピンのドラッグ開始の長押しが `MapLongClicked` にもなる** → ドラッグ中は長押しで地点を置き直さない。
+- iOS シミュレーターの位置は必ず偽装（`IsFromMockProvider`）と判定される。Debug ビルドをシミュレーター／エミュレーターで動かすときだけ受け付ける（`AllowsSimulatedLocation`）。位置は `xcrun simctl location <udid> set 緯度,経度` で入れる（未設定だと「位置情報を取得できません」）。Release と実機は従来どおり拒否。
 - iOS シミュレーター: Xcode が SDK の想定より新しいと `-p:ValidateXcodeVersion=false` が必要。
 - iOS は同じ文字サイズでも Android より横幅を取る。Android で入った行が iOS で切れる（パスポートの「All Countries」）ので、両方で見る。
 - Android のタブバーは選択中のラベルだけ大きく描かれ、日本語＋大きい文字で「コレクシ…」になる。`Platforms/Android/Resources/values/dimens.xml` で 12sp に揃えてある。
