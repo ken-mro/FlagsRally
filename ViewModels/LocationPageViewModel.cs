@@ -572,13 +572,21 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         if (location is null)
             throw new Exception($"{AppResources.UnableToGetLocation}");
 
-        if (location.IsFromMockProvider)
+        if (location.IsFromMockProvider && !AllowsSimulatedLocation)
         {
             throw new FakeLocationException($"{AppResources.FakeLocationDetected}");
         }
 
         return location;
     }
+
+    // A simulator's location is always a simulated one, so a debug build running on one accepts it;
+    // otherwise stamping and check-ins could never be tried there. Release builds never do.
+#if DEBUG
+    private static bool AllowsSimulatedLocation => DeviceInfo.Current.DeviceType == DeviceType.Virtual;
+#else
+    private const bool AllowsSimulatedLocation = false;
+#endif
 
     public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService, SharedPlaceResolver sharedPlaceResolver)
     {
