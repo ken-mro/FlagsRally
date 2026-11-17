@@ -29,8 +29,11 @@ public static class MapPad
     /// <summary>The move pad's radius.</summary>
     public const double Radius = 64;
 
-    /// <summary>A finger this close to the move pad's centre moves nothing.</summary>
-    public const double PanDeadZone = 8;
+    /// <summary>
+    /// The hole in the middle of the move pad, where a finger moves nothing: the slide that opened the
+    /// pad, and a thumb that has not settled, stay inside it.
+    /// </summary>
+    public const double PanDeadZone = 20;
 
     /// <summary>The map's speed with the finger at the move pad's edge, in units per second.</summary>
     public const double PanSpeedAtEdge = 1100;
@@ -58,7 +61,7 @@ public static class MapPad
 
     /// <summary>
     /// The map's speed for a finger at (<paramref name="x"/>, <paramref name="y"/>) on the move pad:
-    /// in the finger's direction, slow near the centre for small corrections,
+    /// in the finger's direction, nothing in the hole, slow just outside it for small corrections,
     /// <see cref="PanSpeedAtEdge"/> at the pad's edge and still rising a little way past it.
     /// </summary>
     public static (double X, double Y) PanVelocity(double x, double y)

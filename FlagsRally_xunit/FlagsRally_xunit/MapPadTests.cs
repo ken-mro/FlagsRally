@@ -21,10 +21,11 @@ public class MapPadTests
     [Fact]
     public void The_map_moves_the_way_the_finger_leans_faster_further_out()
     {
-        // A resting thumb moves nothing.
+        // A thumb in the hole moves nothing, also right at its edge.
         Assert.Equal((0, 0), MapPad.PanVelocity(2, -3));
+        Assert.Equal((0, 0), MapPad.PanVelocity(-MapPad.PanDeadZone, 0));
 
-        var (slowX, slowY) = MapPad.PanVelocity(20, 0);
+        var (slowX, slowY) = MapPad.PanVelocity(30, 0);
         var (fastX, fastY) = MapPad.PanVelocity(50, 0);
         Assert.True(slowX > 0 && fastX > slowX);
         Assert.Equal(0, slowY);

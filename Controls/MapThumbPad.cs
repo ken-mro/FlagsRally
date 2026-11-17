@@ -6,8 +6,8 @@ namespace FlagsRally.Controls;
 /// <summary>
 /// The map's thumb controller. At rest it is a small round button. Put a thumb on it and two marks
 /// show what it can do; the first slide chooses. A slide sideways (to the left, as the button is at the
-/// right edge) opens the move pad, a disc: the map keeps moving the way the thumb leans, faster the
-/// further out. A slide up or down opens the zoom pad, an upright bar with ＋ at the top and − at the
+/// right edge) opens the move pad, a ring: the map keeps moving the way the thumb leans, faster the
+/// further out, and not at all while the thumb is in the hole in its middle. A slide up or down opens the zoom pad, an upright bar with ＋ at the top and − at the
 /// bottom: above the middle zooms in, below zooms out, faster the further from the middle. Either pad
 /// opens with its middle under the thumb, so nothing moves until the thumb goes on. Lift the thumb and
 /// the pad closes to the button again. The pads are see-through so the map shows under them, and only
@@ -43,7 +43,7 @@ public class MapThumbPad : Grid
     // round the controller (see LocationPage.xaml). The move pad's goes no further right than this,
     // for the my-location button at the controller's right...
     const float MoveMiddleMaxX = 4;
-    // ...and neither pad's goes lower than this, for the button under the map: the disc then ends 66
+    // ...and neither pad's goes lower than this, for the button under the map: the ring then ends 66
     // below the button's centre and the zoom bar 68 below.
     const float MoveMiddleMaxY = 2;
     const float ZoomMiddleMaxY = -12;
@@ -279,28 +279,35 @@ public class MapThumbPad : Grid
         static void DrawMove(ICanvas canvas, PointF centre, PointF finger)
         {
             var radius = (float)MapPad.Radius;
-            canvas.FillColor = PaperCard.WithAlpha(PadOpacity);
-            canvas.FillCircle(centre, radius);
+            var hole = (float)MapPad.PanDeadZone;
+
+            // A ring: the hole in the middle is where nothing moves, and the map shows through it.
+            canvas.StrokeColor = PaperCard.WithAlpha(PadOpacity);
+            canvas.StrokeSize = radius - hole;
+            canvas.StrokeLineCap = LineCap.Butt;
+            canvas.DrawCircle(centre, (radius + hole) / 2);
+            canvas.StrokeLineCap = LineCap.Round;
             canvas.StrokeColor = Navy.WithAlpha(0.45f);
             canvas.StrokeSize = 1;
             canvas.DrawCircle(centre, radius);
+            canvas.DrawCircle(centre, hole);
 
             var (vx, vy) = MapPad.PanVelocity(finger.X, finger.Y);
             var speed = Math.Sqrt(vx * vx + vy * vy);
             var (kx, ky) = MapPad.KnobOffset(finger.X, finger.Y, radius - KnobRadius);
             var knob = new PointF(centre.X + (float)kx, centre.Y + (float)ky);
 
-            // From the middle to the thumb: the longer the band, the faster the map moves.
-            if (Math.Abs(kx) > 1 || Math.Abs(ky) > 1)
+            // From the hole's edge to the thumb: the longer the band, the faster the map moves.
+            var reach = Math.Sqrt(kx * kx + ky * ky);
+            if (reach > hole)
             {
+                var from = new PointF(centre.X + (float)(kx / reach * hole), centre.Y + (float)(ky / reach * hole));
                 canvas.StrokeColor = Navy.WithAlpha(0.3f);
                 canvas.StrokeSize = 12;
-                canvas.DrawLine(centre, knob);
+                canvas.StrokeLineCap = LineCap.Butt;
+                canvas.DrawLine(from, knob);
+                canvas.StrokeLineCap = LineCap.Round;
             }
-            // The middle, where nothing moves.
-            canvas.StrokeColor = Navy.WithAlpha(0.6f);
-            canvas.StrokeSize = 2;
-            canvas.DrawCircle(centre, 4);
 
             // An arrowhead at each of the four ways; the ones the map is moving towards are filled in,
             // like the zoom bar's ＋ and −.
