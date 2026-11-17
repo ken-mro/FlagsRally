@@ -47,24 +47,22 @@ public class MapThumbPad : Grid
     /// <summary>The button's size, the same as the map's other round buttons.</summary>
     const float ButtonSize = 48;
     const float ButtonShadowRoom = 8;
-    // A pad opens with its middle under the thumb, but no nearer the my-location button below the
-    // controller (its centre is 58 under this one's, see LocationPage.xaml) than leaves it clear:
-    // the move pad's middle goes no lower than the button's centre, so the ring keeps 2 away from it...
+    const float KnobRadius = 14;
+    const float PadOpacity = 0.6f;
+    // How far the drawing reaches from the button's centre.
+    const float Reach = 170;
+
+    // The marks stand where the pads open: how large they are, and where, from the button's centre.
+    const float MarkRadius = 17;
+    static readonly PointF MoveMarkAt = new(-(float)MapPad.MoveSwitch, 0);
+    static readonly PointF ZoomMarkAt = new(0, -(float)MapPad.ZoomSwitch);
+
+    // A pad opened by sliding has its middle under the thumb, but no nearer the my-location button
+    // below the controller (its centre is 58 under this one's, see LocationPage.xaml) than leaves it
+    // clear: the move pad's middle goes no lower than the button's centre, so the ring keeps 2 away...
     const float MoveMiddleMaxY = 0;
     // ...and the zoom pad's goes no further right than this, so the bar stays inside the map's edge.
     const float ZoomMiddleMaxX = 4;
-    // How far the drawing reaches from the button's centre.
-    const float Reach = 170;
-    const float KnobRadius = 14;
-    const float PadOpacity = 0.6f;
-    // The marks shown at the two places to slide to: how large.
-    const float MarkRadius = 17;
-    static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
-
-    static readonly Color Navy = AppColors.Get("Navy", "#182A52");
-    static readonly Color NavyDeep = AppColors.Get("NavyDeep", "#0F1C3A");
-    static readonly Color PaperCard = AppColors.Get("PaperCard", "#FBF8F0");
-    static readonly Color PaperEdge = AppColors.Get("PaperEdge", "#DDD2BA");
 
     // A touch this short that moved this little is a tap.
     static readonly TimeSpan TapTime = TimeSpan.FromMilliseconds(350);
@@ -72,8 +70,13 @@ public class MapThumbPad : Grid
     // How far round a mark or a pad a touch still counts as on it.
     const float MarkSlop = 9;
     const float PadSlop = 6;
-    static readonly PointF MoveMarkAt = new(-(float)MapPad.MoveSwitch, 0);
-    static readonly PointF ZoomMarkAt = new(0, -(float)MapPad.ZoomSwitch);
+
+    static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
+
+    static readonly Color Navy = AppColors.Get("Navy", "#182A52");
+    static readonly Color NavyDeep = AppColors.Get("NavyDeep", "#0F1C3A");
+    static readonly Color PaperCard = AppColors.Get("PaperCard", "#FBF8F0");
+    static readonly Color PaperEdge = AppColors.Get("PaperEdge", "#DDD2BA");
 
     readonly IDispatcherTimer _timer;
     readonly GraphicsView _button;   // takes the touches at rest
@@ -361,13 +364,10 @@ public class MapThumbPad : Grid
         {
             var move = new PointF(button.X + MoveMarkAt.X, button.Y + MoveMarkAt.Y);
             var zoom = new PointF(button.X + ZoomMarkAt.X, button.Y + ZoomMarkAt.Y);
-            // A track from the button to each place.
-            canvas.StrokeColor = Navy.WithAlpha(0.35f);
-            canvas.StrokeSize = 2;
-            canvas.StrokeDashPattern = [1, 6];
-            canvas.DrawLine(button.X - ButtonSize / 2 - 3, button.Y, move.X + MarkRadius + 3, button.Y);
-            canvas.DrawLine(button.X, button.Y - ButtonSize / 2 - 3, button.X, zoom.Y + MarkRadius + 3);
-            canvas.StrokeDashPattern = null;
+            // A row of dots from the button to each place.
+            canvas.FillColor = Navy.WithAlpha(0.55f);
+            for (var x = button.X - ButtonSize / 2 - 6; x > move.X + MarkRadius + 3; x -= 7) canvas.FillCircle(x, button.Y, 1.5f);
+            for (var y = button.Y - ButtonSize / 2 - 6; y > zoom.Y + MarkRadius + 3; y -= 7) canvas.FillCircle(button.X, y, 1.5f);
             foreach (var mark in new[] { move, zoom })
             {
                 canvas.FillColor = PaperCard.WithAlpha(0.85f);

@@ -1,11 +1,12 @@
 namespace FlagsRally.Helpers;
 
 /// <summary>
-/// How the map's thumb controller turns a finger's position into camera moves. A finger that slides
-/// from the controller's button to one of two places opens a pad there: to the left for the move pad,
-/// up for the zoom pad. The pad opens with its middle under the finger, and both pads are joysticks:
-/// the further the finger is from the middle, the faster. The move pad moves the map the way the
-/// finger leans. The zoom pad zooms in for a finger above its middle and out for one below.
+/// How the map's thumb controller (<c>MapThumbPad</c>) turns a finger's position into camera moves.
+/// The controller opens one of two pads: the move pad at a place to the left of its button, the zoom
+/// pad at a place above it, either when a finger slides there from the button or when the mark at that
+/// place is tapped. Both pads are joysticks: the further the finger is from the pad's middle, the
+/// faster. The move pad moves the map the way the finger leans. The zoom pad zooms in for a finger
+/// above its middle and out for one below.
 /// All lengths are device-independent units.
 /// </summary>
 public static class MapPad
@@ -17,27 +18,6 @@ public static class MapPad
 
     /// <summary>How far above the button's centre the finger goes to open the zoom pad.</summary>
     public const double ZoomSwitch = 50;
-
-    /// <summary>
-    /// The pad opened by a finger at (<paramref name="x"/>, <paramref name="y"/>) from the button's
-    /// centre: none until it is <see cref="MoveSwitch"/> to the left (the move pad) or
-    /// <see cref="ZoomSwitch"/> up (the zoom pad); for a finger past both, the one it is further past.
-    /// </summary>
-    public static Mode? ModeAt(double x, double y)
-    {
-        var left = -x / MoveSwitch;
-        var up = -y / ZoomSwitch;
-        if (left < 1 && up < 1) return null;
-        return left >= up ? Mode.Move : Mode.Zoom;
-    }
-
-    /// <summary>
-    /// Whether a touch at (<paramref name="x"/>, <paramref name="y"/>) from an open pad's middle is on
-    /// that pad, allowing <paramref name="slop"/> round it for a thumb.
-    /// </summary>
-    public static bool IsOnPad(Mode mode, double x, double y, double slop) => mode == Mode.Move
-        ? Math.Sqrt(x * x + y * y) <= Radius + slop
-        : Math.Abs(x) <= ZoomHalfWidth + slop && Math.Abs(y) <= ZoomHalfHeight + slop;
 
     /// <summary>The move pad's radius.</summary>
     public const double Radius = 64;
@@ -71,6 +51,27 @@ public static class MapPad
 
     /// <summary>The fastest zoom, in levels per second.</summary>
     public const double MaxZoomSpeed = 4;
+
+    /// <summary>
+    /// The pad opened by a finger at (<paramref name="x"/>, <paramref name="y"/>) from the button's
+    /// centre: none until it is <see cref="MoveSwitch"/> to the left (the move pad) or
+    /// <see cref="ZoomSwitch"/> up (the zoom pad); for a finger past both, the one it is further past.
+    /// </summary>
+    public static Mode? ModeAt(double x, double y)
+    {
+        var left = -x / MoveSwitch;
+        var up = -y / ZoomSwitch;
+        if (left < 1 && up < 1) return null;
+        return left >= up ? Mode.Move : Mode.Zoom;
+    }
+
+    /// <summary>
+    /// Whether a touch at (<paramref name="x"/>, <paramref name="y"/>) from an open pad's middle is on
+    /// that pad, allowing <paramref name="slop"/> round it for a thumb.
+    /// </summary>
+    public static bool IsOnPad(Mode mode, double x, double y, double slop) => mode == Mode.Move
+        ? Math.Sqrt(x * x + y * y) <= Radius + slop
+        : Math.Abs(x) <= ZoomHalfWidth + slop && Math.Abs(y) <= ZoomHalfHeight + slop;
 
     /// <summary>
     /// The map's speed for a finger at (<paramref name="x"/>, <paramref name="y"/>) on the move pad:
