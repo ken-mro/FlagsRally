@@ -39,9 +39,16 @@ public class MapThumbPad : Grid
     // The marks shown before the first slide: how far from the button's centre, and how large.
     const float MarkAway = 46;
     const float MarkRadius = 17;
-    // The move pad's middle goes no further right of the button's centre than this, so the disc keeps
-    // clear of the my-location button at the controller's right (see LocationPage.xaml).
+    // Where a pad's middle may be, from the button's centre, so the open pad keeps clear of the buttons
+    // round the controller (see LocationPage.xaml). The move pad's goes no further right than this,
+    // for the my-location button at the controller's right...
     const float MoveMiddleMaxX = 4;
+    // ...and neither pad's goes lower than this, for the button under the map: the disc then ends 66
+    // below the button's centre and the zoom bar 68 below.
+    const float MoveMiddleMaxY = 2;
+    const float ZoomMiddleMaxY = -12;
+    /// <summary>How far below the button's centre an open pad reaches at most.</summary>
+    public const double ReachBelow = MapPad.ZoomHalfHeight + ZoomMiddleMaxY;
     static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
 
     static readonly Color Navy = AppColors.Get("Navy", "#182A52");
@@ -130,8 +137,8 @@ public class MapThumbPad : Grid
             if (_mode is not null)
             {
                 _middle = _mode == MapPad.Mode.Move
-                    ? new PointF(Math.Min(_finger.X, MoveMiddleMaxX), _finger.Y)
-                    : _finger;
+                    ? new PointF(Math.Min(_finger.X, MoveMiddleMaxX), Math.Min(_finger.Y, MoveMiddleMaxY))
+                    : new PointF(_finger.X, Math.Min(_finger.Y, ZoomMiddleMaxY));
             }
         }
         Redraw();
@@ -278,14 +285,45 @@ public class MapThumbPad : Grid
             canvas.StrokeSize = 1;
             canvas.DrawCircle(centre, radius);
 
-            // The four ways, at the rim.
-            canvas.StrokeColor = Navy.WithAlpha(0.7f);
-            canvas.StrokeSize = 2;
-            foreach (var (x, y) in FourWays) DrawChevron(canvas, centre, x, y, tip: radius - 7, back: radius - 12, half: 5);
-
+            var (vx, vy) = MapPad.PanVelocity(finger.X, finger.Y);
+            var speed = Math.Sqrt(vx * vx + vy * vy);
             var (kx, ky) = MapPad.KnobOffset(finger.X, finger.Y, radius - KnobRadius);
+            var knob = new PointF(centre.X + (float)kx, centre.Y + (float)ky);
+
+            // From the middle to the thumb: the longer the band, the faster the map moves.
+            if (Math.Abs(kx) > 1 || Math.Abs(ky) > 1)
+            {
+                canvas.StrokeColor = Navy.WithAlpha(0.3f);
+                canvas.StrokeSize = 12;
+                canvas.DrawLine(centre, knob);
+            }
+            // The middle, where nothing moves.
+            canvas.StrokeColor = Navy.WithAlpha(0.6f);
+            canvas.StrokeSize = 2;
+            canvas.DrawCircle(centre, 4);
+
+            // An arrowhead at each of the four ways; the ones the map is moving towards are filled in,
+            // like the zoom bar's ＋ and −.
+            foreach (var (x, y) in FourWays)
+            {
+                var towards = speed > 0 && (vx * x + vy * y) / speed > 0.38;
+                var at = new PointF(centre.X + x * (radius - 15), centre.Y + y * (radius - 15));
+                if (towards)
+                {
+                    canvas.FillColor = Navy;
+                    canvas.FillCircle(at, 11);
+                }
+                canvas.FillColor = towards ? PaperCard : Navy;
+                var head = new PathF();
+                head.MoveTo(at.X + x * 5.5f, at.Y + y * 5.5f);
+                head.LineTo(at.X - x * 3.5f - y * 5.5f, at.Y - y * 3.5f - x * 5.5f);
+                head.LineTo(at.X - x * 3.5f + y * 5.5f, at.Y - y * 3.5f + x * 5.5f);
+                head.Close();
+                canvas.FillPath(head);
+            }
+
             canvas.FillColor = Navy.WithAlpha(0.9f);
-            canvas.FillCircle(centre.X + (float)kx, centre.Y + (float)ky, KnobRadius);
+            canvas.FillCircle(knob, KnobRadius);
         }
 
         static void DrawZoom(ICanvas canvas, PointF centre, PointF finger)

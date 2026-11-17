@@ -91,11 +91,17 @@
                   far enough to the left of the my-location button for its pads to open clear of it:
                   the move pad reaches 68 to the right of the controller's centre, the button starts at 70.  -->
             <HorizontalStackLayout HorizontalOptions="End" Spacing="46">
-                <controls:MapThumbPad Moved="OnThumbPadMoved" Started="OnThumbPadStarted" />
+                <!--  Lifted so that its pads, which reach 68 below its centre, end above the button under the map
+                      (the buttons stand 12 above it: 24 + 12 + 34 = 70).  -->
+                <controls:MapThumbPad
+                    Margin="0,0,0,34"
+                    Moved="OnThumbPadMoved"
+                    Started="OnThumbPadStarted" />
                 <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
                 <Border
                     BackgroundColor="{StaticResource PaperCard}"
                     HeightRequest="48"
+                    VerticalOptions="End"
                     Stroke="{StaticResource PaperEdge}"
                     StrokeShape="RoundRectangle 24"
                     StrokeThickness="1"
