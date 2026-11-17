@@ -29,7 +29,7 @@
             SelectedPin="{Binding SelectedPin}" />
 
         <!--  Map buttons at the bottom right, lifted above whichever panel is showing (see code-behind):
-              directions and open-in-Maps for the place on the card, like Google's own toolbar, then my location and zoom.  -->
+              directions and open-in-Maps for the place on the card, like Google's own toolbar, then my location and the thumb pad.  -->
         <VerticalStackLayout
             x:Name="mapButtons"
             Grid.Row="0"
@@ -37,9 +37,11 @@
             Margin="0,0,8,0"
             HorizontalOptions="End"
             Spacing="10"
-            VerticalOptions="End"
-            WidthRequest="48">
-            <VerticalStackLayout IsVisible="{Binding ShowsMapActions}" Spacing="10">
+            VerticalOptions="End">
+            <VerticalStackLayout
+                HorizontalOptions="End"
+                IsVisible="{Binding ShowsMapActions}"
+                Spacing="10">
                 <Border
                     BackgroundColor="{StaticResource Navy}"
                     HeightRequest="48"
@@ -86,6 +88,7 @@
             <Border
                 BackgroundColor="{StaticResource PaperCard}"
                 HeightRequest="48"
+                HorizontalOptions="End"
                 Stroke="{StaticResource PaperEdge}"
                 StrokeShape="RoundRectangle 24"
                 StrokeThickness="1"
@@ -104,11 +107,12 @@
                     SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
                     Source="my_location.png" />
             </Border>
-            <!--  Slide up or down to zoom smoothly; tap the top or bottom half for one step  -->
-            <controls:ZoomSlider
-                x:Name="zoomSlider"
-                Dragged="OnZoomSliderDragged"
-                Stepped="OnZoomSliderStepped" />
+            <!--  One thumb moves the map (lean inside the circle) and zooms it (slide round the ring)  -->
+            <controls:MapThumbPad
+                x:Name="thumbPad"
+                Moved="OnThumbPadMoved"
+                Started="OnThumbPadStarted"
+                Stepped="OnThumbPadStepped" />
         </VerticalStackLayout>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),

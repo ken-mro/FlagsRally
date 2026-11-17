@@ -480,7 +480,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
-    /// <summary>One step in (+1) or out (−1), from a tap on the zoom slider.</summary>
+    /// <summary>One step in (+1) or out (−1), from a tap on the thumb pad's ＋ or −.</summary>
     public Task ZoomStepAsync(int step)
     {
         if (ArrivalMap is null) return Task.CompletedTask;
@@ -488,40 +488,49 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(camera.Target, MapZoom.Step(camera.Zoom, step)), animate: true);
     }
 
-    // While the zoom slider is held: the camera the slide started from, and the latest zoom asked for.
-    // Moves are sent one at a time; a slide faster than the map keeps up with skips to the newest zoom.
-    Position _zoomDragTarget;
-    double _zoomDragStart;
-    double? _zoomDragRequested;
-    bool _zoomDragMoving;
-    static readonly TimeSpan ZoomDragMoveTimeout = TimeSpan.FromMilliseconds(150);
+    // While the thumb pad is held: the camera it has asked for so far, and whether that is still to be sent.
+    // Moves are sent one at a time; a thumb faster than the map keeps up with skips to the newest camera.
+    Position _padTarget;
+    double _padZoom;
+    double _padBearing;
+    double _padTilt;
+    bool _padRequested;
+    bool _padMoving;
+    static readonly TimeSpan PadMoveTimeout = TimeSpan.FromMilliseconds(150);
 
-    public void BeginZoomDrag()
+    public void BeginPadMove()
     {
         if (ArrivalMap is null) return;
         var camera = ArrivalMap.CameraPosition;
-        _zoomDragTarget = camera.Target;
-        _zoomDragStart = camera.Zoom;
+        _padTarget = camera.Target;
+        _padZoom = camera.Zoom;
+        _padBearing = camera.Bearing;
+        _padTilt = camera.Tilt;
     }
 
-    public void ZoomDrag(double totalY)
+    /// <summary>The map's view moves (<paramref name="panX"/>, <paramref name="panY"/>) on screen and zooms by <paramref name="zoomChange"/> levels.</summary>
+    public void PadMove(double panX, double panY, double zoomChange)
     {
         if (ArrivalMap is null) return;
-        _zoomDragRequested = MapZoom.ZoomFor(_zoomDragStart, totalY);
-        if (!_zoomDragMoving) _ = SendZoomDragMovesAsync();
+        _padZoom = MapZoom.Clamp(_padZoom + zoomChange);
+        var (latitude, longitude) = MapPad.MoveTarget(_padTarget.Latitude, _padTarget.Longitude, _padZoom, _padBearing, panX, panY);
+        _padTarget = new Position(latitude, longitude);
+        _padRequested = true;
+        if (!_padMoving) _ = SendPadMovesAsync();
     }
 
-    private async Task SendZoomDragMovesAsync()
+    private async Task SendPadMovesAsync()
     {
-        _zoomDragMoving = true;
+        _padMoving = true;
         try
         {
-            while (_zoomDragRequested is double zoom && ArrivalMap is not null)
+            while (_padRequested && ArrivalMap is not null)
             {
-                _zoomDragRequested = null;
+                _padRequested = false;
                 try
                 {
-                    await ArrivalMap.MoveCamera(CameraUpdateFactory.NewPositionZoom(_zoomDragTarget, zoom)).WaitAsync(ZoomDragMoveTimeout);
+                    var camera = new CameraPosition(_padTarget, _padZoom, _padBearing, _padTilt);
+                    await ArrivalMap.MoveCamera(CameraUpdateFactory.NewCameraPosition(camera)).WaitAsync(PadMoveTimeout);
                 }
                 catch (TimeoutException)
                 {
@@ -531,7 +540,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
         finally
         {
-            _zoomDragMoving = false;
+            _padMoving = false;
         }
     }
 

@@ -1927,15 +1927,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Slide up to zoom in, down to zoom out.
-        /// </summary>
-        internal static string ZoomSliderHint {
-            get {
-                return ResourceManager.GetString("ZoomSliderHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ticked.
         /// </summary>
         internal static string TickBoxTicked {
@@ -1968,6 +1959,24 @@ namespace FlagsRally.Resources {
         internal static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map controller.
+        /// </summary>
+        internal static string MapPad {
+            get {
+                return ResourceManager.GetString("MapPad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Tap plus or minus for one step..
+        /// </summary>
+        internal static string MapPadHint {
+            get {
+                return ResourceManager.GetString("MapPadHint", resourceCulture);
             }
         }
     }

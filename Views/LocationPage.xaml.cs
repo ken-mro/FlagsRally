@@ -40,20 +40,12 @@ public partial class LocationPage : ContentPage
         }
     }
 
-    void OnZoomSliderDragged(object? sender, Controls.ZoomSlider.DragEventArgs e)
-    {
-        switch (e.Status)
-        {
-            case Controls.ZoomSlider.DragStatus.Started:
-                _viewModel.BeginZoomDrag();
-                break;
-            case Controls.ZoomSlider.DragStatus.Running:
-                _viewModel.ZoomDrag(e.TotalY);
-                break;
-        }
-    }
+    void OnThumbPadStarted(object? sender, EventArgs e) => _viewModel.BeginPadMove();
 
-    async void OnZoomSliderStepped(object? sender, int step) => await _viewModel.ZoomStepAsync(step);
+    void OnThumbPadMoved(object? sender, Controls.MapThumbPad.MoveEventArgs e) =>
+        _viewModel.PadMove(e.PanX, e.PanY, e.ZoomChange);
+
+    async void OnThumbPadStepped(object? sender, int step) => await _viewModel.ZoomStepAsync(step);
 
     protected override async void OnAppearing()
     {
@@ -95,7 +87,7 @@ public partial class LocationPage : ContentPage
 #endif
     }
 
-    // The map buttons (directions, open in Maps, my location, zoom) sit at the bottom right like Google's own,
+    // The map buttons (directions, open in Maps, my location, the thumb pad) sit at the bottom right like Google's own,
     // just above whichever panel is showing (the Get Location button, the check-in spot guide or
     // the pin details), so a taller panel never covers them. Only the buttons move; the map stays where it is.
     void PlaceMapButtons()

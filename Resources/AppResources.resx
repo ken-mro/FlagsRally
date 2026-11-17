@@ -740,9 +740,6 @@
   <data name="ShowOnMapTab" xml:space="preserve">
     <value>Show on the map</value>
   </data>
-  <data name="ZoomSliderHint" xml:space="preserve">
-    <value>Slide up to zoom in, down to zoom out</value>
-  </data>
   <data name="TickBoxTicked" xml:space="preserve">
     <value>Ticked</value>
   </data>
@@ -754,5 +751,11 @@
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="MapPad" xml:space="preserve">
+    <value>Map controller</value>
+  </data>
+  <data name="MapPadHint" xml:space="preserve">
+    <value>Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Tap plus or minus for one step.</value>
   </data>
 </root>

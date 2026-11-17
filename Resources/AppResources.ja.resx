@@ -740,9 +740,6 @@
   <data name="ShowOnMapTab" xml:space="preserve">
     <value>マップで見る</value>
   </data>
-  <data name="ZoomSliderHint" xml:space="preserve">
-    <value>上になぞると拡大、下になぞると縮小</value>
-  </data>
   <data name="TickBoxTicked" xml:space="preserve">
     <value>チェックあり</value>
   </data>
@@ -754,5 +751,11 @@
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="MapPad" xml:space="preserve">
+    <value>地図コントローラー</value>
+  </data>
+  <data name="MapPadHint" xml:space="preserve">
+    <value>円の内側で親指を倒すと地図が動きます。外側の輪をなぞると拡大縮小します。時計回りで拡大、反対で縮小です。プラスかマイナスをタップすると 1 段階ずつ変わります。</value>
   </data>
 </root>
