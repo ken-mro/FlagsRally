@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.4.3] - Unreleased
 
 ### Added
 - **An opened foldable shows twice as many in a row.** On a phone that opens (a Galaxy Z Fold, an iPhone Duo) and on a tablet, the passport's stamps, the Collections cards, a stamp trail's tiles and a country's region tiles are four in a row instead of the two of the closed phone, running across the whole screen from the top left. Turning a phone on its side works as before.
