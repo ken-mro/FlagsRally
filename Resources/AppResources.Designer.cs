@@ -1150,24 +1150,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zoom in.
-        /// </summary>
-        internal static string ZoomIn {
-            get {
-                return ResourceManager.GetString("ZoomIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom out.
-        /// </summary>
-        internal static string ZoomOut {
-            get {
-                return ResourceManager.GetString("ZoomOut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open in Maps.
         /// </summary>
         internal static string OpenInMaps {
@@ -1927,15 +1909,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Slide up to zoom in, down to zoom out.
-        /// </summary>
-        internal static string ZoomSliderHint {
-            get {
-                return ResourceManager.GetString("ZoomSliderHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ticked.
         /// </summary>
         internal static string TickBoxTicked {
@@ -1968,6 +1941,24 @@ namespace FlagsRally.Resources {
         internal static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map controller.
+        /// </summary>
+        internal static string MapPad {
+            get {
+                return ResourceManager.GetString("MapPad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touch and slide to one of the two marks, or tap this button and then a mark. At the mark on the left, a pad opens that moves the map the way your thumb leans, faster the further out. At the mark above, a pad opens that zooms: above its middle zooms in, below zooms out. A pad opened by sliding closes when you lift your thumb; one opened by tapping stays until you tap outside it..
+        /// </summary>
+        internal static string MapPadHint {
+            get {
+                return ResourceManager.GetString("MapPadHint", resourceCulture);
             }
         }
     }
