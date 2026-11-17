@@ -29,15 +29,17 @@
             SelectedPin="{Binding SelectedPin}" />
 
         <!--  Map buttons at the bottom right, lifted above whichever panel is showing (see code-behind):
-              directions and open-in-Maps for the place on the card, like Google's own toolbar, then my location and the thumb pad.  -->
+              directions and open-in-Maps for the place on the card, like Google's own toolbar, then my location and the thumb pad.
+              They stand in from the edge and above the panels (ZIndex), so the pad that opens round its button fits on screen.  -->
         <VerticalStackLayout
             x:Name="mapButtons"
             Grid.Row="0"
             Grid.RowSpan="2"
-            Margin="0,0,8,0"
+            Margin="0,0,40,0"
             HorizontalOptions="End"
             Spacing="10"
-            VerticalOptions="End">
+            VerticalOptions="End"
+            ZIndex="1">
             <VerticalStackLayout
                 HorizontalOptions="End"
                 IsVisible="{Binding ShowsMapActions}"
@@ -107,12 +109,12 @@
                     SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
                     Source="my_location.png" />
             </Border>
-            <!--  One thumb moves the map (lean inside the circle) and zooms it (slide round the ring)  -->
+            <!--  One thumb moves the map (lean inside the circle) and zooms it (slide round the ring).
+                  A small button until it is touched; the pad then opens round the thumb.  -->
             <controls:MapThumbPad
                 x:Name="thumbPad"
                 Moved="OnThumbPadMoved"
-                Started="OnThumbPadStarted"
-                Stepped="OnThumbPadStepped" />
+                Started="OnThumbPadStarted" />
         </VerticalStackLayout>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),

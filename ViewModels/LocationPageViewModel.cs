@@ -480,14 +480,6 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
-    /// <summary>One step in (+1) or out (−1), from a tap on the thumb pad's ＋ or −.</summary>
-    public Task ZoomStepAsync(int step)
-    {
-        if (ArrivalMap is null) return Task.CompletedTask;
-        var camera = ArrivalMap.CameraPosition;
-        return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(camera.Target, MapZoom.Step(camera.Zoom, step)), animate: true);
-    }
-
     // While the thumb pad is held: the camera it has asked for so far, and whether that is still to be sent.
     // Moves are sent one at a time; a thumb faster than the map keeps up with skips to the newest camera.
     Position _padTarget;

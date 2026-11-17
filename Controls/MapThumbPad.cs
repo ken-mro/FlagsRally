@@ -4,14 +4,16 @@ using FlagsRally.Resources;
 namespace FlagsRally.Controls;
 
 /// <summary>
-/// The map's one-thumb controller. Lean the thumb inside the inner circle and the map keeps moving
-/// that way; slide it out to the ring and round the pad to zoom (clockwise in), without lifting.
-/// A short tap on the ring's ＋ (right) or − (left) zooms one step. The pad is see-through so the map
-/// shows under it, and the arrows on the ring and the sign in the middle say which way zooms in. While the thumb is down the pad reports, about
+/// The map's one-thumb controller. At rest it is a small round button. Put a thumb on it and the pad
+/// opens round the thumb: lean inside the inner circle and the map keeps moving that way; slide out
+/// to the ring and round the pad to zoom (clockwise in), without lifting. Lift the thumb and the pad
+/// closes to the button again. The pad is see-through so the map shows under it, and the arrows on
+/// the ring and the sign in the middle say which way zooms in. Only the button takes touches, so the
+/// map round it can still be dragged. While the thumb is down the pad reports, about
 /// 30 times a second, how far the map should move and how much the zoom changed (<see cref="Moved"/>);
 /// the page turns that into camera moves with <see cref="MapPad"/>.
 /// </summary>
-public class MapThumbPad : GraphicsView
+public class MapThumbPad : Grid
 {
     public sealed class MoveEventArgs(double panX, double panY, double zoomChange) : EventArgs
     {
@@ -25,26 +27,27 @@ public class MapThumbPad : GraphicsView
     public event EventHandler? Started;
     public event EventHandler<MoveEventArgs>? Moved;
 
-    /// <summary>+1 for a tap on ＋ (zoom in), −1 for a tap on −.</summary>
-    public event EventHandler<int>? Stepped;
-
-    // Room round the pad for its shadow.
-    const float ShadowRoom = 6;
+    /// <summary>The button's size, the same as the map's other round buttons.</summary>
+    const float ButtonSize = 48;
+    // Room round the open pad for its outline.
+    const float EdgeRoom = 2;
     const float KnobRadius = 15;
-    const double TapSlop = 8;
+    const double MoveSlop = 8;
     const double TurnShown = 0.08;   // zoom levels one way before the middle shows ＋ or −
-    const float PadOpacity = 0.5f;
-    const float PadOpacityInUse = 0.62f;
-    static readonly TimeSpan TapTime = TimeSpan.FromMilliseconds(300);
+    const float PadOpacity = 0.6f;
     static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
 
     static readonly Color Navy = AppColors.Get("Navy", "#182A52");
     static readonly Color PaperCard = AppColors.Get("PaperCard", "#FBF8F0");
 
+    static readonly Color PaperEdge = AppColors.Get("PaperEdge", "#DDD2BA");
+    static readonly Color NavyDeep = AppColors.Get("NavyDeep", "#0F1C3A");
+
     readonly IDispatcherTimer _timer;
+    readonly GraphicsView _button;   // takes the touches
+    readonly GraphicsView _pad;      // drawn round the button while a thumb is down
     PointF _finger;              // from the pad's centre
     PointF _down;
-    DateTime _downAt;
     DateTime _lastTick;
     bool _touching;
     bool _moved;
@@ -56,31 +59,61 @@ public class MapThumbPad : GraphicsView
 
     public MapThumbPad()
     {
-        var size = (MapPad.Radius + ShadowRoom) * 2;
-        WidthRequest = size;
-        HeightRequest = size;
-        BackgroundColor = Colors.Transparent;
-        Drawable = new PadDrawable(this);
-        SemanticProperties.SetDescription(this, AppResources.MapPad);
-        SemanticProperties.SetHint(this, AppResources.MapPadHint);
+        WidthRequest = ButtonSize;
+        HeightRequest = ButtonSize;
+
+        // Larger than the button it is centred on, and drawn over what is next to it.
+        var padSize = (MapPad.Radius + EdgeRoom) * 2;
+        _pad = new GraphicsView
+        {
+            WidthRequest = padSize,
+            HeightRequest = padSize,
+            Margin = new Thickness((ButtonSize - padSize) / 2),
+            BackgroundColor = Colors.Transparent,
+            InputTransparent = true,
+            IsVisible = false,
+            Drawable = new PadDrawable(this),
+        };
+        _button = new GraphicsView
+        {
+            // Room for the shadow under the button.
+            WidthRequest = ButtonSize + ButtonShadowRoom * 2,
+            HeightRequest = ButtonSize + ButtonShadowRoom * 2,
+            Margin = new Thickness(-ButtonShadowRoom),
+            BackgroundColor = Colors.Transparent,
+            Drawable = new ButtonDrawable(this),
+        };
+        SemanticProperties.SetDescription(_button, AppResources.MapPad);
+        SemanticProperties.SetHint(_button, AppResources.MapPadHint);
+        Children.Add(_pad);
+        Children.Add(_button);
 
         _timer = Dispatcher.CreateTimer();
         _timer.Interval = Tick;
         _timer.Tick += (_, _) => Report();
 
-        StartInteraction += (_, e) => OnDown(e.Touches.FirstOrDefault());
-        DragInteraction += (_, e) => OnMove(e.Touches.FirstOrDefault());
-        EndInteraction += (_, _) => OnUp(canceled: false);
-        CancelInteraction += (_, _) => OnUp(canceled: true);
+        _button.StartInteraction += (_, e) => OnDown(e.Touches.FirstOrDefault());
+        _button.DragInteraction += (_, e) => OnMove(e.Touches.FirstOrDefault());
+        _button.EndInteraction += (_, _) => OnUp();
+        _button.CancelInteraction += (_, _) => OnUp();
         Unloaded += (_, _) => _timer.Stop();
     }
 
-    PointF FromCentre(PointF touch) => new(touch.X - (float)(Width / 2), touch.Y - (float)(Height / 2));
+    const float ButtonShadowRoom = 8;
+
+    PointF FromCentre(PointF touch) => new(touch.X - (float)(_button.Width / 2), touch.Y - (float)(_button.Height / 2));
+
+    void Redraw()
+    {
+        _pad.IsVisible = _touching;
+        _pad.Invalidate();
+        _button.Invalidate();
+    }
 
     void OnDown(PointF touch)
     {
         _finger = _down = FromCentre(touch);
-        _downAt = _lastTick = DateTime.UtcNow;
+        _lastTick = DateTime.UtcNow;
         _touching = true;
         _moved = false;
         _zoomChange = 0;
@@ -90,14 +123,14 @@ public class MapThumbPad : GraphicsView
         _angle = MapPad.Angle(_finger.X, _finger.Y);
         Started?.Invoke(this, EventArgs.Empty);
         _timer.Start();
-        Invalidate();
+        Redraw();
     }
 
     void OnMove(PointF touch)
     {
         if (!_touching) return;
         _finger = FromCentre(touch);
-        if (_finger.Distance(_down) > TapSlop) _moved = true;
+        if (_finger.Distance(_down) > MoveSlop) _moved = true;
 
         var zone = MapPad.ZoneAt(_finger.Distance(PointF.Zero), _zone);
         var angle = MapPad.Angle(_finger.X, _finger.Y);
@@ -115,7 +148,7 @@ public class MapThumbPad : GraphicsView
         }
         _zone = zone;
         _angle = angle;
-        Invalidate();
+        Redraw();
     }
 
     // The sign in the middle follows the turn, but not a finger's wobble.
@@ -127,20 +160,16 @@ public class MapThumbPad : GraphicsView
         if (Math.Abs(_turned) >= TurnShown) _turning = Math.Sign(_turned);
     }
 
-    void OnUp(bool canceled)
+    void OnUp()
     {
         if (!_touching) return;
         _timer.Stop();
         Report();
-        var tapped = !canceled && !_moved && DateTime.UtcNow - _downAt < TapTime;
         _touching = false;
         _zone = null;
         _turning = 0;
         _finger = PointF.Zero;
-        Invalidate();
-
-        var step = tapped ? MapPad.StepAt(_down.X, _down.Y) : 0;
-        if (step != 0) Stepped?.Invoke(this, step);
+        Redraw();
     }
 
     void Report()
@@ -156,6 +185,43 @@ public class MapThumbPad : GraphicsView
         Moved?.Invoke(this, new MoveEventArgs(vx * seconds, vy * seconds, zoomChange));
     }
 
+    // The button at rest: a paper disc like the my-location button, with the pad's knob and the four
+    // ways it moves the map.
+    sealed class ButtonDrawable(MapThumbPad pad) : IDrawable
+    {
+        public void Draw(ICanvas canvas, RectF dirtyRect)
+        {
+            if (pad._touching) return;
+            var centre = dirtyRect.Center;
+            var radius = ButtonSize / 2;
+
+            canvas.SaveState();
+            canvas.SetShadow(new SizeF(0, 2), 6, NavyDeep.WithAlpha(0.18f));
+            canvas.FillColor = PaperCard;
+            canvas.FillCircle(centre, radius);
+            canvas.RestoreState();
+            canvas.StrokeColor = PaperEdge;
+            canvas.StrokeSize = 1;
+            canvas.DrawCircle(centre, radius - 0.5f);
+
+            canvas.FillColor = Navy;
+            canvas.FillCircle(centre, 6);
+            canvas.StrokeColor = Navy;
+            canvas.StrokeSize = 2;
+            canvas.StrokeLineCap = LineCap.Round;
+            canvas.StrokeLineJoin = LineJoin.Round;
+            const float Tip = 17, Back = 13, Half = 4;
+            foreach (var (x, y) in new[] { (1, 0), (-1, 0), (0, 1), (0, -1) })
+            {
+                var path = new PathF();
+                path.MoveTo(centre.X + x * Back - y * Half, centre.Y + y * Back - x * Half);
+                path.LineTo(centre.X + x * Tip, centre.Y + y * Tip);
+                path.LineTo(centre.X + x * Back + y * Half, centre.Y + y * Back + x * Half);
+                canvas.DrawPath(path);
+            }
+        }
+    }
+
     sealed class PadDrawable(MapThumbPad pad) : IDrawable
     {
         public void Draw(ICanvas canvas, RectF dirtyRect)
@@ -166,7 +232,7 @@ public class MapThumbPad : GraphicsView
             var zooming = pad._zone == MapPad.Zone.Zoom;
 
             // See-through, so the map shows under the pad. No shadow: it would show through the paper.
-            canvas.FillColor = PaperCard.WithAlpha(pad._touching ? PadOpacityInUse : PadOpacity);
+            canvas.FillColor = PaperCard.WithAlpha(PadOpacity);
             canvas.FillCircle(centre, radius);
 
             // The ring lights up while it is zooming.
@@ -204,7 +270,7 @@ public class MapThumbPad : GraphicsView
             }
 
             var (kx, ky) = MapPad.KnobOffset(pad._finger.X, pad._finger.Y, radius - KnobRadius);
-            canvas.FillColor = Navy.WithAlpha(pad._touching ? 0.9f : 0.8f);
+            canvas.FillColor = Navy.WithAlpha(0.9f);
             canvas.FillCircle(centre.X + (float)kx, centre.Y + (float)ky, KnobRadius);
         }
 

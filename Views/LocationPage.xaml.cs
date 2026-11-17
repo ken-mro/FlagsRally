@@ -45,8 +45,6 @@ public partial class LocationPage : ContentPage
     void OnThumbPadMoved(object? sender, Controls.MapThumbPad.MoveEventArgs e) =>
         _viewModel.PadMove(e.PanX, e.PanY, e.ZoomChange);
 
-    async void OnThumbPadStepped(object? sender, int step) => await _viewModel.ZoomStepAsync(step);
-
     protected override async void OnAppearing()
     {
         base.OnAppearing();
