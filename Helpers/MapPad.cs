@@ -3,7 +3,8 @@ namespace FlagsRally.Helpers;
 /// <summary>
 /// How the map's thumb pad turns a finger's position into camera moves. Inside the inner circle the
 /// pad is a joystick: the map keeps moving the way the finger leans, faster the further out.
-/// On the ring around it, sliding round the pad zooms: clockwise in, anticlockwise out.
+/// The ring around it is a second joystick, for the zoom: from where the finger came onto the ring,
+/// a slide clockwise zooms in and one anticlockwise zooms out, faster the further round it goes.
 /// All lengths are device-independent units measured from the pad's centre.
 /// </summary>
 public static class MapPad
@@ -25,8 +26,14 @@ public static class MapPad
     /// <summary>The map's speed with the finger at the inner circle's edge, in units per second.</summary>
     public const double MaxPanSpeed = 700;
 
-    /// <summary>Sliding this far round the pad changes the zoom by one level.</summary>
-    public const double RadiansPerLevel = Math.PI / 3;
+    /// <summary>A finger this close (in radians) to where it came onto the ring zooms nothing.</summary>
+    public const double ZoomDeadAngle = Math.PI / 22.5;   // 8 degrees
+
+    /// <summary>The slide round the ring that gives <see cref="MaxZoomSpeed"/>; it counts no further.</summary>
+    public const double ZoomFullAngle = Math.PI * 2 / 3;   // 120 degrees
+
+    /// <summary>The fastest zoom, in levels per second.</summary>
+    public const double MaxZoomSpeed = 4;
 
     /// <summary>The zone a finger is in, given the zone it was in (null when it has just gone down).</summary>
     public static Zone ZoneAt(double distance, Zone? current) => current switch
@@ -51,13 +58,33 @@ public static class MapPad
     /// <summary>The finger's angle round the pad; it grows clockwise on screen (y points down).</summary>
     public static double Angle(double x, double y) => Math.Atan2(y, x);
 
-    /// <summary>The zoom change for a finger that went from one angle to another, the short way round.</summary>
-    public static double ZoomChange(double fromAngle, double toAngle)
+    /// <summary>How far a finger turned from one angle to another, the short way round; clockwise is positive.</summary>
+    public static double Turn(double fromAngle, double toAngle)
     {
         var turned = toAngle - fromAngle;
         if (turned > Math.PI) turned -= 2 * Math.PI;
         if (turned <= -Math.PI) turned += 2 * Math.PI;
-        return turned / RadiansPerLevel;
+        return turned;
+    }
+
+    /// <summary>
+    /// The slide after one more move of the finger, kept to <see cref="ZoomFullAngle"/> either way so a
+    /// finger that goes most of the way round does not come out on the other side.
+    /// </summary>
+    public static double Slide(double slide, double fromAngle, double toAngle) =>
+        Math.Clamp(slide + Turn(fromAngle, toAngle), -ZoomFullAngle, ZoomFullAngle);
+
+    /// <summary>
+    /// The zoom's speed in levels per second for a finger that has slid <paramref name="slide"/> radians
+    /// round the ring from where it came on: in for clockwise, slow near the start and rising to
+    /// <see cref="MaxZoomSpeed"/>.
+    /// </summary>
+    public static double ZoomSpeed(double slide)
+    {
+        var size = Math.Abs(slide);
+        if (size <= ZoomDeadAngle) return 0;
+        var part = Math.Min(1, (size - ZoomDeadAngle) / (ZoomFullAngle - ZoomDeadAngle));
+        return Math.Sign(slide) * MaxZoomSpeed * part * part;
     }
 
     /// <summary>Where the knob sits: with the finger, but kept inside the pad.</summary>

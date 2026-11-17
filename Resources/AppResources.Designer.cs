@@ -1972,7 +1972,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Touch and hold to open the pad. Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Lift your thumb to close it..
+        ///   Looks up a localized string similar to Touch and hold to open the pad. Lean your thumb inside the circle to move the map. Slide out to the ring to zoom: clockwise from there zooms in, the other way out, faster the further you slide. Lift your thumb to close it..
         /// </summary>
         internal static string MapPadHint {
             get {

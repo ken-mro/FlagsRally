@@ -44,23 +44,54 @@ public class MapPadTests
     }
 
     [Fact]
-    public void Clockwise_round_the_ring_zooms_in_and_the_other_way_out()
+    public void Clockwise_from_where_the_finger_came_on_zooms_in_and_the_other_way_out()
     {
-        // From the top (12 o'clock) to the right (3 o'clock) is clockwise on screen.
         var top = MapPad.Angle(0, -50);
         var right = MapPad.Angle(50, 0);
-        Assert.Equal(Math.PI / 2 / MapPad.RadiansPerLevel, MapPad.ZoomChange(top, right), 6);
-        Assert.Equal(-Math.PI / 2 / MapPad.RadiansPerLevel, MapPad.ZoomChange(right, top), 6);
+        Assert.True(MapPad.ZoomSpeed(MapPad.Slide(0, top, right)) > 0);
+        Assert.True(MapPad.ZoomSpeed(MapPad.Slide(0, right, top)) < 0);
+        Assert.Equal(-MapPad.ZoomSpeed(Math.PI / 2), MapPad.ZoomSpeed(-Math.PI / 2), 9);
+    }
+
+    [Fact]
+    public void The_zoom_is_faster_the_further_round_the_finger_slides()
+    {
+        Assert.Equal(0, MapPad.ZoomSpeed(0));
+        Assert.Equal(0, MapPad.ZoomSpeed(MapPad.ZoomDeadAngle));   // a resting thumb does not zoom
+        var little = MapPad.ZoomSpeed(Math.PI / 6);
+        var more = MapPad.ZoomSpeed(Math.PI / 3);
+        Assert.True(0 < little && little < more && more < MapPad.MaxZoomSpeed);
+        Assert.Equal(MapPad.MaxZoomSpeed, MapPad.ZoomSpeed(MapPad.ZoomFullAngle), 9);
+        Assert.Equal(MapPad.MaxZoomSpeed, MapPad.ZoomSpeed(Math.PI), 9);
     }
 
     [Fact]
     public void Passing_nine_oclock_does_not_jump()
     {
-        // The angle wraps from +180 to −180 degrees at the left; the turn is still a small one.
         var justAbove = MapPad.Angle(-50, -1);
         var justBelow = MapPad.Angle(-50, 1);
-        Assert.True(Math.Abs(MapPad.ZoomChange(justAbove, justBelow)) < 0.1);
-        Assert.True(MapPad.ZoomChange(justBelow, justAbove) > 0);   // 8 to 10 o'clock is clockwise
+        Assert.True(Math.Abs(MapPad.Turn(justAbove, justBelow)) < 0.1);
+        Assert.True(MapPad.Turn(justBelow, justAbove) > 0);   // 8 to 10 o'clock is clockwise
+    }
+
+    [Fact]
+    public void A_finger_that_goes_most_of_the_way_round_keeps_zooming_the_same_way()
+    {
+        // Clockwise in steps of 30 degrees, 300 degrees in all: still zooming in, at full speed.
+        var slide = 0.0;
+        for (var degrees = 0; degrees < 300; degrees += 30)
+        {
+            slide = MapPad.Slide(slide, AngleAt(degrees), AngleAt(degrees + 30));
+        }
+        Assert.Equal(MapPad.ZoomFullAngle, slide, 9);
+        Assert.Equal(MapPad.MaxZoomSpeed, MapPad.ZoomSpeed(slide), 9);
+    }
+
+    // A finger's angle as the pad sees it (between −180 and 180 degrees) after going this far round.
+    static double AngleAt(int degrees)
+    {
+        var radians = degrees * Math.PI / 180;
+        return MapPad.Angle(Math.Cos(radians), Math.Sin(radians));
     }
 
     [Theory]
