@@ -5,15 +5,18 @@ namespace FlagsRallyTests.Helpers;
 public class MapPadTests
 {
     [Theory]
-    [InlineData(-5, 0, null)]                 // too short to tell
-    [InlineData(0, -13, null)]
-    [InlineData(-20, 0, MapPad.Mode.Move)]    // to the left
-    [InlineData(-20, -8, MapPad.Mode.Move)]   // mostly to the left
-    [InlineData(18, 3, MapPad.Mode.Move)]     // to the right counts too
-    [InlineData(0, -20, MapPad.Mode.Zoom)]    // up
-    [InlineData(-8, -20, MapPad.Mode.Zoom)]   // mostly up
-    [InlineData(2, 16, MapPad.Mode.Zoom)]     // down counts too
-    public void The_first_slide_chooses_the_pad(double x, double y, MapPad.Mode? mode)
+    [InlineData(-20, 0, null)]                 // not far enough yet
+    [InlineData(0, -40, null)]
+    [InlineData(-60, -45, null)]               // nor on the way to either
+    [InlineData(60, 0, null)]                  // right and down open nothing
+    [InlineData(0, 80, null)]
+    [InlineData(-70, 0, MapPad.Mode.Move)]     // at the place to the left
+    [InlineData(-75, -20, MapPad.Mode.Move)]
+    [InlineData(0, -50, MapPad.Mode.Zoom)]     // at the place above
+    [InlineData(-20, -55, MapPad.Mode.Zoom)]
+    [InlineData(-90, -55, MapPad.Mode.Move)]   // past both: the one it is further past
+    [InlineData(-72, -70, MapPad.Mode.Zoom)]
+    public void A_finger_that_reaches_the_place_to_the_left_or_above_opens_that_pad(double x, double y, MapPad.Mode? mode)
     {
         Assert.Equal(mode, MapPad.ModeAt(x, y));
     }

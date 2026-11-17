@@ -1,29 +1,34 @@
 namespace FlagsRally.Helpers;
 
 /// <summary>
-/// How the map's thumb controller turns a finger's position into camera moves. The first slide from
-/// where the finger came down chooses a pad: sideways for the move pad, up or down for the zoom pad.
-/// The pad opens with its middle under the finger, and both pads are joysticks: the further the
-/// finger is from the middle, the faster. The move pad moves the map the way the finger leans. The
-/// zoom pad zooms in for a finger above its middle and out for one below.
-/// All lengths are device-independent units; positions are measured from the pad's middle.
+/// How the map's thumb controller turns a finger's position into camera moves. A finger that slides
+/// from the controller's button to one of two places opens a pad there: to the left for the move pad,
+/// up for the zoom pad. The pad opens with its middle under the finger, and both pads are joysticks:
+/// the further the finger is from the middle, the faster. The move pad moves the map the way the
+/// finger leans. The zoom pad zooms in for a finger above its middle and out for one below.
+/// All lengths are device-independent units.
 /// </summary>
 public static class MapPad
 {
     public enum Mode { Move, Zoom }
 
-    /// <summary>How far the finger slides from where it came down before a pad opens.</summary>
-    public const double ModeSlop = 14;
+    /// <summary>How far to the left of the button's centre the finger goes to open the move pad.</summary>
+    public const double MoveSwitch = 70;
+
+    /// <summary>How far above the button's centre the finger goes to open the zoom pad.</summary>
+    public const double ZoomSwitch = 50;
 
     /// <summary>
-    /// The pad chosen by a finger that has slid (<paramref name="x"/>, <paramref name="y"/>) from where
-    /// it came down: none yet for a short slide, the move pad for a slide more sideways than upright,
-    /// the zoom pad otherwise.
+    /// The pad opened by a finger at (<paramref name="x"/>, <paramref name="y"/>) from the button's
+    /// centre: none until it is <see cref="MoveSwitch"/> to the left (the move pad) or
+    /// <see cref="ZoomSwitch"/> up (the zoom pad); for a finger past both, the one it is further past.
     /// </summary>
     public static Mode? ModeAt(double x, double y)
     {
-        if (Math.Sqrt(x * x + y * y) < ModeSlop) return null;
-        return Math.Abs(x) >= Math.Abs(y) ? Mode.Move : Mode.Zoom;
+        var left = -x / MoveSwitch;
+        var up = -y / ZoomSwitch;
+        if (left < 1 && up < 1) return null;
+        return left >= up ? Mode.Move : Mode.Zoom;
     }
 
     /// <summary>The move pad's radius.</summary>
