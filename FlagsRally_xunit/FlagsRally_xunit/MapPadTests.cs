@@ -5,42 +5,52 @@ namespace FlagsRallyTests.Helpers;
 public class MapPadTests
 {
     [Fact]
-    public void A_finger_starts_moving_the_map_inside_the_circle_and_zooming_on_the_ring()
+    public void The_hole_rests_the_inner_ring_zooms_and_the_outer_ring_moves_the_map()
     {
-        Assert.Equal(MapPad.Zone.Pan, MapPad.ZoneAt(10, null));
-        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.RingStart + 1, null));
+        Assert.Equal(MapPad.Zone.Rest, MapPad.ZoneAt(0, null));
+        Assert.Equal(MapPad.Zone.Rest, MapPad.ZoneAt(MapPad.HoleRadius - 1, MapPad.Zone.Rest));
+        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.HoleRadius + 1, MapPad.Zone.Rest));
+        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.PanStart - 1, MapPad.Zone.Zoom));
+        Assert.Equal(MapPad.Zone.Pan, MapPad.ZoneAt(MapPad.PanStart + 1, MapPad.Zone.Zoom));
     }
 
     [Fact]
-    public void The_edge_of_the_ring_does_not_flicker()
+    public void The_edges_of_the_rings_do_not_flicker()
     {
-        // Out past the ring's start: zooming. A little way back in: still zooming.
-        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.RingStart + 1, MapPad.Zone.Pan));
-        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.RingStart - 5, MapPad.Zone.Zoom));
-        // Well inside again: moving the map.
-        Assert.Equal(MapPad.Zone.Pan, MapPad.ZoneAt(MapPad.RingLeave - 1, MapPad.Zone.Zoom));
-        // A finger past the pad's edge keeps zooming.
-        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.Radius * 3, MapPad.Zone.Zoom));
+        // Just back inside the outer ring: still moving the map. Well inside: zooming.
+        Assert.Equal(MapPad.Zone.Pan, MapPad.ZoneAt(MapPad.PanStart - 3, MapPad.Zone.Pan));
+        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.PanLeave - 1, MapPad.Zone.Pan));
+        // Just back inside the hole's edge: still zooming. Well inside: resting.
+        Assert.Equal(MapPad.Zone.Zoom, MapPad.ZoneAt(MapPad.HoleRadius - 2, MapPad.Zone.Zoom));
+        Assert.Equal(MapPad.Zone.Rest, MapPad.ZoneAt(MapPad.HoleReturn - 1, MapPad.Zone.Zoom));
+        // A finger past the pad's edge keeps moving the map.
+        Assert.Equal(MapPad.Zone.Pan, MapPad.ZoneAt(MapPad.Radius * 3, MapPad.Zone.Pan));
+        // A fast finger can go from the outer ring to the hole in one move.
+        Assert.Equal(MapPad.Zone.Rest, MapPad.ZoneAt(2, MapPad.Zone.Pan));
     }
 
     [Fact]
     public void The_map_moves_the_way_the_finger_leans_faster_further_out()
     {
+        // Nothing in the hole or on the inner ring.
         Assert.Equal((0, 0), MapPad.PanVelocity(2, -3));
+        Assert.Equal((0, 0), MapPad.PanVelocity(MapPad.PanStart - 1, 0));
 
-        var (slowX, slowY) = MapPad.PanVelocity(12, 0);
-        var (fastX, fastY) = MapPad.PanVelocity(30, 0);
+        var (slowX, slowY) = MapPad.PanVelocity(MapPad.PanStart + 6, 0);
+        var (fastX, fastY) = MapPad.PanVelocity(MapPad.PanStart + 20, 0);
         Assert.True(slowX > 0 && fastX > slowX);
         Assert.Equal(0, slowY);
         Assert.Equal(0, fastY);
 
-        var (upX, upY) = MapPad.PanVelocity(0, -MapPad.RingStart);
+        var (upX, upY) = MapPad.PanVelocity(0, -MapPad.Radius);
         Assert.Equal(0, upX, 6);
-        Assert.Equal(-MapPad.MaxPanSpeed, upY, 6);
+        Assert.Equal(-MapPad.PanSpeedAtEdge, upY, 6);
 
-        // Never faster than the top speed.
+        // Faster still past the pad's edge, up to a top speed.
+        var (_, past) = MapPad.PanVelocity(0, MapPad.Radius + 8);
         var (_, far) = MapPad.PanVelocity(0, 500);
-        Assert.Equal(MapPad.MaxPanSpeed, far, 6);
+        Assert.True(past > MapPad.PanSpeedAtEdge && far > past);
+        Assert.Equal(MapPad.PanSpeedAtEdge * MapPad.PanReach * MapPad.PanReach, far, 6);
     }
 
     [Fact]

@@ -1,35 +1,45 @@
 namespace FlagsRally.Helpers;
 
 /// <summary>
-/// How the map's thumb pad turns a finger's position into camera moves. Inside the inner circle the
-/// pad is a joystick: the map keeps moving the way the finger leans, faster the further out.
-/// The ring around it is a second joystick, for the zoom: from where the finger came onto the ring,
-/// a slide clockwise zooms in and one anticlockwise zooms out, faster the further round it goes.
+/// How the map's thumb pad turns a finger's position into camera moves. The pad is two rings round
+/// a hole where the thumb rests. The inner ring is a joystick for the zoom: from where the finger
+/// came onto it, a slide clockwise zooms in and one anticlockwise zooms out, faster the further round.
+/// The outer ring is a joystick for the map: it keeps moving the way the finger leans, faster the
+/// further out, also past the pad's edge.
 /// All lengths are device-independent units measured from the pad's centre.
 /// </summary>
 public static class MapPad
 {
-    public enum Zone { Pan, Zoom }
+    public enum Zone { Rest, Zoom, Pan }
 
-    /// <summary>The pad's radius, to the outside of the ring.</summary>
+    /// <summary>The pad's radius, to the outside of the outer ring.</summary>
     public const double Radius = 64;
 
-    /// <summary>Where the ring starts.</summary>
-    public const double RingStart = 38;
+    /// <summary>The hole in the middle, where a finger changes nothing. The inner ring starts here.</summary>
+    public const double HoleRadius = 14;
 
-    /// <summary>How far back in the finger has to come to leave the ring, so the edge does not flicker.</summary>
-    public const double RingLeave = 28;
+    /// <summary>How far back in the finger has to come to leave the inner ring, so the edge does not flicker.</summary>
+    public const double HoleReturn = 10;
 
-    /// <summary>A finger this close to the centre moves nothing.</summary>
-    public const double DeadZone = 6;
+    /// <summary>Where the inner ring ends and the outer ring starts.</summary>
+    public const double PanStart = 38;
 
-    /// <summary>The map's speed with the finger at the inner circle's edge, in units per second.</summary>
-    public const double MaxPanSpeed = 700;
+    /// <summary>How far back in the finger has to come to leave the outer ring.</summary>
+    public const double PanLeave = 31;
 
-    /// <summary>A finger this close (in radians) to where it came onto the ring zooms nothing.</summary>
+    /// <summary>The map's speed with the finger at the pad's edge, in units per second.</summary>
+    public const double PanSpeedAtEdge = 1100;
+
+    /// <summary>
+    /// How far past the pad's edge the speed keeps rising, as a part of the outer ring's width: at 1.5
+    /// the finger can go half a ring's width past the edge, for 2.25 times the speed at the edge.
+    /// </summary>
+    public const double PanReach = 1.5;
+
+    /// <summary>A finger this close (in radians) to where it came onto the inner ring zooms nothing.</summary>
     public const double ZoomDeadAngle = Math.PI / 22.5;   // 8 degrees
 
-    /// <summary>The slide round the ring that gives <see cref="MaxZoomSpeed"/>; it counts no further.</summary>
+    /// <summary>The slide round the inner ring that gives <see cref="MaxZoomSpeed"/>; it counts no further.</summary>
     public const double ZoomFullAngle = Math.PI * 2 / 3;   // 120 degrees
 
     /// <summary>The fastest zoom, in levels per second.</summary>
@@ -38,20 +48,22 @@ public static class MapPad
     /// <summary>The zone a finger is in, given the zone it was in (null when it has just gone down).</summary>
     public static Zone ZoneAt(double distance, Zone? current) => current switch
     {
-        Zone.Zoom => distance < RingLeave ? Zone.Pan : Zone.Zoom,
-        _ => distance > RingStart ? Zone.Zoom : Zone.Pan,
+        Zone.Pan => distance >= PanLeave ? Zone.Pan : distance >= HoleReturn ? Zone.Zoom : Zone.Rest,
+        Zone.Zoom => distance > PanStart ? Zone.Pan : distance >= HoleReturn ? Zone.Zoom : Zone.Rest,
+        _ => distance > PanStart ? Zone.Pan : distance > HoleRadius ? Zone.Zoom : Zone.Rest,
     };
 
     /// <summary>
-    /// The map's speed for a finger at (<paramref name="x"/>, <paramref name="y"/>): in the finger's
-    /// direction, slow near the centre for small corrections and rising to <see cref="MaxPanSpeed"/>.
+    /// The map's speed for a finger on the outer ring at (<paramref name="x"/>, <paramref name="y"/>):
+    /// in the finger's direction, slow where the ring starts for small corrections,
+    /// <see cref="PanSpeedAtEdge"/> at the pad's edge and still rising a little way past it.
     /// </summary>
     public static (double X, double Y) PanVelocity(double x, double y)
     {
         var distance = Math.Sqrt(x * x + y * y);
-        if (distance <= DeadZone) return (0, 0);
-        var lean = Math.Min(1, (distance - DeadZone) / (RingStart - DeadZone));
-        var speed = MaxPanSpeed * lean * lean;
+        if (distance <= PanStart) return (0, 0);
+        var lean = Math.Min(PanReach, (distance - PanStart) / (Radius - PanStart));
+        var speed = PanSpeedAtEdge * lean * lean;
         return (x / distance * speed, y / distance * speed);
     }
 
