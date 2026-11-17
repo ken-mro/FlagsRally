@@ -753,9 +753,15 @@
     <value>OK</value>
   </data>
   <data name="MapPad" xml:space="preserve">
-    <value>Map controller</value>
+    <value>Move the map</value>
   </data>
   <data name="MapPadHint" xml:space="preserve">
-    <value>Touch and hold to open the pad. On the inner ring, slide clockwise to zoom in or the other way to zoom out, faster the further you slide. On the outer ring, the map moves the way your thumb leans, faster the further out. Lift your thumb to close it.</value>
+    <value>Touch and hold to open the pad. The map moves the way your thumb leans, faster the further out. Lift your thumb to close it.</value>
+  </data>
+  <data name="MapZoomPad" xml:space="preserve">
+    <value>Zoom the map</value>
+  </data>
+  <data name="MapZoomPadHint" xml:space="preserve">
+    <value>Touch and hold to open the pad. Slide up to zoom in or down to zoom out, faster the further you slide. Lift your thumb to close it.</value>
   </data>
 </root>

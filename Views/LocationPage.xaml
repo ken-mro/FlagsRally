@@ -109,10 +109,14 @@
                     SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
                     Source="my_location.png" />
             </Border>
-            <!--  One thumb moves the map (lean inside the circle) and zooms it (slide round the ring).
-                  A small button until it is touched; the pad then opens round the thumb.  -->
+            <!--  Two thumb controllers, each a small button until it is touched; its pad then opens round
+                  the thumb. The first zooms (above its middle in, below out), the second moves the map.  -->
             <controls:MapThumbPad
-                x:Name="thumbPad"
+                Kind="Zoom"
+                Moved="OnThumbPadMoved"
+                Started="OnThumbPadStarted" />
+            <controls:MapThumbPad
+                Kind="Move"
                 Moved="OnThumbPadMoved"
                 Started="OnThumbPadStarted" />
         </VerticalStackLayout>
