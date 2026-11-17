@@ -1972,7 +1972,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Tap plus or minus for one step..
+        ///   Looks up a localized string similar to Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Tap plus on its right or minus on its left for one step..
         /// </summary>
         internal static string MapPadHint {
             get {

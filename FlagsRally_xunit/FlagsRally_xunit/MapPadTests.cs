@@ -114,4 +114,16 @@ public class MapPadTests
         var (latitude, _) = MapPad.MoveTarget(84, 0, 2, 0, 0, -5000);
         Assert.Equal(85, latitude, 6);
     }
+
+    [Theory]
+    [InlineData(51, 0, 1)]      // on ＋, at the ring's right
+    [InlineData(-51, 0, -1)]    // on −, at its left
+    [InlineData(45, -20, 1)]
+    [InlineData(0, -51, 0)]     // the top and bottom of the ring have no sign
+    [InlineData(0, 51, 0)]
+    [InlineData(20, 0, 0)]      // inside the inner circle
+    public void A_tap_on_the_ring_s_right_zooms_in_and_on_its_left_out(double x, double y, int step)
+    {
+        Assert.Equal(step, MapPad.StepAt(x, y));
+    }
 }

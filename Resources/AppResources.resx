@@ -756,6 +756,6 @@
     <value>Map controller</value>
   </data>
   <data name="MapPadHint" xml:space="preserve">
-    <value>Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Tap plus or minus for one step.</value>
+    <value>Lean your thumb inside the circle to move the map. Slide round the ring to zoom: clockwise in, the other way out. Tap plus on its right or minus on its left for one step.</value>
   </data>
 </root>

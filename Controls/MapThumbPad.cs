@@ -6,7 +6,8 @@ namespace FlagsRally.Controls;
 /// <summary>
 /// The map's one-thumb controller. Lean the thumb inside the inner circle and the map keeps moving
 /// that way; slide it out to the ring and round the pad to zoom (clockwise in), without lifting.
-/// A short tap on the ring's ＋ or − zooms one step. While the thumb is down the pad reports, about
+/// A short tap on the ring's ＋ (right) or − (left) zooms one step. The pad is see-through so the map
+/// shows under it, and the arrows on the ring and the sign in the middle say which way zooms in. While the thumb is down the pad reports, about
 /// 30 times a second, how far the map should move and how much the zoom changed (<see cref="Moved"/>);
 /// the page turns that into camera moves with <see cref="MapPad"/>.
 /// </summary>
@@ -31,13 +32,14 @@ public class MapThumbPad : GraphicsView
     const float ShadowRoom = 6;
     const float KnobRadius = 15;
     const double TapSlop = 8;
+    const double TurnShown = 0.08;   // zoom levels one way before the middle shows ＋ or −
+    const float PadOpacity = 0.5f;
+    const float PadOpacityInUse = 0.62f;
     static readonly TimeSpan TapTime = TimeSpan.FromMilliseconds(300);
     static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
 
     static readonly Color Navy = AppColors.Get("Navy", "#182A52");
-    static readonly Color NavyDeep = AppColors.Get("NavyDeep", "#0F1C3A");
     static readonly Color PaperCard = AppColors.Get("PaperCard", "#FBF8F0");
-    static readonly Color PaperEdge = AppColors.Get("PaperEdge", "#DDD2BA");
 
     readonly IDispatcherTimer _timer;
     PointF _finger;              // from the pad's centre
@@ -49,6 +51,8 @@ public class MapThumbPad : GraphicsView
     MapPad.Zone? _zone;
     double _angle;
     double _zoomChange;          // gathered between reports
+    double _turned;              // zoom levels since the turn last changed direction
+    int _turning;                // +1 while zooming in, −1 out, 0 before the ring has been turned
 
     public MapThumbPad()
     {
@@ -80,6 +84,8 @@ public class MapThumbPad : GraphicsView
         _touching = true;
         _moved = false;
         _zoomChange = 0;
+        _turned = 0;
+        _turning = 0;
         _zone = MapPad.ZoneAt(_finger.Distance(PointF.Zero), null);
         _angle = MapPad.Angle(_finger.X, _finger.Y);
         Started?.Invoke(this, EventArgs.Empty);
@@ -98,11 +104,27 @@ public class MapThumbPad : GraphicsView
         // Only a slide along the ring zooms; the move that entered it does not.
         if (zone == MapPad.Zone.Zoom && _zone == MapPad.Zone.Zoom)
         {
-            _zoomChange += MapPad.ZoomChange(_angle, angle);
+            var change = MapPad.ZoomChange(_angle, angle);
+            _zoomChange += change;
+            NoteTurn(change);
+        }
+        else if (zone != MapPad.Zone.Zoom)
+        {
+            _turning = 0;
+            _turned = 0;
         }
         _zone = zone;
         _angle = angle;
         Invalidate();
+    }
+
+    // The sign in the middle follows the turn, but not a finger's wobble.
+    void NoteTurn(double change)
+    {
+        if (change == 0) return;
+        if (Math.Sign(change) != Math.Sign(_turned)) _turned = 0;
+        _turned += change;
+        if (Math.Abs(_turned) >= TurnShown) _turning = Math.Sign(_turned);
     }
 
     void OnUp(bool canceled)
@@ -111,17 +133,14 @@ public class MapThumbPad : GraphicsView
         _timer.Stop();
         Report();
         var tapped = !canceled && !_moved && DateTime.UtcNow - _downAt < TapTime;
-        var wasOnRing = _zone == MapPad.Zone.Zoom;
         _touching = false;
         _zone = null;
+        _turning = 0;
         _finger = PointF.Zero;
         Invalidate();
 
-        // The ring's upper part is ＋, its lower part −.
-        if (tapped && wasOnRing && Math.Abs(_down.Y) > Math.Abs(_down.X))
-        {
-            Stepped?.Invoke(this, _down.Y < 0 ? 1 : -1);
-        }
+        var step = tapped ? MapPad.StepAt(_down.X, _down.Y) : 0;
+        if (step != 0) Stepped?.Invoke(this, step);
     }
 
     void Report()
@@ -146,37 +165,83 @@ public class MapThumbPad : GraphicsView
             var ring = (float)MapPad.RingStart;
             var zooming = pad._zone == MapPad.Zone.Zoom;
 
-            canvas.SaveState();
-            canvas.SetShadow(new SizeF(0, 2), 6, NavyDeep.WithAlpha(0.18f));
-            canvas.FillColor = PaperCard;
+            // See-through, so the map shows under the pad. No shadow: it would show through the paper.
+            canvas.FillColor = PaperCard.WithAlpha(pad._touching ? PadOpacityInUse : PadOpacity);
             canvas.FillCircle(centre, radius);
-            canvas.RestoreState();
 
             // The ring lights up while it is zooming.
             if (zooming)
             {
-                canvas.StrokeColor = Navy.WithAlpha(0.14f);
+                canvas.StrokeColor = Navy.WithAlpha(0.16f);
                 canvas.StrokeSize = radius - ring;
                 canvas.DrawCircle(centre, (radius + ring) / 2);
             }
 
-            canvas.StrokeColor = PaperEdge;
+            canvas.StrokeColor = Navy.WithAlpha(0.45f);
             canvas.StrokeSize = 1;
             canvas.DrawCircle(centre, radius);
+            canvas.StrokeColor = Navy.WithAlpha(0.25f);
             canvas.DrawCircle(centre, ring);
 
-            // ＋ and − on the ring, drawn as strokes so they look the same on Android and iOS.
+            // Like a dial: ＋ on the right with an arrow turning clockwise towards it, − on the left
+            // with one turning the other way. Drawn as strokes so they look the same on Android and iOS.
             var mark = (radius + ring) / 2;
             canvas.StrokeColor = Navy;
             canvas.StrokeSize = 2;
             canvas.StrokeLineCap = LineCap.Round;
-            canvas.DrawLine(centre.X - 6, centre.Y - mark, centre.X + 6, centre.Y - mark);
-            canvas.DrawLine(centre.X, centre.Y - mark - 6, centre.X, centre.Y - mark + 6);
-            canvas.DrawLine(centre.X - 6, centre.Y + mark, centre.X + 6, centre.Y + mark);
+            canvas.StrokeLineJoin = LineJoin.Round;
+            DrawSign(canvas, centre.X + mark, centre.Y, 6, plus: true);
+            DrawSign(canvas, centre.X - mark, centre.Y, 6, plus: false);
+            canvas.StrokeSize = 1.5f;
+            DrawTurnArrow(canvas, centre, mark, -72, -24);
+            DrawTurnArrow(canvas, centre, mark, -108, -156);
+
+            // While the ring is turned, the middle says what the turn is doing.
+            if (zooming && pad._turning != 0)
+            {
+                canvas.StrokeSize = 3;
+                DrawSign(canvas, centre.X, centre.Y, 11, plus: pad._turning > 0);
+            }
 
             var (kx, ky) = MapPad.KnobOffset(pad._finger.X, pad._finger.Y, radius - KnobRadius);
-            canvas.FillColor = Navy;
+            canvas.FillColor = Navy.WithAlpha(pad._touching ? 0.9f : 0.8f);
             canvas.FillCircle(centre.X + (float)kx, centre.Y + (float)ky, KnobRadius);
+        }
+
+        static void DrawSign(ICanvas canvas, float x, float y, float half, bool plus)
+        {
+            canvas.DrawLine(x - half, y, x + half, y);
+            if (plus) canvas.DrawLine(x, y - half, x, y + half);
+        }
+
+        // An arc round the pad from one angle to another (degrees, growing clockwise from the right),
+        // with an arrowhead at its end.
+        static void DrawTurnArrow(ICanvas canvas, PointF centre, float radius, float fromDegrees, float toDegrees)
+        {
+            PointF At(double degrees)
+            {
+                var a = degrees * Math.PI / 180;
+                return new PointF(centre.X + radius * (float)Math.Cos(a), centre.Y + radius * (float)Math.Sin(a));
+            }
+
+            var path = new PathF();
+            const int Steps = 12;
+            for (var i = 0; i <= Steps; i++)
+            {
+                var point = At(fromDegrees + (toDegrees - fromDegrees) * i / Steps);
+                if (i == 0) path.MoveTo(point); else path.LineTo(point);
+            }
+            canvas.DrawPath(path);
+
+            // The head's two strokes lean back from the way the arc is going.
+            var tip = At(toDegrees);
+            var going = (toDegrees + (toDegrees > fromDegrees ? 90 : -90)) * Math.PI / 180;
+            const float Head = 5.5f;
+            foreach (var lean in new[] { 2.5, -2.5 })
+            {
+                var a = going + lean;
+                canvas.DrawLine(tip.X, tip.Y, tip.X + Head * (float)Math.Cos(a), tip.Y + Head * (float)Math.Sin(a));
+            }
         }
     }
 }

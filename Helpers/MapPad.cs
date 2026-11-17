@@ -3,7 +3,8 @@ namespace FlagsRally.Helpers;
 /// <summary>
 /// How the map's thumb pad turns a finger's position into camera moves. Inside the inner circle the
 /// pad is a joystick: the map keeps moving the way the finger leans, faster the further out.
-/// On the ring around it, sliding round the pad zooms: clockwise in, anticlockwise out.
+/// On the ring around it, sliding round the pad zooms: clockwise in, anticlockwise out, and a tap
+/// on its right or left side zooms one step in or out.
 /// All lengths are device-independent units measured from the pad's centre.
 /// </summary>
 public static class MapPad
@@ -58,6 +59,17 @@ public static class MapPad
         if (turned > Math.PI) turned -= 2 * Math.PI;
         if (turned <= -Math.PI) turned += 2 * Math.PI;
         return turned / RadiansPerLevel;
+    }
+
+    /// <summary>
+    /// The zoom step for a tap at (<paramref name="x"/>, <paramref name="y"/>): +1 on the ring's
+    /// right side, where ＋ is drawn, −1 on its left side (−), 0 anywhere else.
+    /// </summary>
+    public static int StepAt(double x, double y)
+    {
+        var distance = Math.Sqrt(x * x + y * y);
+        if (distance <= RingStart || Math.Abs(x) <= Math.Abs(y)) return 0;
+        return x > 0 ? 1 : -1;
     }
 
     /// <summary>Where the knob sits: with the finger, but kept inside the pad.</summary>
