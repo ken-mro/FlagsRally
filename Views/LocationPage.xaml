@@ -29,7 +29,7 @@
             SelectedPin="{Binding SelectedPin}" />
 
         <!--  Map buttons at the bottom right, lifted above whichever panel is showing (see code-behind):
-              directions and open-in-Maps for the place on the card, like Google's own toolbar, then my location with the thumb controller at its left.
+              directions and open-in-Maps for the place on the card, like Google's own toolbar, then the thumb controller and my location.
               They are above the panels (ZIndex), so the pad that opens round the controller's button shows over them.  -->
         <VerticalStackLayout
             x:Name="mapButtons"
@@ -87,40 +87,35 @@
                 </Border>
             </VerticalStackLayout>
             <!--  The thumb controller, a small button until it is touched. The first slide chooses:
-                  sideways opens the pad that moves the map, up or down the one that zooms it. It stands
-                  far enough to the left of the my-location button for its pads to open clear of it:
-                  the move pad reaches 68 to the right of the controller's centre, the button starts at 70.  -->
-            <HorizontalStackLayout HorizontalOptions="End" Spacing="46">
-                <!--  Lifted so that its pads, which reach 68 below its centre, end above the button under the map
-                      (the buttons stand 12 above it: 24 + 12 + 34 = 70).  -->
-                <controls:MapThumbPad
-                    Margin="0,0,0,34"
-                    Moved="OnThumbPadMoved"
-                    Started="OnThumbPadStarted" />
-                <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
-                <Border
-                    BackgroundColor="{StaticResource PaperCard}"
-                    HeightRequest="48"
-                    VerticalOptions="End"
-                    Stroke="{StaticResource PaperEdge}"
-                    StrokeShape="RoundRectangle 24"
-                    StrokeThickness="1"
-                    WidthRequest="48">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="{StaticResource NavyDeep}"
-                            Opacity="0.18"
-                            Radius="8"
-                            Offset="0,2" />
-                    </Border.Shadow>
-                    <ImageButton
-                        Padding="11"
-                        BackgroundColor="Transparent"
-                        Command="{Binding ShowMyLocationCommand}"
-                        SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
-                        Source="my_location.png" />
-                </Border>
-            </HorizontalStackLayout>
+                  sideways shows the pad that moves the map, up or down the one that zooms it. The pads
+                  are drawn to the left of these buttons, not under the thumb, so they cover none of them.  -->
+            <controls:MapThumbPad
+                HorizontalOptions="End"
+                Moved="OnThumbPadMoved"
+                Started="OnThumbPadStarted" />
+            <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
+            <Border
+                BackgroundColor="{StaticResource PaperCard}"
+                HeightRequest="48"
+                HorizontalOptions="End"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 24"
+                StrokeThickness="1"
+                WidthRequest="48">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="{StaticResource NavyDeep}"
+                        Opacity="0.18"
+                        Radius="8"
+                        Offset="0,2" />
+                </Border.Shadow>
+                <ImageButton
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    Command="{Binding ShowMyLocationCommand}"
+                    SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
+                    Source="my_location.png" />
+            </Border>
         </VerticalStackLayout>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),
