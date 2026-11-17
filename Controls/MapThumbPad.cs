@@ -39,6 +39,9 @@ public class MapThumbPad : Grid
     // The marks shown before the first slide: how far from the button's centre, and how large.
     const float MarkAway = 46;
     const float MarkRadius = 17;
+    // The move pad's middle goes no further right of the button's centre than this, so the disc keeps
+    // clear of the my-location button at the controller's right (see LocationPage.xaml).
+    const float MoveMiddleMaxX = 4;
     static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(33);
 
     static readonly Color Navy = AppColors.Get("Navy", "#182A52");
@@ -124,7 +127,12 @@ public class MapThumbPad : Grid
         {
             // _middle is still where the thumb came down. The pad opens with its middle under the thumb.
             _mode = MapPad.ModeAt(_finger.X - _middle.X, _finger.Y - _middle.Y);
-            if (_mode is not null) _middle = _finger;
+            if (_mode is not null)
+            {
+                _middle = _mode == MapPad.Mode.Move
+                    ? new PointF(Math.Min(_finger.X, MoveMiddleMaxX), _finger.Y)
+                    : _finger;
+            }
         }
         Redraw();
     }
