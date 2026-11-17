@@ -1972,7 +1972,7 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Touch and slide to one of the two marks. At the mark on the left, a pad opens that moves the map the way your thumb leans, faster the further out. At the mark above, a pad opens that zooms: above its middle zooms in, below zooms out. Lift your thumb to close it..
+        ///   Looks up a localized string similar to Touch and slide to one of the two marks, or tap this button and then a mark. At the mark on the left, a pad opens that moves the map the way your thumb leans, faster the further out. At the mark above, a pad opens that zooms: above its middle zooms in, below zooms out. A pad opened by sliding closes when you lift your thumb; one opened by tapping stays until you tap outside it..
         /// </summary>
         internal static string MapPadHint {
             get {

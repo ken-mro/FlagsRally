@@ -31,6 +31,14 @@ public static class MapPad
         return left >= up ? Mode.Move : Mode.Zoom;
     }
 
+    /// <summary>
+    /// Whether a touch at (<paramref name="x"/>, <paramref name="y"/>) from an open pad's middle is on
+    /// that pad, allowing <paramref name="slop"/> round it for a thumb.
+    /// </summary>
+    public static bool IsOnPad(Mode mode, double x, double y, double slop) => mode == Mode.Move
+        ? Math.Sqrt(x * x + y * y) <= Radius + slop
+        : Math.Abs(x) <= ZoomHalfWidth + slop && Math.Abs(y) <= ZoomHalfHeight + slop;
+
     /// <summary>The move pad's radius.</summary>
     public const double Radius = 64;
 

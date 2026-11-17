@@ -4,18 +4,23 @@ using FlagsRally.Resources;
 namespace FlagsRally.Controls;
 
 /// <summary>
-/// The map's thumb controller. At rest it is a small round button above the my-location button. Put a
-/// thumb on it and two marks show where to slide: one to the left, one above. When the thumb reaches
-/// the place to the left, the move pad opens with its middle under the thumb: a ring, on which the map
-/// keeps moving the way the thumb leans, faster the further out, and not at all in the hole in its
-/// middle. When the thumb reaches the place above, the zoom pad opens with its middle under the thumb:
-/// an upright bar with ＋ at the top and − at the bottom, where above the middle zooms in and below
-/// zooms out, faster the further from the middle. The two places are far enough from the my-location
-/// button that a pad opened there does not cover it. Lift the thumb and the pad closes to the button
-/// again. The pads are see-through so the map shows under them, and only the button takes touches, so
-/// the map round it can still be dragged. While the thumb is down the controller reports, about 30
-/// times a second, how far the map should move and how much the zoom changed (<see cref="Moved"/>);
-/// the page turns that into camera moves with <see cref="MapPad"/>.
+/// The map's thumb controller. At rest it is a small round button above the my-location button. It
+/// opens a pad to move the map and one to zoom it, each with its middle at a mark: one to the left
+/// of the button, one above, far enough from the my-location button that a pad there does not cover it.
+/// The move pad is a ring, on which the map keeps moving the way the thumb leans, faster the further
+/// out, and not at all in the hole in its middle. The zoom pad is an upright bar with ＋ at the top and
+/// − at the bottom, where above the middle zooms in and below zooms out, faster the further away.
+/// <para>
+/// There are two ways to use it. Slide: put a thumb on the button, slide to a mark, and the pad opens
+/// with its middle under the thumb; lift the thumb and it closes. Tap: tap the button and the marks
+/// stay; tap a mark and its pad stays open at the mark, to be pressed and dragged as often as wanted;
+/// a tap anywhere else puts the button back. The page passes on the touches that land outside the
+/// button while something is kept open (<see cref="TouchDown"/>).
+/// </para>
+/// The pads are see-through so the map shows under them. While nothing is kept open only the button
+/// takes touches, so the map round it can still be dragged. While a thumb is on a pad the controller
+/// reports, about 30 times a second, how far the map should move and how much the zoom changed
+/// (<see cref="Moved"/>); the page turns that into camera moves with <see cref="MapPad"/>.
 /// </summary>
 public class MapThumbPad : Grid
 {
@@ -28,8 +33,16 @@ public class MapThumbPad : Grid
         public double ZoomChange { get; } = zoomChange;
     }
 
+    /// <summary>A thumb has come down; what it does next starts from the camera as it is now.</summary>
     public event EventHandler? Started;
     public event EventHandler<MoveEventArgs>? Moved;
+
+    /// <summary>
+    /// The marks or a pad are now kept open after a tap (true), or no longer (false). While they are,
+    /// the page passes on the touches outside this view's button (<see cref="TouchDown"/>): the marks
+    /// and the pads are drawn outside the button's bounds, where a view gets no touches of its own.
+    /// </summary>
+    public event EventHandler<bool>? KeptOpenChanged;
 
     /// <summary>The button's size, the same as the map's other round buttons.</summary>
     const float ButtonSize = 48;
@@ -53,14 +66,27 @@ public class MapThumbPad : Grid
     static readonly Color PaperCard = AppColors.Get("PaperCard", "#FBF8F0");
     static readonly Color PaperEdge = AppColors.Get("PaperEdge", "#DDD2BA");
 
+    // A touch this short that moved this little is a tap.
+    static readonly TimeSpan TapTime = TimeSpan.FromMilliseconds(350);
+    const float TapSlop = 10;
+    // How far round a mark or a pad a touch still counts as on it.
+    const float MarkSlop = 9;
+    const float PadSlop = 6;
+    static readonly PointF MoveMarkAt = new(-(float)MapPad.MoveSwitch, 0);
+    static readonly PointF ZoomMarkAt = new(0, -(float)MapPad.ZoomSwitch);
+
     readonly IDispatcherTimer _timer;
-    readonly GraphicsView _button;   // takes the touches
-    readonly GraphicsView _pad;      // drawn round the button while a thumb is down
+    readonly GraphicsView _button;   // takes the touches at rest
+    readonly GraphicsView _pad;      // the marks and the pads; drawn only, it takes no touches
     PointF _finger;                  // from the button's centre
     PointF _middle;                  // the open pad's middle, from the button's centre
-    MapPad.Mode? _mode;              // null until the first slide has chosen
+    PointF _down;                    // where this touch came down
+    DateTime _downAt;
+    MapPad.Mode? _mode;              // the open pad; null while only the marks show
     DateTime _lastTick;
-    bool _touching;
+    bool _touching;                  // a thumb is down
+    bool _keptOpen;                  // the marks or a pad stay after the thumb lifts (opened by a tap)
+    bool _slid;                      // this touch has moved too far to be a tap
 
     public MapThumbPad()
     {
@@ -96,56 +122,137 @@ public class MapThumbPad : Grid
         _timer.Interval = Tick;
         _timer.Tick += (_, _) => Report();
 
-        _button.StartInteraction += (_, e) => OnDown(e.Touches.FirstOrDefault());
-        _button.DragInteraction += (_, e) => OnMove(e.Touches.FirstOrDefault());
-        _button.EndInteraction += (_, _) => OnUp();
-        _button.CancelInteraction += (_, _) => OnUp();
+        _button.StartInteraction += (_, e) => OnDown(FromCentre(e.Touches.FirstOrDefault()));
+        _button.DragInteraction += (_, e) => OnMove(FromCentre(e.Touches.FirstOrDefault()));
+        _button.EndInteraction += (_, _) => OnUp(canceled: false);
+        _button.CancelInteraction += (_, _) => OnUp(canceled: true);
         Unloaded += (_, _) => _timer.Stop();
     }
 
     PointF FromCentre(PointF touch) => new(touch.X - (float)(_button.Width / 2), touch.Y - (float)(_button.Height / 2));
 
+    /// <summary>
+    /// A touch outside the button, passed on by the page while the marks or a pad are kept open.
+    /// The point is measured from this view's centre, which is the button's.
+    /// </summary>
+    public void TouchDown(PointF fromCentre) => OnDown(fromCentre);
+
+    public void TouchMove(PointF fromCentre) => OnMove(fromCentre);
+
+    public void TouchUp(bool canceled) => OnUp(canceled);
+
+    bool Showing => _touching || _keptOpen;
+
     void Redraw()
     {
-        _pad.IsVisible = _touching;
+        _pad.IsVisible = Showing;
         _pad.Invalidate();
         _button.Invalidate();
     }
 
-    void OnDown(PointF touch)
+    void SetKeptOpen(bool keptOpen)
     {
-        _finger = FromCentre(touch);
-        _middle = PointF.Zero;
+        if (_keptOpen == keptOpen) return;
+        _keptOpen = keptOpen;
+        KeptOpenChanged?.Invoke(this, keptOpen);
+    }
+
+    /// <summary>Back to the button: the marks or the pad that a tap left open go.</summary>
+    public void Close()
+    {
+        _timer.Stop();
+        _touching = false;
         _mode = null;
-        _lastTick = DateTime.UtcNow;
+        _finger = _middle = PointF.Zero;
+        SetKeptOpen(false);
+        Redraw();
+    }
+
+    void OpenPad(MapPad.Mode mode, PointF middle)
+    {
+        _mode = mode;
+        _middle = middle;
+    }
+
+    void OnDown(PointF at)
+    {
+        if (_keptOpen)
+        {
+            if (_mode is { } pad)
+            {
+                // A pad is kept open: a touch on it works it, one beside it closes it.
+                if (!MapPad.IsOnPad(pad, at.X - _middle.X, at.Y - _middle.Y, PadSlop))
+                {
+                    Close();
+                    return;
+                }
+            }
+            else if (at.Distance(MoveMarkAt) <= MarkRadius + MarkSlop) OpenPad(MapPad.Mode.Move, MoveMarkAt);
+            else if (at.Distance(ZoomMarkAt) <= MarkRadius + MarkSlop) OpenPad(MapPad.Mode.Zoom, ZoomMarkAt);
+            else if (at.Distance(PointF.Zero) > ButtonSize / 2 + MarkSlop)
+            {
+                // Beside the marks and the button.
+                Close();
+                return;
+            }
+        }
+
+        _finger = _down = at;
+        _downAt = _lastTick = DateTime.UtcNow;
         _touching = true;
+        _slid = false;
         Started?.Invoke(this, EventArgs.Empty);
         _timer.Start();
         Redraw();
     }
 
-    void OnMove(PointF touch)
+    void OnMove(PointF at)
     {
         if (!_touching) return;
-        _finger = FromCentre(touch);
+        _finger = at;
+        if (_finger.Distance(_down) > TapSlop) _slid = true;
         if (_mode is null)
         {
-            _mode = MapPad.ModeAt(_finger.X, _finger.Y);
-            if (_mode == MapPad.Mode.Move) _middle = new PointF(_finger.X, Math.Min(_finger.Y, MoveMiddleMaxY));
-            else if (_mode == MapPad.Mode.Zoom) _middle = new PointF(Math.Min(_finger.X, ZoomMiddleMaxX), _finger.Y);
+            // Sliding from the button: the pad opens with its middle under the thumb.
+            var mode = MapPad.ModeAt(_finger.X, _finger.Y);
+            if (mode == MapPad.Mode.Move) OpenPad(mode.Value, new PointF(_finger.X, Math.Min(_finger.Y, MoveMiddleMaxY)));
+            else if (mode == MapPad.Mode.Zoom) OpenPad(mode.Value, new PointF(Math.Min(_finger.X, ZoomMiddleMaxX), _finger.Y));
+            // A pad opened by sliding closes when the thumb lifts, also if the marks were kept open.
+            if (mode is not null) SetKeptOpen(false);
         }
         Redraw();
     }
 
-    void OnUp()
+    void OnUp(bool canceled)
     {
         if (!_touching) return;
         _timer.Stop();
         Report();
         _touching = false;
-        _mode = null;
-        _finger = _middle = PointF.Zero;
-        Redraw();
+        var tapped = !canceled && !_slid && DateTime.UtcNow - _downAt < TapTime;
+
+        if (_mode is not null && _keptOpen)
+        {
+            // A pad kept open stays, with its knob back in the middle.
+            _finger = _middle;
+            Redraw();
+            return;
+        }
+        if (_mode is null && tapped)
+        {
+            if (_keptOpen)
+            {
+                // A second tap on the button puts the marks away.
+                Close();
+                return;
+            }
+            // A tap on the button: the marks stay, to be tapped.
+            _finger = PointF.Zero;
+            SetKeptOpen(true);
+            Redraw();
+            return;
+        }
+        Close();
     }
 
     void Report()
@@ -208,19 +315,20 @@ public class MapThumbPad : Grid
         {
             // The open pad is drawn over where the button is.
             if (pad._mode is not null) return;
+            var active = pad.Showing;
             var centre = dirtyRect.Center;
             var radius = ButtonSize / 2;
 
             canvas.SaveState();
             canvas.SetShadow(new SizeF(0, 2), 6, NavyDeep.WithAlpha(0.18f));
-            canvas.FillColor = pad._touching ? Navy : PaperCard;
+            canvas.FillColor = active ? Navy : PaperCard;
             canvas.FillCircle(centre, radius);
             canvas.RestoreState();
-            canvas.StrokeColor = pad._touching ? Navy : PaperEdge;
+            canvas.StrokeColor = active ? Navy : PaperEdge;
             canvas.StrokeSize = 1;
             canvas.DrawCircle(centre, radius - 0.5f);
 
-            var ink = pad._touching ? PaperCard : Navy;
+            var ink = active ? PaperCard : Navy;
             canvas.StrokeColor = ink;
             canvas.StrokeSize = 1.6f;
             canvas.StrokeLineCap = LineCap.Round;
@@ -251,8 +359,8 @@ public class MapThumbPad : Grid
         // Before a pad is open: the two places to slide to.
         static void DrawChoice(ICanvas canvas, PointF button)
         {
-            var move = new PointF(button.X - (float)MapPad.MoveSwitch, button.Y);
-            var zoom = new PointF(button.X, button.Y - (float)MapPad.ZoomSwitch);
+            var move = new PointF(button.X + MoveMarkAt.X, button.Y + MoveMarkAt.Y);
+            var zoom = new PointF(button.X + ZoomMarkAt.X, button.Y + ZoomMarkAt.Y);
             // A track from the button to each place.
             canvas.StrokeColor = Navy.WithAlpha(0.35f);
             canvas.StrokeSize = 2;

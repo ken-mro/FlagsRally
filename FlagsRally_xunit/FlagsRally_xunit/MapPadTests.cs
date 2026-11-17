@@ -21,6 +21,21 @@ public class MapPadTests
         Assert.Equal(mode, MapPad.ModeAt(x, y));
     }
 
+    [Theory]
+    [InlineData(MapPad.Mode.Move, 0, 0, true)]
+    [InlineData(MapPad.Mode.Move, -60, 20, true)]
+    [InlineData(MapPad.Mode.Move, 68, 0, true)]      // just off the ring: still the thumb's
+    [InlineData(MapPad.Mode.Move, 60, 60, false)]    // past its corner
+    [InlineData(MapPad.Mode.Move, 0, -90, false)]
+    [InlineData(MapPad.Mode.Zoom, 0, -78, true)]
+    [InlineData(MapPad.Mode.Zoom, 30, 70, true)]
+    [InlineData(MapPad.Mode.Zoom, 60, 0, false)]     // beside the bar
+    [InlineData(MapPad.Mode.Zoom, 0, 100, false)]    // under it
+    public void A_touch_is_on_the_open_pad_or_outside_it(MapPad.Mode mode, double x, double y, bool onPad)
+    {
+        Assert.Equal(onPad, MapPad.IsOnPad(mode, x, y, slop: 6));
+    }
+
     [Fact]
     public void The_map_moves_the_way_the_finger_leans_faster_further_out()
     {

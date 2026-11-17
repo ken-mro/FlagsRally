@@ -42,8 +42,52 @@ public partial class LocationPage : ContentPage
 
     void OnThumbPadStarted(object? sender, EventArgs e) => _viewModel.BeginPadMove();
 
+    // The controller's marks or a pad stay open after a tap. Meanwhile the catcher over the page passes
+    // its touches to the controller, measured from the controller's centre.
+    void OnThumbPadKeptOpenChanged(object? sender, bool keptOpen) => padCatcher.IsVisible = keptOpen;
+
+    void OnPadCatcherStarted(object? sender, TouchEventArgs e) => thumbPad.TouchDown(FromThumbPad(e));
+
+    void OnPadCatcherDragged(object? sender, TouchEventArgs e) => thumbPad.TouchMove(FromThumbPad(e));
+
+    void OnPadCatcherEnded(object? sender, TouchEventArgs e) => thumbPad.TouchUp(canceled: false);
+
+    void OnPadCatcherCanceled(object? sender, EventArgs e) => thumbPad.TouchUp(canceled: true);
+
+    PointF FromThumbPad(TouchEventArgs e)
+    {
+        var touch = e.Touches.FirstOrDefault();
+        var (catcherX, catcherY) = PositionOnPage(padCatcher);
+        var (padX, padY) = PositionOnPage(thumbPad);
+        return new PointF(
+            (float)(catcherX + touch.X - (padX + thumbPad.Width / 2)),
+            (float)(catcherY + touch.Y - (padY + thumbPad.Height / 2)));
+    }
+
+    // Where a view's top left corner is on the page, with the moves its parents were given
+    // (the map buttons are lifted above the panels with a translation).
+    static (double X, double Y) PositionOnPage(VisualElement view)
+    {
+        double x = 0, y = 0;
+        for (Element? element = view; element is VisualElement visual and not Page; element = element.Parent)
+        {
+            x += visual.X + visual.TranslationX;
+            y += visual.Y + visual.TranslationY;
+        }
+        return (x, y);
+    }
+
+    void OnMapButtonPressed(object? sender, EventArgs e) => thumbPad.Close();
+
     void OnThumbPadMoved(object? sender, Controls.MapThumbPad.MoveEventArgs e) =>
         _viewModel.PadMove(e.PanX, e.PanY, e.ZoomChange);
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        // Leaving the tab is a tap outside the controller too.
+        thumbPad.Close();
+    }
 
     protected override async void OnAppearing()
     {
