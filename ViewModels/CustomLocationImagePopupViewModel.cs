@@ -30,11 +30,20 @@ public partial class CustomLocationImagePopupViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isAnimationEnabled;
 
-    public CustomLocationImagePopupViewModel(CustomLocation customLocation, bool isAnimationEnabled = true, byte[]? downloadedImage = null)
+    /// <summary>
+    /// Just checked in, but the stamp could not be downloaded: the popup says so and where to see it
+    /// later (pressed down then), instead of showing an empty frame.
+    /// </summary>
+    public bool IsStampUnseen { get; }
+
+    public bool ShowsStamp => !IsStampUnseen;
+
+    public CustomLocationImagePopupViewModel(CustomLocation customLocation, bool isAnimationEnabled = true, byte[]? downloadedImage = null, bool isStampUnseen = false)
     {
         ImageUrl = customLocation.ImageUrl;
-        StampImage = downloadedImage is not null
-            ? ImageSource.FromStream(() => new MemoryStream(downloadedImage))
+        IsStampUnseen = isStampUnseen;
+        StampImage = isStampUnseen ? null
+            : downloadedImage is not null ? ImageSource.FromStream(() => new MemoryStream(downloadedImage))
             : string.IsNullOrEmpty(ImageUrl) ? null : new UriImageSource { Uri = new Uri(ImageUrl), CachingEnabled = true };
         LocationTitle = customLocation.Title;
         Height = customLocation.Board.Height;

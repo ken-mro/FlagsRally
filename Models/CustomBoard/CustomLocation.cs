@@ -22,6 +22,10 @@ public class CustomLocation
     /// 1-based position in the board's JSON.
     /// </summary>
     public int SortIndex { get; init; }
+    /// <summary>
+    /// Checked in without its stamp's image; the celebration waits until the stamp is first looked at.
+    /// </summary>
+    public bool StampUnseen { get; init; }
     public bool HasBeenVisited => ArrivalDate is not null;
     public bool HasNotBeenVisited => !HasBeenVisited;
     public string ArrivalDateString => ArrivalDate is DateTime date ? StampDate.FormatSpaced(date) : string.Empty;

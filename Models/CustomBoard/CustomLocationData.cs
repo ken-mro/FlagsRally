@@ -26,6 +26,12 @@ public class CustomLocationData
     public DateTime? ArrivalDate { get; set; } = null;
 
     /// <summary>
+    /// Checked in where the stamp's image could not be downloaded: the stamp is pressed down (with
+    /// confetti) the first time it is looked at with a connection, instead of at the check-in.
+    /// </summary>
+    public bool StampUnseen { get; set; }
+
+    /// <summary>
     /// 1-based position in the board's JSON; rows saved before the order was recorded get their rowid.
     /// </summary>
     public int SortIndex { get; set; }

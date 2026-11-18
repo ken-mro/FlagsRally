@@ -28,6 +28,16 @@
                 IsVisible="{Binding IsAnimationEnabled}"
                 Text="{x:Static strings:AppResources.NewStamp}"
                 TextColor="{StaticResource Stamp}" />
+            <!--  Just checked in, without the stamp's image  -->
+            <Label
+                FontAutoScalingEnabled="True"
+                FontAttributes="Bold"
+                FontSize="15"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding IsStampUnseen}"
+                Text="{x:Static strings:AppResources.CheckedIn}"
+                TextColor="{StaticResource Stamp}" />
             <controls:StampLabel
                 FontAutoScalingEnabled="True"
                 FontSize="Title"
@@ -41,7 +51,18 @@
             Grid.Row="1"
             Aspect="AspectFit"
             HeightRequest="{Binding Height}"
+            IsVisible="{Binding ShowsStamp}"
             Source="{Binding StampImage}" />
+        <Label
+            Grid.Row="1"
+            FontAutoScalingEnabled="True"
+            FontSize="15"
+            HorizontalTextAlignment="Center"
+            IsVisible="{Binding IsStampUnseen}"
+            LineBreakMode="WordWrap"
+            Text="{x:Static strings:AppResources.StampSavedForLater}"
+            TextColor="{StaticResource Ink}"
+            VerticalOptions="Center" />
         <!--  Started in code once the stamp has loaded, so the confetti does not fall on an empty frame  -->
         <skia:SKLottieView
             x:Name="celebration"

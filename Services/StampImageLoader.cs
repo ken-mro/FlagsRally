@@ -2,12 +2,12 @@ namespace FlagsRally.Services;
 
 /// <summary>
 /// Downloads a board's stamp image before a check-in is recorded, so the stamp that is pressed down
-/// (with confetti) is never an empty frame. A slow, missing or broken image gives null, and the
-/// check-in is left for later.
+/// (with confetti) is never an empty frame. A slow, missing or broken image gives null; the check-in
+/// is then recorded without it and the stamp is pressed down when it is first looked at.
 /// </summary>
 public class StampImageLoader
 {
-    /// <summary>How long a check-in waits for its stamp before asking to try again later.</summary>
+    /// <summary>How long a check-in waits for its stamp before going ahead without it.</summary>
     public static readonly TimeSpan Timeout = TimeSpan.FromSeconds(15);
 
     /// <summary>Stamps are small pictures; anything larger is not one.</summary>

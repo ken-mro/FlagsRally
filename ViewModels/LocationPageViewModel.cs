@@ -227,7 +227,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
                 await ShowArrivalStampPopup(pin.Id);
                 break;
             case CustomLocationPin { IsVisited: true } pin:
-                await ShowCustomLocationImagePopup(pin.CustomLocationKey, celebrates: false);
+                await ViewCustomLocationStampAsync(pin.CustomLocationKey);
                 break;
         }
     }
@@ -1113,30 +1113,16 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         }
 
         // The stamp is fetched before the check-in is recorded, while the map's busy indicator turns,
-        // so the stamp pressed down afterwards is never an empty frame. Without it nothing is recorded
-        // and the place can be checked in again later.
+        // so the stamp pressed down afterwards is never an empty frame. Without it (no signal at a
+        // mountain shrine, say) the check-in is still recorded, since the place may be hard to come
+        // back to, and the stamp is pressed down the first time it is looked at with a connection.
         var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(selectedCustomLocationPin.CustomLocationKey);
-        byte[]? stampImage = null;
-        if (!string.IsNullOrEmpty(customLocation?.ImageUrl))
-        {
-            IsLoadingStamp = true;
-            try
-            {
-                stampImage = await _stampImageLoader.LoadAsync(customLocation.ImageUrl);
-            }
-            finally
-            {
-                IsLoadingStamp = false;
-            }
-            if (stampImage is null)
-            {
-                await ShowAlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
-                return;
-            }
-        }
+        var hasStampImage = !string.IsNullOrEmpty(customLocation?.ImageUrl);
+        var stampImage = hasStampImage ? await LoadStampImageAsync(customLocation!.ImageUrl) : null;
+        var stampUnseen = hasStampImage && stampImage is null;
 
         var now = DateTime.Now;
-        var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(selectedCustomLocationPin.CustomLocationKey, now);
+        var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(selectedCustomLocationPin.CustomLocationKey, now, stampUnseen);
 
         if (affectedRow != 1)
         {
@@ -1151,11 +1137,55 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         ArrivalMap.SelectedPin = selectedCustomLocationPin;
 
         // Show the image popup for successful check-in
-        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, celebrates: true, stampImage);
+        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, celebrates: !stampUnseen, stampImage, stampUnseen);
+    }
+
+    async Task<byte[]?> LoadStampImageAsync(string url)
+    {
+        IsLoadingStamp = true;
+        try
+        {
+            return await _stampImageLoader.LoadAsync(url);
+        }
+        finally
+        {
+            IsLoadingStamp = false;
+        }
+    }
+
+    // A stamp checked in without its image is pressed down, with confetti, the first time it can be shown.
+    private async Task ViewCustomLocationStampAsync(string customLocationKey)
+    {
+        var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
+        if (customLocation is null) return;
+        if (!customLocation.StampUnseen || string.IsNullOrEmpty(customLocation.ImageUrl))
+        {
+            await ShowCustomLocationImagePopup(customLocationKey, celebrates: false);
+            return;
+        }
+
+        IsBusy = true;
+        byte[]? stampImage;
+        try
+        {
+            stampImage = await LoadStampImageAsync(customLocation.ImageUrl);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+        if (stampImage is null)
+        {
+            await ShowAlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
+            return;
+        }
+        await _customLocationDataRepository.MarkStampSeen(customLocationKey);
+        await ShowCustomLocationImagePopup(customLocationKey, celebrates: true, stampImage);
     }
 
     // The board's stamp for the place: with confetti just after checking in, without when looked at again.
-    private async Task ShowCustomLocationImagePopup(string customLocationKey, bool celebrates, byte[]? downloadedImage = null)
+    // stampUnseen: just checked in, but the stamp could not be downloaded, so the popup says where to see it later.
+    private async Task ShowCustomLocationImagePopup(string customLocationKey, bool celebrates, byte[]? downloadedImage = null, bool stampUnseen = false)
     {
         try
         {
@@ -1163,7 +1193,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
             if (customLocation is null) return;
 
-            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation, celebrates, downloadedImage);
+            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation, celebrates, downloadedImage, stampUnseen);
             var popup = new CustomLocationImagePopupView(popupViewModel);
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
 

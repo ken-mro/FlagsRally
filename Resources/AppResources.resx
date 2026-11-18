@@ -756,9 +756,15 @@
     <value>Couldn't load the stamp</value>
   </data>
   <data name="StampImageNotLoaded" xml:space="preserve">
-    <value>You haven't checked in yet. Please wait a moment and check in again, ideally where the signal is good.</value>
+    <value>The stamp's picture still couldn't be loaded. Please try again where the signal is good.</value>
   </data>
   <data name="LoadingStamp" xml:space="preserve">
     <value>Loading the stamp…</value>
+  </data>
+  <data name="CheckedIn" xml:space="preserve">
+    <value>Checked in</value>
+  </data>
+  <data name="StampSavedForLater" xml:space="preserve">
+    <value>The stamp's picture couldn't be loaded here. Open “View stamp” on this pin where the signal is good, and the stamp will be pressed then.</value>
   </data>
 </root>

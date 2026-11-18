@@ -756,9 +756,15 @@
     <value>スタンプを読み込めませんでした</value>
   </data>
   <data name="StampImageNotLoaded" xml:space="preserve">
-    <value>まだチェックインしていません。少し時間をおいて、できれば電波の良いところで、もう一度チェックインしてください。</value>
+    <value>まだスタンプの画像を読み込めません。電波の良いところで、もう一度お試しください。</value>
   </data>
   <data name="LoadingStamp" xml:space="preserve">
     <value>スタンプを読み込んでいます…</value>
+  </data>
+  <data name="CheckedIn" xml:space="preserve">
+    <value>チェックインしました</value>
+  </data>
+  <data name="StampSavedForLater" xml:space="preserve">
+    <value>ここではスタンプの画像を読み込めませんでした。電波の良いところでこのピンの「スタンプを見る」を開くと、そのときにスタンプが押されます。</value>
   </data>
 </root>
