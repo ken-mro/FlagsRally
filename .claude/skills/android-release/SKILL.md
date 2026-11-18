@@ -1,6 +1,6 @@
 ---
 name: android-release
-description: Release a FlagsRally Android version end to end - check a clean Release build on the emulator for launch crashes and other fatal bugs (fixing and re-checking until none are left), bump versionName/versionCode in AndroidManifest.xml (patch by default), open and merge the PR, write the store release notes with /release-notes, then build the signed bundle and upload it to Google Play with those notes after the user confirms. Use whenever the user wants to release, ship or put out a new Android version ("Android をリリースして", "リリース準備", "バージョンを上げて PR", "Play に出す", "Google Play にアップロード", "1.2.0 を出したい").
+description: Release a FlagsRally Android version end to end - check a clean Release build on the emulator for launch crashes and other fatal bugs (fixing and re-checking until none are left), bump versionName/versionCode in AndroidManifest.xml (patch by default), open and merge the PR, write the store release notes with /release-notes, then build the signed bundle, upload it to Google Play with those notes after the user confirms, and send it for review when asked. A release or review request that names no platform means Android and iOS together: run /ios-release for the same version too. Use whenever the user wants to release, ship or put out a new Android version ("Android をリリースして", "リリース準備", "バージョンを上げて PR", "Play に出す", "Google Play にアップロード", "審査に出して", "1.2.0 を出したい").
 ---
 
 # Release an Android version
@@ -11,7 +11,11 @@ After a short start (stage 0), five stages run in this order, each finished befo
 2. **Version bump** in `Platforms/Android/AndroidManifest.xml`.
 3. **PR and merge** through `/ship-pr`.
 4. **Release notes** for the store through `/release-notes`, saved to a file.
-5. **Upload to Google Play**: the signed bundle and exactly those release notes, after the user says yes.
+5. **Upload to Google Play**: the signed bundle and exactly those release notes, after the user says yes, and the review submission when the user asks for it.
+
+**Android and iOS together by default.** A request to release, upload or submit for review that names no platform ("リリースして", "1.4.4 を出して", "審査に出して") covers both platforms: run `/android-release` and `/ios-release` for the same version, with the same release notes file. Do only one platform when the user names it ("Android だけ", "iOS の ipa を作って"). The order is: Android stages 1–4 first (its PR puts the version and the changelog heading on `master`), then iOS stages 0–3 from that `master`, then one stop that asks about both uploads (and the review submission) together, then the uploads and the submissions, then one report for both.
+
+**Submitting for review** sends the version to the store's review and, once approved, to every user. Do it when the user asked for it ("審査に出して", "公開して", or a release request that says so). Otherwise ask about it in the same stop as the uploads, so one clear yes can cover uploading and submitting on both stores. A request to submit that names no platform covers both stores.
 
 `<scratch>` below means Claude's scratchpad directory, or another temporary folder outside the repository.
 
@@ -23,7 +27,7 @@ After a short start (stage 0), five stages run in this order, each finished befo
 
 The checks come first because a version number is a promise to Google Play: once a build with that code is uploaded, the code cannot be used again. Bumping only after the app is known to start avoids burning numbers on broken builds.
 
-**The upload is the one step that cannot be taken back.** Once a bundle is committed to Google Play its versionCode is used up for good, and a published release goes to real users. So stage 5 always stops right before the upload, shows the user what will be sent, and goes on only after a clear yes in this conversation. Earlier approval (even "release it" at the start) does not cover it. By default the release is a **draft**: Google Play has the bundle and the notes, and the user starts the rollout in the Play Console. Publish or roll out in stages only when the user asks.
+**The upload is the one step that cannot be taken back.** Once a bundle is committed to Google Play its versionCode is used up for good, and a published release goes to real users. So stage 5 always stops right before the upload, shows the user what will be sent, and goes on only after a clear yes in this conversation. Earlier approval (even "release it" at the start) does not cover it. Without a request to submit, the release is a **draft**: Google Play has the bundle and the notes, and the user starts the rollout in the Play Console. When the user asked to submit for review (see above), the release goes out with `--status completed`: Google Play reviews it and then publishes it to everyone. Roll out in stages only when the user asks.
 
 ## One-time setup (the user's, before the first upload)
 
@@ -108,8 +112,8 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
    uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --aab <bundle> --notes <scratch>/release-notes-<version>.txt --version <version> --validate-only
    ```
    It checks the notes locally (both languages present, at most 500 characters each) and that the manifest has `<version>`. It then sends the bundle and notes in an edit, has Google Play validate it and throws the edit away. Nothing is published and the versionCode stays free. Fix whatever it reports before going on.
-4. **Stop and ask the user.** Show the version and versionCode, the track (`production`), the release type (draft unless they asked otherwise), the bundle's size and the release notes block. Say that the upload uses up this versionCode for good. Wait for a clear yes in this conversation; anything else means no upload.
-5. Upload, with the same arguments as the validation but without `--validate-only`. Add `--status completed` to publish to everyone, or `--status inProgress --fraction 0.2` for a staged rollout, only when the user asked for that. The script prints `UPLOADED: ...` when Google Play has the release.
+4. **Stop and ask the user.** Show the version and versionCode, the track (`production`), the release type (draft, or sent for review when the user asked to submit), the bundle's size and the release notes block. Say that the upload uses up this versionCode for good. When iOS is released too, ask in the same message about the iOS upload (`/ios-release` stage 4) and, unless the user already asked for it, whether to submit both for review. Wait for a clear yes in this conversation; anything else means no upload.
+5. Upload, with the same arguments as the validation but without `--validate-only`. Add `--status completed` when the user asked to submit for review or publish (review, then everyone), or `--status inProgress --fraction 0.2` for a staged rollout when they asked for that. The script prints `UPLOADED: ...` when Google Play has the release.
    - If it stops with "changesNotSentForReview" (the Play Console uses managed publishing), nothing was published: tell the user, and run again with `--not-sent-for-review` only after they say yes.
 6. If the upload fails, the script deletes its edit, so nothing half-done is left. If the connection dropped during the final commit, though, Google Play may have committed it anyway. Before any second attempt, look at what the track holds: `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --show-track` (read-only). If the version is already there, it was uploaded; do not upload again. Report the error, and upload again only after the user says so.
 
@@ -119,4 +123,5 @@ Save the block exactly as shown, tags included, to `<scratch>/release-notes-<ver
 - The Release check: the number of runs, what was fixed between them, the folder with the final run's screenshots.
 - Non-fatal problems left for later.
 - The release notes from stage 4, in their code block.
-- The upload: track, release type and the script's `UPLOADED` line. For a draft, say that the rollout is started in the Play Console (Release > Production) and is theirs to start. When the user asks to send the draft out (to review and then everyone), run `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --promote --version <version> --status completed` (or `--status inProgress --fraction 0.2`): it keeps the uploaded bundle and notes and only changes the status. If the upload did not happen (no setup, the user said no), say so and what is left to do.
+- When iOS was released too, its result in the same report (`/ios-release` stage 6), so the user sees both stores' states together.
+- The upload: track, release type and the script's `UPLOADED` line. For a draft, say that the rollout is started in the Play Console (Release > Production) and is theirs to start. When the user asks later to submit for review or send the draft out (to review and then everyone), with or without naming Android, run `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --promote --version <version> --status completed` (or `--status inProgress --fraction 0.2`): it keeps the uploaded bundle and notes and only changes the status. If the upload did not happen (no setup, the user said no), say so and what is left to do.

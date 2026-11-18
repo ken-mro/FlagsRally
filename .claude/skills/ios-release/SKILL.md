@@ -1,16 +1,21 @@
 ---
 name: ios-release
-description: Release a FlagsRally iOS version - check a clean Release build on the simulator for crashes and other fatal bugs (fixing and re-checking until none are left), set CFBundleShortVersionString and bump CFBundleVersion in Platforms/iOS/Info.plist on a release/ios-* branch, build the signed .ipa with dotnet publish, and deliver it to App Store Connect after the user confirms. Use whenever the user wants to release, publish or upload an iOS version ("iOS をリリースして", "iOS の ipa を作って", "App Store Connect に上げて", "TestFlight に出したい", "build を上げて 1.2 を出す").
+description: Release a FlagsRally iOS version - check a clean Release build on the simulator for crashes and other fatal bugs (fixing and re-checking until none are left), set CFBundleShortVersionString and bump CFBundleVersion in Platforms/iOS/Info.plist on a release/ios-* branch, build the signed .ipa with dotnet publish, deliver it to App Store Connect after the user confirms, and submit it for App Review when asked. A release or review request that names no platform means Android and iOS together: run /android-release for the same version too. Use whenever the user wants to release, publish or upload an iOS version ("iOS をリリースして", "iOS の ipa を作って", "App Store Connect に上げて", "TestFlight に出したい", "審査に出して", "build を上げて 1.2 を出す").
 ---
 
 # Release an iOS version
 
-After a short start (stage 0), four stages run in this order, each finished before the next starts, and then a report (stage 5):
+After a short start (stage 0), five stages run in this order, each finished before the next starts, and then a report (stage 6):
 
 1. **Release check**: a clean Release build on the simulator must launch and run without a fatal bug. Fix and re-check until it does.
 2. **Version** in `Platforms/iOS/Info.plist`: `CFBundleShortVersionString` set, `CFBundleVersion` bumped.
 3. **Build the .ipa** with `dotnet publish`.
 4. **Deliver to App Store Connect**, after the user says yes.
+5. **Submit for App Review**, when the user asks for it.
+
+**Android and iOS together by default.** A request to release, upload or submit for review that names no platform ("リリースして", "1.4.4 を出して", "審査に出して") covers both platforms: run `/android-release` and `/ios-release` for the same version, with the same release notes file. Do only one platform when the user names it ("Android だけ", "iOS の ipa を作って"). The order is: Android stages 1–4 first (its PR puts the version and the changelog heading on `master`), then iOS stages 0–3 from that `master`, then one stop that asks about both uploads (and the review submission) together, then the uploads and the submissions, then one report for both.
+
+**Submitting for review** sends the version to the store's review and, once approved, to every user. Do it when the user asked for it ("審査に出して", "公開して", or a release request that says so). Otherwise ask about it in the same stop as the uploads, so one clear yes can cover uploading and submitting on both stores. A request to submit that names no platform covers both stores.
 
 Every step that changes files ends with its own commit (a fix is one commit per concern; the version is one commit). Steps that change nothing (checks, the build, the upload) make no commit. Nothing is pushed unless the user asks.
 
@@ -18,7 +23,7 @@ Every step that changes files ends with its own commit (a fix is one commit per 
 
 **Where the iOS numbers live:** `Platforms/iOS/Info.plist`. Its values win over `ApplicationDisplayVersion` / `ApplicationVersion` in `FlagsRally.csproj`; the .ipa carries the Info.plist numbers.
 
-**The upload is the one step that cannot be taken back.** App Store Connect accepts each build number once per version; after an upload that number is used up even if the build is never released. So stage 4 always stops right before the upload, shows what will be sent and goes on only after a clear yes in this conversation. Earlier approval ("release it") does not cover it. The upload only puts the build in App Store Connect (TestFlight); submitting it for review is the user's.
+**The upload is the one step that cannot be taken back.** App Store Connect accepts each build number once per version; after an upload that number is used up even if the build is never released. So stage 4 always stops right before the upload, shows what will be sent and goes on only after a clear yes in this conversation. Earlier approval ("release it") does not cover it. The upload only puts the build in App Store Connect (TestFlight); stage 5 submits it for review when the user asked for that.
 
 ## One-time setup (the user's, before the first upload)
 
@@ -86,14 +91,31 @@ plutil -extract CFBundleShortVersionString raw <scratch>/ipa-Info.plist; plutil 
 1. `bash .claude/skills/ios-release/scripts/upload_ipa.sh --check` reports whether the setup variables are set (never their values).
    - **Missing:** do not upload. Open the package in Transporter for the user instead: `open -a Transporter bin/Release/net10.0-ios/ios-arm64/publish/FlagsRally.ipa`, and tell them to sign in and press Deliver. Also tell them the one-time setup above lets the next release upload directly.
 2. Let Apple check the package without uploading: `bash .claude/skills/ios-release/scripts/upload_ipa.sh --validate <ipa>`. Fix whatever it reports (a build number already used means stage 2 again with a higher `--build`, then stage 3).
-3. **Stop and ask the user.** Show the version and build, the .ipa's size and the branch and commit it was built from. Say that the upload uses up this build number. Wait for a clear yes in this conversation.
+3. **Stop and ask the user.** Show the version and build, the .ipa's size and the branch and commit it was built from. Say that the upload uses up this build number. When Android is released too, this is the same message as `/android-release` stage 5 step 4. Unless the user already asked to submit for review, ask in the same message whether to submit (stage 5). Wait for a clear yes in this conversation.
 4. `bash .claude/skills/ios-release/scripts/upload_ipa.sh --upload <ipa>`. It prints `UPLOADED: ...` when App Store Connect has the build. Processing then takes a while before it appears in TestFlight.
 5. If the upload fails, report the error. Before any second attempt, ask the user to look in App Store Connect (TestFlight > iOS builds) whether the build arrived; if it did, do not upload again.
 
-## 5. Report to the user
+## 5. Submit for App Review (when the user asked for it)
+
+The version is released automatically once Apple approves it (`AFTER_APPROVAL`, as earlier versions were). The "What's New" text is the same notes file as Android's: `<scratch>/release-notes-<version>.txt` from `/android-release` stage 4. For an iOS-only release, write it with `/release-notes` first and show it to the user.
+
+1. Read-only first, to see what will be sent:
+   ```bash
+   uv run --locked .claude/skills/ios-release/scripts/submit_for_review.py --version <version> --build <N> --notes <scratch>/release-notes-<version>.txt --dry-run
+   ```
+   It prints the version's state, the build's processing state, both languages' notes and any submission already open.
+2. Submit, with the same arguments without `--dry-run`. The script creates the App Store version when it does not exist yet (App Store Connect copies the previous version's texts and screenshots into it), sets "What's New" for en-US and ja, waits up to 15 minutes for Apple to finish processing the build, attaches it, and submits. It prints `SUBMITTED: <version> (<build>) state=WAITING_FOR_REVIEW`.
+   - Still processing after the wait: run it again later; it carries on from where it stopped.
+   - No export compliance answer, another submission already with App Review, or a version in a state that cannot be submitted: the script stops without submitting. Tell the user what it printed; these are theirs to settle in App Store Connect.
+3. Its packages are pinned in `submit_for_review.py.lock` (`--locked`), as with the Android upload script, since it holds the App Store Connect key.
+
+## 6. Report to the user
 
 - The branch and its commits (carried over, fixes, version), and that nothing was pushed unless they asked.
 - The Release check: the number of runs, what was fixed between them, the folder with the final run's screenshots.
 - Fixes made on the release branch are not on `master`. Offer to bring them to `master` in a PR (a branch from `master`, cherry-pick, `/update-changelog`, `/ship-pr`).
 - Non-fatal problems left for later.
 - The .ipa path, its version and build, and the upload: the `UPLOADED` line, or that it was handed to Transporter, or why it did not happen.
+- The review submission: the `SUBMITTED` line, or that it was not asked for (the build waits in App Store Connect).
+- When Android was released too, put both stores' results in one report.
+- The version commit is on `release/ios-*`, not on `master`. Offer to bring it to `master` in a PR with `/update-changelog` and `/ship-pr`, as earlier releases did.
