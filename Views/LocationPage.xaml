@@ -438,11 +438,35 @@
             </Grid>
         </Border>
 
-        <ActivityIndicator
+        <VerticalStackLayout
             Grid.Row="0"
-            IsRunning="{Binding IsBusy}"
+            HorizontalOptions="Center"
+            InputTransparent="True"
             IsVisible="{Binding IsBusy}"
-            WidthRequest="50"
-            Color="{StaticResource Navy}" />
+            Spacing="8"
+            VerticalOptions="Center">
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsBusy}"
+                WidthRequest="50"
+                Color="{StaticResource Navy}" />
+            <!--  While a check-in waits for its stamp image  -->
+            <Border
+                Padding="12,6"
+                BackgroundColor="{StaticResource PaperCard}"
+                HorizontalOptions="Center"
+                IsVisible="{Binding IsLoadingStamp}"
+                Stroke="{StaticResource PaperEdge}"
+                StrokeShape="RoundRectangle 12">
+                <Label
+                    FontAutoScalingEnabled="True"
+                    FontSize="14"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap"
+                    MaximumWidthRequest="280"
+                    Text="{x:Static strings:AppResources.LoadingStamp}"
+                    TextColor="{StaticResource Ink}" />
+            </Border>
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

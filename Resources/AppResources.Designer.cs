@@ -1961,5 +1961,32 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("MapPadHint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't load the stamp.
+        /// </summary>
+        internal static string StampImageNotLoadedTitle {
+            get {
+                return ResourceManager.GetString("StampImageNotLoadedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven't checked in yet. Please wait a moment and check in again, ideally where the signal is good..
+        /// </summary>
+        internal static string StampImageNotLoaded {
+            get {
+                return ResourceManager.GetString("StampImageNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading the stamp….
+        /// </summary>
+        internal static string LoadingStamp {
+            get {
+                return ResourceManager.GetString("LoadingStamp", resourceCulture);
+            }
+        }
     }
 }

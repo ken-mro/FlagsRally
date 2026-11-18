@@ -41,7 +41,7 @@
             Grid.Row="1"
             Aspect="AspectFit"
             HeightRequest="{Binding Height}"
-            Source="{Binding ImageUrl}" />
+            Source="{Binding StampImage}" />
         <!--  Started in code once the stamp has loaded, so the confetti does not fall on an empty frame  -->
         <skia:SKLottieView
             x:Name="celebration"

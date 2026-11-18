@@ -29,6 +29,11 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private const int MAP_UPDATE_DELAY_MS = 100;
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly IPendingArrivalRepository _pendingArrivalRepository;
+    private readonly StampImageLoader _stampImageLoader;
+
+    /// <summary>A check-in is downloading its stamp; the busy indicator says so.</summary>
+    [ObservableProperty]
+    private bool _isLoadingStamp;
     private readonly ICustomBoardRepository _customBoardRepository;
     private readonly ICustomLocationDataRepository _customLocationDataRepository;
     private readonly CustomGeolocation _customGeolocation;
@@ -589,10 +594,11 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private const bool AllowsSimulatedLocation = false;
 #endif
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService, SharedPlaceResolver sharedPlaceResolver)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService, SharedPlaceResolver sharedPlaceResolver, StampImageLoader stampImageLoader)
     {
         _arrivalLocationRepository = arrivalLocationRepository;
         _pendingArrivalRepository = pendingArrivalRepository;
+        _stampImageLoader = stampImageLoader;
         _customBoardRepository = customBoardRepository;
         _customLocationDataRepository = customLocationDataRepository;
         _customGeolocation = customGeolocation;
@@ -1106,6 +1112,29 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             return;
         }
 
+        // The stamp is fetched before the check-in is recorded, while the map's busy indicator turns,
+        // so the stamp pressed down afterwards is never an empty frame. Without it nothing is recorded
+        // and the place can be checked in again later.
+        var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(selectedCustomLocationPin.CustomLocationKey);
+        byte[]? stampImage = null;
+        if (!string.IsNullOrEmpty(customLocation?.ImageUrl))
+        {
+            IsLoadingStamp = true;
+            try
+            {
+                stampImage = await _stampImageLoader.LoadAsync(customLocation.ImageUrl);
+            }
+            finally
+            {
+                IsLoadingStamp = false;
+            }
+            if (stampImage is null)
+            {
+                await ShowAlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
+                return;
+            }
+        }
+
         var now = DateTime.Now;
         var affectedRow = await _customLocationDataRepository.UpdateCustomLocation(selectedCustomLocationPin.CustomLocationKey, now);
 
@@ -1122,11 +1151,11 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         ArrivalMap.SelectedPin = selectedCustomLocationPin;
 
         // Show the image popup for successful check-in
-        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, celebrates: true);
+        await ShowCustomLocationImagePopup(selectedCustomLocationPin.CustomLocationKey, celebrates: true, stampImage);
     }
 
     // The board's stamp for the place: with confetti just after checking in, without when looked at again.
-    private async Task ShowCustomLocationImagePopup(string customLocationKey, bool celebrates)
+    private async Task ShowCustomLocationImagePopup(string customLocationKey, bool celebrates, byte[]? downloadedImage = null)
     {
         try
         {
@@ -1134,7 +1163,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
             if (customLocation is null) return;
 
-            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation, celebrates);
+            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation, celebrates, downloadedImage);
             var popup = new CustomLocationImagePopupView(popupViewModel);
             await Shell.Current.CurrentPage.ShowPopupAsync(popup);
 

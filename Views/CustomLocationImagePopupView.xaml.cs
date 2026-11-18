@@ -17,18 +17,18 @@ public partial class CustomLocationImagePopupView : Popup
         // Looked at again: shown as it is
         if (!viewModel.IsAnimationEnabled) return;
 
-        // Just checked in: the stamp is pressed down with confetti. It is downloaded, so the press waits
-        // until it has loaded (or failed to) and does not land on an empty frame.
+        // Just checked in: the stamp is pressed down with confetti. The check-in downloaded it first,
+        // so it only has to be decoded; the press waits for that and does not land on an empty frame.
         StampPress.Prepare(stampImage);
-        if (string.IsNullOrEmpty(viewModel.ImageUrl))
+        if (viewModel.StampImage is null)
         {
             Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(350), () => _ = PressAsync());
         }
         else
         {
             stampImage.PropertyChanged += OnStampImagePropertyChanged;
-            // A cached image may never report loading; the stamp must not stay hidden
-            Dispatcher.DispatchDelayed(TimeSpan.FromSeconds(3), () => _ = PressAsync());
+            // An image from memory may never report loading; the stamp must not stay hidden
+            Dispatcher.DispatchDelayed(TimeSpan.FromSeconds(1), () => _ = PressAsync());
         }
     }
 

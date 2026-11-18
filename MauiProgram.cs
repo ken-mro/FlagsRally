@@ -112,6 +112,7 @@ namespace FlagsRally
             builder.Services.AddTransient<BoardUpdateHistoryPage>();
             builder.Services.AddTransient<BoardUpdateHistoryPageViewModel>();
             builder.Services.AddSingleton<DriveBoardCatalog>();
+            builder.Services.AddSingleton<StampImageLoader>();
 
 #if DEBUG
             builder.Logging.AddDebug();

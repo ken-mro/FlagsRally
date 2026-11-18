@@ -3,6 +3,11 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+- **A check-in waits for its stamp before the confetti.** When a stamp trail's image was slow to load, the check-in popup could press down an empty frame and throw confetti over it. The stamp is now downloaded before the check-in is recorded, while the map's busy indicator turns with "Loading the stamp…"; the popup then shows it straight away and the confetti falls on it. If it cannot be loaded within 15 seconds (no connection, a server error, an answer that is not a picture), nothing is recorded and a notice asks to wait a moment and check in again, ideally where the signal is good. A trail without an image checks in as before.
+
 ## [1.4.3] - Unreleased
 
 ### Added
