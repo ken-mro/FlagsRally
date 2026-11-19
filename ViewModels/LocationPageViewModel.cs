@@ -1169,9 +1169,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
             if (customLocation is null) return;
 
-            var popupViewModel = new CustomLocationImagePopupViewModel(customLocation, celebrates, downloadedImage, stampUnseen);
-            var popup = new CustomLocationImagePopupView(popupViewModel);
-            await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+            await StampViewer.ShowPopupAsync(customLocation, celebrates, downloadedImage, stampUnseen);
 
         }
         catch (Exception ex)

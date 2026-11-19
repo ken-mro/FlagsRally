@@ -26,19 +26,11 @@ public class StampViewer(ICustomLocationDataRepository repository, StampImageLoa
     }
 
     /// <summary>
-    /// Shows the place's stamp in its popup. <paramref name="setLoading"/> is told while a pending stamp is
-    /// downloaded, so the page can show its spinner.
+    /// <see cref="LoadPendingStampAsync"/> for a tap: <paramref name="setLoading"/> is told while it downloads,
+    /// so the page can show its spinner, and a stamp that still cannot be had is explained in a notice.
     /// </summary>
-    public async Task ShowAsync(string key, Action<bool> setLoading)
+    public async Task<byte[]?> LoadPendingStampWithNoticeAsync(CustomLocation place, Action<bool> setLoading)
     {
-        var place = await repository.GetCustomLocationByCompositeKey(key);
-        if (place is null) return;
-        if (!place.IsStampPending || string.IsNullOrEmpty(place.ImageUrl))
-        {
-            await ShowPopupAsync(place, celebrates: false);
-            return;
-        }
-
         setLoading(true);
         byte[]? image;
         try
@@ -50,16 +42,34 @@ public class StampViewer(ICustomLocationDataRepository repository, StampImageLoa
             setLoading(false);
         }
         if (image is null)
-        {
             await AppDialogs.AlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
-            return;
-        }
-        await ShowPopupAsync(place, celebrates: true, image);
+        return image;
     }
 
-    static async Task ShowPopupAsync(CustomLocation place, bool celebrates, byte[]? image = null)
+    /// <summary>
+    /// Shows the place's stamp in its popup, pressed down with confetti if it was still pending.
+    /// </summary>
+    public async Task ShowAsync(string key, Action<bool> setLoading)
     {
-        var popup = new CustomLocationImagePopupView(new CustomLocationImagePopupViewModel(place, celebrates, image));
+        var place = await repository.GetCustomLocationByCompositeKey(key);
+        if (place is null) return;
+        if (!place.IsStampPending || string.IsNullOrEmpty(place.ImageUrl))
+        {
+            await ShowPopupAsync(place, celebrates: false);
+            return;
+        }
+
+        if (await LoadPendingStampWithNoticeAsync(place, setLoading) is { } image)
+            await ShowPopupAsync(place, celebrates: true, image);
+    }
+
+    /// <summary>
+    /// The stamp popup: with confetti when <paramref name="celebrates"/>, from <paramref name="image"/> when it
+    /// was just downloaded, and with "Checked in" and where to see it later when <paramref name="stampUnseen"/>.
+    /// </summary>
+    public static async Task ShowPopupAsync(CustomLocation place, bool celebrates, byte[]? image = null, bool stampUnseen = false)
+    {
+        var popup = new CustomLocationImagePopupView(new CustomLocationImagePopupViewModel(place, celebrates, image, stampUnseen));
         await Shell.Current.CurrentPage.ShowPopupAsync(popup);
     }
 }

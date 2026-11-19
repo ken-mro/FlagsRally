@@ -141,22 +141,8 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     async Task PressStampOnTileAsync(CustomLocation location)
     {
         if (IsBusy) return;
-        IsBusy = true;
-        byte[]? image;
-        try
-        {
-            image = await _stampViewer.LoadPendingStampAsync(location);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-        if (image is null)
-        {
-            await ShowAlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
-            return;
-        }
-        location.PressStamp(image);
+        if (await _stampViewer.LoadPendingStampWithNoticeAsync(location, loading => IsBusy = loading) is { } image)
+            location.PressStamp(image);
     }
 
     [ObservableProperty]
