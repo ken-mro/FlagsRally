@@ -752,4 +752,22 @@
   <data name="MapPadHint" xml:space="preserve">
     <value>Touch and slide to one of the two marks, or tap this button and then a mark. At the mark on the left, a pad opens that moves the map the way your thumb leans, faster the further out. At the mark above, a pad opens that zooms: above its middle zooms in, below zooms out. A pad opened by sliding closes when you lift your thumb; one opened by tapping stays until you tap outside it.</value>
   </data>
+  <data name="StampImageNotLoadedTitle" xml:space="preserve">
+    <value>Couldn't load the stamp</value>
+  </data>
+  <data name="StampImageNotLoaded" xml:space="preserve">
+    <value>The stamp's picture still couldn't be loaded. Please try again where the signal is good.</value>
+  </data>
+  <data name="LoadingStamp" xml:space="preserve">
+    <value>Loading the stamp…</value>
+  </data>
+  <data name="CheckedIn" xml:space="preserve">
+    <value>Checked in</value>
+  </data>
+  <data name="StampSavedForLater" xml:space="preserve">
+    <value>The stamp's picture couldn't be loaded here. Open “View stamp” on this pin where the signal is good, and the stamp will be pressed then.</value>
+  </data>
+  <data name="TapToPressStamp" xml:space="preserve">
+    <value>Tap to press the stamp</value>
+  </data>
 </root>

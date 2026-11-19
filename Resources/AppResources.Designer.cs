@@ -1961,5 +1961,59 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("MapPadHint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't load the stamp.
+        /// </summary>
+        internal static string StampImageNotLoadedTitle {
+            get {
+                return ResourceManager.GetString("StampImageNotLoadedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stamp's picture still couldn't be loaded. Please try again where the signal is good..
+        /// </summary>
+        internal static string StampImageNotLoaded {
+            get {
+                return ResourceManager.GetString("StampImageNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading the stamp….
+        /// </summary>
+        internal static string LoadingStamp {
+            get {
+                return ResourceManager.GetString("LoadingStamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checked in.
+        /// </summary>
+        internal static string CheckedIn {
+            get {
+                return ResourceManager.GetString("CheckedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stamp's picture couldn't be loaded here. Open “View stamp” on this pin where the signal is good, and the stamp will be pressed then..
+        /// </summary>
+        internal static string StampSavedForLater {
+            get {
+                return ResourceManager.GetString("StampSavedForLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to press the stamp.
+        /// </summary>
+        internal static string TapToPressStamp {
+            get {
+                return ResourceManager.GetString("TapToPressStamp", resourceCulture);
+            }
+        }
     }
 }

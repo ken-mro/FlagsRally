@@ -8,6 +8,7 @@
     xmlns:customboard="clr-namespace:FlagsRally.Models.CustomBoard"
     xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
     xmlns:models="clr-namespace:FlagsRally.Models"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     xmlns:strings="clr-namespace:FlagsRally.Resources"
     xmlns:viewmodels="clr-namespace:FlagsRally.ViewModels"
     xmlns:views="clr-namespace:FlagsRally.Views"
@@ -99,19 +100,48 @@
                                             <Setter Property="Opacity" Value="0" />
                                         </DataTrigger>
                                     </VerticalStackLayout.Triggers>
-                                    <Image
-                                        Aspect="AspectFit"
-                                        HeightRequest="{Binding ViewModel.TileImageHeight, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
-                                        HorizontalOptions="Center"
-                                        WidthRequest="{Binding ViewModel.TileImageWidth, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
-                                        VerticalOptions="Center">
-                                        <Image.Source>
-                                            <UriImageSource
-                                                CacheValidity="30"
-                                                CachingEnabled="True"
-                                                Uri="{Binding StampImageUrl}" />
-                                        </Image.Source>
-                                    </Image>
+                                    <!--  A stamp checked in without a signal is not shown yet: tapping the tile presses it down here, with confetti.  -->
+                                    <Grid>
+                                        <Image
+                                            Aspect="AspectFit"
+                                            HeightRequest="{Binding ViewModel.TileImageHeight, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
+                                            HorizontalOptions="Center"
+                                            WidthRequest="{Binding ViewModel.TileImageWidth, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
+                                            VerticalOptions="Center">
+                                            <Image.Source>
+                                                <UriImageSource
+                                                    CacheValidity="30"
+                                                    CachingEnabled="True"
+                                                    Uri="{Binding StampImageUrl}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <controls:PressedStampImage
+                                            Aspect="AspectFit"
+                                            HeightRequest="{Binding ViewModel.TileImageHeight, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
+                                            HorizontalOptions="Center"
+                                            Source="{Binding PressedStamp}"
+                                            WidthRequest="{Binding ViewModel.TileImageWidth, Source={x:Reference page}, x:DataType=views:CustomBoardPage}"
+                                            VerticalOptions="Center" />
+                                        <Border
+                                            Margin="8"
+                                            Padding="4"
+                                            BackgroundColor="Transparent"
+                                            IsVisible="{Binding IsStampPending}"
+                                            Stroke="{StaticResource Stamp}"
+                                            StrokeDashArray="4,3"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="2">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="13"
+                                                HorizontalOptions="Center"
+                                                HorizontalTextAlignment="Center"
+                                                LineBreakMode="WordWrap"
+                                                Text="{x:Static strings:AppResources.TapToPressStamp}"
+                                                TextColor="{StaticResource Stamp}"
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                    </Grid>
                                     <StackLayout BackgroundColor="{StaticResource Ink}">
                                         <Label
                                             FontFamily="KiwiMaru-Medium"
@@ -175,6 +205,17 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}"
             Style="{StaticResource BusyIndicator}" />
+        <!--  Confetti over the board when a pending stamp is pressed down on its tile; started in code  -->
+        <skia:SKLottieView
+            x:Name="celebration"
+            Grid.RowSpan="2"
+            AnimationCompleted="OnCelebrationCompleted"
+            HorizontalOptions="Fill"
+            InputTransparent="True"
+            IsAnimationEnabled="False"
+            IsVisible="False"
+            Source="celebration.json"
+            VerticalOptions="Fill" />
         <!--  Controls float just above the tab bar, within thumb reach, over the tiles  -->
         <controls:FloatingToolbar
             Grid.RowSpan="2"

@@ -60,7 +60,7 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
     }
 
     /// <summary>
-    /// Saves a board's places in one transaction, keeping the check-in date of places already saved.
+    /// Saves a board's places in one transaction, keeping the check-in of places already saved.
     /// </summary>
     public async Task<IEnumerable<CustomLocationPin>> InsertOrReplace(IEnumerable<CustomLocation> customLocationList)
     {
@@ -68,19 +68,20 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
         var rows = customLocationList.Select(GetCustomLocationData).ToList();
 
         var boardNames = rows.Select(r => r.BoardName).Distinct().ToList();
-        var existingDates = new Dictionary<string, DateTime?>();
+        var existingCheckIns = new Dictionary<string, (DateTime? ArrivalDate, bool StampUnseen)>();
         foreach (var boardName in boardNames)
         {
             foreach (var existing in await _conn!.Table<CustomLocationData>().Where(x => x.BoardName == boardName).ToListAsync())
             {
-                existingDates[existing.CompositeKey] = existing.ArrivalDate;
+                existingCheckIns[existing.CompositeKey] = (existing.ArrivalDate, existing.StampUnseen);
             }
         }
         foreach (var row in rows)
         {
-            if (existingDates.TryGetValue(row.CompositeKey, out var arrivalDate))
+            if (existingCheckIns.TryGetValue(row.CompositeKey, out var checkIn))
             {
-                row.ArrivalDate = arrivalDate;
+                row.ArrivalDate = checkIn.ArrivalDate;
+                row.StampUnseen = checkIn.StampUnseen;
             }
         }
 
@@ -94,11 +95,21 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
         return rows.Select(GetCustomLocationPin).ToList();
     }
 
-    public async Task<int> UpdateCustomLocation(string key, DateTime? now)
+    /// <summary>
+    /// Records a check-in (or clears it with null). <paramref name="stampUnseen"/> marks a check-in whose
+    /// stamp could not be downloaded; clearing the check-in clears it too.
+    /// </summary>
+    public async Task<int> UpdateCustomLocation(string key, DateTime? now, bool stampUnseen = false)
     {
         await Init();
-        var result = await _conn!.ExecuteAsync("UPDATE CustomLocation SET ArrivalDate = ? WHERE CompositeKey = ?", now, key);
+        var result = await _conn!.ExecuteAsync("UPDATE CustomLocation SET ArrivalDate = ?, StampUnseen = ? WHERE CompositeKey = ?", now, now is not null && stampUnseen, key);
         return result;
+    }
+
+    public async Task<int> MarkStampSeen(string key)
+    {
+        await Init();
+        return await _conn!.ExecuteAsync("UPDATE CustomLocation SET StampUnseen = 0 WHERE CompositeKey = ?", key);
     }
 
     private CustomLocationPin GetCustomLocationPin(CustomLocationData data)
@@ -119,6 +130,7 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
             Latitude = customLocation.Location.Latitude,
             Longitude = customLocation.Location.Longitude,
             ArrivalDate = customLocation.ArrivalDate,
+            StampUnseen = customLocation.StampUnseen,
             SortIndex = customLocation.SortIndex
         };
     }
@@ -140,7 +152,8 @@ public class CustomLocationDataRepository : BaseRepository, ICustomLocationDataR
             arrivalDate: customLocationData.ArrivalDate
         )
         {
-            SortIndex = customLocationData.SortIndex
+            SortIndex = customLocationData.SortIndex,
+            StampUnseen = customLocationData.StampUnseen,
         };
     }
 

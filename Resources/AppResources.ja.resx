@@ -752,4 +752,22 @@
   <data name="MapPadHint" xml:space="preserve">
     <value>触ってから 2 つの目印のどちらかまで指をずらすか、このボタンをタップしてから目印をタップします。左の目印では地図を動かすパッドが開き、親指を倒した向きに地図が動きます。上の目印では拡大・縮小のパッドが開き、まん中より上で拡大、下で縮小します。ずらして開いたパッドは指を離すと閉じ、タップで開いたパッドは外をタップするまで開いたままです。</value>
   </data>
+  <data name="StampImageNotLoadedTitle" xml:space="preserve">
+    <value>スタンプを読み込めませんでした</value>
+  </data>
+  <data name="StampImageNotLoaded" xml:space="preserve">
+    <value>まだスタンプの画像を読み込めません。電波の良いところで、もう一度お試しください。</value>
+  </data>
+  <data name="LoadingStamp" xml:space="preserve">
+    <value>スタンプを読み込んでいます…</value>
+  </data>
+  <data name="CheckedIn" xml:space="preserve">
+    <value>チェックインしました</value>
+  </data>
+  <data name="StampSavedForLater" xml:space="preserve">
+    <value>ここではスタンプの画像を読み込めませんでした。電波の良いところでこのピンの「スタンプを見る」を開くと、そのときにスタンプが押されます。</value>
+  </data>
+  <data name="TapToPressStamp" xml:space="preserve">
+    <value>タップして&#10;スタンプを押す</value>
+  </data>
 </root>

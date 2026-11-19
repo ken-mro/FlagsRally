@@ -212,7 +212,7 @@ public class RedesignViewModelTests
     private static async Task<CustomBoardPageViewModel> OpenBoardAsync(string boardName)
     {
         var (boards, locations) = CreateRepositories();
-        var vm = new CustomBoardPageViewModel(CreateService(boards, locations), boards.Object, locations.Object, new MapFocusRequest(), CreateSettings());
+        var vm = new CustomBoardPageViewModel(CreateService(boards, locations), boards.Object, locations.Object, new MapFocusRequest(), CreateSettings(), new StampViewer(locations.Object, new StampImageLoader()));
         vm.ApplyQueryAttributes(new Dictionary<string, object> { [CustomBoardPageViewModel.BoardQueryKey] = boardName });
         await vm.Init();
         return vm;
