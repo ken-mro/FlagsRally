@@ -125,18 +125,38 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     }
 
     // A tile opens its place on the map, except a stamp still waiting to be pressed down (checked in
-    // without a signal): it is pressed down right here, with its celebration, and the tile then shows it.
+    // without a signal): it is downloaded and pressed down on the tile itself, with confetti.
     [RelayCommand]
     async Task ShowOnMapAsync(CustomLocation location)
     {
         if (location.IsStampPending)
         {
-            await _stampViewer.ShowAsync(location.CompositeKey, loading => IsBusy = loading);
-            await Init();
+            await PressStampOnTileAsync(location);
             return;
         }
         _mapFocusRequest.Request(location.CompositeKey);
         await Shell.Current.GoToAsync("//Map");
+    }
+
+    async Task PressStampOnTileAsync(CustomLocation location)
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+        byte[]? image;
+        try
+        {
+            image = await _stampViewer.LoadPendingStampAsync(location);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+        if (image is null)
+        {
+            await ShowAlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
+            return;
+        }
+        location.PressStamp(image);
     }
 
     [ObservableProperty]

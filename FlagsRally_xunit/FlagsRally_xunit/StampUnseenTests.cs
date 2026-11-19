@@ -152,4 +152,23 @@ public class StampUnseenTests : IAsyncLifetime
         Assert.Null(image);
         Assert.True((await Saved()).IsStampPending);
     }
+
+    [Fact]
+    public async Task Pressing_a_pending_stamp_on_its_tile_shows_it_and_plays_the_press_once()
+    {
+        await _repository.UpdateCustomLocation(Key, DateTime.Now, stampUnseen: true);
+        var place = await Saved();
+        var changed = new List<string?>();
+        place.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+
+        place.PressStamp(Png);
+
+        Assert.False(place.IsStampPending);
+        Assert.NotNull(place.PressedStamp);
+        Assert.Null(place.StampImageUrl); // shown from the downloaded bytes, not fetched again
+        Assert.Contains(nameof(CustomLocation.IsStampPending), changed);
+        Assert.Contains(nameof(CustomLocation.PressedStamp), changed);
+        Assert.True(place.TakePressAnimation());
+        Assert.False(place.TakePressAnimation());
+    }
 }

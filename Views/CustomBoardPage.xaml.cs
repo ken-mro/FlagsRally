@@ -1,10 +1,11 @@
+using FlagsRally.Controls;
 using FlagsRally.Helpers;
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
 
-public partial class CustomBoardPage : InitializingPage
+public partial class CustomBoardPage : InitializingPage, ICelebrationHost
 {
     public const string Route = "CustomBoard";
 
@@ -48,5 +49,19 @@ public partial class CustomBoardPage : InitializingPage
 
         collectionView.SelectedItem = null;
         _customBoardPageViewModel.ShowOnMapCommand.Execute(location);
+    }
+
+    // A pending stamp has landed on its tile
+    public void Celebrate()
+    {
+        celebration.Progress = TimeSpan.Zero;
+        celebration.IsVisible = true;
+        celebration.IsAnimationEnabled = true;
+    }
+
+    void OnCelebrationCompleted(object? sender, EventArgs e)
+    {
+        celebration.IsAnimationEnabled = false;
+        celebration.IsVisible = false;
     }
 }

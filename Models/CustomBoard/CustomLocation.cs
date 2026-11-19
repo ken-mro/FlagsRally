@@ -1,9 +1,10 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using FlagsRally.Helpers;
 using System.Text.RegularExpressions;
 
 namespace FlagsRally.Models.CustomBoard;
 
-public class CustomLocation
+public class CustomLocation : ObservableObject
 {
     public string CompositeKey => $"{Board.Name}-{Code}";
     public CustomBoard Board { get; init; } = new();
@@ -16,7 +17,7 @@ public class CustomLocation
     /// The stamp to show on the board: only a visited place has one, so an unvisited place's image is never fetched.
     /// A pending stamp is not shown either, so it is first seen pressed down with its celebration.
     /// </summary>
-    public string? StampImageUrl => HasBeenVisited && !StampUnseen ? ImageUrl : null;
+    public string? StampImageUrl => HasBeenVisited && !StampUnseen && PressedStamp is null ? ImageUrl : null;
     public Location Location { get; init; } = new ();
     public DateTime? ArrivalDate { get; init; } = null;
     /// <summary>
@@ -30,7 +31,38 @@ public class CustomLocation
     /// <summary>
     /// Checked in, with the stamp still waiting to be pressed down when it is first opened.
     /// </summary>
-    public bool IsStampPending => HasBeenVisited && StampUnseen;
+    public bool IsStampPending => HasBeenVisited && StampUnseen && PressedStamp is null;
+
+    /// <summary>
+    /// A pending stamp downloaded and pressed down on its tile just now: shown from these bytes (not
+    /// fetched again by URL) until the board is loaded again.
+    /// </summary>
+    public ImageSource? PressedStamp { get; private set; }
+
+    bool _pressAnimationPending;
+
+    /// <summary>
+    /// Shows a pending stamp, just downloaded, on its tile, pressed down there with its celebration.
+    /// </summary>
+    public void PressStamp(byte[] image)
+    {
+        _pressAnimationPending = true;
+        PressedStamp = ImageSource.FromStream(() => new MemoryStream(image));
+        OnPropertyChanged(nameof(PressedStamp));
+        OnPropertyChanged(nameof(IsStampPending));
+        OnPropertyChanged(nameof(StampImageUrl));
+    }
+
+    /// <summary>
+    /// Whether the tile still has to play the press for <see cref="PressStamp"/>; true only once, so a
+    /// tile scrolled back into view or reused for another place does not press it again.
+    /// </summary>
+    public bool TakePressAnimation()
+    {
+        var pending = _pressAnimationPending;
+        _pressAnimationPending = false;
+        return pending;
+    }
     public bool HasBeenVisited => ArrivalDate is not null;
     public bool HasNotBeenVisited => !HasBeenVisited;
     public string ArrivalDateString => ArrivalDate is DateTime date ? StampDate.FormatSpaced(date) : string.Empty;
