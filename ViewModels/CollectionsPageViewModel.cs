@@ -184,7 +184,8 @@ public partial class CollectionsPageViewModel : BaseViewModel, IInitializable
             foreach (var board in boards)
             {
                 var locations = locationsByBoard.GetValueOrDefault(board.Name) ?? [];
-                var latestVisit = locations.Where(l => l.HasBeenVisited).MaxBy(l => l.ArrivalDate);
+                // A pending stamp is first seen pressed down with its celebration, so the card shows the latest stamp already seen.
+                var latestVisit = locations.Where(l => l.HasBeenVisited && !l.StampUnseen).MaxBy(l => l.ArrivalDate);
                 boardCards.Add(new CollectionCard(
                     CollectionCardKind.Custom,
                     board.Name,

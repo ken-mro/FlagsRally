@@ -2006,5 +2006,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("StampSavedForLater", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to press the stamp.
+        /// </summary>
+        internal static string TapToPressStamp {
+            get {
+                return ResourceManager.GetString("TapToPressStamp", resourceCulture);
+            }
+        }
     }
 }

@@ -767,4 +767,7 @@
   <data name="StampSavedForLater" xml:space="preserve">
     <value>ここではスタンプの画像を読み込めませんでした。電波の良いところでこのピンの「スタンプを見る」を開くと、そのときにスタンプが押されます。</value>
   </data>
+  <data name="TapToPressStamp" xml:space="preserve">
+    <value>タップして&#10;スタンプを押す</value>
+  </data>
 </root>

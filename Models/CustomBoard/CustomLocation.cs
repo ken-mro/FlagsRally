@@ -14,8 +14,9 @@ public class CustomLocation
     public string ImageUrl { get; init; } = string.Empty;
     /// <summary>
     /// The stamp to show on the board: only a visited place has one, so an unvisited place's image is never fetched.
+    /// A pending stamp is not shown either, so it is first seen pressed down with its celebration.
     /// </summary>
-    public string? StampImageUrl => HasBeenVisited ? ImageUrl : null;
+    public string? StampImageUrl => HasBeenVisited && !StampUnseen ? ImageUrl : null;
     public Location Location { get; init; } = new ();
     public DateTime? ArrivalDate { get; init; } = null;
     /// <summary>
@@ -26,6 +27,10 @@ public class CustomLocation
     /// Checked in without its stamp's image; the celebration waits until the stamp is first looked at.
     /// </summary>
     public bool StampUnseen { get; init; }
+    /// <summary>
+    /// Checked in, with the stamp still waiting to be pressed down when it is first opened.
+    /// </summary>
+    public bool IsStampPending => HasBeenVisited && StampUnseen;
     public bool HasBeenVisited => ArrivalDate is not null;
     public bool HasNotBeenVisited => !HasBeenVisited;
     public string ArrivalDateString => ArrivalDate is DateTime date ? StampDate.FormatSpaced(date) : string.Empty;

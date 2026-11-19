@@ -1,7 +1,9 @@
 using FlagsRally.Models.CustomBoard;
 using FlagsRally.Repository;
+using FlagsRally.Services;
 using Moq;
 using SQLite;
+using System.Net;
 
 namespace FlagsRallyTests.Repository;
 
@@ -96,5 +98,58 @@ public class StampUnseenTests : IAsyncLifetime
         var place = await Saved();
         Assert.True(place.HasBeenVisited);
         Assert.True(place.StampUnseen);
+    }
+
+    sealed class FakeHandler(Func<HttpResponseMessage> answer) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            Task.FromResult(answer());
+    }
+
+    static readonly byte[] Png = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0];
+
+    StampViewer Viewer(Func<HttpResponseMessage> answer) => new(_repository, new StampImageLoader(new FakeHandler(answer)));
+
+    [Fact]
+    public async Task A_pending_stamp_is_not_shown_on_the_board()
+    {
+        await _repository.UpdateCustomLocation(Key, DateTime.Now, stampUnseen: true);
+
+        var place = await Saved();
+        Assert.True(place.IsStampPending);
+        Assert.Null(place.StampImageUrl);
+    }
+
+    [Fact]
+    public async Task A_seen_stamp_is_shown_on_the_board()
+    {
+        await _repository.UpdateCustomLocation(Key, DateTime.Now);
+
+        var place = await Saved();
+        Assert.False(place.IsStampPending);
+        Assert.Equal("https://example.com/01.png", place.StampImageUrl);
+    }
+
+    [Fact]
+    public async Task Loading_a_pending_stamp_marks_it_seen()
+    {
+        await _repository.UpdateCustomLocation(Key, DateTime.Now, stampUnseen: true);
+
+        var image = await Viewer(() => new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(Png) })
+            .LoadPendingStampAsync(await Saved());
+
+        Assert.Equal(Png, image);
+        Assert.False((await Saved()).IsStampPending);
+    }
+
+    [Fact]
+    public async Task A_pending_stamp_that_still_cannot_load_stays_pending()
+    {
+        await _repository.UpdateCustomLocation(Key, DateTime.Now, stampUnseen: true);
+
+        var image = await Viewer(() => throw new HttpRequestException("offline")).LoadPendingStampAsync(await Saved());
+
+        Assert.Null(image);
+        Assert.True((await Saved()).IsStampPending);
     }
 }

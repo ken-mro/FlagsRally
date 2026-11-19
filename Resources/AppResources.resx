@@ -767,4 +767,7 @@
   <data name="StampSavedForLater" xml:space="preserve">
     <value>The stamp's picture couldn't be loaded here. Open “View stamp” on this pin where the signal is good, and the stamp will be pressed then.</value>
   </data>
+  <data name="TapToPressStamp" xml:space="preserve">
+    <value>Tap to press the stamp</value>
+  </data>
 </root>

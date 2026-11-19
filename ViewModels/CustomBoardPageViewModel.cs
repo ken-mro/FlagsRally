@@ -31,8 +31,10 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
     readonly ICustomLocationDataRepository _customLocationDataRepository;
     readonly MapFocusRequest _mapFocusRequest;
     readonly SettingsPreferences _settingsPreferences;
-    public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, MapFocusRequest mapFocusRequest, SettingsPreferences settingsPreferences)
+    readonly StampViewer _stampViewer;
+    public CustomBoardPageViewModel(CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, MapFocusRequest mapFocusRequest, SettingsPreferences settingsPreferences, StampViewer stampViewer)
     {
+        _stampViewer = stampViewer;
         _mapFocusRequest = mapFocusRequest;
         _settingsPreferences = settingsPreferences;
         _selectedSort = Enum.TryParse<LocationSort>(settingsPreferences.GetCustomBoardSort(nameof(LocationSort.NewestFirst)), out var sort) ? sort : LocationSort.NewestFirst;
@@ -122,9 +124,17 @@ public partial class CustomBoardPageViewModel : BoardViewModelBase, IQueryAttrib
         }
     }
 
+    // A tile opens its place on the map, except a stamp still waiting to be pressed down (checked in
+    // without a signal): it is pressed down right here, with its celebration, and the tile then shows it.
     [RelayCommand]
     async Task ShowOnMapAsync(CustomLocation location)
     {
+        if (location.IsStampPending)
+        {
+            await _stampViewer.ShowAsync(location.CompositeKey, loading => IsBusy = loading);
+            await Init();
+            return;
+        }
         _mapFocusRequest.Request(location.CompositeKey);
         await Shell.Current.GoToAsync("//Map");
     }

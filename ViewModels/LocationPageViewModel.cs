@@ -30,6 +30,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private readonly IArrivalLocationDataRepository _arrivalLocationRepository;
     private readonly IPendingArrivalRepository _pendingArrivalRepository;
     private readonly StampImageLoader _stampImageLoader;
+    private readonly StampViewer _stampViewer;
 
     /// <summary>A check-in is downloading its stamp; the busy indicator says so.</summary>
     [ObservableProperty]
@@ -594,8 +595,9 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     private const bool AllowsSimulatedLocation = false;
 #endif
 
-    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService, SharedPlaceResolver sharedPlaceResolver, StampImageLoader stampImageLoader)
+    public LocationPageViewModel(IArrivalLocationDataRepository arrivalLocationRepository, IPendingArrivalRepository pendingArrivalRepository, CustomGeolocation customGeolocation, IRevenueCatBilling revenueCat, SettingsPreferences settingsPreferences, CustomBoardService customBoardService, ICustomBoardRepository customBoardRepository, ICustomLocationDataRepository customLocationDataRepository, ArrivalLocationService arrivalLocationService, MapFocusRequest mapFocusRequest, RegionalFlagsService regionalFlagsService, SharedPlaceResolver sharedPlaceResolver, StampImageLoader stampImageLoader, StampViewer stampViewer)
     {
+        _stampViewer = stampViewer;
         _arrivalLocationRepository = arrivalLocationRepository;
         _pendingArrivalRepository = pendingArrivalRepository;
         _stampImageLoader = stampImageLoader;
@@ -1154,34 +1156,8 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     }
 
     // A stamp checked in without its image is pressed down, with confetti, the first time it can be shown.
-    private async Task ViewCustomLocationStampAsync(string customLocationKey)
-    {
-        var customLocation = await _customLocationDataRepository.GetCustomLocationByCompositeKey(customLocationKey);
-        if (customLocation is null) return;
-        if (!customLocation.StampUnseen || string.IsNullOrEmpty(customLocation.ImageUrl))
-        {
-            await ShowCustomLocationImagePopup(customLocationKey, celebrates: false);
-            return;
-        }
-
-        IsBusy = true;
-        byte[]? stampImage;
-        try
-        {
-            stampImage = await LoadStampImageAsync(customLocation.ImageUrl);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-        if (stampImage is null)
-        {
-            await ShowAlertAsync(AppResources.StampImageNotLoadedTitle, AppResources.StampImageNotLoaded);
-            return;
-        }
-        await _customLocationDataRepository.MarkStampSeen(customLocationKey);
-        await ShowCustomLocationImagePopup(customLocationKey, celebrates: true, stampImage);
-    }
+    private Task ViewCustomLocationStampAsync(string customLocationKey) =>
+        _stampViewer.ShowAsync(customLocationKey, loading => IsBusy = IsLoadingStamp = loading);
 
     // The board's stamp for the place: with confetti just after checking in, without when looked at again.
     // stampUnseen: just checked in, but the stamp could not be downloaded, so the popup says where to see it later.
