@@ -508,6 +508,12 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
         return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
     }
 
+    /// <summary>Whether the ring controller, opening now, shows how its ring zooms (the first few times).</summary>
+    public bool TakeRingDemo() => _settingsPreferences.TakeMapRingDemo();
+
+    /// <summary>The ring has zoomed the map: its use no longer needs showing.</summary>
+    public void NoteRingZoomed() => _settingsPreferences.SetHasZoomedWithMapRing();
+
     /// <summary>Back to where the map started and its starting zoom, facing north.</summary>
     public Task ResetCameraAsync() =>
         MoveCameraSafelyAsync(CameraUpdateFactory.NewCameraPosition(new CameraPosition(_homePosition, DEFAULT_ZOOM_LEVEL, 0, 0)), animate: true);

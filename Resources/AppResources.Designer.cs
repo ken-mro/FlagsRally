@@ -2060,5 +2060,14 @@ namespace FlagsRally.Resources {
                 return ResourceManager.GetString("MapRingZoomStopped", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide round the ring to zoom.
+        /// </summary>
+        internal static string MapRingHowToZoom {
+            get {
+                return ResourceManager.GetString("MapRingHowToZoom", resourceCulture);
+            }
+        }
     }
 }

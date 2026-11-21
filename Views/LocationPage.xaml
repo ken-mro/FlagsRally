@@ -81,6 +81,8 @@
                 Moved="OnRingMoved"
                 OpenChanged="OnRingOpenChanged"
                 ResetRequested="OnRingResetRequested"
+                RingTapped="OnRingTapped"
+                RingZoomed="OnRingZoomed"
                 Started="OnRingStarted"
                 StateChanged="OnRingStateChanged"
                 VerticalOptions="End" />

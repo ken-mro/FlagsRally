@@ -785,4 +785,7 @@
   <data name="MapRingZoomStopped" xml:space="preserve">
     <value>Zoom stopped</value>
   </data>
+  <data name="MapRingHowToZoom" xml:space="preserve">
+    <value>Slide round the ring to zoom</value>
+  </data>
 </root>

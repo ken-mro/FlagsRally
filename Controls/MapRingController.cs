@@ -22,6 +22,10 @@ namespace FlagsRally.Controls;
 /// angle the thumb has slid round from it zooms in (clockwise) or out (anticlockwise), also while the
 /// thumb is held still.</item>
 /// </list>
+/// The ring shows how it is used: a clockwise arrow to ＋ and an anticlockwise one to − at its top,
+/// where the thumb does not cover them. The page can have it demonstrate the slide when it opens
+/// (<see cref="PlayDemo"/>), and is told when the ring is only tapped (<see cref="RingTapped"/>) and
+/// when it zooms (<see cref="RingZoomed"/>), to explain it or to stop explaining it.
 /// What a touch does is chosen where it starts and kept if the thumb crosses the base's edge. The base
 /// is ringed in the move colour while the knob is worked, the ring in the zoom colour while it is.
 /// The controller reports about 60 times a second how far the map should move and zoom
@@ -49,6 +53,10 @@ public class MapRingController : Grid
     public event EventHandler<bool>? OpenChanged;
     /// <summary><see cref="CurrentState"/> or <see cref="ZoomSpeed"/> changed.</summary>
     public event EventHandler? StateChanged;
+    /// <summary>The ring was tapped without sliding round it.</summary>
+    public event EventHandler? RingTapped;
+    /// <summary>The ring zoomed the map, once for each touch that does.</summary>
+    public event EventHandler? RingZoomed;
 
     public State CurrentState { get; private set; }
 
@@ -62,6 +70,11 @@ public class MapRingController : Grid
     const float Knob = (float)MapRing.KnobRadius;
     const float ButtonSize = MapRingButton.Size;
     const uint OpenMs = 180;
+    // The demonstration: a thumb slides this far round clockwise from the top and back, the ticks
+    // turning a little with it, in this long.
+    static readonly TimeSpan DemoTime = TimeSpan.FromMilliseconds(1400);
+    const double DemoSlideDegrees = 50;
+    const double DemoTickDegrees = 20;
     const uint CloseMs = 150;
     // How long the colours take to change, and the knob to spring back.
     const double GlowSeconds = 0.15;
@@ -99,6 +112,8 @@ public class MapRingController : Grid
     double _shift;                   // how far round from the reference point
     float _moveGlow, _zoomGlow;      // 0 to 1: how far the colours have changed
     double _tickRotation;
+    DateTime? _demoStart;            // when the demonstration starts, while one is to play
+    bool _zoomedThisTouch;
 
     public MapRingController()
     {
@@ -182,6 +197,31 @@ public class MapRingController : Grid
         _ = _ring.FadeToAsync(1, OpenMs / 2);
     }
 
+    /// <summary>
+    /// Shows how the ring is used, once the controller has opened: a thumb slides round it clockwise
+    /// and back, and ＋ lights up. The map does not move. A touch stops it.
+    /// </summary>
+    public void PlayDemo()
+    {
+        if (!IsOpen) return;
+        _demoStart = DateTime.UtcNow + TimeSpan.FromMilliseconds(OpenMs);
+        _timer.Start();
+    }
+
+    // 0 to 1 through the demonstration, or null when none is playing.
+    double? DemoPart()
+    {
+        if (_demoStart is not { } start) return null;
+        var part = (DateTime.UtcNow - start) / DemoTime;
+        if (part < 0) return 0;
+        if (part >= 1)
+        {
+            _demoStart = null;
+            return null;
+        }
+        return part;
+    }
+
     // The button keeps its room in the column while the controller is open, so the buttons round it stay put.
     void SetButtonShown(bool shown)
     {
@@ -216,6 +256,7 @@ public class MapRingController : Grid
             EndTouch();
         }
         IsOpen = false;
+        _demoStart = null;
         OpenChanged?.Invoke(this, false);
 
         _ring.CancelAnimations();
@@ -243,6 +284,8 @@ public class MapRingController : Grid
     {
         var part = MapRing.PartAt(at.X, at.Y);
         _part = part;
+        _demoStart = null;
+        _zoomedThisTouch = false;
         _finger = _down = at;
         _downAt = _lastTick = DateTime.UtcNow;
         _slid = false;
@@ -298,6 +341,7 @@ public class MapRingController : Grid
         Report();
         EndTouch();
 
+        if (part == MapRing.Part.Ring && tapped) RingTapped?.Invoke(this, EventArgs.Empty);
         if (part == MapRing.Part.Joystick && tapped)
         {
             var now = DateTime.UtcNow;
@@ -354,7 +398,7 @@ public class MapRingController : Grid
         _zoomGlow = Approach(_zoomGlow, CurrentState == State.Zooming ? 1 : 0, step);
         _ring.Invalidate();
 
-        if (_part is null && _knob == PointF.Zero && _moveGlow == 0 && _zoomGlow == 0) _timer.Stop();
+        if (_part is null && _knob == PointF.Zero && _moveGlow == 0 && _zoomGlow == 0 && _demoStart is null) _timer.Stop();
     }
 
     static float Approach(float value, float target, float step) =>
@@ -375,7 +419,15 @@ public class MapRingController : Grid
         {
             var speed = MapRing.ZoomSpeed(_shift);
             SetState(State.Zooming, speed);
-            if (speed != 0) Moved?.Invoke(this, new MoveEventArgs(0, 0, speed * seconds));
+            if (speed != 0)
+            {
+                Moved?.Invoke(this, new MoveEventArgs(0, 0, speed * seconds));
+                if (!_zoomedThisTouch)
+                {
+                    _zoomedThisTouch = true;
+                    RingZoomed?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
     }
 
@@ -438,6 +490,10 @@ public class MapRingController : Grid
             canvas.StrokeSize = 1;
             canvas.DrawCircle(centre, outer - 1);
 
+            // The demonstration: the thumb slides round clockwise and back, the ticks turning with it.
+            var demo = c.DemoPart();
+            var demoSlide = demo is { } part ? (float)Math.Sin(Math.Min(1, part / 0.85) * Math.PI) : 0;
+
             // 36 ticks, every 10°, longer every 90°, turned with the zoom.
             if (c._moveGlow < 1)
             {
@@ -446,10 +502,19 @@ public class MapRingController : Grid
                 canvas.StrokeSize = 1.4f;
                 for (var i = 0; i < 36; i++)
                 {
-                    var angle = i * 10 + c._tickRotation;
+                    var angle = i * 10 + c._tickRotation + demoSlide * DemoTickDegrees;
                     var length = i % 9 == 0 ? LongTickLength : TickLength;
                     canvas.DrawLine(OnCircle(centre, TickOuter + shrink, angle), OnCircle(centre, TickOuter + shrink - length, angle));
                 }
+            }
+
+            // How the ring is used, always there: at the top, out of the thumb's way, a clockwise arrow
+            // to ＋ on the right and an anticlockwise one to − on the left. Fainter while it is worked.
+            var signAlpha = 0.6f * (1 - Math.Max(c._moveGlow, c._zoomGlow * 0.75f));
+            if (signAlpha > 0.01f)
+            {
+                DrawSign(canvas, centre, -80, -48, plus: true, demoSlide > 0.3f ? Math.Min(1, signAlpha + 0.4f) : signAlpha);
+                DrawSign(canvas, centre, -100, -132, plus: false, signAlpha);
             }
 
             // Zooming: the inside of the ring's edge in the zoom colour.
@@ -477,6 +542,18 @@ public class MapRingController : Grid
 
             if (c._part == MapRing.Part.Ring) DrawShuttle(canvas, centre);
 
+            // The demonstration's thumb, see-through, on the ring.
+            if (demo is { } shown)
+            {
+                var fade = (float)(shown < 0.1 ? shown / 0.1 : shown > 0.85 ? (1 - shown) / 0.15 : 1);
+                var thumb = OnCircle(centre, ArcRadius, -90 + demoSlide * DemoSlideDegrees);
+                canvas.FillColor = ZoomColor.WithAlpha(0.45f * fade);
+                canvas.FillCircle(thumb, 11);
+                canvas.StrokeColor = PaperCard.WithAlpha(0.9f * fade);
+                canvas.StrokeSize = 2;
+                canvas.DrawCircle(thumb, 11);
+            }
+
             // The knob, in the move colour while it is worked.
             var knob = new PointF(centre.X + c._knob.X, centre.Y + c._knob.Y);
             canvas.FillColor = Mix(PaperCard, MoveColor, c._moveGlow);
@@ -485,6 +562,43 @@ public class MapRingController : Grid
             canvas.StrokeSize = 1;
             canvas.DrawCircle(knob, Knob);
             DrawMoveMark(canvas, knob, 12, Mix(InkMuted, PaperCard, c._moveGlow), 1.8f);
+        }
+
+        // An arrow round the ring from one angle to another, with ＋ or − just past its head.
+        static void DrawSign(ICanvas canvas, PointF centre, double from, double to, bool plus, float alpha)
+        {
+            var lit = alpha > 0.61f;
+            var ink = ZoomColor.WithAlpha(alpha);
+            var way = Math.Sign(to - from);
+            var arc = new PathF();
+            for (var i = 0; i <= 12; i++)
+            {
+                var point = OnCircle(centre, ArcRadius, from + (to - from) * i / 12);
+                if (i == 0) arc.MoveTo(point); else arc.LineTo(point);
+            }
+            canvas.StrokeColor = ink;
+            canvas.StrokeSize = 2;
+            canvas.DrawPath(arc);
+
+            // The head points along the circle at the arrow's end.
+            var head = OnCircle(centre, ArcRadius, to);
+            var along = (to + way * 90) * Math.PI / 180;
+            var outwards = to * Math.PI / 180;
+            float ax = (float)Math.Cos(along), ay = (float)Math.Sin(along);
+            float ox = (float)Math.Cos(outwards), oy = (float)Math.Sin(outwards);
+            var tip = new PathF();
+            tip.MoveTo(head.X + ax * 5, head.Y + ay * 5);
+            tip.LineTo(head.X - ax * 2 + ox * 4, head.Y - ay * 2 + oy * 4);
+            tip.LineTo(head.X - ax * 2 - ox * 4, head.Y - ay * 2 - oy * 4);
+            tip.Close();
+            canvas.FillColor = ink;
+            canvas.FillPath(tip);
+
+            var sign = OnCircle(centre, ArcRadius, to + way * 14);
+            var half = lit ? 5f : 4f;
+            canvas.StrokeSize = lit ? 2.4f : 2;
+            canvas.DrawLine(sign.X - half, sign.Y, sign.X + half, sign.Y);
+            if (plus) canvas.DrawLine(sign.X, sign.Y - half, sign.X, sign.Y + half);
         }
 
         // The reference point, the thumb and the arc between them, round the way the thumb went.

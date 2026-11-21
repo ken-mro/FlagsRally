@@ -64,8 +64,23 @@ public partial class LocationPage : ContentPage
     void OnRingOpenChanged(object? sender, bool open)
     {
         ringStatus.IsVisible = open;
-        if (open) ShowRingStatus();
+        if (!open) return;
+        ShowRingStatus();
+        if (_viewModel.TakeRingDemo()) ringController.PlayDemo();
     }
+
+    // How long the status label explains the ring after it was only tapped.
+    static readonly TimeSpan RingHintTime = TimeSpan.FromMilliseconds(2200);
+    DateTime _ringHintUntil;
+
+    void OnRingTapped(object? sender, EventArgs e)
+    {
+        _ringHintUntil = DateTime.UtcNow + RingHintTime;
+        ShowRingStatus();
+        Dispatcher.DispatchDelayed(RingHintTime + TimeSpan.FromMilliseconds(20), ShowRingStatus);
+    }
+
+    void OnRingZoomed(object? sender, EventArgs e) => _viewModel.NoteRingZoomed();
 
     void OnRingStateChanged(object? sender, EventArgs e) => ShowRingStatus();
 
@@ -83,6 +98,12 @@ public partial class LocationPage : ContentPage
     {
         ShowZoom(map.CameraPosition?.Zoom ?? LocationPageViewModel.HomeZoom);
         var speed = ringController.ZoomSpeed;
+        if (ringController.CurrentState == Controls.MapRingController.State.Idle && DateTime.UtcNow < _ringHintUntil)
+        {
+            ringState.Text = AppResources.MapRingHowToZoom;
+            ringState.TextColor = AppColors.Get("Stamp", "#B94047");
+            return;
+        }
         (ringState.Text, ringState.TextColor) = ringController.CurrentState switch
         {
             Controls.MapRingController.State.Moving => (AppResources.MapRingMoving, AppColors.Get("Navy", "#182A52")),

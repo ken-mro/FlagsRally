@@ -785,4 +785,7 @@
   <data name="MapRingZoomStopped" xml:space="preserve">
     <value>拡大縮小 停止</value>
   </data>
+  <data name="MapRingHowToZoom" xml:space="preserve">
+    <value>円に沿ってずらすと拡大・縮小</value>
+  </data>
 </root>
