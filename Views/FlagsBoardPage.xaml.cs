@@ -15,38 +15,27 @@ public partial class FlagsBoardPage : InitializingPage
     public FlagsBoardPage(FlagsBoardPageViewModel vm)
     {
         InitializeComponent();
-        SideTabBar.Watch(this, OnSafeAreaChanged);
-        GridSpan.WatchWindow(this, UpdateColumns);
+        SideTabBar.Watch(this, LayOut);
+        GridSpan.WatchWindow(this, LayOut);
         BindingContext = _flagsBoardPageViewModel = vm;
     }
 
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
-
-        UpdateColumns();
-        RunUnderSideTabBar();
+        LayOut();
     }
 
-    void OnSafeAreaChanged()
+    // Opening or closing a foldable can give the page its new size before the window or the safe area
+    // has its own, so this runs again when either changes.
+    void LayOut()
     {
         UpdateColumns();
         RunUnderSideTabBar();
     }
 
-    // The column count, from the page's width and whether the phone is opened. Worked out again
-    // when the window changes size or the safe area moves, as either can come after the page's
-    // new size when a foldable is opened or closed; iOS then lays the rows out again.
-    void UpdateColumns()
-    {
-        if (Width <= 0) return;
-
-        var span = GridSpan.For(Width, GridSpan.IsOpened(this));
-        if (span == _flagsBoardPageViewModel.GridItemSpan) return;
-
-        _flagsBoardPageViewModel.GridItemSpan = span;
-        SideTabBar.LayOutAgain(collectionView);
-    }
+    void UpdateColumns() =>
+        GridSpan.Update(this, collectionView, () => _flagsBoardPageViewModel.GridItemSpan, (width, opened) => _flagsBoardPageViewModel.GridItemSpan = GridSpan.For(width, opened));
 
     // Beside a tab bar at the side (iPhone Duo) the tiles go on to the page's edge, under the bar.
     void RunUnderSideTabBar()

@@ -17,36 +17,28 @@ public partial class CustomBoardPage : InitializingPage, ICelebrationHost
     public CustomBoardPage(CustomBoardPageViewModel vm)
 	{
 		InitializeComponent();
-		SideTabBar.Watch(this, OnSafeAreaChanged);
-        GridSpan.WatchWindow(this, UpdateColumns);
+		SideTabBar.Watch(this, LayOut);
+        GridSpan.WatchWindow(this, LayOut);
         BindingContext = _customBoardPageViewModel = vm;
     }
 
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
-
-        UpdateColumns();
-        RunUnderSideTabBar();
+        LayOut();
     }
 
-    void OnSafeAreaChanged()
+    // Opening or closing a foldable can give the page its new size before the window or the safe area
+    // has its own, so this runs again when either changes.
+    void LayOut()
     {
         UpdateColumns();
         RunUnderSideTabBar();
     }
 
-    // The column count and tile size, from the page's width and whether the phone is opened.
-    // Worked out again when the window changes size or the safe area moves, as either can come
-    // after the page's new size when a foldable is opened or closed; iOS then lays the rows out again.
-    void UpdateColumns()
-    {
-        if (Width <= 0) return;
-
-        var before = _customBoardPageViewModel.GridItemSpan;
-        _customBoardPageViewModel.UpdateTileSize(Width, GridSpan.IsOpened(this));
-        if (_customBoardPageViewModel.GridItemSpan != before) SideTabBar.LayOutAgain(collectionView);
-    }
+    // The column count and the tiles' size, which follows it.
+    void UpdateColumns() =>
+        GridSpan.Update(this, collectionView, () => _customBoardPageViewModel.GridItemSpan, _customBoardPageViewModel.UpdateTileSize);
 
     // Beside a tab bar at the side (iPhone Duo) the tiles go on to the page's edge, under the bar.
     void RunUnderSideTabBar()

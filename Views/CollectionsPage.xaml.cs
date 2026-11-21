@@ -13,8 +13,8 @@ public partial class CollectionsPage : InitializingPage
     public CollectionsPage(CollectionsPageViewModel vm)
     {
         InitializeComponent();
-        SideTabBar.Watch(this, OnSafeAreaChanged);
-        GridSpan.WatchWindow(this, UpdateColumns);
+        SideTabBar.Watch(this, LayOut);
+        GridSpan.WatchWindow(this, LayOut);
         BindingContext = _viewModel = vm;
     }
 
@@ -22,30 +22,19 @@ public partial class CollectionsPage : InitializingPage
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
-
-        UpdateColumns();
-        RunUnderSideTabBar();
+        LayOut();
     }
 
-    void OnSafeAreaChanged()
+    // Opening or closing a foldable can give the page its new size before the window or the safe area
+    // has its own, so this runs again when either changes.
+    void LayOut()
     {
         UpdateColumns();
         RunUnderSideTabBar();
     }
 
-    // The column count, from the page's width and whether the phone is opened. Worked out again
-    // when the window changes size or the safe area moves, as either can come after the page's
-    // new size when a foldable is opened or closed; iOS then lays the rows out again.
-    void UpdateColumns()
-    {
-        if (Width <= 0) return;
-
-        var span = GridSpan.ForCards(GridSpan.IsOpened(this));
-        if (span == _viewModel.GridItemSpan) return;
-
-        _viewModel.GridItemSpan = span;
-        SideTabBar.LayOutAgain(Cards);
-    }
+    void UpdateColumns() =>
+        GridSpan.Update(this, Cards, () => _viewModel.GridItemSpan, (width, opened) => _viewModel.GridItemSpan = GridSpan.ForCards(opened));
 
     // The list's margin from the XAML: on iOS, room at the bottom for the tab bar floating there.
     static readonly Thickness BesideMargin = new(8, 0);
