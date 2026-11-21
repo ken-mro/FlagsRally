@@ -416,6 +416,8 @@ public class MapRingController : Grid
     sealed class RingDrawable(MapRingController c) : IDrawable
     {
         const float TickOuter = Outer - 5;
+        // The ring's radius while the knob is worked: a narrow band round the base.
+        const float ShrunkOuter = Base + 8;
         const float TickLength = 6;
         const float LongTickLength = 10;
         // The shuttle's arc runs a little inside the ticks.
@@ -427,21 +429,27 @@ public class MapRingController : Grid
             canvas.StrokeLineCap = LineCap.Round;
             canvas.StrokeLineJoin = LineJoin.Round;
 
-            // The ring: a paper face with a thin edge.
+            // The ring: a paper face with a thin edge. While the knob is worked it shrinks to a narrow
+            // band round the base, out of the way of the map, and its ticks fade.
+            var outer = Outer - (Outer - ShrunkOuter) * c._moveGlow;
             canvas.FillColor = PaperCard.WithAlpha(0.92f);
-            canvas.FillCircle(centre, Outer - 1);
+            canvas.FillCircle(centre, outer - 1);
             canvas.StrokeColor = InkMuted.WithAlpha(0.5f);
             canvas.StrokeSize = 1;
-            canvas.DrawCircle(centre, Outer - 1);
+            canvas.DrawCircle(centre, outer - 1);
 
             // 36 ticks, every 10°, longer every 90°, turned with the zoom.
-            canvas.StrokeColor = InkMuted;
-            canvas.StrokeSize = 1.4f;
-            for (var i = 0; i < 36; i++)
+            if (c._moveGlow < 1)
             {
-                var angle = i * 10 + c._tickRotation;
-                var length = i % 9 == 0 ? LongTickLength : TickLength;
-                canvas.DrawLine(OnCircle(centre, TickOuter, angle), OnCircle(centre, TickOuter - length, angle));
+                var shrink = outer - Outer;
+                canvas.StrokeColor = InkMuted.WithAlpha(1 - c._moveGlow);
+                canvas.StrokeSize = 1.4f;
+                for (var i = 0; i < 36; i++)
+                {
+                    var angle = i * 10 + c._tickRotation;
+                    var length = i % 9 == 0 ? LongTickLength : TickLength;
+                    canvas.DrawLine(OnCircle(centre, TickOuter + shrink, angle), OnCircle(centre, TickOuter + shrink - length, angle));
+                }
             }
 
             // Zooming: the inside of the ring's edge in the zoom colour.
