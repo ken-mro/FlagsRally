@@ -1945,24 +1945,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Map controller.
-        /// </summary>
-        internal static string MapPad {
-            get {
-                return ResourceManager.GetString("MapPad", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Touch and slide to one of the two marks, or tap this button and then a mark. At the mark on the left, a pad opens that moves the map the way your thumb leans, faster the further out. At the mark above, a pad opens that zooms: above its middle zooms in, below zooms out. A pad opened by sliding closes when you lift your thumb; one opened by tapping stays until you tap outside it..
-        /// </summary>
-        internal static string MapPadHint {
-            get {
-                return ResourceManager.GetString("MapPadHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Couldn't load the stamp.
         /// </summary>
         internal static string StampImageNotLoadedTitle {
@@ -2013,6 +1995,69 @@ namespace FlagsRally.Resources {
         internal static string TapToPressStamp {
             get {
                 return ResourceManager.GetString("TapToPressStamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map controller.
+        /// </summary>
+        internal static string MapRing {
+            get {
+                return ResourceManager.GetString("MapRing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to open. Lean the knob in the middle to move the map, faster the further it leans. Put your thumb on the ring and slide it round: clockwise zooms in, anticlockwise zooms out, faster the further from where you started. Double-tap the middle to go back to the start. Touch the map outside it to close it..
+        /// </summary>
+        internal static string MapRingHint {
+            get {
+                return ResourceManager.GetString("MapRingHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idle.
+        /// </summary>
+        internal static string MapRingIdle {
+            get {
+                return ResourceManager.GetString("MapRingIdle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moving.
+        /// </summary>
+        internal static string MapRingMoving {
+            get {
+                return ResourceManager.GetString("MapRingMoving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom in ×{0}/s.
+        /// </summary>
+        internal static string MapRingZoomIn {
+            get {
+                return ResourceManager.GetString("MapRingZoomIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom out ×{0}/s.
+        /// </summary>
+        internal static string MapRingZoomOut {
+            get {
+                return ResourceManager.GetString("MapRingZoomOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom stopped.
+        /// </summary>
+        internal static string MapRingZoomStopped {
+            get {
+                return ResourceManager.GetString("MapRingZoomStopped", resourceCulture);
             }
         }
     }

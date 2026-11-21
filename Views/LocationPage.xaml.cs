@@ -1,4 +1,5 @@
 using FlagsRally.Helpers;
+using FlagsRally.Resources;
 using FlagsRally.ViewModels;
 
 namespace FlagsRally.Views;
@@ -21,7 +22,19 @@ public partial class LocationPage : ContentPage
 		vm.ArrivalMap = map;
         BindingContext = _viewModel = vm;
 
-        map.CameraIdled += (_, e) => _lastCamera = e.Position;
+        map.CameraIdled += (_, e) =>
+        {
+            _lastCamera = e.Position;
+            ShowZoom(e.Position.Zoom);
+        };
+        map.CameraChanged += (_, e) => ShowZoom(e.Position.Zoom);
+        map.CameraMoveStarted += (_, e) =>
+        {
+            if (e.IsGesture) CloseRingController();
+        };
+        map.MapClicked += (_, _) => CloseRingController();
+        map.MapLongClicked += (_, _) => CloseRingController();
+        map.PinClicked += (_, _) => CloseRingController();
         map.HandlerChanged += (_, _) =>
         {
             RestoreCamera();
@@ -40,53 +53,54 @@ public partial class LocationPage : ContentPage
         }
     }
 
-    void OnThumbPadStarted(object? sender, EventArgs e) => _viewModel.BeginPadMove();
+    void OnRingStarted(object? sender, EventArgs e) => _viewModel.BeginPadMove();
 
-    // The controller's marks or a pad stay open after a tap. Meanwhile the catcher over the page passes
-    // its touches to the controller, measured from the controller's centre.
-    void OnThumbPadKeptOpenChanged(object? sender, bool keptOpen) => padCatcher.IsVisible = keptOpen;
-
-    void OnPadCatcherStarted(object? sender, TouchEventArgs e) => thumbPad.TouchDown(FromThumbPad(e));
-
-    void OnPadCatcherDragged(object? sender, TouchEventArgs e) => thumbPad.TouchMove(FromThumbPad(e));
-
-    void OnPadCatcherEnded(object? sender, TouchEventArgs e) => thumbPad.TouchUp(canceled: false);
-
-    void OnPadCatcherCanceled(object? sender, EventArgs e) => thumbPad.TouchUp(canceled: true);
-
-    PointF FromThumbPad(TouchEventArgs e)
-    {
-        var touch = e.Touches.FirstOrDefault();
-        var (catcherX, catcherY) = PositionOnPage(padCatcher);
-        var (padX, padY) = PositionOnPage(thumbPad);
-        return new PointF(
-            (float)(catcherX + touch.X - (padX + thumbPad.Width / 2)),
-            (float)(catcherY + touch.Y - (padY + thumbPad.Height / 2)));
-    }
-
-    // Where a view's top left corner is on the page, with the moves its parents were given
-    // (the map buttons are lifted above the panels with a translation).
-    static (double X, double Y) PositionOnPage(VisualElement view)
-    {
-        double x = 0, y = 0;
-        for (Element? element = view; element is VisualElement visual and not Page; element = element.Parent)
-        {
-            x += visual.X + visual.TranslationX;
-            y += visual.Y + visual.TranslationY;
-        }
-        return (x, y);
-    }
-
-    void OnMapButtonPressed(object? sender, EventArgs e) => thumbPad.Close();
-
-    void OnThumbPadMoved(object? sender, Controls.MapThumbPad.MoveEventArgs e) =>
+    void OnRingMoved(object? sender, Controls.MapRingController.MoveEventArgs e) =>
         _viewModel.PadMove(e.PanX, e.PanY, e.ZoomChange);
+
+    async void OnRingResetRequested(object? sender, EventArgs e) => await _viewModel.ResetCameraAsync();
+
+    void OnRingOpenChanged(object? sender, bool open)
+    {
+        ringStatus.IsVisible = open;
+        if (open) ShowRingStatus();
+    }
+
+    void OnRingStateChanged(object? sender, EventArgs e) => ShowRingStatus();
+
+    // The map was touched outside the controller (a tap, a long press, a pin, or a drag or pinch,
+    // which the map still does): the controller closes, unless a thumb is on it.
+    void CloseRingController() => ringController.Close();
+
+    void ShowZoom(double zoom)
+    {
+        ringController.ShowZoom(zoom, LocationPageViewModel.HomeZoom);
+        ringScale.Text = MapRing.FormatMagnification(MapRing.Magnification(zoom, LocationPageViewModel.HomeZoom));
+    }
+
+    void ShowRingStatus()
+    {
+        ShowZoom(map.CameraPosition?.Zoom ?? LocationPageViewModel.HomeZoom);
+        var speed = ringController.ZoomSpeed;
+        (ringState.Text, ringState.TextColor) = ringController.CurrentState switch
+        {
+            Controls.MapRingController.State.Moving => (AppResources.MapRingMoving, AppColors.Get("Navy", "#182A52")),
+            Controls.MapRingController.State.Zooming => (
+                speed > 0 ? string.Format(AppResources.MapRingZoomIn, MapRing.FormatRate(speed))
+                : speed < 0 ? string.Format(AppResources.MapRingZoomOut, MapRing.FormatRate(speed))
+                : AppResources.MapRingZoomStopped,
+                AppColors.Get("Stamp", "#B94047")),
+            _ => (AppResources.MapRingIdle, AppColors.Get("InkMuted", "#7A7262")),
+        };
+    }
+
+    void OnMapButtonPressed(object? sender, EventArgs e) => ringController.Close();
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        // Leaving the tab is a tap outside the controller too.
-        thumbPad.Close();
+        // Leaving the tab closes the controller, even with a thumb on it.
+        ringController.Close(evenWhileHeld: true);
     }
 
     protected override async void OnAppearing()
@@ -110,6 +124,7 @@ public partial class LocationPage : ContentPage
     {
         if (filterChips.Height <= 0) return;
         var top = filterChips.Margin.Top + filterChips.Height + MapButtonsGap / 2;
+        ringStatus.Margin = new Thickness(ringStatus.Margin.Left, top, ringStatus.Margin.Right, 0);
         var padding = new Thickness(map.Padding.Left, top, map.Padding.Right, map.Padding.Bottom);
         map.Padding = padding;
 #if ANDROID
@@ -129,7 +144,7 @@ public partial class LocationPage : ContentPage
 #endif
     }
 
-    // The map buttons (directions, open in Maps, my location, the thumb pad) sit at the bottom right like Google's own,
+    // The map controls (the ring controller, directions, open in Maps, my location) sit at the bottom right like Google's own,
     // just above whichever panel is showing (the Get Location button, the check-in spot guide or
     // the pin details), so a taller panel never covers them. Only the buttons move; the map stays where it is.
     void PlaceMapButtons()

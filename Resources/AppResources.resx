@@ -746,12 +746,6 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="MapPad" xml:space="preserve">
-    <value>Map controller</value>
-  </data>
-  <data name="MapPadHint" xml:space="preserve">
-    <value>Touch and slide to one of the two marks, or tap this button and then a mark. At the mark on the left, a pad opens that moves the map the way your thumb leans, faster the further out. At the mark above, a pad opens that zooms: above its middle zooms in, below zooms out. A pad opened by sliding closes when you lift your thumb; one opened by tapping stays until you tap outside it.</value>
-  </data>
   <data name="StampImageNotLoadedTitle" xml:space="preserve">
     <value>Couldn't load the stamp</value>
   </data>
@@ -769,5 +763,26 @@
   </data>
   <data name="TapToPressStamp" xml:space="preserve">
     <value>Tap to press the stamp</value>
+  </data>
+  <data name="MapRing" xml:space="preserve">
+    <value>Map controller</value>
+  </data>
+  <data name="MapRingHint" xml:space="preserve">
+    <value>Tap to open. Lean the knob in the middle to move the map, faster the further it leans. Put your thumb on the ring and slide it round: clockwise zooms in, anticlockwise zooms out, faster the further from where you started. Double-tap the middle to go back to the start. Touch the map outside it to close it.</value>
+  </data>
+  <data name="MapRingIdle" xml:space="preserve">
+    <value>Idle</value>
+  </data>
+  <data name="MapRingMoving" xml:space="preserve">
+    <value>Moving</value>
+  </data>
+  <data name="MapRingZoomIn" xml:space="preserve">
+    <value>Zoom in ×{0}/s</value>
+  </data>
+  <data name="MapRingZoomOut" xml:space="preserve">
+    <value>Zoom out ×{0}/s</value>
+  </data>
+  <data name="MapRingZoomStopped" xml:space="preserve">
+    <value>Zoom stopped</value>
   </data>
 </root>

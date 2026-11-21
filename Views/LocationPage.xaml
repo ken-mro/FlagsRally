@@ -28,64 +28,119 @@
             Padding="0,0,0,64"
             SelectedPin="{Binding SelectedPin}" />
 
-        <!--  While the thumb controller's marks or a pad are kept open after a tap, this takes the touches
-              anywhere on the page but the map buttons and passes them to the controller: on a mark or the
-              pad they work it, anywhere else they put it back to its button. (The marks and pads are
-              drawn outside the controller's bounds, where it gets no touches itself.) It is over the
-              chips and the panels and under the map buttons (same ZIndex, declared first).  -->
-        <GraphicsView
-            x:Name="padCatcher"
+        <!--  The ring controller's scale and what it is doing, at the map's top left below the chips
+              (see code-behind), while it is open. Touches go through to the map.  -->
+        <HorizontalStackLayout
+            x:Name="ringStatus"
             Grid.Row="0"
-            Grid.RowSpan="2"
-            Margin="-10"
-            BackgroundColor="Transparent"
-            CancelInteraction="OnPadCatcherCanceled"
-            DragInteraction="OnPadCatcherDragged"
-            EndInteraction="OnPadCatcherEnded"
+            Margin="8,8,8,0"
+            HorizontalOptions="Start"
+            InputTransparent="True"
             IsVisible="False"
-            StartInteraction="OnPadCatcherStarted"
-            ZIndex="1" />
+            Spacing="6"
+            VerticalOptions="Start"
+            ZIndex="1">
+            <Border
+                Padding="10,4"
+                Style="{StaticResource Chip}">
+                <Label
+                    x:Name="ringScale"
+                    FontSize="13"
+                    TextColor="{StaticResource Ink}" />
+            </Border>
+            <Border
+                Padding="10,4"
+                Style="{StaticResource Chip}">
+                <Label
+                    x:Name="ringState"
+                    FontSize="13"
+                    TextColor="{StaticResource InkMuted}" />
+            </Border>
+        </HorizontalStackLayout>
 
-        <!--  Map buttons at the bottom right, lifted above whichever panel is showing (see code-behind):
-              directions and open-in-Maps for the place on the card, like Google's own toolbar, then the thumb controller and my location.
-              They are above the panels (ZIndex), so the pad that opens round the controller's button shows over them.  -->
-        <VerticalStackLayout
+        <!--  Map controls at the bottom right, lifted above whichever panel is showing (see code-behind):
+              the ring controller, and beside it directions and open-in-Maps for the place on the card,
+              like Google's own toolbar, then my location. They are above the panels (ZIndex). Only the
+              buttons and the open ring take touches; the map between them can still be dragged.  -->
+        <Grid
             x:Name="mapButtons"
             Grid.Row="0"
             Grid.RowSpan="2"
             Margin="0,0,8,0"
+            CascadeInputTransparent="False"
+            ColumnDefinitions="Auto,Auto"
+            ColumnSpacing="6"
             HorizontalOptions="End"
-            Spacing="10"
+            InputTransparent="True"
             VerticalOptions="End"
             ZIndex="1">
+            <!--  Closed, a small button at its centre; opened by a tap, closed by touching the map  -->
+            <controls:MapRingController
+                x:Name="ringController"
+                Grid.Column="0"
+                Moved="OnRingMoved"
+                OpenChanged="OnRingOpenChanged"
+                ResetRequested="OnRingResetRequested"
+                Started="OnRingStarted"
+                StateChanged="OnRingStateChanged"
+                VerticalOptions="End" />
             <VerticalStackLayout
-                HorizontalOptions="End"
-                IsVisible="{Binding ShowsMapActions}"
-                Spacing="10">
-                <Border
-                    BackgroundColor="{StaticResource Navy}"
-                    HeightRequest="48"
-                    StrokeShape="RoundRectangle 24"
-                    StrokeThickness="0"
-                    WidthRequest="48">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="{StaticResource NavyDeep}"
-                            Opacity="0.3"
-                            Radius="8"
-                            Offset="0,2" />
-                    </Border.Shadow>
-                    <ImageButton
-                        Padding="12"
-                        BackgroundColor="Transparent"
-                        Command="{Binding OpenDirectionsCommand}"
-                        Pressed="OnMapButtonPressed"
-                        SemanticProperties.Description="{x:Static strings:AppResources.Directions}"
-                        Source="directions.png" />
-                </Border>
+                Grid.Column="1"
+                Spacing="10"
+                VerticalOptions="End">
+                <VerticalStackLayout
+                    HorizontalOptions="End"
+                    IsVisible="{Binding ShowsMapActions}"
+                    Spacing="10">
+                    <Border
+                        BackgroundColor="{StaticResource Navy}"
+                        HeightRequest="48"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0"
+                        WidthRequest="48">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="{StaticResource NavyDeep}"
+                                Opacity="0.3"
+                                Radius="8"
+                                Offset="0,2" />
+                        </Border.Shadow>
+                        <ImageButton
+                            Padding="12"
+                            BackgroundColor="Transparent"
+                            Command="{Binding OpenDirectionsCommand}"
+                            Pressed="OnMapButtonPressed"
+                            SemanticProperties.Description="{x:Static strings:AppResources.Directions}"
+                            Source="directions.png" />
+                    </Border>
+                    <Border
+                        BackgroundColor="{StaticResource PaperCard}"
+                        HeightRequest="48"
+                        Stroke="{StaticResource PaperEdge}"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="1"
+                        WidthRequest="48">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="{StaticResource NavyDeep}"
+                                Opacity="0.18"
+                                Radius="8"
+                                Offset="0,2" />
+                        </Border.Shadow>
+                        <ImageButton
+                            Padding="12"
+                            BackgroundColor="Transparent"
+                            Command="{Binding OpenInMapsCommand}"
+                            Pressed="OnMapButtonPressed"
+                            SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
+                            Source="open_in_maps.png" />
+                    </Border>
+                </VerticalStackLayout>
+                <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
                 <Border
                     BackgroundColor="{StaticResource PaperCard}"
                     HeightRequest="48"
+                    HorizontalOptions="End"
                     Stroke="{StaticResource PaperEdge}"
                     StrokeShape="RoundRectangle 24"
                     StrokeThickness="1"
@@ -98,48 +153,15 @@
                             Offset="0,2" />
                     </Border.Shadow>
                     <ImageButton
-                        Padding="12"
+                        Padding="11"
                         BackgroundColor="Transparent"
-                        Command="{Binding OpenInMapsCommand}"
+                        Command="{Binding ShowMyLocationCommand}"
                         Pressed="OnMapButtonPressed"
-                        SemanticProperties.Description="{x:Static strings:AppResources.OpenInMaps}"
-                        Source="open_in_maps.png" />
+                        SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
+                        Source="my_location.png" />
                 </Border>
             </VerticalStackLayout>
-            <!--  The thumb controller, a small button until it is touched. The first slide chooses:
-                  sideways shows the pad that moves the map, up or down the one that zooms it. The pads
-                  are drawn to the left of these buttons, not under the thumb, so they cover none of them.  -->
-            <controls:MapThumbPad
-                x:Name="thumbPad"
-                HorizontalOptions="End"
-                KeptOpenChanged="OnThumbPadKeptOpenChanged"
-                Moved="OnThumbPadMoved"
-                Started="OnThumbPadStarted" />
-            <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
-            <Border
-                BackgroundColor="{StaticResource PaperCard}"
-                HeightRequest="48"
-                HorizontalOptions="End"
-                Stroke="{StaticResource PaperEdge}"
-                StrokeShape="RoundRectangle 24"
-                StrokeThickness="1"
-                WidthRequest="48">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="{StaticResource NavyDeep}"
-                        Opacity="0.18"
-                        Radius="8"
-                        Offset="0,2" />
-                </Border.Shadow>
-                <ImageButton
-                    Padding="11"
-                    BackgroundColor="Transparent"
-                    Command="{Binding ShowMyLocationCommand}"
-                    Pressed="OnMapButtonPressed"
-                    SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
-                    Source="my_location.png" />
-            </Border>
-        </VerticalStackLayout>
+        </Grid>
 
         <!--  Filter chips over the map. The map's top padding follows their height (see code-behind),
               so Google's compass shows below them instead of under them. Filter and the Select all /
