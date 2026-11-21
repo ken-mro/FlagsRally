@@ -49,10 +49,10 @@ public static class MapRing
     public const double ZoomMaxDegrees = 165;
 
     /// <summary>The fastest zoom, in levels per second (one level doubles the scale).</summary>
-    public const double MaxZoomSpeed = 3;
+    public const double MaxZoomSpeed = 6;
 
-    /// <summary>The power the slide is raised to, like <see cref="PanCurve"/>.</summary>
-    public const double ZoomCurve = 2;
+    /// <summary>The power the slide is raised to, like <see cref="PanCurve"/>; at 1 the speed is in step with the angle.</summary>
+    public const double ZoomCurve = 1;
 
     /// <summary>How far the ring's ticks turn for each doubling of the scale.</summary>
     public const double TickDegreesPerLevel = 30;
