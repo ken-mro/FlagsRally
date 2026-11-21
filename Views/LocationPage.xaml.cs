@@ -20,6 +20,7 @@ public partial class LocationPage : ContentPage
 	{
 		InitializeComponent();
 		vm.ArrivalMap = map;
+        ringController.Button = ringButton;
         BindingContext = _viewModel = vm;
 
         map.CameraIdled += (_, e) =>

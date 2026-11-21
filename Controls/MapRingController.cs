@@ -7,11 +7,12 @@ namespace FlagsRally.Controls;
 /// The map's ring controller, worked with one thumb at the map's bottom right (see <see cref="MapRing"/>
 /// for the sums).
 /// <para>
-/// Closed, it is a small round button with the four-way move mark, at the controller's centre. A tap
-/// opens the controller, which grows out of the button: a ring round the outside, with 36 ticks that
-/// turn with the zoom, and a base in the middle with a knob on it. The page closes it again when the
-/// map outside is touched (<see cref="Close"/>), and the controller shrinks back into the button; the
-/// map keeps its zoom and place. It does not close while a thumb is on it.
+/// Closed, only its button shows (<see cref="MapRingButton"/>, in the column of the map's round
+/// buttons; see <see cref="Button"/>). A tap on it opens the controller, which grows out of the button
+/// to its own place: a ring round the outside, with 36 ticks that turn with the zoom, and a base in the
+/// middle with a knob on it. The page closes it again when the map outside is touched
+/// (<see cref="Close"/>), and the controller shrinks back into the button; the map keeps its zoom and
+/// place. It does not close while a thumb is on it.
 /// </para>
 /// <list type="bullet">
 /// <item>A touch that starts on the base works the knob, a joystick: the map moves the way it leans
@@ -59,8 +60,7 @@ public class MapRingController : Grid
     const float Outer = (float)MapRing.OuterRadius;
     const float Base = (float)MapRing.BaseRadius;
     const float Knob = (float)MapRing.KnobRadius;
-    const float ButtonSize = 48;
-    const float ShadowRoom = 8;
+    const float ButtonSize = MapRingButton.Size;
     const uint OpenMs = 180;
     const uint CloseMs = 150;
     // How long the colours take to change, and the knob to spring back.
@@ -76,7 +76,6 @@ public class MapRingController : Grid
 
     static readonly Color MoveColor = AppColors.Get("Navy", "#182A52");
     static readonly Color ZoomColor = AppColors.Get("Stamp", "#B94047");
-    static readonly Color NavyDeep = AppColors.Get("NavyDeep", "#0F1C3A");
     static readonly Color Paper = AppColors.Get("Paper", "#F4EEDF");
     static readonly Color PaperCard = AppColors.Get("PaperCard", "#FBF8F0");
     static readonly Color PaperEdge = AppColors.Get("PaperEdge", "#DDD2BA");
@@ -84,7 +83,8 @@ public class MapRingController : Grid
 
     readonly IDispatcherTimer _timer;
     readonly GraphicsView _ring;     // the open controller; takes its own touches
-    readonly GraphicsView _button;   // the closed controller
+    MapRingButton? _button;          // the closed controller
+    SizeF _buttonOffset;             // the button's centre from the ring's, where it grows from and shrinks to
 
     MapRing.Part? _part;             // what the thumb that is down works
     PointF _finger;                  // from the centre
@@ -105,7 +105,7 @@ public class MapRingController : Grid
         var size = Outer * 2;
         WidthRequest = size;
         HeightRequest = size;
-        // Only the button, or the open ring, takes touches: the map round them can still be dragged.
+        // Only the open ring takes touches: the map round it can still be dragged.
         InputTransparent = true;
         CascadeInputTransparent = false;
 
@@ -117,28 +117,12 @@ public class MapRingController : Grid
             IsVisible = false,
             Drawable = new RingDrawable(this),
         };
-        _button = new GraphicsView
-        {
-            WidthRequest = ButtonSize + ShadowRoom * 2,
-            HeightRequest = ButtonSize + ShadowRoom * 2,
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center,
-            BackgroundColor = Colors.Transparent,
-            Drawable = new ButtonDrawable(),
-        };
-        SemanticProperties.SetDescription(_button, AppResources.MapRing);
-        SemanticProperties.SetHint(_button, AppResources.MapRingHint);
         Children.Add(_ring);
-        Children.Add(_button);
 
         _timer = Dispatcher.CreateTimer();
         _timer.Interval = Tick;
         _timer.Tick += (_, _) => OnTick();
 
-        _button.EndInteraction += (_, e) =>
-        {
-            if (e.IsInsideBounds) Open();
-        };
         _ring.StartInteraction += (_, e) => OnDown(FromCentre(e.Touches.FirstOrDefault()));
         _ring.DragInteraction += (_, e) => OnMove(FromCentre(e.Touches.FirstOrDefault()));
         _ring.EndInteraction += (_, _) => OnUp(canceled: false);
@@ -157,21 +141,66 @@ public class MapRingController : Grid
         if (IsOpen) _ring.Invalidate();
     }
 
+    /// <summary>The button that stands for the closed controller and opens it when tapped.</summary>
+    public MapRingButton? Button
+    {
+        get => _button;
+        set
+        {
+            if (_button is not null) _button.Tapped -= OnButtonTapped;
+            _button = value;
+            if (_button is not null) _button.Tapped += OnButtonTapped;
+        }
+    }
+
+    void OnButtonTapped(object? sender, EventArgs e) => Open();
+
     public void Open()
     {
         if (IsOpen) return;
         IsOpen = true;
         OpenChanged?.Invoke(this, true);
 
-        _button.CancelAnimations();
         _ring.CancelAnimations();
-        _button.IsVisible = false;
+        _buttonOffset = SizeF.Zero;
+        if (_button is not null)
+        {
+            _button.CancelAnimations();
+            _buttonOffset = CentreOnPage(_button) - CentreOnPage(this);
+            SetButtonShown(false);
+        }
+
+        // From the button's place and size to the controller's.
+        _ring.TranslationX = _buttonOffset.Width;
+        _ring.TranslationY = _buttonOffset.Height;
         _ring.Scale = ButtonSize / (Outer * 2);
         _ring.Opacity = 0;
         _ring.IsVisible = true;
         _ring.Invalidate();
+        _ = _ring.TranslateToAsync(0, 0, OpenMs, Easing.CubicOut);
         _ = _ring.ScaleToAsync(1, OpenMs, Easing.CubicOut);
         _ = _ring.FadeToAsync(1, OpenMs / 2);
+    }
+
+    // The button keeps its room in the column while the controller is open, so the buttons round it stay put.
+    void SetButtonShown(bool shown)
+    {
+        if (_button is null) return;
+        _button.Opacity = shown ? 1 : 0;
+        _button.InputTransparent = !shown;
+    }
+
+    // Where a view's centre is on the page, with the moves its parents were given (the map's buttons
+    // are lifted above the panels with a translation).
+    static PointF CentreOnPage(VisualElement view)
+    {
+        double x = view.Width / 2, y = view.Height / 2;
+        for (Element? element = view; element is VisualElement visual and not Page; element = element.Parent)
+        {
+            x += visual.X + visual.TranslationX;
+            y += visual.Y + visual.TranslationY;
+        }
+        return new PointF((float)x, (float)y);
     }
 
     /// <summary>
@@ -190,20 +219,23 @@ public class MapRingController : Grid
         OpenChanged?.Invoke(this, false);
 
         _ring.CancelAnimations();
-        _button.CancelAnimations();
+        _button?.CancelAnimations();
         _ = ShrinkAsync();
     }
 
     async Task ShrinkAsync()
     {
+        // Back to the button's place and size.
+        var move = _ring.TranslateToAsync(_buttonOffset.Width, _buttonOffset.Height, CloseMs, Easing.CubicIn);
         var scale = _ring.ScaleToAsync(ButtonSize / (Outer * 2), CloseMs, Easing.CubicIn);
         var fade = _ring.FadeToAsync(0, CloseMs, Easing.CubicIn);
-        // Both report true when they were cut short: the controller was opened again meanwhile.
-        var canceled = await scale | await fade;
+        // They report true when they were cut short: the controller was opened again meanwhile.
+        var canceled = await move | await scale | await fade;
         if (canceled) return;
         _ring.IsVisible = false;
+        if (_button is null) return;
+        SetButtonShown(true);
         _button.Opacity = 0;
-        _button.IsVisible = true;
         await _button.FadeToAsync(1, 100);
     }
 
@@ -360,7 +392,7 @@ public class MapRingController : Grid
     }
 
     // The four-way move mark: a cross with an arrowhead at each end.
-    static void DrawMoveMark(ICanvas canvas, PointF centre, float size, Color ink, float strokeSize)
+    internal static void DrawMoveMark(ICanvas canvas, PointF centre, float size, Color ink, float strokeSize)
     {
         canvas.StrokeColor = ink;
         canvas.StrokeSize = strokeSize;
@@ -377,25 +409,6 @@ public class MapRingController : Grid
             path.LineTo(tip);
             path.LineTo(tip.X - x * head + y * head, tip.Y - y * head + x * head);
             canvas.DrawPath(path);
-        }
-    }
-
-    // The closed controller: a paper disc like the map's other round buttons, with the move mark.
-    sealed class ButtonDrawable : IDrawable
-    {
-        public void Draw(ICanvas canvas, RectF dirtyRect)
-        {
-            var centre = dirtyRect.Center;
-            var radius = ButtonSize / 2;
-            canvas.SaveState();
-            canvas.SetShadow(new SizeF(0, 2), 6, NavyDeep.WithAlpha(0.18f));
-            canvas.FillColor = PaperCard;
-            canvas.FillCircle(centre, radius);
-            canvas.RestoreState();
-            canvas.StrokeColor = PaperEdge;
-            canvas.StrokeSize = 1;
-            canvas.DrawCircle(centre, radius - 0.5f);
-            DrawMoveMark(canvas, centre, 11, MoveColor, 1.8f);
         }
     }
 

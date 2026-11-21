@@ -74,7 +74,7 @@
             InputTransparent="True"
             VerticalOptions="End"
             ZIndex="1">
-            <!--  Closed, a small button at its centre; opened by a tap, closed by touching the map  -->
+            <!--  Opened by its button in the column beside it, which it grows out of; closed by touching the map  -->
             <controls:MapRingController
                 x:Name="ringController"
                 Grid.Column="0"
@@ -136,6 +136,8 @@
                             Source="open_in_maps.png" />
                     </Border>
                 </VerticalStackLayout>
+                <!--  The ring controller's button: tap to open the controller  -->
+                <controls:MapRingButton x:Name="ringButton" HorizontalOptions="End" />
                 <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
                 <Border
                     BackgroundColor="{StaticResource PaperCard}"
