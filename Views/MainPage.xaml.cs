@@ -19,7 +19,8 @@ public partial class MainPage : ContentPage
     public MainPage(MainPageViewModel vm, OnboardingService onboardingService, SettingsPreferences settingsPreferences)
     {
         InitializeComponent();
-        SideTabBar.Watch(this, RunUnderSideTabBar);
+        SideTabBar.Watch(this, OnSafeAreaChanged);
+        GridSpan.WatchWindow(this, UpdateColumns);
         BindingContext = _mainPageViewModel = vm;
         _onboardingService = onboardingService;
         _settingsPreferences = settingsPreferences;
@@ -49,8 +50,28 @@ public partial class MainPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
 
-        _mainPageViewModel.GridItemSpan = GridSpan.For(width, GridSpan.IsOpened(this));
+        UpdateColumns();
         RunUnderSideTabBar();
+    }
+
+    void OnSafeAreaChanged()
+    {
+        UpdateColumns();
+        RunUnderSideTabBar();
+    }
+
+    // The column count, from the page's width and whether the phone is opened. Worked out again
+    // when the window changes size or the safe area moves, as either can come after the page's
+    // new size when a foldable is opened or closed; iOS then lays the rows out again.
+    void UpdateColumns()
+    {
+        if (Width <= 0) return;
+
+        var span = GridSpan.For(Width, GridSpan.IsOpened(this));
+        if (span == _mainPageViewModel.GridItemSpan) return;
+
+        _mainPageViewModel.GridItemSpan = span;
+        SideTabBar.LayOutAgain(collectionView);
     }
 
     // Beside a tab bar at the side (iPhone Duo) the stamps go on to the page's edge, under the bar.

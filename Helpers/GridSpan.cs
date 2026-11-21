@@ -35,4 +35,28 @@ public static class GridSpan
         page.Window is { Width: > 0, Height: > 0 } window
             ? IsOpened(window.Width, window.Height)
             : IsOpened(page.Width, page.Height);
+
+    /// <summary>
+    /// Runs <paramref name="update"/> whenever the page's window changes size. Opening or closing a
+    /// foldable resizes the window, and the page can be given its new size before the window has
+    /// its own: a count worked out then still followed the screen the phone had just left.
+    /// </summary>
+    public static void WatchWindow(Page page, Action update)
+    {
+        Window? watched = null;
+        void OnWindowSizeChanged(object? sender, EventArgs e) => update();
+        void Follow()
+        {
+            if (ReferenceEquals(watched, page.Window)) return;
+            if (watched is not null) watched.SizeChanged -= OnWindowSizeChanged;
+            watched = page.Window;
+            if (watched is not null) watched.SizeChanged += OnWindowSizeChanged;
+        }
+
+        page.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(VisualElement.Window)) Follow();
+        };
+        Follow();
+    }
 }
