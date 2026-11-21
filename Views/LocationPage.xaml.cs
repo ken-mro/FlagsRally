@@ -28,7 +28,7 @@ public partial class LocationPage : ContentPage
             _lastCamera = e.Position;
             ShowZoom(e.Position.Zoom);
         };
-        map.CameraChanged += (_, e) => ShowZoom(e.Position.Zoom);
+        map.CameraMoving += (_, e) => ShowZoom(e.Position.Zoom);
         map.CameraMoveStarted += (_, e) =>
         {
             if (e.IsGesture) CloseRingController();

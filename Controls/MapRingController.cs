@@ -1,5 +1,4 @@
 using FlagsRally.Helpers;
-using FlagsRally.Resources;
 
 namespace FlagsRally.Controls;
 
