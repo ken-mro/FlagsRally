@@ -41,7 +41,7 @@ public class MapRingController : Grid
         public double ZoomChange { get; } = zoomChange;
     }
 
-    public enum State { Idle, Moving, Zooming }
+    enum State { Idle, Moving, Zooming }
 
     /// <summary>A thumb has come down; what it does next starts from the camera as it is now.</summary>
     public event EventHandler? Started;
@@ -50,17 +50,12 @@ public class MapRingController : Grid
     public event EventHandler? ResetRequested;
     /// <summary>The controller opened (true) or closed (false).</summary>
     public event EventHandler<bool>? OpenChanged;
-    /// <summary><see cref="CurrentState"/> or <see cref="ZoomSpeed"/> changed.</summary>
-    public event EventHandler? StateChanged;
     /// <summary>The ring was tapped without sliding round it.</summary>
     public event EventHandler? RingTapped;
     /// <summary>The ring zoomed the map, once for each touch that does.</summary>
     public event EventHandler? RingZoomed;
 
-    public State CurrentState { get; private set; }
-
-    /// <summary>The zoom's speed in levels per second while the ring is worked; positive is in.</summary>
-    public double ZoomSpeed { get; private set; }
+    State _state;                    // what the thumb is doing, which sets the colours
 
     public bool IsOpen { get; private set; }
 
@@ -305,7 +300,7 @@ public class MapRingController : Grid
             _referenceAngle = _lastAngle = MapRing.AngleOf(at.X, at.Y);
             _shift = 0;
         }
-        SetState(part == MapRing.Part.Ring ? State.Zooming : State.Moving, 0);
+        _state = part == MapRing.Part.Ring ? State.Zooming : State.Moving;
         _timer.Start();
         _ring.Invalidate();
     }
@@ -358,17 +353,9 @@ public class MapRingController : Grid
     {
         _part = null;
         _shift = 0;
-        SetState(State.Idle, 0);
+        _state = State.Idle;
         _timer.Start();
         _ring.Invalidate();
-    }
-
-    void SetState(State state, double zoomSpeed)
-    {
-        if (state == CurrentState && zoomSpeed == ZoomSpeed) return;
-        CurrentState = state;
-        ZoomSpeed = zoomSpeed;
-        StateChanged?.Invoke(this, EventArgs.Empty);
     }
 
     void OnTick()
@@ -393,8 +380,8 @@ public class MapRingController : Grid
         }
 
         var step = (float)(seconds / GlowSeconds);
-        _moveGlow = Approach(_moveGlow, CurrentState == State.Moving ? 1 : 0, step);
-        _zoomGlow = Approach(_zoomGlow, CurrentState == State.Zooming ? 1 : 0, step);
+        _moveGlow = Approach(_moveGlow, _state == State.Moving ? 1 : 0, step);
+        _zoomGlow = Approach(_zoomGlow, _state == State.Zooming ? 1 : 0, step);
         _ring.Invalidate();
 
         if (_part is null && _knob == PointF.Zero && _moveGlow == 0 && _zoomGlow == 0 && _demoStart is null) _timer.Stop();
@@ -417,7 +404,6 @@ public class MapRingController : Grid
         else if (_part == MapRing.Part.Ring)
         {
             var speed = MapRing.ZoomSpeed(_shift);
-            SetState(State.Zooming, speed);
             if (speed != 0)
             {
                 Moved?.Invoke(this, new MoveEventArgs(0, 0, speed * seconds));

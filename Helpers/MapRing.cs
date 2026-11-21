@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace FlagsRally.Helpers;
 
 /// <summary>
@@ -121,22 +119,11 @@ public static class MapRing
         return Math.Sign(shift) * MaxZoomSpeed * Math.Pow(part, ZoomCurve);
     }
 
-    /// <summary>The scale against the map's starting zoom: 1 there, 2 one level in.</summary>
-    public static double Magnification(double zoom, double homeZoom) => Math.Pow(2, zoom - homeZoom);
-
     /// <summary>
     /// How far the ring's ticks are turned at <paramref name="zoom"/>: in step with the logarithm of the
     /// scale, none at the starting zoom, and no further once the zoom is at its end.
     /// </summary>
     public static double TickRotation(double zoom, double homeZoom) => (MapZoom.Clamp(zoom) - homeZoom) * TickDegreesPerLevel;
-
-    /// <summary>The scale as "×1.00": two decimals, or two significant digits below 0.1, which would show as 0.0x.</summary>
-    public static string FormatMagnification(double magnification) =>
-        "×" + magnification.ToString(magnification >= 0.1 ? "0.00" : "G2", CultureInfo.InvariantCulture);
-
-    /// <summary>How many times the scale changes in a second at <paramref name="levelsPerSecond"/>, as "2.3".</summary>
-    public static string FormatRate(double levelsPerSecond) =>
-        Math.Pow(2, Math.Abs(levelsPerSecond)).ToString("0.0", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// The camera's target after the map moved (<paramref name="dx"/>, <paramref name="dy"/>) units on

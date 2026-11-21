@@ -28,35 +28,24 @@
             Padding="0,0,0,64"
             SelectedPin="{Binding SelectedPin}" />
 
-        <!--  The ring controller's scale and what it is doing, at the map's top left below the chips
-              (see code-behind), while it is open. Touches go through to the map.  -->
-        <HorizontalStackLayout
-            x:Name="ringStatus"
+        <!--  How the ring controller's ring zooms, at the map's top left below the chips (see
+              code-behind), for a moment after the ring is tapped without sliding. Touches go through.  -->
+        <Border
+            x:Name="ringHint"
             Grid.Row="0"
             Margin="8,8,8,0"
+            Padding="10,4"
             HorizontalOptions="Start"
             InputTransparent="True"
             IsVisible="False"
-            Spacing="6"
+            Style="{StaticResource Chip}"
             VerticalOptions="Start"
             ZIndex="1">
-            <Border
-                Padding="10,4"
-                Style="{StaticResource Chip}">
-                <Label
-                    x:Name="ringScale"
-                    FontSize="13"
-                    TextColor="{StaticResource Ink}" />
-            </Border>
-            <Border
-                Padding="10,4"
-                Style="{StaticResource Chip}">
-                <Label
-                    x:Name="ringState"
-                    FontSize="13"
-                    TextColor="{StaticResource InkMuted}" />
-            </Border>
-        </HorizontalStackLayout>
+            <Label
+                FontSize="13"
+                Text="{x:Static strings:AppResources.MapRingHowToZoom}"
+                TextColor="{StaticResource Stamp}" />
+        </Border>
 
         <!--  Map controls at the bottom right, lifted above whichever panel is showing (see code-behind):
               the ring controller, and beside it directions and open-in-Maps for the place on the card,
@@ -84,7 +73,6 @@
                 RingTapped="OnRingTapped"
                 RingZoomed="OnRingZoomed"
                 Started="OnRingStarted"
-                StateChanged="OnRingStateChanged"
                 VerticalOptions="End" />
             <VerticalStackLayout
                 Grid.Column="1"

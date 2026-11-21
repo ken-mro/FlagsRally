@@ -770,21 +770,6 @@
   <data name="MapRingHint" xml:space="preserve">
     <value>タップで開きます。中央のノブを倒すと、倒した方向へ地図が動きます（大きく倒すほど速く）。外側のリングに指を置いて円に沿ってずらすと、時計回りで拡大、反時計回りで縮小します（触れた位置から離れるほど速く）。中央をダブルタップすると最初の位置に戻ります。外側の地図に触れると閉じます。</value>
   </data>
-  <data name="MapRingIdle" xml:space="preserve">
-    <value>待機中</value>
-  </data>
-  <data name="MapRingMoving" xml:space="preserve">
-    <value>移動中</value>
-  </data>
-  <data name="MapRingZoomIn" xml:space="preserve">
-    <value>拡大 ×{0}/秒</value>
-  </data>
-  <data name="MapRingZoomOut" xml:space="preserve">
-    <value>縮小 ×{0}/秒</value>
-  </data>
-  <data name="MapRingZoomStopped" xml:space="preserve">
-    <value>拡大縮小 停止</value>
-  </data>
   <data name="MapRingHowToZoom" xml:space="preserve">
     <value>円に沿ってずらすと拡大・縮小</value>
   </data>

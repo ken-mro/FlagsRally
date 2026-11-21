@@ -133,26 +133,6 @@ public class MapRingTests
         Assert.Equal(MapRing.TickRotation(MapZoom.MinZoom, 14), MapRing.TickRotation(0, 14));
     }
 
-    [Theory]
-    [InlineData(14, "×1.00")]
-    [InlineData(15, "×2.00")]
-    [InlineData(13, "×0.50")]
-    [InlineData(14.5, "×1.41")]
-    [InlineData(6, "×0.0039")]   // two decimals would say ×0.00
-    public void The_scale_is_shown_against_the_starting_zoom(double zoom, string text)
-    {
-        Assert.Equal(text, MapRing.FormatMagnification(MapRing.Magnification(zoom, 14)));
-    }
-
-    [Theory]
-    [InlineData(1, "2.0")]
-    [InlineData(-1, "2.0")]
-    [InlineData(1.2, "2.3")]
-    public void The_zoom_speed_is_shown_as_times_per_second(double levelsPerSecond, string text)
-    {
-        Assert.Equal(text, MapRing.FormatRate(levelsPerSecond));
-    }
-
     [Fact]
     public void Moving_right_goes_east_and_down_goes_south()
     {

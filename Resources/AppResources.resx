@@ -770,21 +770,6 @@
   <data name="MapRingHint" xml:space="preserve">
     <value>Tap to open. Lean the knob in the middle to move the map, faster the further it leans. Put your thumb on the ring and slide it round: clockwise zooms in, anticlockwise zooms out, faster the further from where you started. Double-tap the middle to go back to the start. Touch the map outside it to close it.</value>
   </data>
-  <data name="MapRingIdle" xml:space="preserve">
-    <value>Idle</value>
-  </data>
-  <data name="MapRingMoving" xml:space="preserve">
-    <value>Moving</value>
-  </data>
-  <data name="MapRingZoomIn" xml:space="preserve">
-    <value>Zoom in ×{0}/s</value>
-  </data>
-  <data name="MapRingZoomOut" xml:space="preserve">
-    <value>Zoom out ×{0}/s</value>
-  </data>
-  <data name="MapRingZoomStopped" xml:space="preserve">
-    <value>Zoom stopped</value>
-  </data>
   <data name="MapRingHowToZoom" xml:space="preserve">
     <value>Slide round the ring to zoom</value>
   </data>
