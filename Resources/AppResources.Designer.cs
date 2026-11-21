@@ -2017,51 +2017,6 @@ namespace FlagsRally.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idle.
-        /// </summary>
-        internal static string MapRingIdle {
-            get {
-                return ResourceManager.GetString("MapRingIdle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Moving.
-        /// </summary>
-        internal static string MapRingMoving {
-            get {
-                return ResourceManager.GetString("MapRingMoving", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom in ×{0}/s.
-        /// </summary>
-        internal static string MapRingZoomIn {
-            get {
-                return ResourceManager.GetString("MapRingZoomIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom out ×{0}/s.
-        /// </summary>
-        internal static string MapRingZoomOut {
-            get {
-                return ResourceManager.GetString("MapRingZoomOut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom stopped.
-        /// </summary>
-        internal static string MapRingZoomStopped {
-            get {
-                return ResourceManager.GetString("MapRingZoomStopped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Slide round the ring to zoom.
         /// </summary>
         internal static string MapRingHowToZoom {
