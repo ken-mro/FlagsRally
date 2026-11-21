@@ -13,7 +13,9 @@ After a short start (stage 0), five stages run in this order, each finished befo
 4. **Release notes** for the store through `/release-notes`, saved to a file.
 5. **Upload to Google Play**: the signed bundle and exactly those release notes, after the user says yes, and the review submission when the user asks for it.
 
-**Android and iOS together by default.** A request to release, upload or submit for review that names no platform ("リリースして", "1.4.4 を出して", "審査に出して") covers both platforms: run `/android-release` and `/ios-release` for the same version, with the same release notes file. Do only one platform when the user names it ("Android だけ", "iOS の ipa を作って"). The order is: Android stages 1–4 first (its PR puts the version and the changelog heading on `master`), then iOS stages 0–3 from that `master`, then one stop that asks about both uploads (and the review submission) together, then the uploads and the submissions, then one report for both.
+**Android and iOS together by default.** A request to release, upload or submit for review that names no platform ("リリースして", "1.4.4 を出して", "審査に出して") covers both platforms: run `/android-release` and `/ios-release` for the same version, with the same release notes file. Do only one platform when the user names it ("Android だけ", "iOS の ipa を作って"). The order is: Android stage 0 with one branch for both, `chore/release-<version>`; both Release checks (Android stage 1, iOS stage 1); both version commits on that branch (Android stage 2, iOS stage 2); one PR that puts both versions and the changelog heading on `master` (Android stage 3); the notes (Android stage 4); the .ipa from the merged `master` (iOS stage 3); then one stop that asks about both uploads (and the review submission) together, then the uploads and the submissions, then one report for both.
+
+**Version commits always reach `master` before an upload.** A store uses up a version and build number once it has the build, and the next bump starts from what `master` says. iOS 1.4.3 (build 28) was uploaded from a release branch that was never merged, so `master` still said 1.4.2 (build 27) and the next bump would have tried build 28 again. So a version commit is never left on a branch: it is merged to `master` with `/ship-pr` before the bundle or .ipa that carries it is uploaded. A release request is the user's ask to push and merge that PR. `AppVersionsMatchTests` fails when Android's and iOS's versions differ.
 
 **Submitting for review** sends the version to the store's review and, once approved, to every user. Do it when the user asked for it ("審査に出して", "公開して", or a release request that says so). Otherwise ask about it in the same stop as the uploads, so one clear yes can cover uploading and submitting on both stores. A request to submit that names no platform covers both stores.
 
@@ -52,11 +54,17 @@ If anything is missing when stage 5 starts, stop there and tell the user exactly
   git log -1 --format=%h -G'android:versionName' -- Platforms/Android/AndroidManifest.xml
   ```
 - **Was the current version already uploaded?** The repository cannot tell: every changelog heading stays `- Unreleased`, even for versions that are on Google Play. When the top changelog section is that version, ask the user once, here at the start. If it was not uploaded, it can still go out as is: skip the bump in stage 2, keep the changelog entries under that version, and release it under the current number. Otherwise go on with a new version.
+- **Nothing left behind.** Look for release branches with commits that `master` lacks (cherry-picked commits do not count):
+  ```bash
+  bash -c 'for b in $(git for-each-ref --format="%(refname:short)" refs/heads/release refs/heads/chore refs/remotes/origin/release refs/remotes/origin/chore | grep -E "release/|chore/(bump|release)-"); do n=$(git cherry master "$b" | grep -c "^+"); [ "$n" -gt 0 ] && echo "$b: $n"; done'
+  ```
+  Show the user each branch listed (`git log --oneline master..<branch>`). A version commit or fix that went to a store is brought to `master` first (cherry-pick it onto this release's branch). A branch whose version is older than `master`'s and was superseded is stale: say so and offer to delete it.
+- **Compare with the stores** (read-only). Google Play: `uv run --locked .claude/skills/android-release/scripts/upload_to_play.py --show-track`. App Store: `uv run --locked .claude/skills/ios-release/scripts/submit_for_review.py --version <master's iOS version> --build <master's build> --notes <any notes file> --dry-run`, which prints the version's state. If a store has a version or build above `master`'s, `master` is behind: find the missing commit (usually on a branch listed above) and bring it to `master` before bumping. A version already live on a store also answers whether it was uploaded.
 - Pick the version now, so the branch can be named. The user's version wins (`1.2.0`, "マイナーを上げて"). Otherwise bump the patch. Preview it without writing:
   ```bash
   uv run .claude/skills/android-release/scripts/bump_android_version.py --dry-run   # add --minor / --major / --version X.Y.Z when asked
   ```
-- Create the release branch: `git checkout -b chore/bump-android-<version>`. Any fixes from stage 1 go on this branch too, so the release is one PR.
+- Create the release branch: `git checkout -b chore/bump-android-<version>`, or `chore/release-<version>` when iOS goes out too. Any fixes from stage 1, and iOS's version commit, go on this branch too, so the release is one PR.
 - `Repository/Constants.cs` must hold the real keys in the working tree (it does on this machine; never stage it). A Release build with the dummy keys would launch differently from the store build.
 
 ## 1. Release check (repeat until clean)
@@ -91,7 +99,7 @@ Non-fatal problems found on the way (a typo, a layout glitch) do not hold the re
 
 ## 3. PR and merge
 
-Run `/ship-pr` for this branch. It checks for secrets, runs the tests and build, checks the changelog, pushes, opens the PR and merges it. In the PR body's testing section, say which Release checks ran and their result: launch and tabs, the features checked, and the fixes and re-checks if there were any.
+When iOS goes out too, its version commit (`/ios-release` stage 2) must be on this branch before the PR, so `master` gets both numbers at once. Run `/ship-pr` for this branch. It checks for secrets, runs the tests and build, checks the changelog, pushes, opens the PR and merges it. In the PR body's testing section, say which Release checks ran and their result: launch and tabs, the features checked, and the fixes and re-checks if there were any.
 
 ## 4. Release notes
 
