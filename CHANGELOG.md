@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.4.4] - Unreleased
 
 ### Changed
 - **A ring controller moves and zooms the map with one thumb.** The round button above the my-location button now has a four-way arrow and opens a ring controller: tap it and the controller grows out of it to its place beside the buttons, a ring round the outside with tick marks and a knob in the middle. Lean the knob and the map keeps moving that way, faster the further it leans, and the knob springs back when the thumb lifts. Put the thumb anywhere on the ring and slide it round: clockwise zooms in and anticlockwise zooms out, faster the further from where the thumb came down, and back at that point the zoom stops; the ticks turn with the zoom. Arrows at the top of the ring show which way zooms in (＋) and out (−); the first few times it opens, a see-through thumb slides round to show it, and tapping the ring without sliding explains it at the top left. Double-tap the middle to go back to where the map started. Touching the map outside it shrinks it back into the button, and the map still moves for a drag; the zoom and place stay as they were.
