@@ -1,7 +1,7 @@
 namespace FlagsRally.Helpers;
 
 /// <summary>
-/// The map's zoom range the thumb pad's zoom stays in.
+/// The map's zoom range the ring controller's zoom stays in.
 /// </summary>
 public static class MapZoom
 {

@@ -143,4 +143,24 @@ public class SettingsPreferencesTests
 
         preferences.Verify(p => p.Set("ShowsEveryStamp", false, null));
     }
+
+    [Fact]
+    public void The_ring_controller_shows_how_its_ring_zooms_the_first_few_times()
+    {
+        var settings = new SettingsPreferences(new MemoryPreferences());
+
+        for (var i = 0; i < SettingsPreferences.MapRingDemoTimes; i++) Assert.True(settings.TakeMapRingDemo());
+        Assert.False(settings.TakeMapRingDemo());
+    }
+
+    [Fact]
+    public void The_ring_controller_stops_showing_it_once_the_ring_has_zoomed()
+    {
+        var settings = new SettingsPreferences(new MemoryPreferences());
+        Assert.True(settings.TakeMapRingDemo());
+
+        settings.SetHasZoomedWithMapRing();
+
+        Assert.False(settings.TakeMapRingDemo());
+    }
 }

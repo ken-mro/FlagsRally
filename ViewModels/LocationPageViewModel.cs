@@ -486,7 +486,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 
     // The map's camera tasks sometimes never complete (e.g. while the map is still being laid out),
     // which would leave IsBusy set and block Get Location. Wait a short time at most.
-    // While the thumb pad is held: the camera it has asked for so far, and whether that is still to be sent.
+    // While the ring controller is held: the camera it has asked for so far, and whether that is still to be sent.
     // Moves are sent one at a time; a thumb faster than the map keeps up with skips to the newest camera.
     Position _padTarget;
     double _padZoom;
@@ -495,6 +495,28 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     bool _padRequested;
     bool _padMoving;
     static readonly TimeSpan PadMoveTimeout = TimeSpan.FromMilliseconds(150);
+
+    /// <summary>The zoom the map starts at, where the ring controller's scale is ×1.</summary>
+    public static double HomeZoom => DEFAULT_ZOOM_LEVEL;
+
+    // Where the map was first centred: the ring controller's double tap goes back here.
+    Position _homePosition = new(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+
+    private Task MoveToHomeAsync(Position position)
+    {
+        _homePosition = position;
+        return MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
+    }
+
+    /// <summary>Whether the ring controller, opening now, shows how its ring zooms (the first few times).</summary>
+    public bool TakeRingDemo() => _settingsPreferences.TakeMapRingDemo();
+
+    /// <summary>The ring has zoomed the map: its use no longer needs showing.</summary>
+    public void NoteRingZoomed() => _settingsPreferences.SetHasZoomedWithMapRing();
+
+    /// <summary>Back to where the map started and its starting zoom, facing north.</summary>
+    public Task ResetCameraAsync() =>
+        MoveCameraSafelyAsync(CameraUpdateFactory.NewCameraPosition(new CameraPosition(_homePosition, DEFAULT_ZOOM_LEVEL, 0, 0)), animate: true);
 
     public void BeginPadMove()
     {
@@ -511,7 +533,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
     {
         if (ArrivalMap is null) return;
         _padZoom = MapZoom.Clamp(_padZoom + zoomChange);
-        var (latitude, longitude) = MapPad.MoveTarget(_padTarget.Latitude, _padTarget.Longitude, _padZoom, _padBearing, panX, panY);
+        var (latitude, longitude) = MapRing.MoveTarget(_padTarget.Latitude, _padTarget.Longitude, _padZoom, _padBearing, panX, panY);
         _padTarget = new Position(latitude, longitude);
         _padRequested = true;
         if (!_padMoving) _ = SendPadMovesAsync();
@@ -681,7 +703,7 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             // Allowed since the map was made (on the how-to pages): show where the user is.
             _hasCenteredOnUser = true;
             var location = await GetLastKnownOrDefaultLocationAsync();
-            await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(location.ToPosition(), DEFAULT_ZOOM_LEVEL), animate: false);
+            await MoveToHomeAsync(location.ToPosition());
         }
     }
 
@@ -824,10 +846,9 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
             Location location = _hasCenteredOnUser
                 ? await GetLastKnownOrDefaultLocationAsync()
                 : new Location(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            var position = location.ToPosition();
             if (ArrivalMap is not null)
             {
-                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
+                await MoveToHomeAsync(location.ToPosition());
             }
         }
         catch (Exception ex)
@@ -836,10 +857,9 @@ public partial class LocationPageViewModel : BaseViewModel, IVisitFilterable
 #if DEBUG
             Console.WriteLine(ex.Message);
 #endif
-            var position = new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             if (ArrivalMap is not null)
             {
-                await MoveCameraSafelyAsync(CameraUpdateFactory.NewPositionZoom(position, DEFAULT_ZOOM_LEVEL), animate: false);
+                await MoveToHomeAsync(new Position(DEFAULT_LATITUDE, DEFAULT_LONGITUDE));
             }
         }
         finally

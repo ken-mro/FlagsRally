@@ -23,6 +23,8 @@ public partial class SettingsPreferences : ObservableObject
     private string _hasSeenOnboarding = "HasSeenOnboarding";
     private string _showsEveryStamp = "ShowsEveryStamp";
     private string _hasSeenLongPressHint = "HasSeenLongPressHint";
+    private string _mapRingDemosShown = "MapRingDemosShown";
+    private string _hasZoomedWithMapRing = "HasZoomedWithMapRing";
 
     private readonly TimeProvider _clock;
 
@@ -248,4 +250,22 @@ public partial class SettingsPreferences : ObservableObject
     public bool GetHasSeenLongPressHint() => _defaultPreferences.Get(_hasSeenLongPressHint, false);
 
     public void SetHasSeenLongPressHint() => _defaultPreferences.Set(_hasSeenLongPressHint, true);
+
+    /// <summary>
+    /// Whether the map's ring controller shows how its ring zooms when it opens: the first few
+    /// times, until the ring has zoomed the map once. Counts this time as shown when it does.
+    /// </summary>
+    public bool TakeMapRingDemo()
+    {
+        if (_defaultPreferences.Get(_hasZoomedWithMapRing, false)) return false;
+        var shown = _defaultPreferences.Get(_mapRingDemosShown, 0);
+        if (shown >= MapRingDemoTimes) return false;
+        _defaultPreferences.Set(_mapRingDemosShown, shown + 1);
+        return true;
+    }
+
+    /// <summary>How many times the ring controller shows how its ring zooms, at most.</summary>
+    public const int MapRingDemoTimes = 3;
+
+    public void SetHasZoomedWithMapRing() => _defaultPreferences.Set(_hasZoomedWithMapRing, true);
 }
