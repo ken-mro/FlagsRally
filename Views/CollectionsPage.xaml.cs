@@ -13,7 +13,8 @@ public partial class CollectionsPage : InitializingPage
     public CollectionsPage(CollectionsPageViewModel vm)
     {
         InitializeComponent();
-        SideTabBar.Watch(this, RunUnderSideTabBar);
+        SideTabBar.Watch(this, LayOut);
+        GridSpan.WatchWindow(this, LayOut);
         BindingContext = _viewModel = vm;
     }
 
@@ -21,10 +22,19 @@ public partial class CollectionsPage : InitializingPage
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
+        LayOut();
+    }
 
-        _viewModel.GridItemSpan = GridSpan.ForCards(GridSpan.IsOpened(this));
+    // Opening or closing a foldable can give the page its new size before the window or the safe area
+    // has its own, so this runs again when either changes.
+    void LayOut()
+    {
+        UpdateColumns();
         RunUnderSideTabBar();
     }
+
+    void UpdateColumns() =>
+        GridSpan.Update(this, Cards, () => _viewModel.GridItemSpan, (width, opened) => _viewModel.GridItemSpan = GridSpan.ForCards(opened));
 
     // The list's margin from the XAML: on iOS, room at the bottom for the tab bar floating there.
     static readonly Thickness BesideMargin = new(8, 0);

@@ -35,4 +35,42 @@ public static class GridSpan
         page.Window is { Width: > 0, Height: > 0 } window
             ? IsOpened(window.Width, window.Height)
             : IsOpened(page.Width, page.Height);
+
+    /// <summary>
+    /// Works out the page's column count again: <paramref name="setSpan"/> is given the page's width and
+    /// whether the phone is opened. When the count (<paramref name="span"/>) changes, iOS lays the list's
+    /// rows out again. Does nothing before the page has a width.
+    /// </summary>
+    public static void Update(Page page, View list, Func<int> span, Action<double, bool> setSpan)
+    {
+        if (page.Width <= 0) return;
+
+        var before = span();
+        setSpan(page.Width, IsOpened(page));
+        if (span() != before) SideTabBar.LayOutAgain(list);
+    }
+
+    /// <summary>
+    /// Runs <paramref name="update"/> whenever the page's window changes size. Opening or closing a
+    /// foldable resizes the window, and the page can be given its new size before the window has
+    /// its own: a count worked out then still followed the screen the phone had just left.
+    /// </summary>
+    public static void WatchWindow(Page page, Action update)
+    {
+        Window? watched = null;
+        void OnWindowSizeChanged(object? sender, EventArgs e) => update();
+        void Follow()
+        {
+            if (ReferenceEquals(watched, page.Window)) return;
+            if (watched is not null) watched.SizeChanged -= OnWindowSizeChanged;
+            watched = page.Window;
+            if (watched is not null) watched.SizeChanged += OnWindowSizeChanged;
+        }
+
+        page.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(VisualElement.Window)) Follow();
+        };
+        Follow();
+    }
 }

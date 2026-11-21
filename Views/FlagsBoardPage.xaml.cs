@@ -15,17 +15,27 @@ public partial class FlagsBoardPage : InitializingPage
     public FlagsBoardPage(FlagsBoardPageViewModel vm)
     {
         InitializeComponent();
-        SideTabBar.Watch(this, RunUnderSideTabBar);
+        SideTabBar.Watch(this, LayOut);
+        GridSpan.WatchWindow(this, LayOut);
         BindingContext = _flagsBoardPageViewModel = vm;
     }
 
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
+        LayOut();
+    }
 
-        _flagsBoardPageViewModel.GridItemSpan = GridSpan.For(width, GridSpan.IsOpened(this));
+    // Opening or closing a foldable can give the page its new size before the window or the safe area
+    // has its own, so this runs again when either changes.
+    void LayOut()
+    {
+        UpdateColumns();
         RunUnderSideTabBar();
     }
+
+    void UpdateColumns() =>
+        GridSpan.Update(this, collectionView, () => _flagsBoardPageViewModel.GridItemSpan, (width, opened) => _flagsBoardPageViewModel.GridItemSpan = GridSpan.For(width, opened));
 
     // Beside a tab bar at the side (iPhone Duo) the tiles go on to the page's edge, under the bar.
     void RunUnderSideTabBar()

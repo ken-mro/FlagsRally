@@ -77,7 +77,10 @@ public static class SideTabBar
         SetRoomAfterLastRow(list, roomAfterLastRow);
     }
 
-    static void LayOutAgain(View list)
+    /// <summary>
+    /// Has iOS lay the list's rows out again once it has its new size or column count.
+    /// </summary>
+    public static void LayOutAgain(View list)
     {
 #if IOS
         // Once the list has its new size
