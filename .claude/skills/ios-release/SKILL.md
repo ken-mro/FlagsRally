@@ -83,6 +83,7 @@ Non-fatal problems (a typo, a layout glitch) do not hold the release. List them 
 On the merged `master`, with the version from stage 2 and the real keys in `Repository/Constants.cs`:
 
 ```bash
+rm -rf bin/Release/net10.0-ios obj/Release/net10.0-ios   # 1.4.4's first .ipa kept 1.4.3 (28) from an earlier build's output
 dotnet publish FlagsRally.csproj -f net10.0-ios -c Release -p:ArchiveOnBuild=true -p:RuntimeIdentifier=ios-arm64 \
   -p:CodesignKey="Apple Distribution: Ken Murao (NQJ2NB4BG5)" -p:CodesignProvision="FlagsRally" > <scratch>/publish.log 2>&1
 ```
