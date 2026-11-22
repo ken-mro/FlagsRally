@@ -3,6 +3,11 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+- **Development:** The iOS release skill removes the earlier Release output before building the .ipa. The first 1.4.4 package still carried 1.4.3 (build 28) from an earlier build, and App Store Connect refused it as a duplicate.
+
 ## [1.4.4] - Unreleased
 
 ### Changed
