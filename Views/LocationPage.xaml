@@ -128,7 +128,8 @@
                 </VerticalStackLayout>
                 <!--  The ring controller's button: tap to open the controller  -->
                 <controls:MapRingButton x:Name="ringButton" HorizontalOptions="End" />
-                <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips  -->
+                <!--  Our own my-location button (Google's is turned off): it would sit under the filter chips.
+                     It leaves the ring controller open, so the controller can be used again at the new place.  -->
                 <Border
                     BackgroundColor="{StaticResource PaperCard}"
                     HeightRequest="48"
@@ -148,7 +149,6 @@
                         Padding="11"
                         BackgroundColor="Transparent"
                         Command="{Binding ShowMyLocationCommand}"
-                        Pressed="OnMapButtonPressed"
                         SemanticProperties.Description="{x:Static strings:AppResources.ShowMyLocation}"
                         Source="my_location.png" />
                 </Border>
