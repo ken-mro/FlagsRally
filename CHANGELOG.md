@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- **The airmail, ticket and postage stamp designs are wider than tall.** Next to the movie ticket they came out nearly square; they now have about its landscape shape. The ticket's globe, stars and row of ways to travel are a little smaller to make room.
 - **The ring controller stays open for the my-location button.** Tapping the my-location button while the ring controller is open moves the map to where you are and leaves the controller open, so it can be used straight away there. Touching the map itself, and the directions and open-in-Maps buttons, still close it.
 - **Development:** The iOS release skill removes the earlier Release output before building the .ipa. The first 1.4.4 package still carried 1.4.3 (build 28) from an earlier build, and App Store Connect refused it as a duplicate.
 
