@@ -124,7 +124,9 @@ public static class StampPatterns
     /// </summary>
     public static Thickness PaddingFor(StampPattern pattern) => pattern switch
     {
-        StampPattern.Airmail => new Thickness(26, 42, 20, 30),
+        // The rectangles (airmail, ticket, postage stamp) keep about the movie ticket's shape, a
+        // little wider than tall: 56 to 60 points of room above and below the text in all
+        StampPattern.Airmail => new Thickness(26, 28, 20, 28),
         StampPattern.CompassHexagon => new Thickness(40, 46, 40, 42),
         StampPattern.Sunrise => new Thickness(40, 40, 40, 34),
         StampPattern.ScallopedGlobe => new Thickness(46, 44, 46, 40),
@@ -132,11 +134,11 @@ public static class StampPatterns
         // Not used: the journey stamp has its own template (flag on the globe, name and date below)
         StampPattern.Journey => new Thickness(20, 12),
         StampPattern.WorldOval => new Thickness(42, 18, 42, 18),
-        StampPattern.Ticket => new Thickness(24, 36, 24, 46),
+        StampPattern.Ticket => new Thickness(24, 26, 24, 34),
         StampPattern.CompassSeal => new Thickness(42, 40, 42, 44),
         StampPattern.Triangle => new Thickness(40, 62, 40, 14),
         StampPattern.StarSeal => new Thickness(40, 36, 40, 30),
-        StampPattern.PostageStamp => new Thickness(28, 36, 28, 32),
+        StampPattern.PostageStamp => new Thickness(28, 28, 28, 30),
         // The text keeps to the main part, left of the stub
         StampPattern.MovieTicket => new Thickness(22, 34, 22 + 180 * MovieTicketStub, 22),
         _ => new Thickness(0),

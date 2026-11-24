@@ -307,11 +307,11 @@ public class StampFrame : GraphicsView
             var inset = d.Gap * 1.3f;
             var inner = r.Inflate(-inset, -inset);
             d.Stroke(d.Inner, () => d.Canvas.DrawPath(TicketEdge(r, 12, 10, 0, inset)));
-            Globe(d, new PointF(inner.Center.X, inner.Top + 16), 11);
+            Globe(d, new PointF(inner.Center.X, inner.Top + 11), 8);
             d.Canvas.FillColor = d.Ink;
             foreach (var x in new[] { -46f, -30f, 30f, 46f })
             {
-                d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 16), 5.5f));
+                d.Canvas.FillPath(Star(new PointF(inner.Center.X + x, inner.Top + 11), 4.5f));
             }
             // Speed lines either side of the notches, inside the thin line
             d.Stroke(d.Inner * 0.8f, () =>
@@ -323,9 +323,9 @@ public class StampFrame : GraphicsView
                     d.Canvas.DrawLine(inner.Right - 10, y, inner.Right - 3, y);
                 }
             });
-            var line = inner.Bottom - 30;
+            var line = inner.Bottom - 19;
             d.Stroke(d.Inner, () => d.Canvas.DrawLine(inner.Left + 2, line, inner.Right - 2, line));
-            TravelRow(d, new PointF(inner.Center.X, inner.Bottom - 15), 16, 26,
+            TravelRow(d, new PointF(inner.Center.X, inner.Bottom - 9.5f), 10.5f, 22,
                 TravelMode.Plane, TravelMode.Ship, TravelMode.Train, TravelMode.Car, TravelMode.Walk);
         }
 
@@ -505,10 +505,10 @@ public class StampFrame : GraphicsView
             d.Stroke(d.Inner * 0.8f, () =>
             {
                 d.Canvas.DrawLine(inner.Left + 26, inner.Top + 12, inner.Right - 38, inner.Top + 12);
-                d.Canvas.DrawLine(inner.Left + 10, inner.Bottom - 6, inner.Center.X - 10, inner.Bottom - 6);
-                d.Canvas.DrawLine(inner.Center.X + 10, inner.Bottom - 6, inner.Right - 10, inner.Bottom - 6);
+                d.Canvas.DrawLine(inner.Left + 10, inner.Bottom - 5, inner.Center.X - 10, inner.Bottom - 5);
+                d.Canvas.DrawLine(inner.Center.X + 10, inner.Bottom - 5, inner.Right - 10, inner.Bottom - 5);
             });
-            Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 6), 3.5f);
+            Sparkle(d, new PointF(inner.Center.X, inner.Bottom - 5), 3f);
         }
 
         // A movie ticket: rounded corners and a round notch in each end. The main part is solid ink,

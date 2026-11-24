@@ -211,7 +211,7 @@
         <!--  The other patterns: StampFrame draws the outline in the pattern's ink, the text sits on top  -->
         <DataTemplate x:Key="ShapedStamp" x:DataType="{x:Type models:ArrivalLocation}">
             <!--  Shrinks as a whole in a cell narrower than the stamp is drawn for  -->
-            <controls:ShrinkToFitLayout DesignWidth="180">
+            <controls:ShrinkToFitLayout DesignWidth="196">
                 <Grid Margin="{Binding StampMargin}" Rotation="{Binding StampTilt}">
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ViewModel.ShowLocationInfoCommand, Source={x:Reference page}, x:DataType=views:MainPage}" CommandParameter="{Binding .}" />
