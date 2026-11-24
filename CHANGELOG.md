@@ -3,7 +3,7 @@
 All notable changes to FlagsRally are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.4.5] - Unreleased
 
 ### Changed
 - **The airmail, ticket and postage stamp designs are wider than tall.** Next to the movie ticket they came out nearly square; they now have about its landscape shape. The ticket's globe, stars and row of ways to travel are a little smaller to make room. They keep that shape on a Galaxy Z Fold too, where the narrower spaces had made them nearly square; there they are drawn a little smaller instead.
